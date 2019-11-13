@@ -5,7 +5,7 @@
 -- Staging Database Scripts to RUN after running the DDLs in Mysql
 -- 1. Demographics/Registration  DML
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, First_Name, Middle_Name, Last_Name, Nickname, DOB, Sex, UPN, Encounter_Date, Encounter_ID, National_id_no, Patient_clinic_number
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, First_Name, Middle_Name, Last_Name, Nickname, DOB, Exact_DOB, Sex, UPN, Encounter_Date, Encounter_ID, National_id_no, Patient_clinic_number
 , Birth_certificate, Birth_notification, Hei_no, Passport, Alien_Registration, Phone_number, Alternate_Phone_number,
 Postal_Address,Email_Address, County, Sub_county, Ward,Village, Landmark, Nearest_Health_Centre, Next_of_kin, Next_of_kin_phone, Next_of_kin_relationship
 , Next_of_kin_address, Marital_Status, Occupation, Education_level, Dead, Death_date, Consent, Consent_decline_reason, voided FROM migration_st.st_demographics')
@@ -84,7 +84,8 @@ pend.Dead,
 pend.DateOfDeath as Death_date,
 ts.Consent,
 ts.Consent_Decline_Reason,
-P.DeleteFlag as Voided
+P.DeleteFlag as Voided 
+ -- into PatientDemographics
 FROM Person P
   INNER JOIN (select * from (select  *,ROW_NUMBER() OVER(partition by PersonId order by CreateDate desc)rownum from PersonLocation where (DeleteFlag =0 or DeleteFlag is null))PLL where PLL.rownum='1') PL ON PL.PersonId = P.Id
   INNER JOIN Patient PT ON PT.PersonId = P.Id
@@ -110,7 +111,9 @@ LEFT JOIN( select pend.PatientId,pend.DateOfDeath, CASE WHEN pend.ExitDate is no
 inner join  LookupItemView lt on lt.ItemId=pce.ExitReason and lt.MasterName='CareEnded'
 where lt.ItemName='Death'
 )pend where pend.rownum='1')pend on pend.PatientId=PT.Id
-WHERE PI.IdentifierTypeId = 1 and PE.ServiceAreaId=1 and LEN(PI.IdentifierValue ) = 10
+WHERE PI.IdentifierTypeId = 1 and PE.ServiceAreaId=1  
+ 
+-- and LEN(PI.IdentifierValue ) = 10     
 -- order by FirstName
 
 -- -----------------------------2. HIV Enrollment DML ---------------------------------------------
