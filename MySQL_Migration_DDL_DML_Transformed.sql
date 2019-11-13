@@ -440,8 +440,7 @@ CREATE TABLE migration_tr.tr_program_discontinuation as
     Facility_Transfered_To,
     Death_Date
   FROM migration_st.st_program_discontinuation;
-  
-  -- 8. IPT Screening transformed table
+-- 8. IPT Screening transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
 CREATE TABLE migration_tr.tr_ipt_screening
     select
@@ -474,7 +473,12 @@ CREATE TABLE migration_tr.tr_ipt_programs
     Encounter_ID,
     IPT_Start_Date,
     Indication_for_IPT,
-    IPT_Outcome,
+    (case IPT_Outcome when "TransferredOut" then 159492
+       when "Died" then 160034
+       when "Discontinued" then 159836
+       when "LostToFollowUp" then 5240
+       when "Completed" then 1267
+       when "Unknown" then 1067 else "" end) as IPT_Outcome,
     Outcome_Date
     FROM migration_st.st_ipt_program;
 
@@ -482,13 +486,27 @@ CREATE TABLE migration_tr.tr_ipt_programs
 DROP TABLE IF EXISTS migration_tr.tr_ipt_followup;
 CREATE TABLE migration_tr.tr_ipt_followup
     select
-      Person_Id,
-      UPN,
-      Encounter_Date,
-      Encounter_ID,
-      Yellow_urine,
-      Numbness,
-      Yellow_eyes,
-      Tenderness,
-      IPT_Start_Date
+        Person_Id,
+        UPN,
+        Encounter_Date,
+        Encounter_ID,
+        Ipt_due_date,
+        Date_collected_ipt,
+        Weight,
+       (case Hepatotoxity
+           when "Yes" then 1065
+           when "No" then 1066  else '' end)as Hepatotoxity,
+       (case Peripheral_neuropathy
+         when "Yes" then 1065
+         when "No" then 1066  else '' end)as Peripheral_neuropathy,
+       (case Rash
+         when "Yes" then 1065
+         when "No" then 1066  else '' end)as Rash,
+       (case Adherence
+         when "Good(Missed<3/month)" then 159405
+         when "Fair(Missed4-8/month)" then 159406
+         when "Bad()Missed 9" then 159407 else '' end)as Adherence,
+        AdheranceMeasurement_Action,
+        IPT_Outcome,
+        Outcome_Date
     FROM migration_st.st_ipt_followup;
