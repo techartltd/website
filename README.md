@@ -1,5 +1,8 @@
 # kenyaemrMigration
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3ddab8fb857c6fca6fd4d6a975124b3404d63127
 Procedure
 1. Configure linked database from MSSQL to MySQL
 2. Run MySQL_DDL_Migration_Staging.sql to create tables for staging database
