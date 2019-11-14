@@ -270,17 +270,32 @@ CREATE TABLE migration_st.st_ipt_followup
   Outcome_Date                     DATE
 );
 
--- 11. HIV Followup
+-- 11. Regimen History
+DROP TABLE IF EXISTS regimen_history;
+CREATE TABLE regimen_history
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Program                          VARCHAR(100),
+  Regimen                          VARCHAR(200),
+  Regimen_Name                     VARCHAR(200),
+  Regimen_Line                     VARCHAR(200),
+  Date_Started                     DATE,
+  Date_Stopped                     DATE,
+  Discontinued                     VARCHAR(50),
+  Regimen_Discontinued             VARCHAR(200),
+  Date_Discontinued                DATE,
+  Reason_Discontinued              VARCHAR(255),
+  Voided                           INT(11),
+  Date_voided                      DATE
+  
+);
+-- 12. HIV Followup
 DROP TABLE IF EXISTS hiv_followup;
 CREATE TABLE hiv_followup
 (
-  Person_Id                  INT(11),
-  First_Name                 VARCHAR(100) NOT NULL,
-  Middle_Name                VARCHAR(100) NULL,
-  Last_Name                  VARCHAR(100) NULL,
-  DOB                        DATE         NOT NULL,
-  Sex                        VARCHAR(10)  NOT NULL,
-  UPN                        VARCHAR(20)  NOT NULL,
+  Person_Id                  INT(11),  
   visit_scheduled            VARCHAR(20),
   Visit_by                   VARCHAR(20),
   Visit_by_other             VARCHAR(100),
@@ -392,17 +407,11 @@ CREATE TABLE hiv_followup
   Voided INT(11)
 );
 
--- 12. Laboratory Extract
+-- 13. Laboratory Extract
 DROP TABLE IF EXISTS laboratory_extract;
 CREATE TABLE laboratory_extract
 (
-  Person_Id       INT(11),
-  First_Name      VARCHAR(100) NOT NULL,
-  Middle_Name     VARCHAR(100) NULL,
-  Last_Name       VARCHAR(100) NULL,
-  DOB             DATE         NOT NULL,
-  Sex             VARCHAR(10)  NOT NULL,
-  UPN             VARCHAR(20)  NOT NULL,
+  Person_Id       INT(11),  
   Encounter_Date  DATE,
   Lab_test        VARCHAR(180),
   Urgency         VARCHAR(50),
@@ -413,17 +422,11 @@ CREATE TABLE laboratory_extract
   Voided           INT(11)
 );
 
--- 13. Pharmacy Extract
+-- 14. Pharmacy Extract
 DROP TABLE IF EXISTS pharmacy_extract;
 CREATE TABLE pharmacy_extract
 (
-  Person_Id       INT(11),
-  First_Name      VARCHAR(100) NOT NULL,
-  Middle_Name     VARCHAR(100) NULL,
-  Last_Name       VARCHAR(100) NULL,
-  DOB             DATE         NOT NULL,
-  Sex             VARCHAR(10)  NOT NULL,
-  UPN             VARCHAR(20)  NOT NULL,
+  Person_Id       INT(11),  
   Encounter_Date  DATE,
   Drug            VARCHAR(100),
   Is_arv          VARCHAR(50),
@@ -446,17 +449,11 @@ CREATE TABLE pharmacy_extract
 
 );
 
--- 14.  MCH Enrollment
+-- 15.  MCH Enrollment
 DROP TABLE IF EXISTS mch_enrollment;
 CREATE TABLE mch_enrollment
 (
-  Person_Id                        INT(11),
-  First_Name                       VARCHAR(100) NOT NULL,
-  Middle_Name                      VARCHAR(100) NULL,
-  Last_Name                        VARCHAR(100) NULL,
-  DOB                              DATE NOT NULL,
-  Sex                              VARCHAR(10) NOT NULL,
-  UPN                              VARCHAR(20) NOT NULL,
+  Person_Id                        INT(11),  
   Encounter_Date                   DATE,
   Anc_number                       VARCHAR(50),
   Gestation_in_weeks               INT(11),
@@ -493,17 +490,11 @@ CREATE TABLE mch_enrollment
   Voided                           INT(11)
 );
 
--- 15.  MCH ANC Visit
+-- 16.  MCH ANC Visit
 DROP TABLE IF EXISTS mch_antenatal_visit;
 CREATE TABLE mch_antenatal_visit
 (
-  Person_Id                        INT(11),
-  First_Name                       VARCHAR(100) NOT NULL,
-  Middle_Name                      VARCHAR(100) NULL,
-  Last_Name                        VARCHAR(100) NULL,
-  DOB                              DATE NOT NULL,
-  Sex                              VARCHAR(10) NOT NULL,
-  UPN                              VARCHAR(20) NOT NULL,
+  Person_Id                        INT(11),  
   Encounter_Date                   DATE,
   Anc_visit_number                 INT(11),
   Anc_number                       VARCHAR(50),
