@@ -111,14 +111,14 @@ LEFT JOIN( select pend.PatientId,pend.DateOfDeath, CASE WHEN pend.ExitDate is no
 inner join  LookupItemView lt on lt.ItemId=pce.ExitReason and lt.MasterName='CareEnded'
 where lt.ItemName='Death'
 )pend where pend.rownum='1')pend on pend.PatientId=PT.Id
-WHERE PI.IdentifierTypeId = 1 and PE.ServiceAreaId=1  
- 
+
+
 -- and LEN(PI.IdentifierValue ) = 10     
 -- order by FirstName
 
 -- -----------------------------2. HIV Enrollment DML ---------------------------------------------
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id,First_Name, Middle_Name, Last_Name, DOB , Sex, UPN, Encounter_Date, Encounter_ID, Patient_Type,Entry_Point,TI_Facility,Date_first_enrolled_in_care,
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, UPN, Encounter_Date, Encounter_ID, Patient_Type,Entry_Point,TI_Facility,Date_first_enrolled_in_care,
 Transfer_in_date,Date_started_art_at_transferring_facility,Date_confirmed_hiv_positive,
 Facility_confirmed_hiv_positive,Baseline_arv_use,Purpose_of_baseline_arv_use,
 Baseline_arv_regimen,Baseline_arv_regimen_line,
@@ -145,12 +145,7 @@ voided
  FROM migration_st.st_hiv_enrollment')
 
 SELECT
-  P.Id as Person_Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+  P.Id as Person_Id, 
  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
 inner join (
 select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
@@ -248,26 +243,16 @@ where rte.rownum=1) bas on bas.PatientId=PT.Id
                       INNER JOIN dbo.Patient ON dbo.dtl_PatientCareEnded.Ptn_Pk = dbo.Patient.ptn_pk
                     WHERE dbo.Patient.Id NOT IN (SELECT PatientId FROM dbo.PatientCareending where deleteflag=0)
                   ) AS ptC ON PT.Id = ptC.PatientId
-WHERE PI.IdentifierTypeId = 1 and PE.ServiceAreaId=1 and PT.DeleteFlag=0 and LEN(PI.IdentifierValue ) = 10
+WHERE PI.IdentifierTypeId = 1 and PE.ServiceAreaId=1 
 
 -- 3. Triage Encounter 
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, First_Name, Middle_Name, Last_Name, DOB , Sex, UPN, Encounter_Date, Visit_reason, Systolic_pressure, Diastolic_pressure
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, Encounter_Date, Visit_reason, Systolic_pressure, Diastolic_pressure
 ,Respiratory_rate, Pulse_rate, Oxygen_saturation, Weight, Height, Temperature, BMI, Muac, Weight_for_age_zscore
 ,Weight_for_height_zscore, BMI_Zscore, Head_Circumference, Nutritional_status, Last_menstrual_period, Nurse_comments, Voided FROM migration_st.st_triage')
 SELECT
-  P.Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
-   format(cast(PM.VisitDate as date),'yyyy-MM-dd') AS Encounter_Date,
+  P.Id,  
+  format(cast(PM.VisitDate as date),'yyyy-MM-dd') AS Encounter_Date,
   NULL Visit_reason,
   PV.BPSystolic as Systolic_pressure,
   PV.BPDiastolic as Diastolic_pressure,
@@ -297,29 +282,18 @@ FROM Person P
   LEFT JOIN (select lm.PatientId,lm.LMP  from(select pid.PatientId,pid.PatientMasterVisitId,pid.LMP,ROW_NUMBER() OVER(Partition by pid.PatientId order by pid.PatientMasterVisitId desc)rownum
  from PregnancyIndicator pid
  where pid.LMP is not null)lm where lm.rownum='1') lmp on lmp.PatientId =PT.Id
-WHERE PI.IdentifierTypeId = 1 and PE.ServiceAreaId=1 and PT.DeleteFlag=0 and PI.DeleteFlag=0 and LEN(PI.IdentifierValue ) = 10
-order by First_Name
+
+-- order by First_Name
 
 -- 4. HTS Initial Test
 exec pr_OpenDecryptedSession;
-insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,First_Name,Middle_Name,
-Last_Name,DOB,Sex,UPN,Encounter_Date,Encounter_ID,Pop_Type,Key_Pop_Type,
+insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_ID,Pop_Type,Key_Pop_Type,
   Priority_Pop_Type,Patient_disabled,Disability,
 Ever_Tested,Self_Tested,HTS_Strategy,HTS_Entry_Point,
 Consented,Tested_As,TestType,Test_1_Kit_Name,Test_1_Lot_Number,Test_1_Expiry_Date,Test_1_Final_Result,
 Test_2_Kit_Name,Test_2_Lot_Number,Test_2_Expiry_Date,Test_2_Final_Result,Final_Result,Result_given,Couple_Discordant,Tb_Screening_Results,Remarks,Voided from migration_st.st_hts_initial')
 
-select P.Id as Person_Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  format(cast(ISNULL(P.DateOfBirth, pat.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = hr.PatientID and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+select P.Id as Person_Id,  
   hr.VisitDate as Encounter_Date,
   NULL Encounter_ID,
   PopType.PopulationType as Pop_Type,
@@ -377,28 +351,17 @@ left join LookupItemView lt on lt.ItemId=pp.PopulationCategory
 where (DeleteFlag=0 or DeleteFlag is null)
 
 )t where rownum='1')PopType on PopType.PersonId=P.Id
-where LEN(PI.IdentifierValue ) = 10
+
 
 -- 5. HTS Retest Test
 exec pr_OpenDecryptedSession;
-insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,First_Name,Middle_Name,
-Last_Name,DOB,Sex,UPN,Encounter_Date,Encounter_ID,Pop_Type,Key_Pop_Type,
+insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_ID,Pop_Type,Key_Pop_Type,
   Priority_Pop_Type,Patient_disabled,Disability,
 Ever_Tested,Self_Tested,HTS_Strategy,HTS_Entry_Point,
 Consented,Tested_As,TestType,Test_1_Kit_Name,Test_1_Lot_Number,Test_1_Expiry_Date,Test_1_Final_Result,
 Test_2_Kit_Name,Test_2_Lot_Number,Test_2_Expiry_Date,Test_2_Final_Result,Final_Result,Result_given,Couple_Discordant,Tb_Screening_Results,Remarks,Voided from migration_st.st_hts_retest')
 
-select P.Id as Person_Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  format(cast(ISNULL(P.DateOfBirth, pat.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = hr.PatientID and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+select P.Id as Person_Id, 
   hr.VisitDate as Encounter_Date,
   NULL Encounter_ID,
   PopType.PopulationType as Pop_Type,
@@ -456,26 +419,15 @@ left join LookupItemView lt on lt.ItemId=pp.PopulationCategory
 where (DeleteFlag=0 or DeleteFlag is null)
 
 )t where rownum='1')PopType on PopType.PersonId=P.Id
-where LEN(PI.IdentifierValue ) = 10
+
 
 -- 6. Patient programs
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY(IQCARE_OPENMRS,'Select Person_Id,First_Name,Middle_Name,
-Last_Name,DOB,Sex,UPN,Encounter_Date,Encounter_ID,Program,Date_Enrolled,Date_Completed   
+INSERT INTO OPENQUERY(IQCARE_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_ID,Program,Date_Enrolled,Date_Completed   
 from migration_st.st_program_enrollment')
 
 select 
-P.Id as Person_Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
- UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+  P.Id as Person_Id, 
   pe.Enrollment as Encounter_Date,
   NULL as Encounter_ID,
   sa.Code as Program,
@@ -506,27 +458,16 @@ and pce.PatientEnrollmentId=pe.Id
 INNER JOIN ServiceArea sa on sa.Id=pe.ServiceAreaId
 INNER JOIN PatientIdentifier PI ON PI.PatientId = PT.Id 
 
-WHERE  LEN(PI.IdentifierValue ) = 10
+
 
 -- 7. Patient discontinuation
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY(IQCARE_OPENMRS,'Select Person_Id,First_Name,Middle_Name,
-Last_Name,DOB,Sex,UPN,Encounter_Date,Encounter_ID,Program,Date_Enrolled,Date_Completed,
+INSERT INTO OPENQUERY(IQCARE_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_ID,Program,Date_Enrolled,Date_Completed,
 Care_Ending_Reason,Facility_Transfered_To,Death_Date 
 from migration_st.st_program_discontinuation')
 
 select 
 P.Id as Person_Id,
-CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
-Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName] from Identifiers id
-inner join IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
 pe.Enrollment as Encounter_Date,
 NULL as Encounter_ID,
 sa.Code as Program,
@@ -559,22 +500,15 @@ and pce.PatientEnrollmentId=pe.Id
 )pce)pce )pe on pe.PatientId=PT.Id
 INNER JOIN ServiceArea sa on sa.Id=pe.ServiceAreaId
 INNER JOIN PatientIdentifier PI ON PI.PatientId = PT.Id 
-
-WHERE LEN(PI.IdentifierValue ) = 10
-and pe.ExitDate is not null
+WHERE pe.ExitDate is not null
 
 -- 8. IPT Screening
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id,UPN
-, Encounter_Date,Encounter_ID,Yellow_urine,Numbness,Yellow_eyes,Tenderness,IPT_Start_Date
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, Encounter_Date,Encounter_ID,Yellow_urine,Numbness,Yellow_eyes,Tenderness,IPT_Start_Date
  FROM migration_st.st_ipt_screening')
 
- select p.PersonId,UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = p.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ) 
-,pmv.VisitDate as EncounterDate
+ select p.PersonId,
+pmv.VisitDate as EncounterDate
 ,NULL as Encounter_ID
 ,CASE WHEN pipt.YellowColouredUrine =0 then 'No' when pipt.YellowColouredUrine=1 then 'Yes'
 else NULL
@@ -596,17 +530,12 @@ inner join Patient p on p.Id=pipt.PatientId
 
 -- 9. IPT Program Enrollment
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id,UPN
-, Encounter_Date,Encounter_ID,IPT_Start_Date,Indication_for_IPT,IPT_Outcome,Outcome_Date
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id,Encounter_Date,Encounter_ID,IPT_Start_Date,Indication_for_IPT,IPT_Outcome,Outcome_Date
  FROM migration_st.st_ipt_program')
 
 
-select p.PersonId,UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = p.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ) 
-,pmv.VisitDate as EncounterDate
+select p.PersonId,
+pmv.VisitDate as EncounterDate
 ,NULL as Encounter_ID
 ,pipt.IptStartDate as IPT_Start_Date,
 NULL as Indication_for_IPT,
@@ -623,16 +552,11 @@ and ltv.MasterName='IptOutcome'
 
 -- 10. IPT Program Followup
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id,UPN
-, Encounter_Date,Encounter_ID,IPT_due_date,Date_collected_ipt,[Weight],Hepatotoxity,Hepatotoxity_Action,Peripheral_neuropathy,Peripheralneuropathy_Action
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id,Encounter_Date,Encounter_ID,IPT_due_date,Date_collected_ipt,Weight,Hepatotoxity,Hepatotoxity_Action,Peripheral_neuropathy,Peripheralneuropathy_Action,
 Rash,Rash_Action,Adherence,AdheranceMeasurement_Action,IPT_Outcome,Outcome_Date
- FROM migration_st.st_ipt_screening')
+ FROM migration_st.st_ipt_followup')
 
-  select p.PersonId,UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = p.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ) 
+  select p.PersonId
 ,pmv.VisitDate as EncounterDate
 ,NULL as Encounter_ID
 ,pipt.IptDueDate as Ipt_due_date

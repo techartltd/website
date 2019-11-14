@@ -50,7 +50,14 @@ CREATE TABLE migration_tr.tr_demographics as
                          when "Other" then 5622 else "" end) as Marital_status,
         (case Occupation when "Farmer" then 1538
                          when "Trader" then 1539
+                         when "Tailor" then 1539
+                         when "SelfEmployment" then 1539
+                         when "Saloonist" then 1539
                          when "Employee" then 1540
+                         when "HouseKeeper" then 1540
+                         when "SecurityGuard" then 1540
+                         when "CasualLabouror" then 1540
+                         when "Hotelier" then 1540
                          when "Student" then 159465
                          when "Driver" then 159466
                          when "None" then 1107
@@ -465,7 +472,7 @@ CREATE TABLE migration_tr.tr_ipt_screening
 
 -- 9. IPT program Enrollment transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_program;
-CREATE TABLE migration_tr.tr_ipt_programs
+CREATE TABLE migration_tr.tr_ipt_program
     select
     Person_Id,
     UPN,
