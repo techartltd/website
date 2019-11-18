@@ -640,8 +640,8 @@ CREATE TABLE st_mch_delivery (
 );
 
 -- 18. MCH Discharge
-DROP TABLE IF EXISTS st_mch_delivery;
-CREATE TABLE st_mch_delivery (
+DROP TABLE IF EXISTS st_mch_discharge;
+CREATE TABLE st_mch_discharge (
   Person_Id                       	    	  INT(11),
   Encounter_Date                              DATE,
   Encounter_ID                                VARCHAR(50),
