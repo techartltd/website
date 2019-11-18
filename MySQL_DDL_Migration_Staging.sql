@@ -1,5 +1,5 @@
 -- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE 
+-- Description : Creates tables for RAW Data from IQCARE
 -- Run First
 DROP DATABASE IF EXISTS migration_st;
 CREATE DATABASE migration_st;
@@ -255,15 +255,15 @@ CREATE TABLE migration_st.st_ipt_followup
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
-  Ipt_due_date                     DATE DEFAULT NULL,
-  Date_collected_ipt               DATE DEFAULT NULL,
+  Ipt_due_date                     DATE,
+  Date_collected_ipt               DATE,
   Weight                           DOUBLE,
-  Hepatotoxity                     VARCHAR(100) DEFAULT NULL,
-  Hepatotoxity_Action			   VARCHAR(400) DEFAULT NULL,
-  Peripheral_neuropathy            VARCHAR(100) DEFAULT NULL ,
-  Peripheralneuropathy_Action	   VARCHAR(400) DEFAULT NULL,
+  Hepatotoxity                     VARCHAR(100),
+  Hepatotoxity_Action			   VARCHAR(400),
+  Peripheral_neuropathy            VARCHAR(100),
+  Peripheralneuropathy_Action	   VARCHAR(400),
   Rash                             VARCHAR(100),
-  Rash_Action					   VARCHAR(100) DEFAULT NULL,
+  Rash_Action					   VARCHAR(100),
   Adherence                        VARCHAR(100),
   AdheranceMeasurement_Action	   VARCHAR(500),
   IPT_Outcome                      VARCHAR(100),
@@ -289,14 +289,17 @@ CREATE TABLE regimen_history
   Reason_Discontinued              VARCHAR(255),
   Voided                           INT(11),
   Date_voided                      DATE
-  
+
 );
+
 -- 12. HIV Followup
 DROP TABLE IF EXISTS hiv_followup;
 CREATE TABLE hiv_followup
 (
-  Person_Id                  INT(11),  
-  visit_scheduled            VARCHAR(20),
+  Person_Id                  INT(11),
+  Encounter_Date             DATE,
+  Encounter_ID               VARCHAR(50),
+  Visit_scheduled            VARCHAR(20),
   Visit_by                   VARCHAR(20),
   Visit_by_other             VARCHAR(100),
   Weight                     DOUBLE,
@@ -334,7 +337,7 @@ CREATE TABLE hiv_followup
   Tb_status                  VARCHAR(20),
   Tb_treatment_date          DATE,
   Tb_regimen                 VARCHAR(100),
-  Has_known_allergies            VARCHAR(20),
+  Has_known_allergies        VARCHAR(20),
   Allergies_causative_agents VARCHAR(100),
   Allergies_reactions        VARCHAR(100),
   Allergies_severity         VARCHAR(100),
@@ -349,9 +352,9 @@ CREATE TABLE hiv_followup
   Drug_reaction_action_taken VARCHAR(100),
   Vaccinations_today         VARCHAR(100),
   Last_menstrual_period      DATE,
-  Pregnancy_status INT(11),
-  Wants_pregnancy INT(11) DEFAULT NULL,
-  Pregnancy_outcome INT(11),
+  Pregnancy_status           INT(11),
+  Wants_pregnancy            INT(11) DEFAULT NULL,
+  Pregnancy_outcome         INT(11),
   Anc_number                VARCHAR(50),
   Anc_profile               VARCHAR(50),
   Expected_delivery_date    DATE,
@@ -411,8 +414,9 @@ CREATE TABLE hiv_followup
 DROP TABLE IF EXISTS laboratory_extract;
 CREATE TABLE laboratory_extract
 (
-  Person_Id       INT(11),  
+  Person_Id       INT(11),
   Encounter_Date  DATE,
+  Encounter_ID    VARCHAR(50),
   Lab_test        VARCHAR(180),
   Urgency         VARCHAR(50),
   Test_result     VARCHAR(180),
@@ -426,8 +430,9 @@ CREATE TABLE laboratory_extract
 DROP TABLE IF EXISTS pharmacy_extract;
 CREATE TABLE pharmacy_extract
 (
-  Person_Id       INT(11),  
+  Person_Id       INT(11),
   Encounter_Date  DATE,
+  Encounter_ID    VARCHAR(50),
   Drug            VARCHAR(100),
   Is_arv          VARCHAR(50),
   Is_ctx          VARCHAR(50),
@@ -453,8 +458,9 @@ CREATE TABLE pharmacy_extract
 DROP TABLE IF EXISTS mch_enrollment;
 CREATE TABLE mch_enrollment
 (
-  Person_Id                        INT(11),  
+  Person_Id                        INT(11),
   Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
   Anc_number                       VARCHAR(50),
   Gestation_in_weeks               INT(11),
   Parity                           INT(11),
@@ -494,8 +500,9 @@ CREATE TABLE mch_enrollment
 DROP TABLE IF EXISTS mch_antenatal_visit;
 CREATE TABLE mch_antenatal_visit
 (
-  Person_Id                        INT(11),  
+  Person_Id                        INT(11),
   Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
   Anc_visit_number                 INT(11),
   Anc_number                       VARCHAR(50),
   Temperature                      DOUBLE,
@@ -524,15 +531,15 @@ CREATE TABLE mch_antenatal_visit
   Ldl                              VARCHAR(100),
   Arv_status                       INT(11),
   Test_1_kit_name                  VARCHAR(50),
-  Test_1_kit_lot_no                VARCHAR(50) DEFAULT NULL,
-  Test_1_kit_expiry                DATE DEFAULT NULL,
-  Test_1_result                    VARCHAR(50) DEFAULT NULL,
+  Test_1_kit_lot_no                VARCHAR(50),
+  Test_1_kit_expiry                DATE,
+  Test_1_result                    VARCHAR(50),
   Test_2_kit_name                  VARCHAR(50),
-  Test_2_kit_lot_no                VARCHAR(50) DEFAULT NULL,
-  Test_2_kit_expiry                DATE DEFAULT NULL,
-  Test_2_result                    VARCHAR(50) DEFAULT NULL,
-  Final_test_result                VARCHAR(50) DEFAULT NULL,
-  Patient_given_result             VARCHAR(50) DEFAULT NULL,
+  Test_2_kit_lot_no                VARCHAR(50),
+  Test_2_kit_expiry                DATE,
+  Test_2_result                    VARCHAR(50),
+  Final_test_result                VARCHAR(50),
+  Patient_given_result             VARCHAR(50),
   Partner_hiv_tested               VARCHAR(50),
   Partner_hiv_status               VARCHAR(50),
   Urine_microscopy                 VARCHAR(255),
@@ -574,4 +581,81 @@ CREATE TABLE mch_antenatal_visit
   Next_appointment_date            DATE,
   Clinical_notes                   VARCHAR(100),
   Voided                           INT(11)
+);
+
+-- 17. MCH Delivery
+DROP TABLE IF EXISTS st_mch_delivery;
+CREATE TABLE st_mch_delivery (
+  Person_Id                                   INT(11),
+  Encounter_Date                              DATE,
+  Encounter_ID                                VARCHAR(50),
+  Admission_number			   			      VARCHAR(200),
+  Gestation_Weeks		        			  INT(50),
+  Duration_Labour			    		      INT(50),
+  Delivery_Mode				   			      VARCHAR(200),
+  Delivery_Date_TIme            			  DATE,
+  Placenta_Complete	   		    			  VARCHAR(100),
+  Blood_Loss					 			  VARCHAR(100),
+  Mother_Condition               			  VARCHAR(100),
+  Death_Audited				     			  VARCHAR(100),
+  Resuscitation_Done			 			  VARCHAR(100),
+  Delivery_Complications					  VARCHAR(100),
+  Delivery_Complications_Type				  VARCHAR(200),
+  Delivery_Complications_Other				  VARCHAR(255),
+  Delivery_Place	            			  VARCHAR(200),
+  Delivery_Conducted_By			              VARCHAR(200),
+  Delivery_Cadre						      VARCHAR(100),
+  Delivery_Outcome							  VARCHAR(100),
+  Baby_Name                                   VARCHAR(200),
+  Baby_Sex                                    VARCHAR(100),
+  Baby_Weight                                 DOUBLE,
+  Baby_Condition                              VARCHAR(200),
+  Birth_Deformity                             VARCHAR(200),
+  TEO_Birth                                   VARCHAR(100),
+  BF_At_Birth_Less_1_hr                       VARCHAR(100),
+  Apgar_1                                     INT(50),
+  Apgar_5                                     INT(50),
+  Apgar_10                                    INT(50),
+  Test_1_kit_name                             VARCHAR(50),
+  Test_1_kit_lot_no                           VARCHAR(50),
+  Test_1_kit_expiry                           DATE,
+  Test_1_result                               VARCHAR(50),
+  Test_2_kit_name                             VARCHAR(50),
+  Test_2_kit_lot_no                           VARCHAR(50),
+  Test_2_kit_expiry                           DATE,
+  Test_2_result                               VARCHAR(50),
+  Final_test_result                           VARCHAR(50),
+  Test_Type                                   VARCHAR(50),
+  Patient_given_result                        VARCHAR(50),
+  Partner_hiv_tested                          VARCHAR(50),
+  Partner_hiv_status                          VARCHAR(50),
+  Next_HIV_Date                               DATE,
+  Syphilis_Treated                            VARCHAR(50),
+  Prophylaxis_given                           VARCHAR(50),
+  Baby_azt_dispensed                          VARCHAR(50),
+  Baby_nvp_dispensed                          VARCHAR(50),
+  Clinical_notes                              VARCHAR(200),
+  Next_Appointment_Date                       DATE,
+  Voided                                     INT(11)
+);
+
+-- 18. MCH Discharge
+DROP TABLE IF EXISTS st_mch_delivery;
+CREATE TABLE st_mch_delivery (
+  Person_Id                       	    	  INT(11),
+  Encounter_Date                              DATE,
+  Encounter_ID                                VARCHAR(50),
+  Discharge_Date                              DATE,
+  Vitamin_A_Supplimentation                   VARCHAR(50),
+  Started_ART_In_ANC                          VARCHAR(50),
+  Started_ART_In_Mat                          VARCHAR(50),
+  Counselled_Infant_Feeding                   VARCHAR(50),
+  Baby_Status_On_Discharge                    VARCHAR(200),
+  Mother_Status_On_Discharge                  VARCHAR(200),
+  Birth_Notification_Number                   VARCHAR(200),
+  Referred_From                               VARCHAR(200),
+  Referred_To                                 VARCHAR(200),
+  Clinical_notes                              VARCHAR(255),
+  Next_Appointment_Date                       DATE,
+  Voided                                      INT(11)
 );
