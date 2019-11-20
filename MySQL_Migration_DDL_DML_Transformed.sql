@@ -173,14 +173,9 @@ CREATE TABLE migration_tr.tr_triage as
       Temperature,
       BMI,
       Muac,
-#       Weight_for_age_zscore,
-#       Weight_for_height_zscore,
-#       BMI_Zscore,
-#       Head_circumference,
       Nutritional_status,
       Last_menstrual_period,
       Nurse_comments
-#       Voided
   FROM migration_st.st_triage;
 
 
@@ -447,6 +442,7 @@ CREATE TABLE migration_tr.tr_program_discontinuation as
     Facility_Transfered_To,
     Death_Date
   FROM migration_st.st_program_discontinuation;
+  
 -- 8. IPT Screening transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
 CREATE TABLE migration_tr.tr_ipt_screening
@@ -517,3 +513,337 @@ CREATE TABLE migration_tr.tr_ipt_followup
         IPT_Outcome,
         Outcome_Date
     FROM migration_st.st_ipt_followup;
+	
+-- 11. Regimen History transformed table
+DROP TABLE IF EXISTS migration_tr.tr_regimen_history;
+CREATE TABLE migration_tr.tr_regimen_history
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      (case Program
+         when "ART" then 1255
+         when "TB" then 1268
+         when "PMTCT" then 1255
+         when "PEP" then 1691
+         when "PREP" then 165003
+         when "HBV" then 111759
+         when "Hepatitis B" then 111759
+         when "Treatment" then 1255
+         when "prophylaxis" then 1255
+         when "Non-ART" then 5622 else '' end)as Program,
+      (case Regimen_Name
+          when "PM 8 SD Nevirapine (NVP)" then 80586
+          when "PM1 AZT from 14Wks" then 86663
+          when "TDF + 3TC + NVP"  then 162565
+          when "PM 6 TDF + 3TC + NVP"  then 162565
+          when "TDF + 3TC + NVP (children > 35kg)"  then 162565
+          when "TDF + 3TC + EFV"  then 164505
+          when "PM 9 TDF + 3TC + EFV"  then 164505
+          when "AZT + 3TC + NVP"  then 1652
+          when "PM2 NVP stat + AZT stat"  then 1652
+          when "PM3 AZT + 3TC + NVP"  then 1652
+          when "AZT + 3TC + EFV"  then 160124
+          when "PM4 AZT + 3TC + EFV"  then 160124
+          when "D4T + 3TC + NVP"  then 792
+          when "D4T + 3TC + EFV"  then 160104
+          when "TDF + 3TC + AZT"  then 164971
+          when "AZT + 3TC + DTG"  then 164968
+          when "TDF + 3TC + DTG"  then 164969
+          when "ABC + 3TC + DTG"  then 164970
+          when "AZT + 3TC + LPV/r"  then 162561
+          when "AZT + 3TC + ATV/r"  then 164511
+          when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
+          when "PM 10 AZT + 3TC + ATV/r"  then 164511
+          when "TDF + 3TC + LPV/r"  then 162201
+          when "PM 7 TDF + 3TC + LPV/r"  then 162201
+          when "TDF + 3TC + ATV/r"  then 164512
+          when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
+          when "PM 11 TDF + 3TC + ATV/r"  then 164512
+          when "D4T + 3TC + LPV/r"  then 162560
+          when "AZT + TDF + 3TC + LPV/r"  then 164972
+          when "ETR + RAL + DRV + RTV"  then 164973
+          when "ETR + TDF + 3TC + LPV/r"  then 164974
+          when "ABC + 3TC + ATV/r"  then 165357
+          when "ABC + 3TC + LPV/r"  then 162200
+          when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
+          when "ABC + 3TC + NVP"  then 162199
+          when "ABC + 3TC + EFV"  then 162563
+          when "AZT + 3TC + ABC"  then 817
+          when "D4T + 3TC + ABC"  then 164975
+          when "TDF + ABC + LPV/r"  then 162562
+          when "ABC + DDI + LPV/r"  then 162559
+          when "ABC + TDF + 3TC + LPV/r"  then 164976
+          when "TDF+3TC" then 161364
+          when "TDF + 3TC (PrEP)" then 161364
+          when "TDF+FTC" then 104567
+          when "TDF + FTC (PrEP)" then 104567
+          when "DTG + DRV + RTV" then 164973
+          when "DTG + DRV + RTV + ETV" then 164973
+          when "RAL + DRV + RTV + ETV" then 164973
+          when "RAL + other backbone ARVs" then 154378
+          when "Any other 2nd line Paediatric regimens" then 162188
+          when "Any other 2nd line Adult regimens" then 162188
+          when "TDF" then 84795
+          when "DTG" then 164967
+          when "RHZE" then 1675
+          when "RHZE" then 1675
+          when "2SRHZE|4RHZE" then 1675
+          when "RHZ"  then 768
+          when "2RHZ|4rh"  then 768
+          when "SRHZE"  then 1674
+          when "RfbHZE"  then 164978
+          when "RfbHZ"   then 164979
+          when "SRfbHZE"  then 164980
+          when "2SRHZE|1RHZE|5RHE"  then 164980
+          when "S (1 gm vial)"  then 84360
+          when "E" then 75948
+          when "RH" then 1194
+          when "2RHZE|10RH" then 1194
+          when "2RHZE|4RH" then 1194
+          when "RHE"  then 159851
+          when "3RHZE|5RHE"  then 159851
+          when "EH"  then 1108  else "" end ) as Regimen_Name,
+      (case Regimen_Line
+           when "AdultARTFirstLine"   then 164506
+           when "PMTCTHEIMotherRegimen"   then 164506
+           when "PaedsARTFirstLine"   then 164507
+           when "AdultARTSecondLine"  then 164513
+           when "AdultThirdlineRegimen"  then 164513
+           when "PaedsARTSecondLine"  then  164514
+           when "PaedsThirdlineRegimen"  then  164514
+           when "PaedsThirdlineRegimen"  then  164514
+           when "PePRegimen"  then  164506
+           when "PrEPRegimen"  then  164506
+           when "OtherPREPRegimen"  then  164506
+           when "PreferredPREPRegimen"  then  164506
+           when "TBRegimen"  then  1111 else "" end ) as Regimen_Line,
+      Date_Started,
+      Date_Stopped,
+      (case Regimen_Discontinued
+           when "PM 8 SD Nevirapine (NVP)" then 80586
+           when "PM1 AZT from 14Wks" then 86663
+           when "TDF + 3TC + NVP"  then 162565
+           when "PM 6 TDF + 3TC + NVP"  then 162565
+           when "TDF + 3TC + NVP (children > 35kg)"  then 162565
+           when "TDF + 3TC + EFV"  then 164505
+           when "PM 9 TDF + 3TC + EFV"  then 164505
+           when "AZT + 3TC + NVP"  then 1652
+           when "PM2 NVP stat + AZT stat"  then 1652
+           when "PM3 AZT + 3TC + NVP"  then 1652
+           when "AZT + 3TC + EFV"  then 160124
+           when "PM4 AZT + 3TC + EFV"  then 160124
+           when "D4T + 3TC + NVP"  then 792
+           when "D4T + 3TC + EFV"  then 160104
+           when "TDF + 3TC + AZT"  then 164971
+           when "AZT + 3TC + DTG"  then 164968
+           when "TDF + 3TC + DTG"  then 164969
+           when "ABC + 3TC + DTG"  then 164970
+           when "AZT + 3TC + LPV/r"  then 162561
+           when "AZT + 3TC + ATV/r"  then 164511
+           when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
+           when "PM 10 AZT + 3TC + ATV/r"  then 164511
+           when "TDF + 3TC + LPV/r"  then 162201
+           when "PM 7 TDF + 3TC + LPV/r"  then 162201
+           when "TDF + 3TC + ATV/r"  then 164512
+           when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
+           when "PM 11 TDF + 3TC + ATV/r"  then 164512
+           when "D4T + 3TC + LPV/r"  then 162560
+           when "AZT + TDF + 3TC + LPV/r"  then 164972
+           when "ETR + RAL + DRV + RTV"  then 164973
+           when "ETR + TDF + 3TC + LPV/r"  then 164974
+           when "ABC + 3TC + ATV/r"  then 165357
+           when "ABC + 3TC + LPV/r"  then 162200
+           when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
+           when "ABC + 3TC + NVP"  then 162199
+           when "ABC + 3TC + EFV"  then 162563
+           when "AZT + 3TC + ABC"  then 817
+           when "D4T + 3TC + ABC"  then 164975
+           when "TDF + ABC + LPV/r"  then 162562
+           when "ABC + DDI + LPV/r"  then 162559
+           when "ABC + TDF + 3TC + LPV/r"  then 164976
+           when "TDF+3TC" then 161364
+           when "TDF + 3TC (PrEP)" then 161364
+           when "TDF+FTC" then 104567
+           when "TDF + FTC (PrEP)" then 104567
+           when "DTG + DRV + RTV" then 164973
+           when "DTG + DRV + RTV + ETV" then 164973
+           when "RAL + DRV + RTV + ETV" then 164973
+           when "RAL + other backbone ARVs" then 154378
+           when "Any other 2nd line Paediatric regimens" then 162188
+           when "Any other 2nd line Adult regimens" then 162188
+           when "TDF" then 84795
+           when "DTG" then 164967
+           when "RHZE" then 1675
+           when "RHZE" then 1675
+           when "2SRHZE|4RHZE" then 1675
+           when "RHZ"  then 768
+           when "2RHZ|4rh"  then 768
+           when "SRHZE"  then 1674
+           when "RfbHZE"  then 164978
+           when "RfbHZ"   then 164979
+           when "SRfbHZE"  then 164980
+           when "2SRHZE|1RHZE|5RHE"  then 164980
+           when "S (1 gm vial)"  then 84360
+           when "E" then 75948
+           when "RH" then 1194
+           when "2RHZE|10RH" then 1194
+           when "2RHZE|4RH" then 1194
+           when "RHE"  then 159851
+           when "3RHZE|5RHE"  then 159851
+           when "EH"  then 1108  else "" end ) as Regimen_Discontinued,
+      Date_Discontinued,
+      Reason_Discontinued,
+     (case RegimenSwitchTo
+           when "PM 8 SD Nevirapine (NVP)" then 80586
+           when "PM1 AZT from 14Wks" then 86663
+           when "TDF + 3TC + NVP"  then 162565
+           when "PM 6 TDF + 3TC + NVP"  then 162565
+           when "TDF + 3TC + NVP (children > 35kg)"  then 162565
+           when "TDF + 3TC + EFV"  then 164505
+           when "PM 9 TDF + 3TC + EFV"  then 164505
+           when "AZT + 3TC + NVP"  then 1652
+           when "PM2 NVP stat + AZT stat"  then 1652
+           when "PM3 AZT + 3TC + NVP"  then 1652
+           when "AZT + 3TC + EFV"  then 160124
+           when "PM4 AZT + 3TC + EFV"  then 160124
+           when "D4T + 3TC + NVP"  then 792
+           when "D4T + 3TC + EFV"  then 160104
+           when "TDF + 3TC + AZT"  then 164971
+           when "AZT + 3TC + DTG"  then 164968
+           when "TDF + 3TC + DTG"  then 164969
+           when "ABC + 3TC + DTG"  then 164970
+           when "AZT + 3TC + LPV/r"  then 162561
+           when "AZT + 3TC + ATV/r"  then 164511
+           when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
+           when "PM 10 AZT + 3TC + ATV/r"  then 164511
+           when "TDF + 3TC + LPV/r"  then 162201
+           when "PM 7 TDF + 3TC + LPV/r"  then 162201
+           when "TDF + 3TC + ATV/r"  then 164512
+           when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
+           when "PM 11 TDF + 3TC + ATV/r"  then 164512
+           when "D4T + 3TC + LPV/r"  then 162560
+           when "AZT + TDF + 3TC + LPV/r"  then 164972
+           when "ETR + RAL + DRV + RTV"  then 164973
+           when "ETR + TDF + 3TC + LPV/r"  then 164974
+           when "ABC + 3TC + ATV/r"  then 165357
+           when "ABC + 3TC + LPV/r"  then 162200
+           when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
+           when "ABC + 3TC + NVP"  then 162199
+           when "ABC + 3TC + EFV"  then 162563
+           when "AZT + 3TC + ABC"  then 817
+           when "D4T + 3TC + ABC"  then 164975
+           when "TDF + ABC + LPV/r"  then 162562
+           when "ABC + DDI + LPV/r"  then 162559
+           when "ABC + TDF + 3TC + LPV/r"  then 164976
+           when "TDF+3TC" then 161364
+           when "TDF + 3TC (PrEP)" then 161364
+           when "TDF+FTC" then 104567
+           when "TDF + FTC (PrEP)" then 104567
+           when "DTG + DRV + RTV" then 164973
+           when "DTG + DRV + RTV + ETV" then 164973
+           when "RAL + DRV + RTV + ETV" then 164973
+           when "RAL + other backbone ARVs" then 154378
+           when "Any other 2nd line Paediatric regimens" then 162188
+           when "Any other 2nd line Adult regimens" then 162188
+           when "TDF" then 84795
+           when "DTG" then 164967
+           when "RHZE" then 1675
+           when "RHZE" then 1675
+           when "2SRHZE|4RHZE" then 1675
+           when "RHZ"  then 768
+           when "2RHZ|4rh"  then 768
+           when "SRHZE"  then 1674
+           when "RfbHZE"  then 164978
+           when "RfbHZ"   then 164979
+           when "SRfbHZE"  then 164980
+           when "2SRHZE|1RHZE|5RHE"  then 164980
+           when "S (1 gm vial)"  then 84360
+           when "E" then 75948
+           when "RH" then 1194
+           when "2RHZE|10RH" then 1194
+           when "2RHZE|4RH" then 1194
+           when "RHE"  then 159851
+           when "3RHZE|5RHE"  then 159851
+           when "EH"  then 1108  else "" end ) as RegimenSwitchTo,
+      (case CurrentRegimen
+           when "PM 8 SD Nevirapine (NVP)" then 80586
+           when "PM1 AZT from 14Wks" then 86663
+           when "TDF + 3TC + NVP"  then 162565
+           when "PM 6 TDF + 3TC + NVP"  then 162565
+           when "TDF + 3TC + NVP (children > 35kg)"  then 162565
+           when "TDF + 3TC + EFV"  then 164505
+           when "PM 9 TDF + 3TC + EFV"  then 164505
+           when "AZT + 3TC + NVP"  then 1652
+           when "PM2 NVP stat + AZT stat"  then 1652
+           when "PM3 AZT + 3TC + NVP"  then 1652
+           when "AZT + 3TC + EFV"  then 160124
+           when "PM4 AZT + 3TC + EFV"  then 160124
+           when "D4T + 3TC + NVP"  then 792
+           when "D4T + 3TC + EFV"  then 160104
+           when "TDF + 3TC + AZT"  then 164971
+           when "AZT + 3TC + DTG"  then 164968
+           when "TDF + 3TC + DTG"  then 164969
+           when "ABC + 3TC + DTG"  then 164970
+           when "AZT + 3TC + LPV/r"  then 162561
+           when "AZT + 3TC + ATV/r"  then 164511
+           when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
+           when "PM 10 AZT + 3TC + ATV/r"  then 164511
+           when "TDF + 3TC + LPV/r"  then 162201
+           when "PM 7 TDF + 3TC + LPV/r"  then 162201
+           when "TDF + 3TC + ATV/r"  then 164512
+           when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
+           when "PM 11 TDF + 3TC + ATV/r"  then 164512
+           when "D4T + 3TC + LPV/r"  then 162560
+           when "AZT + TDF + 3TC + LPV/r"  then 164972
+           when "ETR + RAL + DRV + RTV"  then 164973
+           when "ETR + TDF + 3TC + LPV/r"  then 164974
+           when "ABC + 3TC + ATV/r"  then 165357
+           when "ABC + 3TC + LPV/r"  then 162200
+           when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
+           when "ABC + 3TC + NVP"  then 162199
+           when "ABC + 3TC + EFV"  then 162563
+           when "AZT + 3TC + ABC"  then 817
+           when "D4T + 3TC + ABC"  then 164975
+           when "TDF + ABC + LPV/r"  then 162562
+           when "ABC + DDI + LPV/r"  then 162559
+           when "ABC + TDF + 3TC + LPV/r"  then 164976
+           when "TDF+3TC" then 161364
+           when "TDF + 3TC (PrEP)" then 161364
+           when "TDF+FTC" then 104567
+           when "TDF + FTC (PrEP)" then 104567
+           when "DTG + DRV + RTV" then 164973
+           when "DTG + DRV + RTV + ETV" then 164973
+           when "RAL + DRV + RTV + ETV" then 164973
+           when "RAL + other backbone ARVs" then 154378
+           when "Any other 2nd line Paediatric regimens" then 162188
+           when "Any other 2nd line Adult regimens" then 162188
+           when "TDF" then 84795
+           when "DTG" then 164967
+           when "RHZE" then 1675
+           when "RHZE" then 1675
+           when "2SRHZE|4RHZE" then 1675
+           when "RHZ"  then 768
+           when "2RHZ|4rh"  then 768
+           when "SRHZE"  then 1674
+           when "RfbHZE"  then 164978
+           when "RfbHZ"   then 164979
+           when "SRfbHZE"  then 164980
+           when "2SRHZE|1RHZE|5RHE"  then 164980
+           when "S (1 gm vial)"  then 84360
+           when "E" then 75948
+           when "RH" then 1194
+           when "2RHZE|10RH" then 1194
+           when "2RHZE|4RH" then 1194
+           when "RHE"  then 159851
+           when "3RHZE|5RHE"  then 159851
+           when "EH"  then 1108  else "" end ) as CurrentRegimen
+    FROM migration_st.st_regimen_history;
+	
+	
+	
+	
+	
+	
+	
+	

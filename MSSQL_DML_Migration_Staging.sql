@@ -589,12 +589,12 @@ INSERT INTO OPENQUERY (IQCARE_OPENMRS,
   Regimen_Name,                     
   Regimen_Line,                     
   Date_Started,                     
-  Date_Stopped,                   
-  Discontinued,                     
+  Date_Stopped,            
   Regimen_Discontinued,             
   Date_Discontinued,                
   Reason_Discontinued,              
-  RegimenSwitchTo,					
+  RegimenSwitchTo,	
+  CurrentRegimen,				
   Voided,                           
   Date_voided                    
 from migration_st.st_regimen_history')
@@ -606,8 +606,7 @@ from migration_st.st_regimen_history')
  pstart.Regimen as Regimen_Name,
  pstart.RegimenLine as Regimen_Line,
  pstart.DispensedByDate as Date_Started, 
-  pr.VisitDate as [Date_Stopped]
- ,pr.VisitDate as Discontinued
+  pr.VisitDate as Date_Stopped
  ,CASE WHEN pr.VisitDate is not null then pstart.Regimen else NULL end  as Regimen_Discontinued
  ,pr.VisitDate as [Date_Discontinued],
  pr.TreatmentReason  as Reason_Discontinued

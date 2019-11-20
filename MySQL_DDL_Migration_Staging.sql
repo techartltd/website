@@ -283,13 +283,13 @@ CREATE TABLE migration_st.st_regimen_history
   Regimen_Line                     VARCHAR(200),
   Date_Started                     DATE,
   Date_Stopped                     DATE,
-  Discontinued                     VARCHAR(50),
   Regimen_Discontinued             VARCHAR(200),
   Date_Discontinued                DATE,
   Reason_Discontinued              VARCHAR(255),
+  RegimenSwitchTo                  VARCHAR(255),
+  CurrentRegimen                   VARCHAR(255),
   Voided                           INT(11),
   Date_voided                      DATE
-
 );
 
 -- 12. HIV Followup
@@ -706,7 +706,8 @@ DROP TABLE IF EXISTS migration_st.st_mch_pnc_visit;
     Test_2_kit_expiry                DATE,
     Test_2_result                    VARCHAR(50),
     Final_test_result                VARCHAR(50),
-    Test_Type                        VARCHAR(50),
+    Next_HIV_TestDate                DATE,
+	Test_Type                        VARCHAR(50),
     Patient_given_result             VARCHAR(50),
     Partner_hiv_tested               VARCHAR(50),
 	Partner_hiv_status               VARCHAR(50),
@@ -724,5 +725,6 @@ DROP TABLE IF EXISTS migration_st.st_mch_pnc_visit;
 	Referred_From					 VARCHAR(255),					
 	Referred_To					     VARCHAR(255),					
 	Clinical_notes                   VARCHAR(255),
-	Next_Appointment_Date            DATE		
+	Next_Appointment_Date            DATE,	
+	Diagnosis_Notes                  VARCHAR(255) 		
   );
