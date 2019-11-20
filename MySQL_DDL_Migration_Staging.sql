@@ -271,8 +271,8 @@ CREATE TABLE migration_st.st_ipt_followup
 );
 
 -- 11. Regimen History
-DROP TABLE IF EXISTS regimen_history;
-CREATE TABLE regimen_history
+DROP TABLE IF EXISTS migration_st.st_regimen_history;
+CREATE TABLE migration_st.st_regimen_history
 (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
@@ -293,8 +293,8 @@ CREATE TABLE regimen_history
 );
 
 -- 12. HIV Followup
-DROP TABLE IF EXISTS hiv_followup;
-CREATE TABLE hiv_followup
+DROP TABLE IF EXISTS migration_st.st_hiv_followup;
+CREATE TABLE migration_st.st_hiv_followup
 (
   Person_Id                  INT(11),
   Encounter_Date             DATE,
@@ -411,8 +411,8 @@ CREATE TABLE hiv_followup
 );
 
 -- 13. Laboratory Extract
-DROP TABLE IF EXISTS laboratory_extract;
-CREATE TABLE laboratory_extract
+DROP TABLE IF EXISTS migration_st.st_laboratory_extract;
+CREATE TABLE migration_st.st_laboratory_extract
 (
   Person_Id       INT(11),
   Encounter_Date  DATE,
@@ -427,8 +427,8 @@ CREATE TABLE laboratory_extract
 );
 
 -- 14. Pharmacy Extract
-DROP TABLE IF EXISTS pharmacy_extract;
-CREATE TABLE pharmacy_extract
+DROP TABLE IF EXISTS migration_st.st_pharmacy_extract;
+CREATE TABLE migration_st.st_pharmacy_extract
 (
   Person_Id       INT(11),
   Encounter_Date  DATE,
@@ -455,8 +455,8 @@ CREATE TABLE pharmacy_extract
 );
 
 -- 15.  MCH Enrollment
-DROP TABLE IF EXISTS mch_enrollment;
-CREATE TABLE mch_enrollment
+DROP TABLE IF EXISTS migration_st.st_mch_enrollment;
+CREATE TABLE migration_st.st_mch_enrollment
 (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
@@ -497,8 +497,8 @@ CREATE TABLE mch_enrollment
 );
 
 -- 16.  MCH ANC Visit
-DROP TABLE IF EXISTS mch_antenatal_visit;
-CREATE TABLE mch_antenatal_visit
+DROP TABLE IF EXISTS migration_st.st_mch_antenatal_visit;
+CREATE TABLE migration_st.st_mch_antenatal_visit
 (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
@@ -584,8 +584,8 @@ CREATE TABLE mch_antenatal_visit
 );
 
 -- 17. MCH Delivery
-DROP TABLE IF EXISTS st_mch_delivery;
-CREATE TABLE st_mch_delivery (
+DROP TABLE IF EXISTS migration_st.st_mch_delivery;
+CREATE TABLE migration_st.st_mch_delivery (
   Person_Id                                   INT(11),
   Encounter_Date                              DATE,
   Encounter_ID                                VARCHAR(50),
@@ -640,8 +640,8 @@ CREATE TABLE st_mch_delivery (
 );
 
 -- 18. MCH Discharge
-DROP TABLE IF EXISTS st_mch_discharge;
-CREATE TABLE st_mch_discharge (
+DROP TABLE IF EXISTS migration_st.st_mch_discharge;
+CREATE TABLE migration_st.st_mch_discharge (
   Person_Id                       	    	  INT(11),
   Encounter_Date                              DATE,
   Encounter_ID                                VARCHAR(50),
@@ -661,8 +661,8 @@ CREATE TABLE st_mch_discharge (
 );
 
 -- 19. MCH PNC Visit
-DROP TABLE IF EXISTS st_mch_pnc_visit;
-  CREATE TABLE st_mch_pnc_visit (
+DROP TABLE IF EXISTS migration_st.st_mch_pnc_visit;
+  CREATE TABLE migration_st.st_mch_pnc_visit (
 	Person_Id                        INT(11),	
 	Encounter_Date                   DATE,
     Encounter_ID                     VARCHAR(50),	

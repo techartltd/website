@@ -4,13 +4,14 @@
 -- Staging Database Scripts to populate DDL scripts created from MySQL 
 -- Staging Database Scripts to RUN after running the DDLs in Mysql
 -- 1. Demographics/Registration  DML
+
 exec pr_OpenDecryptedSession;
 INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, First_Name, Middle_Name, Last_Name, Nickname, DOB, Exact_DOB, Sex, UPN, Encounter_Date, Encounter_ID, National_id_no, Patient_clinic_number
 , Birth_certificate, Birth_notification, Hei_no, Passport, Alien_Registration, Phone_number, Alternate_Phone_number,
 Postal_Address,Email_Address, County, Sub_county, Ward,Village, Landmark, Nearest_Health_Centre, Next_of_kin, Next_of_kin_phone, Next_of_kin_relationship
 , Next_of_kin_address, Marital_Status, Occupation, Education_level, Dead, Death_date, Consent, Consent_decline_reason, voided FROM migration_st.st_demographics')
 
-SELECT
+SELECT distinct
   P.Id as Person_Id,
   CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
   CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
@@ -87,12 +88,9 @@ ts.Consent_Decline_Reason,
 P.DeleteFlag as Voided 
  -- into PatientDemographics
 FROM Person P
-  INNER JOIN (select * from (select  *,ROW_NUMBER() OVER(partition by PersonId order by CreateDate desc)rownum from PersonLocation where (DeleteFlag =0 or DeleteFlag is null))PLL where PLL.rownum='1') PL ON PL.PersonId = P.Id
+  left JOIN (select * from (select * ,ROW_NUMBER() OVER(partition by PersonId order by CreateDate desc)rownum from PersonLocation where (DeleteFlag =0 or DeleteFlag is null))PLL where PLL.rownum='1') PL ON PL.PersonId = P.Id
   INNER JOIN Patient PT ON PT.PersonId = P.Id
   LEFT JOin PersonContactView pcv on pcv.PersonId=P.Id
-  INNER JOIN PatientEnrollment PE ON PE.PatientId = PT.Id
-  INNER JOIN PatientIdentifier PI ON PI.PatientId = PT.Id AND PI.PatientEnrollmentId = PE.Id
-  INNER JOIN Identifiers I on PI.IdentifierTypeId=I.Id
  LEFT JOIN( select t.PersonId,t.SupporterId,t.Next_of_kin,t.Next_of_kin_phone,t.Next_of_kin_relationship,t.Next_of_kin_address,t.Consent,t.Consent_Decline_Reason from (select  pts.PersonId ,pts.SupporterId,(pt.FirstName + ' ' + pt.MiddleName + ' '  + pt.LastName) as Next_of_kin,pts.ContactCategory,pts.ContactRelationship,lts.DisplayName as Next_of_kin_relationship 
  ,pts.MobileContact as Next_of_kin_phone,pcv.PhysicalAddress as [Next_of_kin_address],pcc.Consent,pcc.Consent_Decline_Reason
 ,pts.CreateDate ,ROW_NUMBER() OVER(Partition by   pts.PersonId order by pts.CreateDate desc)rownum  from PatientTreatmentSupporter pts
@@ -111,11 +109,6 @@ LEFT JOIN( select pend.PatientId,pend.DateOfDeath, CASE WHEN pend.ExitDate is no
 inner join  LookupItemView lt on lt.ItemId=pce.ExitReason and lt.MasterName='CareEnded'
 where lt.ItemName='Death'
 )pend where pend.rownum='1')pend on pend.PatientId=PT.Id
-
-
--- and LEN(PI.IdentifierValue ) = 10     
--- order by FirstName
-
 -- -----------------------------2. HIV Enrollment DML ---------------------------------------------
 exec pr_OpenDecryptedSession;
 INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, UPN, Encounter_Date, Encounter_ID, Patient_Type,Entry_Point,TI_Facility,Date_first_enrolled_in_care,
@@ -586,3 +579,70 @@ left join PatientIptOutcome pio on pio.PatientId = pipt.PatientId and pio.Patien
 and ltv.MasterName='AdheranceMeasurement'
 left join LookupItemView lto on lto.itemId=pio.IptEvent 
 and ltv.MasterName='IptOutcome'
+
+-- 11. Regimen History
+exec pr_OpenDecryptedSession;
+INSERT INTO OPENQUERY (IQCARE_OPENMRS,
+'select  Person_Id, Encounter_Date,Encounter_ID,                   
+  Program,                         
+  Regimen ,                         
+  Regimen_Name,                     
+  Regimen_Line,                     
+  Date_Started,                     
+  Date_Stopped,                   
+  Discontinued,                     
+  Regimen_Discontinued,             
+  Date_Discontinued,                
+  Reason_Discontinued,              
+  RegimenSwitchTo,					
+  Voided,                           
+  Date_voided                    
+from migration_st.st_regimen_history')
+
+ select p.Id  as Person_Id,part.DispensedByDate as Encounter_Date
+, 'NULL' as Encounter_ID,
+ pstart.TreatmentProgram as Program,
+ NULL as Regimen,
+ pstart.Regimen as Regimen_Name,
+ pstart.RegimenLine as Regimen_Line,
+ pstart.DispensedByDate as Date_Started, 
+  pr.VisitDate as [Date_Stopped]
+ ,pr.VisitDate as Discontinued
+ ,CASE WHEN pr.VisitDate is not null then pstart.Regimen else NULL end  as Regimen_Discontinued
+ ,pr.VisitDate as [Date_Discontinued],
+ pr.TreatmentReason  as Reason_Discontinued
+,pr.Regimen as RegimenSwitchTo
+ ,part.Regimen as CurrentRegimen
+ ,0 as Voided
+ ,NULL as Date_Voided
+  from (select distinct PatientId from PatientTreatmentTrackerView pt)ptr 
+  inner join Patient pt on pt.Id=ptr.PatientId
+left join Person p on p.Id =pt.PersonId
+left join (
+select  pts.PatientId,lt.DisplayName as [Regimen],pts.RegimenLine,pts.TreatmentStatus,pts.DispensedByDate,pts.VisitDate,pts.TreatmentProgram from (select tv.PatientId,tv.RegimenId,tv.Regimen,tv.RegimenLine,tv.TreatmentStatusId,tv.TreatmentStatus,tv.DispensedByDate,tv.VisitDate,dc.[Name] as TreatmentProgram,
+ROW_NUMBER() OVER(partition by tv.PatientId order by tv.PatientMasterVisitId desc)rownum
+ from PatientTreatmentTrackerView tv
+ left join ord_PatientPharmacyOrder pho on pho.PatientMasterVisitId =tv.PatientMasterVisitId
+ left join mst_Decode dc on dc.ID =pho.ProgID
+ )pts 
+ inner join LookupItem lt on lt.Id=pts.RegimenId
+ where pts.rownum =1
+ )part on part.PatientId=pt.Id
+left join(select  pts.PatientId,lt.DisplayName as [Regimen],pts.RegimenLine,pts.TreatmentStatus,pts.DispensedByDate,pts.VisitDate,pts.TreatmentProgram from (select tv.PatientId,tv.RegimenId,tv.Regimen,tv.RegimenLine,tv.TreatmentStatusId,tv.TreatmentStatus,tv.DispensedByDate,tv.VisitDate,
+ROW_NUMBER() OVER(partition by tv.PatientId order by tv.PatientMasterVisitId asc)rownum, dc.[Name] as TreatmentProgram
+ from PatientTreatmentTrackerView tv
+  left join ord_PatientPharmacyOrder pho on pho.PatientMasterVisitId =tv.PatientMasterVisitId
+   left join mst_Decode dc on dc.ID =pho.ProgID
+ )pts 
+ inner join LookupItem lt on lt.Id=pts.RegimenId
+ where pts.rownum =1
+)pstart  on pstart.PatientId=pt.Id
+left join(
+select pr.PatientId,pr.RegimenLine,pr.Regimen,pr.TreatmentStatus,pr.VisitDate,pr.DispensedByDate,pr.TreatmentReason from (select p.PatientId,p.RegimenId,p.RegimenLine,ltr.DisplayName as [Regimen],p.TreatmentReason,p.TreatmentStatus,p.TreatmentStatusId,p.VisitDate,p.DispensedByDate,ROW_NUMBER() 
+ OVER(Partition by p.PatientId order by p.PatientMasterVisitId desc)rownum  from PatientTreatmentTrackerView   p
+inner join LookupItem lt on lt.Id=p.TreatmentStatusId
+inner join LookupItem ltr on ltr.Id=p.RegimenId
+left join LookupItem lts on lts.Id =p.TreatmentStatusReasonId
+where lt.[Name]='DrugSwitches')pr  where pr.rownum='1'
+)pr on pr.PatientId=pt.Id
+ 
