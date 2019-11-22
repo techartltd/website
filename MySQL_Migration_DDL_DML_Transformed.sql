@@ -838,7 +838,7 @@ CREATE TABLE migration_tr.tr_regimen_history
            when "RHE"  then 159851
            when "3RHZE|5RHE"  then 159851
            when "EH"  then 1108  else "" end ) as CurrentRegimen
-    FROM migration_st.st_regimen_history;
+      FROM migration_st.st_regimen_history where Date_Started != "" ;
 	
 	
 	
