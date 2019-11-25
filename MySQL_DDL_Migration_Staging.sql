@@ -191,8 +191,83 @@ CREATE TABLE migration_st.st_hts_retest
   Voided                           INT(11)
 );
 
+-- 6. HTS Client Tracing
+DROP TABLE IF EXISTS migration_st.st_hts_tracing;
+CREATE TABLE migration_st.st_hts_tracing
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Contact_Type                     VARCHAR(100),
+  Contact_Outcome                  VARCHAR(100),
+  Reason_uncontacted               VARCHAR(255),
+  Voided                           INT(11)
+);
 
--- 6. Program Enrollment
+-- 7. HTS Referral
+DROP TABLE IF EXISTS migration_st.st_hts_referral;
+CREATE TABLE migration_st.st_hts_referral
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Facility_Referred                VARCHAR(255),
+  Date_To_Be_Enrolled              DATE,
+  Remarks                          VARCHAR(255),
+  Voided                           INT(11)
+);
+-- 8. HTS Linkage
+DROP TABLE IF EXISTS migration_st.st_hts_linkage;
+CREATE TABLE migration_st.st_hts_linkage
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Facility_Linked                  VARCHAR(255),
+  CCC_Number                       VARCHAR(100),
+  Health_Worker_Handed_To          VARCHAR(255),
+  Cadre                            VARCHAR(100),
+  Date_Enrolled                    DATE,
+  ART_Start_Date                   DATE,
+  Remarks                          VARCHAR(255),
+  Voided                           INT(11)
+);
+
+-- 9. HTS Contact Listing
+DROP TABLE IF EXISTS migration_st.st_hts_contact_listing;
+CREATE TABLE migration_st.st_hts_contact_listing
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Consent                          VARCHAR(50),
+  First_Name                       VARCHAR(100),
+  Middle_Name                      VARCHAR(100),
+  Last_Name                        VARCHAR(100),
+  Sex                              VARCHAR(50),
+  DoB                              DATE,
+  Marital_Status                   VARCHAR(100),
+  Physical_Address                 VARCHAR(255),
+  Phone_Number                     VARCHAR(100),
+  Relationship_To_Index            VARCHAR(100),
+  Currently_Living_With_Index      VARCHAR(100),
+  IPV_Physically_Hurt              VARCHAR(50),
+  IPV_Threatened_Hurt              VARCHAR(50),
+  IPV_Physically_Hurt              VARCHAR(50),
+  IPV_Sexual_Hurt                  VARCHAR(50),
+  IPV_Outcome                      VARCHAR(50),
+  HIV_Status                       VARCHAR(100),
+  PNS_Approach                     VARCHAR(100),
+  Contact_Type                     VARCHAR(100),
+  Contact_Outcome                  VARCHAR(100),
+  Reason_uncontacted               VARCHAR(255),
+  Booking_Date                     DATE,
+  Consent_For_Testing              VARCHAR(50),
+  Date_Reminded                    DATE,
+  Voided                           INT(11)
+);
+
+-- 10. Program Enrollment
 DROP TABLE IF EXISTS migration_st.st_program_enrollment;
 CREATE TABLE migration_st.st_program_enrollment
 (
@@ -204,7 +279,7 @@ CREATE TABLE migration_st.st_program_enrollment
   Date_Completed                   DATE
 );
 
--- 7. Program Discontinuation
+-- 11. Program Discontinuation
 DROP TABLE IF EXISTS migration_st.st_program_discontinuation;
 CREATE TABLE migration_st.st_program_discontinuation
 (
@@ -219,7 +294,7 @@ CREATE TABLE migration_st.st_program_discontinuation
   Death_Date                       DATE
 );
 
--- 8. IPT Program Screening
+-- 12. IPT Program Screening
 DROP TABLE IF EXISTS migration_st.st_ipt_screening;
 CREATE TABLE migration_st.st_ipt_screening
 (
@@ -233,7 +308,7 @@ CREATE TABLE migration_st.st_ipt_screening
   IPT_Start_Date                   DATE
 );
 
--- 9. IPT Program Enrollment
+-- 13. IPT Program Enrollment
 DROP TABLE IF EXISTS migration_st.st_ipt_program;
 CREATE TABLE migration_st.st_ipt_program
 (
@@ -248,29 +323,29 @@ CREATE TABLE migration_st.st_ipt_program
 
 
 
--- 10. IPT Program Followup
+-- 14. IPT Program Followup
 DROP TABLE IF EXISTS migration_st.st_ipt_followup;
 CREATE TABLE migration_st.st_ipt_followup
 (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
-  Ipt_due_date                     DATE,
-  Date_collected_ipt               DATE,
+  Ipt_due_date                     DATE DEFAULT NULL,
+  Date_collected_ipt               DATE DEFAULT NULL,
   Weight                           DOUBLE,
-  Hepatotoxity                     VARCHAR(100),
-  Hepatotoxity_Action			   VARCHAR(400),
-  Peripheral_neuropathy            VARCHAR(100),
-  Peripheralneuropathy_Action	   VARCHAR(400),
+  Hepatotoxity                     VARCHAR(100) DEFAULT NULL,
+  Hepatotoxity_Action			         VARCHAR(400) DEFAULT NULL,
+  Peripheral_neuropathy            VARCHAR(100) DEFAULT NULL ,
+  Peripheralneuropathy_Action		   VARCHAR(400) DEFAULT NULL,
   Rash                             VARCHAR(100),
-  Rash_Action					   VARCHAR(100),
+  Rash_Action						           VARCHAR(100) DEFAULT NULL,
   Adherence                        VARCHAR(100),
-  AdheranceMeasurement_Action	   VARCHAR(500),
+  AdheranceMeasurement_Action		   VARCHAR(500),
   IPT_Outcome                      VARCHAR(100),
   Outcome_Date                     DATE
 );
 
--- 11. Regimen History
+-- 15. Regimen History
 DROP TABLE IF EXISTS migration_st.st_regimen_history;
 CREATE TABLE migration_st.st_regimen_history
 (
@@ -292,125 +367,98 @@ CREATE TABLE migration_st.st_regimen_history
   Date_voided                      DATE
 );
 
--- 12. HIV Followup
+-- 16. HIV Followup
 DROP TABLE IF EXISTS migration_st.st_hiv_followup;
 CREATE TABLE migration_st.st_hiv_followup
 (
-  Person_Id                  INT(11),
-  Encounter_Date             DATE,
-  Encounter_ID               VARCHAR(50),
-  Visit_scheduled            VARCHAR(20),
-  Visit_by                   VARCHAR(20),
-  Visit_by_other             VARCHAR(100),
-  Weight                     DOUBLE,
-  Height                     DOUBLE,
-  Systolic_pressure          DOUBLE,
-  Diastolic_pressure         DOUBLE,
-  Temperature                DOUBLE,
-  Pulse_rate                 DOUBLE,
-  Respiratory_rate           DOUBLE,
-  Oxygen_saturation          DOUBLE,
-  Bmi                        DOUBLE,
-  Muac                       DOUBLE,
-  Nutritional_status         VARCHAR(100),
-  Population_type            VARCHAR(100),
-  Key_population_type        VARCHAR(100),
-  Who_stage                  VARCHAR(100),
-  Presenting_complaints      VARCHAR(20),
-  Clinical_notes             VARCHAR(600),
-  On_anti_tb_drugs           VARCHAR(20),
-  Tb_Screening_cough         VARCHAR(20),
-  Tb_Screening_fever         VARCHAR(20),
-  Tb_Screening_weightloss    VARCHAR(20),
-  Tb_Screening_night_sweats  VARCHAR(20),
-  Tests_ordered              VARCHAR(20),
-  Spatum_smear_ordered       VARCHAR(20),
-  Chest_xray_ordered         VARCHAR(20),
-  Genexpert_ordered          VARCHAR(50),
-  Spatum_smear_result        VARCHAR(50),
-  Chest_xray_result          VARCHAR(50),
-  Genexpert_result           VARCHAR(100),
-  Referral                   VARCHAR(20),
-  Clinical_tb_diagnosis      VARCHAR(20),
-  Contact_invitation         VARCHAR(20),
-  Evaluated_for_ipt          VARCHAR(20),
-  Tb_status                  VARCHAR(20),
-  Tb_treatment_date          DATE,
-  Tb_regimen                 VARCHAR(100),
-  Has_known_allergies        VARCHAR(20),
-  Allergies_causative_agents VARCHAR(100),
-  Allergies_reactions        VARCHAR(100),
-  Allergies_severity         VARCHAR(100),
-  Has_Chronic_illnesses_cormobidities VARCHAR(20),
-  Chronic_illnesses_name     VARCHAR(100),
-  Chronic_illnesses_onset_date DATE,
-  Has_adverse_drug_reaction  VARCHAR(20),
-  Medicine_causing_drug_reaction  VARCHAR(100),
-  Drug_reaction              VARCHAR(100),
-  Drug_reaction_severity     VARCHAR(100),
-  Drug_reaction_onset_date   DATE,
-  Drug_reaction_action_taken VARCHAR(100),
-  Vaccinations_today         VARCHAR(100),
-  Last_menstrual_period      DATE,
-  Pregnancy_status           INT(11),
-  Wants_pregnancy            INT(11) DEFAULT NULL,
-  Pregnancy_outcome         INT(11),
-  Anc_number                VARCHAR(50),
-  Anc_profile               VARCHAR(50),
-  Expected_delivery_date    DATE,
-  Gravida                   INT(11),
-  Parity                    INT(11),
-  Family_planning_status    VARCHAR(100),
-  Family_planning_method    VARCHAR(255),
+  Person_Id                          INT(100),
+  Encounter_Date                    DATE,
+  Encounter_ID                  	VARCHAR(100),
+  Visit_scheduled            	    VARCHAR(100),
+  Visit_by                  	    VARCHAR(100),
+  Visit_by_other           		    VARCHAR(100),
+  Nutritional_status                VARCHAR(200),
+  Population_type                   VARCHAR(200),
+  Key_population_type               VARCHAR(200),
+  Who_stage            		        VARCHAR(200),
+  Presenting_complaints 	        VARCHAR(200),
+  Clinical_notes                    VARCHAR(1600),
+  Has_known_allergies               VARCHAR(200),
+  Allergies_causative_agents        VARCHAR(200),
+  Allergies_reactions               VARCHAR(200),
+  Allergies_severity                VARCHAR(200),
+  Has_Chronic_illnesses_cormobidities VARCHAR(200),
+  Chronic_illnesses_name            VARCHAR(200),
+  Chronic_illnesses_onset_date      DATE,
+  Has_adverse_drug_reaction         VARCHAR(200),
+  Medicine_causing_drug_reaction    VARCHAR(200),
+  Drug_reaction                     VARCHAR(200),
+  Drug_reaction_severity            VARCHAR(200),
+  Drug_reaction_onset_date          DATE,
+  Drug_reaction_action_taken        VARCHAR(200),
+  Vaccinations_today                VARCHAR(200),
+  Vaccine_Stage			            VARCHAR(200),
+  Vaccination_Date 		            DATE,
+  Last_menstrual_period             DATE,
+  Pregnancy_status                  VARCHAR(200),
+  Wants_pregnancy                   VARCHAR(200),
+  Pregnancy_outcome                 VARCHAR(200),
+  Anc_number                        VARCHAR(100),
+  Anc_profile                       VARCHAR(100),
+  Expected_delivery_date            DATE,
+  Gravida                           INT(11),
+  Parity                            INT(11),
+  Family_planning_status            VARCHAR(100),
+  Family_planning_method            VARCHAR(255),
   Reason_not_using_family_planning  VARCHAR(255),
-  General_examinations_findings VARCHAR(100),
-  System_review_finding     VARCHAR(50),
-  Skin                      VARCHAR(50),
-  Skin_finding_notes        VARCHAR(100),
-  Eyes                      VARCHAR(50),
-  Eyes_finding_notes        VARCHAR(100),
-  ENT                       VARCHAR(50),
-  ENT_finding_notes         VARCHAR(100),
-  Chest                     VARCHAR(50),
-  Chest_finding_notes       VARCHAR(100),
-  CVS                       VARCHAR(50),
-  CVS_finding_notes         VARCHAR(100),
-  Abdomen                   VARCHAR(50),
-  Abdomen_finding_notes     VARCHAR(100),
-  CNS                       VARCHAR(50),
-  CNS_finding_notes         VARCHAR(100),
-  Genitourinary             VARCHAR(50),
-  Genitourinary_finding_notes VARCHAR(100),
-  Diagnosis                 VARCHAR(100),
-  Treatment_plan            VARCHAR(100),
-  Ctx_adherence             VARCHAR(50),
-  Ctx_dispensed             VARCHAR(50),
-  Dapsone_adherence         VARCHAR(50),
-  Dapsone_dispensed         VARCHAR(50),
-  Morisky_forget_taking_drugs    VARCHAR(50),
-  Morisky_careless_taking_drugs  VARCHAR(50),
-  Morisky_stop_taking_drugs_feeling_worse   VARCHAR(50),
-  Morisky_stop_taking_drugs_feeling_better  VARCHAR(50),
-  Morisky_took_drugs_yesterday      VARCHAR(50),
-  Morisky_stop_taking_drugs_symptoms_under_control  VARCHAR(50),
-  Morisky_feel_under_pressure_on_treatment_plan     VARCHAR(50),
-  Morisky_how_often_difficulty_remembering    VARCHAR(100),
-  Arv_adherence            VARCHAR(50),
-  Condom_provided          VARCHAR(50),
-  Screened_for_substance_abuse VARCHAR(50),
-  Pwp_disclosure           VARCHAR(50),
-  Pwp_partner_tested       VARCHAR(50),
-  Cacx_screening           VARCHAR(50),
-  Screened_for_sti         VARCHAR(50),
-  Stability                VARCHAR(50),
-  Next_appointment_date    DATE,
-  Next_appointment_reason  VARCHAR(100),
-  Appointment_type         VARCHAR(100),
-  Differentiated_care      VARCHAR(100),
-  Voided INT(11)
+  General_examinations_findings     VARCHAR(100),
+  System_review_finding             VARCHAR(200),
+  Skin                              VARCHAR(200),
+  Skin_finding_notes                VARCHAR(200),
+  Eyes                              VARCHAR(200),
+  Eyes_finding_notes                VARCHAR(200),
+  ENT                               VARCHAR(200),
+  ENT_finding_notes                 VARCHAR(200),
+  Chest                             VARCHAR(200),
+  Chest_finding_notes               VARCHAR(200),
+  CVS                               VARCHAR(200),
+  CVS_finding_notes                 VARCHAR(200),
+  Abdomen                           VARCHAR(200),
+  Abdomen_finding_notes             VARCHAR(200),
+  CNS                               VARCHAR(200),
+  CNS_finding_notes                 VARCHAR(200),
+  Genitourinary                     VARCHAR(200),
+  Genitourinary_finding_notes       VARCHAR(200),
+  Diagnosis                         VARCHAR(200),
+  Treatment_plan                    VARCHAR(255),
+  Ctx_adherence                     VARCHAR(200),
+  Ctx_dispensed                     DATE,
+  Dapsone_adherence                 VARCHAR(200),
+  Dapsone_dispensed                 VARCHAR(200),
+  Morisky_forget_taking_drugs       VARCHAR(200),
+  Morisky_careless_taking_drugs     VARCHAR(200),
+  Morisky_stop_taking_drugs_feeling_worse   VARCHAR(200),
+  Morisky_stop_taking_drugs_feeling_better  VARCHAR(200),
+  Morisky_took_drugs_yesterday      VARCHAR(200),
+  Morisky_stop_taking_drugs_symptoms_under_control  VARCHAR(200),
+  Morisky_feel_under_pressure_on_treatment_plan     VARCHAR(200),
+  Morisky_how_often_difficulty_remembering    VARCHAR(200),
+  Arv_adherence                     VARCHAR(200),
+  Condom_provided                   VARCHAR(100),
+  Screened_for_substance_abuse      VARCHAR(100),
+  Pwp_disclosure                    VARCHAR(100),
+  Pwp_partner_tested                VARCHAR(100),
+  Cacx_screening                    VARCHAR(100),
+  Screened_for_sti                  VARCHAR(100),
+  Stability                         VARCHAR(200),
+  Next_appointment_date             DATE,
+  Next_appointment_reason           VARCHAR(255),
+  Appointment_type                  VARCHAR(200),
+  Differentiated_care               VARCHAR(200),
+  Voided                            INT(11)
 );
 
--- 13. Laboratory Extract
+-- 17. Laboratory Extract
 DROP TABLE IF EXISTS migration_st.st_laboratory_extract;
 CREATE TABLE migration_st.st_laboratory_extract
 (
@@ -426,7 +474,7 @@ CREATE TABLE migration_st.st_laboratory_extract
   Voided           INT(11)
 );
 
--- 14. Pharmacy Extract
+-- 18. Pharmacy Extract
 DROP TABLE IF EXISTS migration_st.st_pharmacy_extract;
 CREATE TABLE migration_st.st_pharmacy_extract
 (
@@ -454,7 +502,7 @@ CREATE TABLE migration_st.st_pharmacy_extract
 
 );
 
--- 15.  MCH Enrollment
+-- 19.  MCH Enrollment
 DROP TABLE IF EXISTS migration_st.st_mch_enrollment;
 CREATE TABLE migration_st.st_mch_enrollment
 (
@@ -496,7 +544,7 @@ CREATE TABLE migration_st.st_mch_enrollment
   Voided                           INT(11)
 );
 
--- 16.  MCH ANC Visit
+-- 20.  MCH ANC Visit
 DROP TABLE IF EXISTS migration_st.st_mch_antenatal_visit;
 CREATE TABLE migration_st.st_mch_antenatal_visit
 (
@@ -531,15 +579,15 @@ CREATE TABLE migration_st.st_mch_antenatal_visit
   Ldl                              VARCHAR(100),
   Arv_status                       INT(11),
   Test_1_kit_name                  VARCHAR(50),
-  Test_1_kit_lot_no                VARCHAR(50),
-  Test_1_kit_expiry                DATE,
-  Test_1_result                    VARCHAR(50),
+  Test_1_kit_lot_no                VARCHAR(50) DEFAULT NULL,
+  Test_1_kit_expiry                DATE DEFAULT NULL,
+  Test_1_result                    VARCHAR(50) DEFAULT NULL,
   Test_2_kit_name                  VARCHAR(50),
-  Test_2_kit_lot_no                VARCHAR(50),
-  Test_2_kit_expiry                DATE,
-  Test_2_result                    VARCHAR(50),
-  Final_test_result                VARCHAR(50),
-  Patient_given_result             VARCHAR(50),
+  Test_2_kit_lot_no                VARCHAR(50) DEFAULT NULL,
+  Test_2_kit_expiry                DATE DEFAULT NULL,
+  Test_2_result                    VARCHAR(50) DEFAULT NULL,
+  Final_test_result                VARCHAR(50) DEFAULT NULL,
+  Patient_given_result             VARCHAR(50) DEFAULT NULL,
   Partner_hiv_tested               VARCHAR(50),
   Partner_hiv_status               VARCHAR(50),
   Urine_microscopy                 VARCHAR(255),
@@ -583,29 +631,29 @@ CREATE TABLE migration_st.st_mch_antenatal_visit
   Voided                           INT(11)
 );
 
--- 17. MCH Delivery
+-- 21. MCH Delivery
 DROP TABLE IF EXISTS migration_st.st_mch_delivery;
 CREATE TABLE migration_st.st_mch_delivery (
-  Person_Id                                   INT(11),
+  Person_Id                       	    	  	INT(11),
   Encounter_Date                              DATE,
   Encounter_ID                                VARCHAR(50),
-  Admission_number			   			      VARCHAR(200),
-  Gestation_Weeks		        			  INT(50),
-  Duration_Labour			    		      INT(50),
-  Delivery_Mode				   			      VARCHAR(200),
-  Delivery_Date_TIme            			  DATE,
-  Placenta_Complete	   		    			  VARCHAR(100),
-  Blood_Loss					 			  VARCHAR(100),
-  Mother_Condition               			  VARCHAR(100),
-  Death_Audited				     			  VARCHAR(100),
-  Resuscitation_Done			 			  VARCHAR(100),
-  Delivery_Complications					  VARCHAR(100),
-  Delivery_Complications_Type				  VARCHAR(200),
-  Delivery_Complications_Other				  VARCHAR(255),
-  Delivery_Place	            			  VARCHAR(200),
-  Delivery_Conducted_By			              VARCHAR(200),
-  Delivery_Cadre						      VARCHAR(100),
-  Delivery_Outcome							  VARCHAR(100),
+  Admission_number			                     	VARCHAR(200),
+  Gestation_Weeks		        			            INT(50),
+  Duration_Labour			                      	INT(50),
+  Delivery_Mode				                        VARCHAR(200),
+  Delivery_Date_TIme                     			DATE,
+  Placenta_Complete	   				                VARCHAR(100),
+  Blood_Loss							                    VARCHAR(100),
+  Mother_Condition                          	VARCHAR(100),
+  Death_Audited				                        VARCHAR(100),
+  Resuscitation_Done					                VARCHAR(100),
+  Delivery_Complications				          		VARCHAR(100),
+  Delivery_Complications_Type		        			VARCHAR(200),
+  Delivery_Complications_Other	        			VARCHAR(255),
+  Delivery_Place							              	VARCHAR(200),
+  Delivery_Conducted_By					             	VARCHAR(200),
+  Delivery_Cadre								              VARCHAR(100),
+  Delivery_Outcome							              VARCHAR(100),
   Baby_Name                                   VARCHAR(200),
   Baby_Sex                                    VARCHAR(100),
   Baby_Weight                                 DOUBLE,
@@ -639,10 +687,10 @@ CREATE TABLE migration_st.st_mch_delivery (
   Voided                                     INT(11)
 );
 
--- 18. MCH Discharge
+-- 22. MCH Discharge
 DROP TABLE IF EXISTS migration_st.st_mch_discharge;
 CREATE TABLE migration_st.st_mch_discharge (
-  Person_Id                       	    	  INT(11),
+  Person_Id                       	    	  	INT(11),
   Encounter_Date                              DATE,
   Encounter_ID                                VARCHAR(50),
   Discharge_Date                              DATE,
@@ -657,74 +705,72 @@ CREATE TABLE migration_st.st_mch_discharge (
   Referred_To                                 VARCHAR(200),
   Clinical_notes                              VARCHAR(255),
   Next_Appointment_Date                       DATE,
-  Voided                                      INT(11)
+  Voided                                     INT(11)
 );
 
--- 19. MCH PNC Visit
+-- 23. MCH PNC Visit
 DROP TABLE IF EXISTS migration_st.st_mch_pnc_visit;
-  CREATE TABLE migration_st.st_mch_pnc_visit (
-	Person_Id                        INT(11),	
-	Encounter_Date                   DATE,
-    Encounter_ID                     VARCHAR(50),	
-	PNC_Register_number			     VARCHAR(100),
-	PNC_VisitNumber                  INT(11),
-	Delivery_Date  					 DATE,
-	Mode_Of_Delivery				 VARCHAR(255),
-	Place_Of_delivery				 VARCHAR(255),
-	Temperature                      DOUBLE,
-    Pulse_rate                       DOUBLE,
-    Systolic_bp                      DOUBLE,
-    Diastolic_bp                     DOUBLE,
-    Respiratory_rate                 DOUBLE,
-    Oxygen_saturation                INT(11),
-    Weight                           DOUBLE,
-    Height                           DOUBLE,
-    BMI                              DOUBLE,
-    Muac                             DOUBLE,
-	General_Condition			     VARCHAR(200),
-	Pallor				     		 VARCHAR(100),
-	Breast_Examination				 VARCHAR(100),
-	PPH						         VARCHAR(100),
-	CS_Scar					         VARCHAR(100),
-	Haemoglobin				         DOUBLE,
-	Involution_Of_Uterus	     	 VARCHAR(100),
-	Condition_Of_Episiotomy	         VARCHAR(100),
-	Lochia							 VARCHAR(100),
-	Councelling_On_Infant_Feeding	 VARCHAR(100),
-	Councelling_On_FamilyPlanning	 VARCHAR(100),
-	Delivery_outcome				 VARCHAR(100),
-	Baby_Condition					 VARCHAR(100),
-	Feeding_Method					 VARCHAR(100),
-	Umblical_Cord				   	 VARCHAR(100),
-	Immunization_Started		     VARCHAR(100),
-	Test_1_kit_name                  VARCHAR(50),
-    Test_1_kit_lot_no                VARCHAR(50),
-    Test_1_kit_expiry                DATE,
-    Test_1_result                    VARCHAR(50),
-    Test_2_kit_name                  VARCHAR(50),
-    Test_2_kit_lot_no                VARCHAR(50),
-    Test_2_kit_expiry                DATE,
-    Test_2_result                    VARCHAR(50),
-    Final_test_result                VARCHAR(50),
-    Next_HIV_TestDate                DATE,
-	Test_Type                        VARCHAR(50),
-    Patient_given_result             VARCHAR(50),
-    Partner_hiv_tested               VARCHAR(50),
-	Partner_hiv_status               VARCHAR(50),
-	Prophylaxis_given                VARCHAR(50),
-    Baby_azt_dispensed               VARCHAR(50),
-    Baby_nvp_dispensed               VARCHAR(50),	
-	Pnc_exercises	                 VARCHAR(50),	
-    Maternal_condition				 VARCHAR(255),	
-	Iron_supplementation			 VARCHAR(50),	
-	CaCx_screening					 VARCHAR(50),	
-	CaCx_screening_method			 VARCHAR(200),	
-	Fistula_screening			     VARCHAR(50),	
-	On_FP	                         VARCHAR(50),	
-	FP_Method			             VARCHAR(255),	
-	Referred_From					 VARCHAR(255),					
-	Referred_To					     VARCHAR(255),					
-	Clinical_notes                   VARCHAR(255),
-	Next_Appointment_Date            DATE,	
-	Diagnosis_Notes                  VARCHAR(255) 		
-  );
+CREATE TABLE migration_st.st_mch_pnc_visit (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  PNC_Register_number			     VARCHAR(100),
+  PNC_VisitNumber                  INT(11),
+  Delivery_Date  					 DATE,
+  Mode_Of_Delivery				 VARCHAR(255),
+  Place_Of_delivery				 VARCHAR(255),
+  Temperature                      DOUBLE,
+  Pulse_rate                       DOUBLE,
+  Systolic_bp                      DOUBLE,
+  Diastolic_bp                     DOUBLE,
+  Respiratory_rate                 DOUBLE,
+  Oxygen_saturation                INT(11),
+  Weight                           DOUBLE,
+  Height                           DOUBLE,
+  BMI                              DOUBLE,
+  Muac                             DOUBLE,
+  General_Condition			     VARCHAR(200),
+  Pallor				     		 VARCHAR(100),
+  Breast_Examination				 VARCHAR(100),
+  PPH						         VARCHAR(100),
+  CS_Scar					         VARCHAR(100),
+  Haemoglobin				         DOUBLE,
+  Involution_Of_Uterus	     	 VARCHAR(100),
+  Condition_Of_Episiotomy	         VARCHAR(100),
+  Lochia							 VARCHAR(100),
+  Councelling_On_Infant_Feeding	 VARCHAR(100),
+  Councelling_On_FamilyPlanning	 VARCHAR(100),
+  Delivery_outcome				 VARCHAR(100),
+  Baby_Condition					 VARCHAR(100),
+  Feeding_Method					 VARCHAR(100),
+  Umblical_Cord				   	 VARCHAR(100),
+  Immunization_Started		     VARCHAR(100),
+  Test_1_kit_name                  VARCHAR(50),
+  Test_1_kit_lot_no                VARCHAR(50),
+  Test_1_kit_expiry                DATE,
+  Test_1_result                    VARCHAR(50),
+  Test_2_kit_name                  VARCHAR(50),
+  Test_2_kit_lot_no                VARCHAR(50),
+  Test_2_kit_expiry                DATE,
+  Test_2_result                    VARCHAR(50),
+  Final_test_result                VARCHAR(50),
+  Test_Type                        VARCHAR(50),
+  Patient_given_result             VARCHAR(50),
+  Partner_hiv_tested               VARCHAR(50),
+  Partner_hiv_status               VARCHAR(50),
+  Prophylaxis_given                VARCHAR(50),
+  Baby_azt_dispensed               VARCHAR(50),
+  Baby_nvp_dispensed               VARCHAR(50),
+  Pnc_exercises	                 VARCHAR(50),
+  Maternal_condition				 VARCHAR(255),
+  Iron_supplementation			 VARCHAR(50),
+  CaCx_screening					 VARCHAR(50),
+  CaCx_screening_method			 VARCHAR(200),
+  Fistula_screening			     VARCHAR(50),
+  On_FP	                         VARCHAR(50),
+  FP_Method			             VARCHAR(255),
+  Referred_From					 VARCHAR(255),
+  Referred_To					     VARCHAR(255),
+  Clinical_notes                   VARCHAR(255),
+  Next_Appointment_Date            DATE
+);

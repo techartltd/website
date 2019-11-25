@@ -400,8 +400,16 @@ CREATE TABLE migration_tr.tr_hts_retest as
          when "TBRx: On TB treatment" then 1111 else '' end)as Tb_Screening_Results,
     Remarks
   FROM migration_st.st_hts_retest where TestType = "Repeat Test";
+  
+  -- 6. HTS Client Tracing transformed table
 
--- 6. Create patient program transformed table
+-- 7. HTS Client Referral transformed table
+
+-- 8. HTS Client Linkage transformed table
+
+-- 9. HTS Contact Listing transformed table
+
+-- 10. Create patient program transformed table
 DROP TABLE IF EXISTS migration_tr.tr_program_enrollment;
 CREATE TABLE migration_tr.tr_program_enrollment as
   select
@@ -419,7 +427,7 @@ CREATE TABLE migration_tr.tr_program_enrollment as
     Date_Completed
   FROM migration_st.st_program_enrollment;
 
--- 7. Discontinuation transformed table
+-- 11. Discontinuation transformed table
 DROP TABLE IF EXISTS migration_tr.tr_program_discontinuation;
 CREATE TABLE migration_tr.tr_program_discontinuation as
   select
@@ -438,12 +446,15 @@ CREATE TABLE migration_tr.tr_program_discontinuation as
     (case Care_Ending_Reason when "Transfer Out" then 159492
      when "Death" then 160034
      when "Lost To Follow Up" then 5240
-     when "Other" then 5622 when "Unknown" then 1067 else "" end) as Care_Ending_Reason,
+	 when "Confirmed HIV Negative" then 1403
+     when "HIV Negative" then 1403     
+     when "Other" then 5622 
+	 when "Unknown" then 1067 else "" end) as Care_Ending_Reason,
     Facility_Transfered_To,
     Death_Date
   FROM migration_st.st_program_discontinuation;
   
--- 8. IPT Screening transformed table
+-- 12. IPT Screening transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
 CREATE TABLE migration_tr.tr_ipt_screening
     select
@@ -466,7 +477,7 @@ CREATE TABLE migration_tr.tr_ipt_screening
       IPT_Start_Date
     FROM migration_st.st_ipt_screening;
 
--- 9. IPT program Enrollment transformed table
+-- 13. IPT program Enrollment transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_program;
 CREATE TABLE migration_tr.tr_ipt_program
     select
@@ -485,7 +496,7 @@ CREATE TABLE migration_tr.tr_ipt_program
     Outcome_Date
     FROM migration_st.st_ipt_program;
 
--- 10. IPT program Followup transformed table
+-- 14. IPT program Followup transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_followup;
 CREATE TABLE migration_tr.tr_ipt_followup
     select
@@ -514,7 +525,7 @@ CREATE TABLE migration_tr.tr_ipt_followup
         Outcome_Date
     FROM migration_st.st_ipt_followup;
 	
--- 11. Regimen History transformed table
+-- 15. Regimen History transformed table
 DROP TABLE IF EXISTS migration_tr.tr_regimen_history;
 CREATE TABLE migration_tr.tr_regimen_history
     select
