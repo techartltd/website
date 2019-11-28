@@ -655,8 +655,7 @@ where lt.[Name]='DrugSwitches')pr  where pr.rownum='1'
 )pr on pr.PatientId=pt.Id
 
 -- 16. HIV Follow up
-
- exec pr_OpenDecryptedSession;
+exec pr_OpenDecryptedSession;
 insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_ID,
   Visit_scheduled,          
   Visit_by,          
@@ -665,7 +664,10 @@ insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_
   Population_type,       
   Key_population_type,       
   Who_stage,      
-  Presenting_complaints,     
+  Presenting_complaints,
+  Complaint,  
+  Duration,
+  Onset_Date,
   Clinical_notes,
   Has_known_allergies,      
   Allergies_causative_agents,
@@ -752,7 +754,10 @@ NULL Visit_by_other
 pop.PopulationType as Population_type,
 pop.Population_Type as Key_population_type,
 pws.WHO_Stage as Who_stage,
-pres.PresentingComplaint as Presenting_complaints,
+ CASE WHEN pres.PresentingComplaint is null then 'No' else 'Yes' end as Presenting_complaints,
+pres.PresentingComplaint as Complaint,
+NULL as Duration,
+NULL as Onset_Date,
 cl.ClinicalNotes as Clinical_notes,
 CASE WHEN paa.Has_Known_allergies is null then 'No' else paa.Has_Known_allergies end as Has_Known_allergies,
 paa.Allergies_causative_agents,
@@ -803,7 +808,7 @@ gn.FindingsNotes as Genitourinary_finding_notes,
 pd.Diagnosis as Diagnosis,
 pd.ManagementPlan as Treatment_plan,
 ctx.ScoreName as Ctx_adherence,
- format(cast(ctx.VisitDate as date),'yyyy-MM-dd') AS Ctx_dispensed,
+CASE when ctx.VisitDate  is not null then 'Yes' else' No' end as Ctx_dispensed,
 NULL as Dapson_adherence,
 NULL as Dapsone_dispensed,
 adass.Morisky_forget_taking_drugs,
@@ -814,7 +819,7 @@ adass.Morisky_took_drugs_yesterday,
 adass.Morisky_stop_taking_drugs_symptoms_under_control,
 adass.Morisky_feel_under_pressure_on_treatment_plan,
 adass.Morisky_how_often_difficulty_remembering,
-adv.Score as Arv_adherence,
+adv.ScoreName as Arv_adherence,
 phdp.Condom_Provided,
 phdp.Screened_for_substance_abuse,
 phdp.Pwp_Disclosure,
@@ -1206,7 +1211,7 @@ inner join PatientMasterVisit pmv on pmv.Id =ao.PatientMasterVisitId
 WHERE lm.[Name]='CTXAdherence' and (ao.DeleteFlag is null or ao.DeleteFlag  =0))adv where adv.rownum ='1')ctx
 on ctx.PatientId =pe.PatientId and ctx.PatientMasterVisitId=pe.PatientMasterVisitId
 
-left join(select * from (select  a.PatientId,a.PatientMasterVisitId,a.ForgetMedicine as  Morisky_forget_taking_drugs,
+left join(select * from (select  a.PatientId,a.PatientMasterVisitId,case when a.ForgetMedicine=0 then 'No' when a.ForgetMedicine='1' then 'Yes' end  as  Morisky_forget_taking_drugs,
 CASE WHEN a.CarelessAboutMedicine= 0 then 'No' WHEN a.CarelessAboutMedicine ='1' then 'Yes' end  as Morisky_careless_taking_drugs,
 CASE WHEN a.FeelWorse= 0 then 'No' WHEN a.FeelWorse='1' then 'Yes' end  as Morisky_stop_taking_drugs_feeling_worse,
 CASE WHEN a.FeelBetter= 0 then 'No'  when a.FeelBetter ='1' then 'Yes' end  as Morisky_stop_taking_drugs_feeling_better,
