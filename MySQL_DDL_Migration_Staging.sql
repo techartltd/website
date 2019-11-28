@@ -238,6 +238,7 @@ DROP TABLE IF EXISTS migration_st.st_hts_contact_listing;
 CREATE TABLE migration_st.st_hts_contact_listing
 (
   Person_Id                        INT(11),
+  Contact_Person_Id                INT(11),  
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Consent                          VARCHAR(50),
@@ -373,15 +374,18 @@ CREATE TABLE migration_st.st_hiv_followup
 (
   Person_Id                          INT(100),
   Encounter_Date                    DATE,
-  Encounter_ID                  	VARCHAR(100),
-  Visit_scheduled            	    VARCHAR(100),
-  Visit_by                  	    VARCHAR(100),
-  Visit_by_other           		    VARCHAR(100),
+  Encounter_ID                  		VARCHAR(100),
+  Visit_scheduled            	    	VARCHAR(100),
+  Visit_by                  	      VARCHAR(100),
+  Visit_by_other           		      VARCHAR(100),
   Nutritional_status                VARCHAR(200),
   Population_type                   VARCHAR(200),
   Key_population_type               VARCHAR(200),
-  Who_stage            		        VARCHAR(200),
-  Presenting_complaints 	        VARCHAR(200),
+  Who_stage            		          VARCHAR(200),
+  Presenting_complaints 	          VARCHAR(200),
+  Complaint                         VARCHAR(255),
+  Duration                          VARCHAR(100),
+  Onset_Date                        DATE,
   Clinical_notes                    VARCHAR(1600),
   Has_known_allergies               VARCHAR(200),
   Allergies_causative_agents        VARCHAR(200),
@@ -392,13 +396,13 @@ CREATE TABLE migration_st.st_hiv_followup
   Chronic_illnesses_onset_date      DATE,
   Has_adverse_drug_reaction         VARCHAR(200),
   Medicine_causing_drug_reaction    VARCHAR(200),
-  Drug_reaction                     VARCHAR(200),
+  Drug_reaction                    VARCHAR(200),
   Drug_reaction_severity            VARCHAR(200),
   Drug_reaction_onset_date          DATE,
   Drug_reaction_action_taken        VARCHAR(200),
   Vaccinations_today                VARCHAR(200),
-  Vaccine_Stage			            VARCHAR(200),
-  Vaccination_Date 		            DATE,
+  Vaccine_Stage			              	VARCHAR(200),
+  Vaccination_Date 		            	DATE,
   Last_menstrual_period             DATE,
   Pregnancy_status                  VARCHAR(200),
   Wants_pregnancy                   VARCHAR(200),
@@ -432,7 +436,7 @@ CREATE TABLE migration_st.st_hiv_followup
   Diagnosis                         VARCHAR(200),
   Treatment_plan                    VARCHAR(255),
   Ctx_adherence                     VARCHAR(200),
-  Ctx_dispensed                     DATE,
+  Ctx_dispensed                     VARCHAR(100),
   Dapsone_adherence                 VARCHAR(200),
   Dapsone_dispensed                 VARCHAR(200),
   Morisky_forget_taking_drugs       VARCHAR(200),
@@ -457,6 +461,7 @@ CREATE TABLE migration_st.st_hiv_followup
   Differentiated_care               VARCHAR(200),
   Voided                            INT(11)
 );
+
 
 -- 17. Laboratory Extract
 DROP TABLE IF EXISTS migration_st.st_laboratory_extract;
