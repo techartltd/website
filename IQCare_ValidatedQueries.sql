@@ -1,8 +1,8 @@
 --1. Demographics
-
 exec pr_OpenDecryptedSession;
 SELECT
 P.Id Person_Id, 
+PT.Id Patient_Id,
 CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS FirstName,
 CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS MiddleName,
 CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS LastName,
@@ -13,7 +13,7 @@ CASE(ISNULL(P.DobPrecision, PT.DobPrecision))
 	WHEN 1 THEN 'ESTIMATED'
 	ELSE 'ESTIMATED' END AS Exact_DOB,
 Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-UPN = (SELECT TOP 1 IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
+UPN = (SELECT IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
 format(cast(ISNULL(P.RegistrationDate, PT.RegistrationDate) as date),'yyyy-MM-dd') AS Encounter_Date,
 NULL Encounter_ID,
 (CASE(Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
@@ -64,7 +64,7 @@ Occupation = (SELECT TOP 1 ItemName FROM PersonOccupation PO INNER JOIN LookupIt
 Education_level = (SELECT TOP 1 ItemName FROM PersonEducation EL INNER JOIN LookupItemView LK ON LK.ItemId = EL.EducationLevel WHERE EL.PersonId = P.Id and MasterName = 'EducationalLevel' AND EL.DeleteFlag = 0 ORDER BY Id DESC),
 Dead = (SELECT top 1  'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
 Death_date = (SELECT TOP 1 DateOfDeath FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
-P.DeleteFlag AS voided 
+PT.DeleteFlag AS voided 
 
 
 FROM Person P
@@ -163,6 +163,9 @@ FROM dtl_PatientVitals DPV
 inner join Patient P on p.ptn_pk = DPV.Ptn_pk
 inner join ord_Visit OV ON OV.Visit_Id = DPV.Visit_pk
 inner join dtl_PatientClinicalStatus PCS ON PCS.Visit_pk = OV.Visit_Id;
+
+-- 4. HTS Initial Encounter
+
 
 
 
