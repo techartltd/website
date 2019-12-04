@@ -6,39 +6,36 @@
 -- 1. Demographics/Registration  DML
 
 exec pr_OpenDecryptedSession;
-INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, First_Name, Middle_Name, Last_Name, Nickname, DOB, Exact_DOB, Sex, UPN, Encounter_Date, Encounter_ID, National_id_no, Patient_clinic_number
+INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, Patient_Id, First_Name, Middle_Name, Last_Name, Nickname, DOB, Exact_DOB, Sex, UPN, Encounter_Date, Encounter_ID, National_id_no, Patient_clinic_number
 , Birth_certificate, Birth_notification, Hei_no, Passport, Alien_Registration, Phone_number, Alternate_Phone_number,
 Postal_Address,Email_Address, County, Sub_county, Ward,Village, Landmark, Nearest_Health_Centre, Next_of_kin, Next_of_kin_phone, Next_of_kin_relationship
 , Next_of_kin_address, Marital_Status, Occupation, Education_level, Dead, Death_date, Consent, Consent_decline_reason, voided FROM migration_st.st_demographics')
 
-SELECT distinct
-  P.Id as Person_Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  CAST(DECRYPTBYKEY(P.NickName) AS VARCHAR(50)) AS Nickname,
+SELECT
+P.Id Person_Id, 
+PT.Id Patient_Id,
+CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS FirstName,
+CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS MiddleName,
+CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS LastName,
+CAST(DECRYPTBYKEY(P.NickName) AS VARCHAR(50)) AS Nickname,
 format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
- NULL Exact_DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
- format(cast(PT.RegistrationDate as date),'yyyy-MM-dd') AS Encounter_Date,
-  NULL Encounter_ID,
-  National_id_No =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name] from PersonIdentifier pid
-inner join (
-select id.Id,id.[Name] as [Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='NationalID'),
- Patient_clinic_number=(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
-  
-  Birth_certificate=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+CASE(ISNULL(P.DobPrecision, PT.DobPrecision))
+	WHEN 0 THEN 'EXACT'
+	WHEN 1 THEN 'ESTIMATED'
+	ELSE 'ESTIMATED' END AS Exact_DOB,
+Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+UPN = (SELECT IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
+format(cast(ISNULL(P.RegistrationDate, PT.RegistrationDate) as date),'yyyy-MM-dd') AS Encounter_Date,
+NULL Encounter_ID,
+(CASE(Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
+INNER JOIN Identifiers IDE ON IDE.Id = PIR.IdentifierId
+WHERE IDE.Name = 'NationalID' AND PIR.PersonId = P.Id) t)
+WHEN NULL THEN PT.NationalId
+ELSE (Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
+INNER JOIN Identifiers IDE ON IDE.Id = PIR.IdentifierId
+WHERE IDE.Name = 'NationalID' AND PIR.PersonId = P.Id) t) END) AS National_id_No,
+(SELECT PatientClinicID FROM mst_Patient MSP WHERE MSP.Ptn_Pk = PT.ptn_pk) AS Patient_clinic_number,
+Birth_certificate=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
 inner join (
 select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
 inner join  IdentifierType it on it.Id =id.IdentifierType
@@ -63,52 +60,32 @@ inner join (
 select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
 inner join  IdentifierType it on it.Id =id.IdentifierType
 where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='AlienRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
-pcv.MobileNumber as Phone_number,
-pcv.AlternativeNumber as Alternate_Phone_number,
-pcv.PhysicalAddress as Postal_Address,
-pcv.EmailAddress as EmailAddress,
- County = (SELECT TOP 1 CountyName FROM County WHERE CountyId = PL.County),
- Sub_county=(select TOP 1 Subcountyname from County where  SubcountyId=PL.SubCounty),
- Ward=(SELECT TOP 1 WardName from County where WardId=PL.Ward),
- PL.Village as Village,
- PL.LandMark as LandMark,
- PL.NearestHealthCentre as Nearest_Health_Centre,
- ts.Next_of_kin,
- ts.Next_of_kin_phone,
-  ts.Next_of_kin_relationship,
- ts.Next_of_kin_address,
+CAST(DECRYPTBYKEY((SELECT TOP 1 PC.MobileNumber FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) AS Phone_number,
+CAST(DECRYPTBYKEY((SELECT TOP 1 PC.AlternativeNumber FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) Alternate_Phone_number,
+CAST(DECRYPTBYKEY((SELECT TOP 1 PC.PhysicalAddress FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) Postal_Address,
+CAST(DECRYPTBYKEY((SELECT TOP 1 PC.EmailAddress FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) Email_address,
+County = (select TOP 1 C.CountyName from PersonLocation PL INNER JOIN County C ON C.CountyId = PL.County WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
+Sub_county = (select TOP 1 C.Subcountyname from PersonLocation PL INNER JOIN County C ON C.SubcountyId = PL.SubCounty WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
+Ward = (select TOP 1 C.WardName from PersonLocation PL INNER JOIN County C ON C.WardId = PL.Ward WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
+Village = (select TOP 1 PL.Village from PersonLocation PL WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
+Landmark = (select TOP 1 PL.LandMark from PersonLocation PL WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
+Nearest_Health_Centre = (select TOP 1 PL.NearestHealthCentre from PersonLocation PL WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),null as Next_of_kin, 
+null as Next_of_kin_phone,
+null as Next_of_kin_relationship,null as Next_of_kin_address,
+Marital_status = (SELECT TOP 1 ItemName FROM PatientMaritalStatus PM INNER JOIN LookupItemView LK ON LK.ItemId = PM.MaritalStatusId WHERE PM.PersonId = P.Id AND PM.DeleteFlag = 0 AND LK.MasterName = 'MaritalStatus'),
+Occupation = (SELECT TOP 1 ItemName FROM PersonOccupation PO INNER JOIN LookupItemView LK ON LK.ItemId = PO.Occupation WHERE PO.PersonId = P.Id AND MasterName = 'Occupation' AND PO.DeleteFlag = 0 ORDER BY Id DESC),
+Education_level = (SELECT TOP 1 ItemName FROM PersonEducation EL INNER JOIN LookupItemView LK ON LK.ItemId = EL.EducationLevel WHERE EL.PersonId = P.Id and MasterName = 'EducationalLevel' AND EL.DeleteFlag = 0 ORDER BY Id DESC),
+Dead = (SELECT top 1  'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
+Death_date = (SELECT TOP 1 DateOfDeath FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
+NULL AS Consent, NULL AS Consent_decline_reason,
+PT.DeleteFlag AS voided 
 
- MaritalStatus = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PM.MaritalStatusId AND MasterName = 'MaritalStatus'),
- Occupation = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PO.Occupation AND MasterName = 'Occupation'),
-Education_level = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PED.EducationLevel AND MasterName = 'EducationalLevel'),
-pend.Dead,
-pend.DateOfDeath as Death_date,
-ts.Consent,
-ts.Consent_Decline_Reason,
-P.DeleteFlag as Voided 
- -- into PatientDemographics
+
 FROM Person P
-  left JOIN (select * from (select * ,ROW_NUMBER() OVER(partition by PersonId order by CreateDate desc)rownum from PersonLocation where (DeleteFlag =0 or DeleteFlag is null))PLL where PLL.rownum='1') PL ON PL.PersonId = P.Id
-  INNER JOIN Patient PT ON PT.PersonId = P.Id
-  LEFT JOin PersonContactView pcv on pcv.PersonId=P.Id
- LEFT JOIN( select t.PersonId,t.SupporterId,t.Next_of_kin,t.Next_of_kin_phone,t.Next_of_kin_relationship,t.Next_of_kin_address,t.Consent,t.Consent_Decline_Reason from (select  pts.PersonId ,pts.SupporterId,(pt.FirstName + ' ' + pt.MiddleName + ' '  + pt.LastName) as Next_of_kin,pts.ContactCategory,pts.ContactRelationship,lts.DisplayName as Next_of_kin_relationship 
- ,pts.MobileContact as Next_of_kin_phone,pcv.PhysicalAddress as [Next_of_kin_address],pcc.Consent,pcc.Consent_Decline_Reason
-,pts.CreateDate ,ROW_NUMBER() OVER(Partition by   pts.PersonId order by pts.CreateDate desc)rownum  from PatientTreatmentSupporter pts
-inner join PersonView p  on pts.PersonId=p.Id
-inner join PersonView pt on pt.Id=pts.SupporterId
-inner join PersonContactView pcv on pcv.PersonId=pts.SupporterId
-inner join LookupItemView lt on lt.ItemId=pts.ContactCategory and lt.MasterName='ContactCategory'
-inner join LookupItemView lts on lts.ItemId=pts.ContactRelationship and lts.MasterName='KinRelationship'
-left join(select pc.PatientId,pc.PersonId,pc.ConsentValue,lt.DisplayName as Consent,pc.[Comments] as [Consent_Decline_Reason] from PatientConsent pc
-inner join LookupItem lt on lt.Id=pc.ConsentValue) pcc on pcc.PersonId=pts.SupporterId
-where lt.ItemName  in ('NextofKin','EmergencyContact')) t where t.rownum='1')ts on ts.PersonId= P.Id
-LEFT JOIN PatientMaritalStatus PM ON PM.PersonId = P.Id
-LEFT JOIN PersonEducation PED ON PED.PersonId = P.Id
-LEFT JOIN PersonOccupation PO ON PO.PersonId = P.Id
-LEFT JOIN( select pend.PatientId,pend.DateOfDeath, CASE WHEN pend.ExitDate is not null then 'Yes' else 'No' end as Dead from (select pce.PatientId,CASE WHEN pce.DateOfDeath is null then pce.ExitDate else pce.DateOfDeath end as DateOfDeath,pce.ExitReason a,pce.ExitDate,lt.DisplayName,ROW_NUMBER() OVER(partition by pce.PatientId order by pce.CreateDate desc)rownum from PatientCareending  pce
-inner join  LookupItemView lt on lt.ItemId=pce.ExitReason and lt.MasterName='CareEnded'
-where lt.ItemName='Death'
-)pend where pend.rownum='1')pend on pend.PatientId=PT.Id
+LEFT JOIN Patient PT ON PT.PersonId = P.Id
+ORDER BY P.Id ASC
+
+
 -- -----------------------------2. HIV Enrollment DML ---------------------------------------------
 exec pr_OpenDecryptedSession;
 INSERT INTO OPENQUERY (IQCARE_OPENMRS, 'SELECT Person_Id, UPN, Encounter_Date, Encounter_ID, Patient_Type,Entry_Point,TI_Facility,Date_first_enrolled_in_care,

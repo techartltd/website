@@ -7,7 +7,11 @@ declare @PersonsCount integer, @PersonsMaleCount int, @PersonsFemaleCount int,
 @TreatmentSupporterWhoIsPatient int, 
 @CONtacts int, 
 @DuplicateCCCNumber int,
-@PatientCountDeleted int, @PersonsCountDeleted int
+@PatientCountDeleted int, @PersonsCountDeleted int, @IQCareVersion varchar(30)
+
+-- check IQCare version
+SELECT @IQCareVersion = VersionName FROM AppAdmin
+Select @IQCareVersion [IQCare Version];
 
 -- counts all Persons found 
 SELECT @PersonsCount = COUNT(*) FROM Person
@@ -78,8 +82,8 @@ group by l.ItemName
 -- pateint by service enrolment
 SELECT p.IdentifierTypeId, i.Name [Service Name], COUNT(IdentifierTypeId) PatientsPerService FROM PatientIdentifier p join Identifiers i ON i.Id = p.IdentifierTypeId WHERE i.DeleteFlag = 0 group by IdentifierTypeId, i.Name
 
--- pateint by care terminatiON
-SELECT l.ItemDisplayName [Care End ReasON], COUNT(*) NoOfPatients FROM PatientCareending p join LookupItemView l ON p.ExitReasON = l.ItemId WHERE p.ExitDate is not null group by l.ItemDisplayName
+-- pateint by care termination
+SELECT l.ItemDisplayName [Care End Reason], COUNT(*) NoOfPatients FROM PatientCareending p join LookupItemView l ON p.ExitReasON = l.ItemId WHERE p.ExitDate is not null group by l.ItemDisplayName
 
 -- repeated CCC number
 SELECT * FROM #DuplicateCCC
