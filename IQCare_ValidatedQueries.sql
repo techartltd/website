@@ -68,7 +68,7 @@ PT.DeleteFlag AS voided
 
 
 FROM Person P
-INNER JOIN Patient PT ON PT.PersonId = P.Id
+LEFT JOIN Patient PT ON PT.PersonId = P.Id
 ORDER BY P.Id ASC
 
 
@@ -163,6 +163,24 @@ FROM dtl_PatientVitals DPV
 inner join Patient P on p.ptn_pk = DPV.Ptn_pk
 inner join ord_Visit OV ON OV.Visit_Id = DPV.Visit_pk
 inner join dtl_PatientClinicalStatus PCS ON PCS.Visit_pk = OV.Visit_Id;
+
+-- KEY POPULATION
+SELECT 
+PersonId Person_Id,
+Pop_Type = PopulationType,
+Key_Pop_Type = (SELECT ItemName FROM LookupItemView LK WHERE LK.ItemId = PopulationCategory AND MasterName = 'KeyPopulation'),
+Voided = DeleteFlag
+
+FROM [dbo].[PatientPopulation]
+
+-- DISABILITIES
+SELECT 
+PersonId Person_Id,
+Encounter_ID = PatientEncounterID,
+Disability = (SELECT * FROM LookupItemView WHERE MasterName = 'Disabilities'),
+Voided  = DeleteFlag
+
+FROM ClientDisability
 
 -- 4. HTS Initial Encounter
 
