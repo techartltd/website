@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS migration_st.st_demographics;
 CREATE TABLE migration_st.st_demographics
 (
   Person_Id             INT(11),
+  Patient_Id             INT(11),
   First_Name            VARCHAR(100),
   Middle_Name           VARCHAR(100),
   Last_Name             VARCHAR(100),
