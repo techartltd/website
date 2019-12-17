@@ -1,0 +1,1569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>Migration_combine</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2019/12/11 14:58:27.590</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2019/12/11 14:58:27.590</modified_date>
+    <key_for_session_key/>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>mssql_conn_C1</name>
+    <server>DESKTOP-O2MBCFP</server>
+    <type>MSSQLNATIVE</type>
+    <access>Native</access>
+    <database>IQCare_Machakos</database>
+    <port>1433</port>
+    <username>sa</username>
+    <password>Encrypted 2be98afc86aa7f287fb17bd64db9ea3db</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>EXTRA_OPTION_MSSQLNATIVE.instance</code>
+        <attribute>SQLEXPRESS</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQLUseIntegratedSecurity</code>
+        <attribute>false</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1433</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mysql_conn_C1</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>migration_st</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>Create_Staging_DB</from>
+      <to>iqcare_source_demographics</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_demographics</from>
+      <to>load_st_demographics</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>Create_Staging_DB</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_conn_C1</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
+-- Description : Creates tables for RAW Data from IQCARE
+-- Run First
+DROP DATABASE IF EXISTS migration_st;
+CREATE DATABASE migration_st;
+-- DDL
+-- Staging Database Scripts
+-- 1. Demographics/Registration  DDL
+DROP TABLE IF EXISTS migration_st.st_demographics;
+CREATE TABLE migration_st.st_demographics
+(
+  Person_Id             INT(11),
+  First_Name            VARCHAR(100),
+  Middle_Name           VARCHAR(100),
+  Last_Name             VARCHAR(100),
+  Nickname              VARCHAR(100),
+  DOB                   DATE NULL,
+  Exact_DOB             VARCHAR(100),
+  Sex                   VARCHAR(50),
+  UPN                   VARCHAR(300),
+  Encounter_Date        DATE,
+  Encounter_ID          VARCHAR(100),
+  National_id_no        VARCHAR(100),
+  Patient_clinic_number VARCHAR(100),
+  Birth_certificate     VARCHAR(100),
+  Birth_notification    VARCHAR(100),
+  Hei_no                VARCHAR(100),
+  Passport              VARCHAR(100),
+  Alien_registration    VARCHAR(100),
+  Phone_number          VARCHAR(100),
+  Alternate_Phone_number VARCHAR(100),
+  Postal_Address        VARCHAR(100),
+  Email_address         VARCHAR(100),
+  County                VARCHAR(100),
+  Sub_county            VARCHAR(100),
+  Ward                  VARCHAR(100),
+  Village               VARCHAR(255),
+  Landmark              VARCHAR(255),
+  Nearest_Health_Centre VARCHAR(255),
+  Next_of_kin           VARCHAR(255),
+  Next_of_kin_phone     VARCHAR(255),
+  Next_of_kin_relationship VARCHAR(255),
+  Next_of_kin_address   VARCHAR(100),
+  Marital_status        VARCHAR(255),
+  Occupation            VARCHAR(255),
+  Education_level       VARCHAR(255),
+  Dead                  VARCHAR(100),
+  Death_date            DATE DEFAULT NULL,
+  Consent               VARCHAR(255),
+  Consent_decline_reason VARCHAR(255),
+  voided                INT(11)
+);
+
+-- 2. HIV Enrollment
+DROP TABLE IF EXISTS migration_st.st_hiv_enrollment;
+CREATE TABLE migration_st.st_hiv_enrollment
+(
+  Person_Id                        INT(11),
+  UPN                              VARCHAR(20) NOT NULL,
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Patient_Type                     VARCHAR(100),
+  Entry_point                      VARCHAR(100),
+  TI_Facility                      VARCHAR(100),
+  Date_first_enrolled_in_care       DATE,
+  Transfer_in_date                  DATE,
+  Date_started_art_at_transferring_facility DATE,
+  Date_confirmed_hiv_positive       DATE,
+  Facility_confirmed_hiv_positive   VARCHAR(100),
+  Baseline_arv_use                  VARCHAR(100),
+  Purpose_of_baseline_arv_use       VARCHAR(100),
+  Baseline_arv_regimen              VARCHAR(100),
+  Baseline_arv_regimen_line         VARCHAR(100),
+  Baseline_arv_date_last_used       DATE,
+  Baseline_who_stage                VARCHAR(50),
+  Baseline_cd4_results              INT(11),
+  Baseline_cd4_date                 DATE,
+  Baseline_vl_results               INT(11),
+  Baseline_vl_date                  DATE,
+  Baseline_vl_ldl_results           INT(11),
+  Baseline_vl_ldl_date              DATE,
+  Baseline_HBV_Infected             VARCHAR(50),
+  Baseline_TB_Infected              VARCHAR(50),
+  Baseline_Pregnant                 VARCHAR(50),
+  Baseline_Breastfeeding            VARCHAR(50),
+  Baseline_Weight                   DOUBLE,
+  Baseline_Height                   DOUBLE,
+  Baseline_BMI                      DOUBLE,
+  Name_of_treatment_supporter       VARCHAR(255),
+  Relationship_of_treatment_supporter INT(11),
+  Treatment_supporter_telephone      VARCHAR(100),
+  Treatment_supporter_address        VARCHAR(100),
+  voided                             INT(11)
+);
+
+-- 3. Triage
+DROP TABLE IF EXISTS migration_st.st_triage;
+CREATE TABLE migration_st.st_triage
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Visit_reason                     VARCHAR(255),
+  Systolic_pressure                DOUBLE,
+  Diastolic_pressure               DOUBLE,
+  Respiratory_rate                 DOUBLE,
+  Pulse_rate                       DOUBLE,
+  Oxygen_saturation                DOUBLE,
+  Weight                           DOUBLE,
+  Height                           DOUBLE,
+  Temperature                      DOUBLE,
+  BMI                              DOUBLE,
+  Muac                             DOUBLE,
+  Weight_for_age_zscore            VARCHAR(100),
+  Weight_for_height_zscore         VARCHAR(100),
+  BMI_Zscore                       VARCHAR(100),
+  Head_circumference               DOUBLE,
+  Nutritional_status               INT(11),
+  Last_menstrual_period            DATE,
+  Nurse_comments                   VARCHAR(255),
+  Voided                           INT(11)
+);
+
+-- 4. HTS Initial Encounter
+DROP TABLE IF EXISTS migration_st.st_hts_initial;
+CREATE TABLE migration_st.st_hts_initial
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Pop_Type                         VARCHAR(50),
+  Key_Pop_Type                     VARCHAR(50),
+  Priority_Pop_Type                VARCHAR(50),
+  Patient_disabled                 VARCHAR(50),
+  Disability                       VARCHAR(100),
+  Ever_Tested                      VARCHAR(50),
+  Self_Tested                      VARCHAR(50),
+  HTS_Strategy                     VARCHAR(100),
+  HTS_Entry_Point                  VARCHAR(100),
+  Consented                        VARCHAR(50),
+  Tested_As                        VARCHAR(100),
+  TestType                         VARCHAR(50),
+  Test_1_Kit_Name                  VARCHAR(100),
+  Test_1_Lot_Number                VARCHAR(100),
+  Test_1_Expiry_Date               DATE,
+  Test_1_Final_Result              VARCHAR(100),
+  Test_2_Kit_Name                  VARCHAR(100),
+  Test_2_Lot_Number                VARCHAR(100),
+  Test_2_Expiry_Date               DATE,
+  Test_2_Final_Result              VARCHAR(100),
+  Final_Result                     VARCHAR(100),
+  Result_given                     VARCHAR(50),
+  Couple_Discordant                VARCHAR(50),
+  Tb_Screening_Results             VARCHAR(100),
+  Remarks                          VARCHAR(255),
+  Voided                           INT(11)
+);
+
+-- 5. HTS Retest Encounter
+DROP TABLE IF EXISTS migration_st.st_hts_retest;
+CREATE TABLE migration_st.st_hts_retest
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Pop_Type                         VARCHAR(50),
+  Key_Pop_Type                     VARCHAR(50),
+  Priority_Pop_Type                VARCHAR(50),
+  Patient_disabled                 VARCHAR(50),
+  Disability                       VARCHAR(100),
+  Ever_Tested                      VARCHAR(50),
+  Self_Tested                      VARCHAR(50),
+  HTS_Strategy                     VARCHAR(100),
+  HTS_Entry_Point                  VARCHAR(100),
+  Consented                        VARCHAR(50),
+  Tested_As                        VARCHAR(100),
+  TestType                         VARCHAR(50),
+  Test_1_Kit_Name                  VARCHAR(100),
+  Test_1_Lot_Number                VARCHAR(100),
+  Test_1_Expiry_Date               DATE,
+  Test_1_Final_Result              VARCHAR(100),
+  Test_2_Kit_Name                  VARCHAR(100),
+  Test_2_Lot_Number                VARCHAR(100),
+  Test_2_Expiry_Date               DATE,
+  Test_2_Final_Result              VARCHAR(100),
+  Final_Result                     VARCHAR(100),
+  Result_given                     VARCHAR(50),
+  Couple_Discordant                VARCHAR(50),
+  Tb_Screening_Results             VARCHAR(100),
+  Remarks                          VARCHAR(255),
+  Voided                           INT(11)
+);
+
+-- 6. HTS Client Tracing
+DROP TABLE IF EXISTS migration_st.st_hts_tracing;
+CREATE TABLE migration_st.st_hts_tracing
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Contact_Type                     VARCHAR(100),
+  Contact_Outcome                  VARCHAR(100),
+  Reason_uncontacted               VARCHAR(255),
+  Voided                           INT(11)
+);
+
+-- 7. HTS Referral
+DROP TABLE IF EXISTS migration_st.st_hts_referral;
+CREATE TABLE migration_st.st_hts_referral
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Facility_Referred                VARCHAR(255),
+  Date_To_Be_Enrolled              DATE,
+  Remarks                          VARCHAR(255),
+  Voided                           INT(11)
+);
+-- 8. HTS Linkage
+DROP TABLE IF EXISTS migration_st.st_hts_linkage;
+CREATE TABLE migration_st.st_hts_linkage
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Facility_Linked                  VARCHAR(255),
+  CCC_Number                       VARCHAR(100),
+  Health_Worker_Handed_To          VARCHAR(255),
+  Cadre                            VARCHAR(100),
+  Date_Enrolled                    DATE,
+  ART_Start_Date                   DATE,
+  Remarks                          VARCHAR(255),
+  Voided                           INT(11)
+);
+
+-- 9. HTS Contact Listing
+DROP TABLE IF EXISTS migration_st.st_hts_contact_listing;
+CREATE TABLE migration_st.st_hts_contact_listing
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Consent                          VARCHAR(50),
+  First_Name                       VARCHAR(100),
+  Middle_Name                      VARCHAR(100),
+  Last_Name                        VARCHAR(100),
+  Sex                              VARCHAR(50),
+  DoB                              DATE,
+  Marital_Status                   VARCHAR(100),
+  Physical_Address                 VARCHAR(255),
+  Phone_Number                     VARCHAR(100),
+  Relationship_To_Index            VARCHAR(100),
+  Currently_Living_With_Index      VARCHAR(100),
+  IPV_Physically_Hurt              VARCHAR(50),
+  IPV_Threatened_Hurt              VARCHAR(50),
+  IPV_Sexual_Hurt                  VARCHAR(50),
+  IPV_Outcome                      VARCHAR(50),
+  HIV_Status                       VARCHAR(100),
+  PNS_Approach                     VARCHAR(100),
+  Contact_Type                     VARCHAR(100),
+  Contact_Outcome                  VARCHAR(100),
+  Reason_uncontacted               VARCHAR(255),
+  Booking_Date                     DATE,
+  Consent_For_Testing              VARCHAR(50),
+  Date_Reminded                    DATE,
+  Voided                           INT(11)
+);
+
+-- 10. Program Enrollment
+DROP TABLE IF EXISTS migration_st.st_program_enrollment;
+CREATE TABLE migration_st.st_program_enrollment
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Program                          VARCHAR(100),
+  Date_Enrolled                    DATE,
+  Date_Completed                   DATE
+);
+
+-- 11. Program Discontinuation
+DROP TABLE IF EXISTS migration_st.st_program_discontinuation;
+CREATE TABLE migration_st.st_program_discontinuation
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Program                          VARCHAR(100),
+  Date_Enrolled                    DATE,
+  Date_Completed                   DATE,
+  Care_Ending_Reason               VARCHAR(255),
+  Facility_Transfered_To           VARCHAR(255),
+  Death_Date                       DATE
+);
+
+-- 12. IPT Program Screening
+DROP TABLE IF EXISTS migration_st.st_ipt_screening;
+CREATE TABLE migration_st.st_ipt_screening
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Yellow_urine                     VARCHAR(100),
+  Numbness                         VARCHAR(100),
+  Yellow_eyes                      VARCHAR(100),
+  Tenderness                       VARCHAR(100),
+  IPT_Start_Date                   DATE
+);
+
+-- 13. IPT Program Enrollment
+DROP TABLE IF EXISTS migration_st.st_ipt_program;
+CREATE TABLE migration_st.st_ipt_program
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  IPT_Start_Date                   DATE,
+  Indication_for_IPT               VARCHAR(100),
+  IPT_Outcome                      VARCHAR(100),
+  Outcome_Date                     DATE
+);
+
+
+
+-- 14. IPT Program Followup
+DROP TABLE IF EXISTS migration_st.st_ipt_followup;
+CREATE TABLE migration_st.st_ipt_followup
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Ipt_due_date                     DATE DEFAULT NULL,
+  Date_collected_ipt               DATE DEFAULT NULL,
+  Weight                           DOUBLE,
+  Hepatotoxity                     VARCHAR(100) DEFAULT NULL,
+  Hepatotoxity_Action			         VARCHAR(400) DEFAULT NULL,
+  Peripheral_neuropathy            VARCHAR(100) DEFAULT NULL ,
+  Peripheralneuropathy_Action		   VARCHAR(400) DEFAULT NULL,
+  Rash                             VARCHAR(100),
+  Rash_Action						           VARCHAR(100) DEFAULT NULL,
+  Adherence                        VARCHAR(100),
+  AdheranceMeasurement_Action		   VARCHAR(500),
+  IPT_Outcome                      VARCHAR(100),
+  Outcome_Date                     DATE
+);
+
+-- 15. Regimen History
+DROP TABLE IF EXISTS migration_st.st_regimen_history;
+CREATE TABLE migration_st.st_regimen_history
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Program                          VARCHAR(100),
+  Drug_Event                       VARCHAR(100),
+  Regimen                          VARCHAR(200),
+  Regimen_Name                     VARCHAR(200),
+  Regimen_Line                     VARCHAR(200),
+  Date_Started                     DATE,
+  Date_Stopped                     DATE,
+  Regimen_Discontinued             VARCHAR(200),
+  Date_Discontinued                DATE,
+  Reason_Discontinued              VARCHAR(255),
+  RegimenSwitchTo                  VARCHAR(255),
+  CurrentRegimen                   VARCHAR(255),
+  Voided                           INT(11),
+  Date_voided                      DATE
+);
+
+
+-- 16. HIV Followup
+DROP TABLE IF EXISTS migration_st.st_hiv_followup;
+CREATE TABLE migration_st.st_hiv_followup
+(
+  Person_Id                          INT(100),
+  Encounter_Date                    DATE,
+  Encounter_ID                  		VARCHAR(100),
+  Visit_scheduled            	    	VARCHAR(100),
+  Visit_by                  	      VARCHAR(100),
+  Visit_by_other           		      VARCHAR(100),
+  Nutritional_status                VARCHAR(200),
+  Population_type                   VARCHAR(200),
+  Key_population_type               VARCHAR(200),
+  Who_stage            		          VARCHAR(200),
+  Presenting_complaints 	          VARCHAR(200),
+  Complaint                         VARCHAR(255),
+  Duration                          VARCHAR(100),
+  Onset_Date                        DATE,
+  Clinical_notes                    VARCHAR(1600),
+  Has_known_allergies               VARCHAR(200),
+  Allergies_causative_agents        VARCHAR(200),
+  Allergies_reactions               VARCHAR(200),
+  Allergies_severity                VARCHAR(200),
+  Has_Chronic_illnesses_cormobidities VARCHAR(200),
+  Chronic_illnesses_name            VARCHAR(200),
+  Chronic_illnesses_onset_date      DATE,
+  Has_adverse_drug_reaction         VARCHAR(200),
+  Medicine_causing_drug_reaction    VARCHAR(200),
+  Drug_reaction                    VARCHAR(200),
+  Drug_reaction_severity            VARCHAR(200),
+  Drug_reaction_onset_date          DATE,
+  Drug_reaction_action_taken        VARCHAR(200),
+  Vaccinations_today                VARCHAR(200),
+  Vaccine_Stage			              	VARCHAR(200),
+  Vaccination_Date 		            	DATE,
+  Last_menstrual_period             DATE,
+  Pregnancy_status                  VARCHAR(200),
+  Wants_pregnancy                   VARCHAR(200),
+  Pregnancy_outcome                 VARCHAR(200),
+  Anc_number                        VARCHAR(100),
+  Anc_profile                       VARCHAR(100),
+  Expected_delivery_date            DATE,
+  Gravida                           INT(11),
+  Parity_term                       INT(11),
+  Parity_abortion                   INT(11),
+  Family_planning_status            VARCHAR(100),
+  Family_planning_method            VARCHAR(255),
+  Reason_not_using_family_planning  VARCHAR(255),
+  General_examinations_findings     VARCHAR(100),
+  System_review_finding             VARCHAR(200),
+  Skin                              VARCHAR(200),
+  Skin_finding_notes                VARCHAR(200),
+  Eyes                              VARCHAR(200),
+  Eyes_finding_notes                VARCHAR(200),
+  ENT                               VARCHAR(200),
+  ENT_finding_notes                 VARCHAR(200),
+  Chest                             VARCHAR(200),
+  Chest_finding_notes               VARCHAR(200),
+  CVS                               VARCHAR(200),
+  CVS_finding_notes                 VARCHAR(200),
+  Abdomen                           VARCHAR(200),
+  Abdomen_finding_notes             VARCHAR(200),
+  CNS                               VARCHAR(200),
+  CNS_finding_notes                 VARCHAR(200),
+  Genitourinary                     VARCHAR(200),
+  Genitourinary_finding_notes       VARCHAR(200),
+  Diagnosis                         VARCHAR(200),
+  Treatment_plan                    VARCHAR(255),
+  Ctx_adherence                     VARCHAR(200),
+  Ctx_dispensed                     VARCHAR(100),
+  Dapsone_adherence                 VARCHAR(200),
+  Dapsone_dispensed                 VARCHAR(200),
+  Morisky_forget_taking_drugs       VARCHAR(200),
+  Morisky_careless_taking_drugs     VARCHAR(200),
+  Morisky_stop_taking_drugs_feeling_worse   VARCHAR(200),
+  Morisky_stop_taking_drugs_feeling_better  VARCHAR(200),
+  Morisky_took_drugs_yesterday      VARCHAR(200),
+  Morisky_stop_taking_drugs_symptoms_under_control  VARCHAR(200),
+  Morisky_feel_under_pressure_on_treatment_plan     VARCHAR(200),
+  Morisky_how_often_difficulty_remembering    VARCHAR(200),
+  Arv_adherence                     VARCHAR(200),
+  Condom_provided                   VARCHAR(100),
+  Screened_for_substance_abuse      VARCHAR(100),
+  Pwp_disclosure                    VARCHAR(100),
+  Pwp_partner_tested                VARCHAR(100),
+  Cacx_screening                    VARCHAR(100),
+  Screened_for_sti                  VARCHAR(100),
+  Sti_partner_notification          VARCHAR(100),
+  Stability                         VARCHAR(200),
+  Next_appointment_date             DATE,
+  Next_appointment_reason           VARCHAR(255),
+  Appointment_type                  VARCHAR(200),
+  Differentiated_care               VARCHAR(200),
+  Voided                            INT(11)
+);
+
+-- 17. Laboratory Extract
+DROP TABLE IF EXISTS migration_st.st_laboratory_extract;
+CREATE TABLE migration_st.st_laboratory_extract
+(
+  Person_Id       INT(11),
+  Encounter_Date  DATE,
+  Encounter_ID    VARCHAR(50),
+  Lab_test        VARCHAR(180),
+  Urgency         VARCHAR(50),
+  Test_result     VARCHAR(180),
+  Date_test_requested DATE ,
+  Date_test_result_received DATE,
+  Test_requested_by INT(11),
+  Voided           INT(11)
+);
+
+-- 18. Pharmacy Extract
+DROP TABLE IF EXISTS migration_st.st_pharmacy_extract;
+CREATE TABLE migration_st.st_pharmacy_extract
+(
+  Person_Id       INT(11),
+  Encounter_Date  DATE,
+  Encounter_ID    VARCHAR(50),
+  Drug            VARCHAR(100),
+  Is_arv          VARCHAR(50),
+  Is_ctx          VARCHAR(50),
+  Is_dapsone      VARCHAR(50),
+  Drug_name       VARCHAR(255),
+  Dose            VARCHAR(50),
+  Unit            VARCHAR(50),
+  Frequency       VARCHAR(50),
+  Duration        VARCHAR(50),
+  Duration_units  VARCHAR(20) ,
+  Duration_in_days  VARCHAR(50),
+  Prescription_provider VARCHAR(50),
+  Dispensing_provider VARCHAR(50),
+  Regimen          VARCHAR(50),
+  Adverse_effects  VARCHAR(100),
+  Date_of_refill   DATE,
+  Voided INT(11),
+  Date_voided      DATE
+
+);
+
+-- 19.  MCH Enrollment
+DROP TABLE IF EXISTS migration_st.st_mch_enrollment;
+CREATE TABLE migration_st.st_mch_enrollment
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Anc_number                       VARCHAR(50),
+  Gestation_in_weeks               INT(11),
+  Parity                           INT(11),
+  Parity_abortion                  INT(11),
+  Gravida                          INT(11),
+  EDD                              DATE,
+  Edd_ultrasound                   DATE,
+  Age_at_menarche                  INT(11),
+  Tb_screening                     VARCHAR(50),
+  lmp                              DATE,
+  lmp_estimated                    VARCHAR(50),
+  First_anc_visit_date             DATE,
+  Hiv_status                       VARCHAR(50),
+  Hiv_test_date                    DATE,
+  Partner_hiv_status               VARCHAR(50),
+  Partner_hiv_test_date            DATE,
+  Blood_group                      VARCHAR(100),
+  Syphilis_serology                VARCHAR(100),
+  Bs_for_mps                       VARCHAR(100),
+  Urine_microscopy                 VARCHAR(255),
+  Urinary_albumin                  VARCHAR(100),
+  Glucose_measurement              VARCHAR(100),
+  Urine_ph                         INT(11),
+  Urine_gravity                    INT(11),
+  Urine_nitrite_test               VARCHAR(100),
+  Urine_leukocyte_esterace_test    VARCHAR(100),
+  Urinary_ketone                   VARCHAR(100),
+  Urine_bile_salt_test             VARCHAR(100),
+  Urine_bile_pigment_test          VARCHAR(100),
+  Urine_colour                     VARCHAR(100),
+  Urine_turbidity                  VARCHAR(100),
+  Urine_dipstick_for_blood         VARCHAR(100),
+  Voided                           INT(11)
+);
+
+-- 20.  MCH ANC Visit
+DROP TABLE IF EXISTS migration_st.st_mch_antenatal_visit;
+CREATE TABLE migration_st.st_mch_antenatal_visit
+(
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Anc_visit_number                 INT(11),
+  Anc_number                       VARCHAR(50),
+  Temperature                      DOUBLE,
+  Pulse_rate                       DOUBLE,
+  Systolic_bp                      DOUBLE,
+  Diastolic_bp                     DOUBLE,
+  Respiratory_rate                 DOUBLE,
+  Oxygen_saturation                INT(11),
+  Weight                           DOUBLE,
+  Height                           DOUBLE,
+  BMI                              DOUBLE,
+  Muac                             DOUBLE,
+  Hemoglobin                       DOUBLE,
+  Breast_exam_done                 VARCHAR(50),
+  Pallor                           VARCHAR(50),
+  Maturity                         INT(11),
+  Fundal_height                    DOUBLE,
+  Fetal_presentation               VARCHAR(100),
+  Lie                              VARCHAR(100),
+  Fetal_heart_rate                 INT(11),
+  Fetal_movement                   VARCHAR(50),
+  Who_stage                        INT(11),
+  Cd4                              INT(11),
+  Viral_load_sample_taken          VARCHAR(100),
+  Viral_load                       INT(11),
+  Ldl                              VARCHAR(100),
+  Arv_status                       INT(11),
+  Test_1_kit_name                  VARCHAR(50),
+  Test_1_kit_lot_no                VARCHAR(50) DEFAULT NULL,
+  Test_1_kit_expiry                DATE DEFAULT NULL,
+  Test_1_result                    VARCHAR(50) DEFAULT NULL,
+  Test_2_kit_name                  VARCHAR(50),
+  Test_2_kit_lot_no                VARCHAR(50) DEFAULT NULL,
+  Test_2_kit_expiry                DATE DEFAULT NULL,
+  Test_2_result                    VARCHAR(50) DEFAULT NULL,
+  Final_test_result                VARCHAR(50) DEFAULT NULL,
+  Patient_given_result             VARCHAR(50) DEFAULT NULL,
+  Partner_hiv_tested               VARCHAR(50),
+  Partner_hiv_status               VARCHAR(50),
+  Urine_microscopy                 VARCHAR(255),
+  Urinary_albumin                  VARCHAR(100),
+  Glucose_measurement              VARCHAR(100),
+  Urine_ph                         INT(11),
+  Urine_gravity                    INT(11),
+  Urine_nitrite_test               VARCHAR(100),
+  Urine_leukocyte_esterace_test    VARCHAR(100),
+  Urinary_ketone                   VARCHAR(100),
+  Urine_bile_salt_test             VARCHAR(100),
+  Urine_bile_pigment_test          VARCHAR(100),
+  Urine_colour                     VARCHAR(100),
+  Urine_turbidity                  VARCHAR(100),
+  Urine_dipstick_for_blood         VARCHAR(100),
+  Syphilis_test_status             VARCHAR(50),
+  Syphilis_treated_status          VARCHAR(50),
+  Bs_for_mps                       VARCHAR(100),
+  Anc_exercises                    VARCHAR(50),
+  Tb_screening                     VARCHAR(50),
+  Cacx_screening                   VARCHAR(50),
+  Cacx_screening_method            VARCHAR(50),
+  Prophylaxis_given                VARCHAR(50),
+  Baby_azt_dispensed               VARCHAR(50),
+  Baby_nvp_dispensed               VARCHAR(50),
+  Has_other_illnes                 VARCHAR(50),
+  Illnes_name                      VARCHAR(100),
+  Illnes_Onset_Date                DATE,
+  Drug                             VARCHAR(50),
+  Dose                             INT(11),
+  Units                            VARCHAR(50),
+  Frequency                        VARCHAR(50),
+  Duration                         INT(11),
+  Duration_units                   VARCHAR(50),
+  Anc_counselled                   VARCHAR(50),
+  Counselled_subject               VARCHAR(100),
+  Referred_from                    VARCHAR(100),
+  Referred_to                      VARCHAR(100),
+  Next_appointment_date            DATE,
+  Clinical_notes                   VARCHAR(100),
+  Voided                           INT(11)
+);
+
+-- 21. MCH Delivery
+DROP TABLE IF EXISTS migration_st.st_mch_delivery;
+CREATE TABLE migration_st.st_mch_delivery (
+  Person_Id                       	    	  	INT(11),
+  Encounter_Date                              DATE,
+  Encounter_ID                                VARCHAR(50),
+  Admission_number			                     	VARCHAR(200),
+  Gestation_Weeks		        			            INT(50),
+  Duration_Labour			                      	INT(50),
+  Delivery_Mode				                        VARCHAR(200),
+  Delivery_Date_TIme                     			DATE,
+  Placenta_Complete	   				                VARCHAR(100),
+  Blood_Loss							                    VARCHAR(100),
+  Mother_Condition                          	VARCHAR(100),
+  Death_Audited				                        VARCHAR(100),
+  Resuscitation_Done					                VARCHAR(100),
+  Delivery_Complications				          		VARCHAR(100),
+  Delivery_Complications_Type		        			VARCHAR(200),
+  Delivery_Complications_Other	        			VARCHAR(255),
+  Delivery_Place							              	VARCHAR(200),
+  Delivery_Conducted_By					             	VARCHAR(200),
+  Delivery_Cadre								              VARCHAR(100),
+  Delivery_Outcome							              VARCHAR(100),
+  Baby_Name                                   VARCHAR(200),
+  Baby_Sex                                    VARCHAR(100),
+  Baby_Weight                                 DOUBLE,
+  Baby_Condition                              VARCHAR(200),
+  Birth_Deformity                             VARCHAR(200),
+  TEO_Birth                                   VARCHAR(100),
+  BF_At_Birth_Less_1_hr                       VARCHAR(100),
+  Apgar_1                                     INT(50),
+  Apgar_5                                     INT(50),
+  Apgar_10                                    INT(50),
+  Test_1_kit_name                             VARCHAR(50),
+  Test_1_kit_lot_no                           VARCHAR(50),
+  Test_1_kit_expiry                           DATE,
+  Test_1_result                               VARCHAR(50),
+  Test_2_kit_name                             VARCHAR(50),
+  Test_2_kit_lot_no                           VARCHAR(50),
+  Test_2_kit_expiry                           DATE,
+  Test_2_result                               VARCHAR(50),
+  Final_test_result                           VARCHAR(50),
+  Test_Type                                   VARCHAR(50),
+  Patient_given_result                        VARCHAR(50),
+  Partner_hiv_tested                          VARCHAR(50),
+  Partner_hiv_status                          VARCHAR(50),
+  Next_HIV_Date                               DATE,
+  Syphilis_Treated                            VARCHAR(50),
+  Prophylaxis_given                           VARCHAR(50),
+  Baby_azt_dispensed                          VARCHAR(50),
+  Baby_nvp_dispensed                          VARCHAR(50),
+  Clinical_notes                              VARCHAR(200),
+  Next_Appointment_Date                       DATE,
+  Voided                                     INT(11)
+);
+
+-- 22. MCH Discharge
+DROP TABLE IF EXISTS migration_st.st_mch_discharge;
+CREATE TABLE migration_st.st_mch_discharge (
+  Person_Id                       	    	  	INT(11),
+  Encounter_Date                              DATE,
+  Encounter_ID                                VARCHAR(50),
+  Discharge_Date                              DATE,
+  Vitamin_A_Supplimentation                   VARCHAR(50),
+  Started_ART_In_ANC                          VARCHAR(50),
+  Started_ART_In_Mat                          VARCHAR(50),
+  Counselled_Infant_Feeding                   VARCHAR(50),
+  Baby_Status_On_Discharge                    VARCHAR(200),
+  Mother_Status_On_Discharge                  VARCHAR(200),
+  Birth_Notification_Number                   VARCHAR(200),
+  Referred_From                               VARCHAR(200),
+  Referred_To                                 VARCHAR(200),
+  Clinical_notes                              VARCHAR(255),
+  Next_Appointment_Date                       DATE,
+  Voided                                     INT(11)
+);
+
+-- 23. MCH PNC Visit
+DROP TABLE IF EXISTS migration_st.st_mch_pnc_visit;
+CREATE TABLE migration_st.st_mch_pnc_visit (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  PNC_Register_number			     VARCHAR(100),
+  PNC_VisitNumber                  INT(11),
+  Delivery_Date  					 DATE,
+  Mode_Of_Delivery				 VARCHAR(255),
+  Place_Of_delivery				 VARCHAR(255),
+  Temperature                      DOUBLE,
+  Pulse_rate                       DOUBLE,
+  Systolic_bp                      DOUBLE,
+  Diastolic_bp                     DOUBLE,
+  Respiratory_rate                 DOUBLE,
+  Oxygen_saturation                INT(11),
+  Weight                           DOUBLE,
+  Height                           DOUBLE,
+  BMI                              DOUBLE,
+  Muac                             DOUBLE,
+  General_Condition			     VARCHAR(200),
+  Pallor				     		 VARCHAR(100),
+  Breast_Examination				 VARCHAR(100),
+  PPH						         VARCHAR(100),
+  CS_Scar					         VARCHAR(100),
+  Haemoglobin				         DOUBLE,
+  Involution_Of_Uterus	     	 VARCHAR(100),
+  Condition_Of_Episiotomy	         VARCHAR(100),
+  Lochia							 VARCHAR(100),
+  Councelling_On_Infant_Feeding	 VARCHAR(100),
+  Councelling_On_FamilyPlanning	 VARCHAR(100),
+  Delivery_outcome				 VARCHAR(100),
+  Baby_Condition					 VARCHAR(100),
+  Feeding_Method					 VARCHAR(100),
+  Umblical_Cord				   	 VARCHAR(100),
+  Immunization_Started		     VARCHAR(100),
+  Test_1_kit_name                  VARCHAR(50),
+  Test_1_kit_lot_no                VARCHAR(50),
+  Test_1_kit_expiry                DATE,
+  Test_1_result                    VARCHAR(50),
+  Test_2_kit_name                  VARCHAR(50),
+  Test_2_kit_lot_no                VARCHAR(50),
+  Test_2_kit_expiry                DATE,
+  Test_2_result                    VARCHAR(50),
+  Final_test_result                VARCHAR(50),
+  Test_Type                        VARCHAR(50),
+  Patient_given_result             VARCHAR(50),
+  Partner_hiv_tested               VARCHAR(50),
+  Partner_hiv_status               VARCHAR(50),
+  Prophylaxis_given                VARCHAR(50),
+  Baby_azt_dispensed               VARCHAR(50),
+  Baby_nvp_dispensed               VARCHAR(50),
+  Pnc_exercises	                 VARCHAR(50),
+  Maternal_condition				 VARCHAR(255),
+  Iron_supplementation			 VARCHAR(50),
+  CaCx_screening					 VARCHAR(50),
+  CaCx_screening_method			 VARCHAR(200),
+  Fistula_screening			     VARCHAR(50),
+  On_FP	                         VARCHAR(50),
+  FP_Method			             VARCHAR(255),
+  Referred_From					 VARCHAR(255),
+  Referred_To					     VARCHAR(255),
+  Clinical_notes                   VARCHAR(255),
+  Next_Appointment_Date            DATE
+);
+</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>64</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_demographics</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql_conn_C1</connection>
+    <sql>
+exec pr_OpenDecryptedSession;
+SELECT distinct
+  P.Id as Person_Id,
+  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
+  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
+  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
+  CAST(DECRYPTBYKEY(P.NickName) AS VARCHAR(50)) AS Nickname,
+format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
+ NULL Exact_DOB,
+  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+ format(cast(PT.RegistrationDate as date),'yyyy-MM-dd') AS Encounter_Date,
+  NULL Encounter_ID,
+  National_id_No =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name] from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name] as [Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='NationalID'),
+ Patient_clinic_number=(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+  
+  Birth_certificate=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthCertificate' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+Birth_notification=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+Hei_no=(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='HEIRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+Passport=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='Passport' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+Alien_Registration=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='AlienRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+pcv.MobileNumber as Phone_number,
+pcv.AlternativeNumber as Alternate_Phone_number,
+pcv.PhysicalAddress as Postal_Address,
+pcv.EmailAddress as Email_address,
+ County = (SELECT TOP 1 CountyName FROM County WHERE CountyId = PL.County),
+ Sub_county=(select TOP 1 Subcountyname from County where  SubcountyId=PL.SubCounty),
+ Ward=(SELECT TOP 1 WardName from County where WardId=PL.Ward),
+ PL.Village as Village,
+ PL.LandMark as LandMark,
+ PL.NearestHealthCentre as Nearest_Health_Centre,
+ ts.Next_of_kin,
+ ts.Next_of_kin_phone,
+  ts.Next_of_kin_relationship,
+ ts.Next_of_kin_address,
+
+ Marital_status = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PM.MaritalStatusId AND MasterName = 'MaritalStatus'),
+ Occupation = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PO.Occupation AND MasterName = 'Occupation'),
+Education_level = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PED.EducationLevel AND MasterName = 'EducationalLevel'),
+pend.Dead,
+pend.DateOfDeath as Death_date,
+ts.Consent,
+ts.Consent_Decline_Reason,
+P.DeleteFlag as Voided 
+ -- into PatientDemographics
+FROM Person P
+  left JOIN (select * from (select * ,ROW_NUMBER() OVER(partition by PersonId order by CreateDate desc)rownum from PersonLocation where (DeleteFlag =0 or DeleteFlag is null))PLL where PLL.rownum='1') PL ON PL.PersonId = P.Id
+  INNER JOIN Patient PT ON PT.PersonId = P.Id
+  LEFT JOin PersonContactView pcv on pcv.PersonId=P.Id
+ LEFT JOIN( select t.PersonId,t.SupporterId,t.Next_of_kin,t.Next_of_kin_phone,t.Next_of_kin_relationship,t.Next_of_kin_address,t.Consent,t.Consent_Decline_Reason from (select  pts.PersonId ,pts.SupporterId,(pt.FirstName + ' ' + pt.MiddleName + ' '  + pt.LastName) as Next_of_kin,pts.ContactCategory,pts.ContactRelationship,lts.DisplayName as Next_of_kin_relationship 
+ ,pts.MobileContact as Next_of_kin_phone,pcv.PhysicalAddress as [Next_of_kin_address],pcc.Consent,pcc.Consent_Decline_Reason
+,pts.CreateDate ,ROW_NUMBER() OVER(Partition by   pts.PersonId order by pts.CreateDate desc)rownum  from PatientTreatmentSupporter pts
+inner join PersonView p  on pts.PersonId=p.Id
+inner join PersonView pt on pt.Id=pts.SupporterId
+inner join PersonContactView pcv on pcv.PersonId=pts.SupporterId
+inner join LookupItemView lt on lt.ItemId=pts.ContactCategory and lt.MasterName='ContactCategory'
+inner join LookupItemView lts on lts.ItemId=pts.ContactRelationship and lts.MasterName='KinRelationship'
+left join(select pc.PatientId,pc.PersonId,pc.ConsentValue,lt.DisplayName as Consent,pc.[Comments] as [Consent_Decline_Reason] from PatientConsent pc
+inner join LookupItem lt on lt.Id=pc.ConsentValue) pcc on pcc.PersonId=pts.SupporterId
+where lt.ItemName  in ('NextofKin','EmergencyContact')) t where t.rownum='1')ts on ts.PersonId= P.Id
+LEFT JOIN PatientMaritalStatus PM ON PM.PersonId = P.Id
+LEFT JOIN PersonEducation PED ON PED.PersonId = P.Id
+LEFT JOIN PersonOccupation PO ON PO.PersonId = P.Id
+LEFT JOIN( select pend.PatientId,pend.DateOfDeath, CASE WHEN pend.ExitDate is not null then 'Yes' else 'No' end as Dead from (select pce.PatientId,CASE WHEN pce.DateOfDeath is null then pce.ExitDate else pce.DateOfDeath end as DateOfDeath,pce.ExitReason a,pce.ExitDate,lt.DisplayName,ROW_NUMBER() OVER(partition by pce.PatientId order by pce.CreateDate desc)rownum from PatientCareending  pce
+inner join  LookupItemView lt on lt.ItemId=pce.ExitReason and lt.MasterName='CareEnded'
+where lt.ItemName='Death'
+)pend where pend.rownum='1')pend on pend.PatientId=PT.Id</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_demographics</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_conn_C1</connection>
+    <schema>migration_st</schema>
+    <table>st_demographics</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>752</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>
