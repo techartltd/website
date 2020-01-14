@@ -655,7 +655,23 @@ CREATE TABLE migration_st.st_mch_antenatal_visit
   Referred_to                      VARCHAR(100),
   Next_appointment_date            DATE,
   Clinical_notes                   VARCHAR(100),
-  Voided                           INT(11)
+  [Plus] 						 	INT(11),
+	[Parity] 						INT(11),
+	[LMP] 							DATE DEFAULT NULL,
+	[EDD] 							DATE DEFAULT NULL,
+	[AgeAtMenarche] 				DOUBLE,
+	[Gravidae] 			 			INT(11),
+	[CervicalCancerComment] 		VARCHAR(500),
+	[On ARV Before 1st ANC Visit] 	VARCHAR(500),
+	[Started HAART in ANC]  		VARCHAR(500),
+	[Deworming] 					VARCHAR(50),
+	[IPT 1-3] 						VARCHAR(200),
+	[TT Dose] 						VARCHAR(200),
+	[Supplementation] 				VARCHAR(200),
+	[Received ITN] 					VARCHAR(200),
+	[PartnerTested] 				VARCHAR(200),
+	[PartnerHIVResult] 				VARCHAR(200),
+  Voided                           	INT(11)
 );
 
 -- 21. MCH Delivery
