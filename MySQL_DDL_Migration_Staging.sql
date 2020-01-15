@@ -465,19 +465,40 @@ CREATE TABLE migration_st.st_hiv_followup
 
 
 -- 17. Laboratory Extract
-DROP TABLE IF EXISTS migration_st.st_laboratory_extract;
+DROP TABLE IF EXISTS migration_st.st_laboratory_extract
 CREATE TABLE migration_st.st_laboratory_extract
-(
-  Person_Id       INT(11),
-  Encounter_Date  DATE,
-  Encounter_ID    VARCHAR(50),
-  Lab_test        VARCHAR(180),
-  Urgency         VARCHAR(50),
-  Test_result     VARCHAR(180),
-  Date_test_requested DATE ,
-  Date_test_result_received DATE,
-  Test_requested_by INT(11),
-  Voided           INT(11)
+	Person_Id int(11),
+	Encounter_Date  DATE,
+	Encounter_ID VARCHAR(50),
+	Lab_test VARCHAR(180) ,
+	Urgency VARCHAR(50),
+	Test_Result     VARCHAR(180) ,
+	Date_test_Requested DATE,
+	Date_test_result_received DATE,
+	Test_Requested_By VARCHAR(200),
+	PreClinicLabDate DATE,
+	ClinicalOrderNotes VARCHAR(200),
+	OrderNumber VARCHAR(50),
+	CreateDate DATE,
+	CreatedBy  VARCHAR(101) ,
+	OrderStatus VARCHAR(50),
+	DeletedBy VARCHAR(101),
+	DeleteDate DATE ,
+	DeleteReason VARCHAR(250),
+	ResultStatus VARCHAR(50) ,
+	StatusDate DATE,
+	LabResult VARCHAR(500) ,
+	ResultValue decimal(18, 2) ,
+	ResultText VARCHAR(500) ,
+	ResultOption VARCHAR(50) ,
+	Undetectable int(1) ,
+	DetectionLimit decimal(18, 2),
+	ResultUnit varchar(50) ,
+	HasResult int(1) ,
+	LabTestName VARCHAR(250) ,
+	ParameterName varchar(250) ,
+	LabDepartmentName varchar(50),
+    Voided INT(11),
 );
 
 -- 18. Pharmacy Extract
@@ -634,7 +655,23 @@ CREATE TABLE migration_st.st_mch_antenatal_visit
   Referred_to                      VARCHAR(100),
   Next_appointment_date            DATE,
   Clinical_notes                   VARCHAR(100),
-  Voided                           INT(11)
+  [Plus] 						 	INT(11),
+	[Parity] 						INT(11),
+	[LMP] 							DATE DEFAULT NULL,
+	[EDD] 							DATE DEFAULT NULL,
+	[AgeAtMenarche] 				DOUBLE,
+	[Gravidae] 			 			INT(11),
+	[CervicalCancerComment] 		VARCHAR(500),
+	[On ARV Before 1st ANC Visit] 	VARCHAR(500),
+	[Started HAART in ANC]  		VARCHAR(500),
+	[Deworming] 					VARCHAR(50),
+	[IPT 1-3] 						VARCHAR(200),
+	[TT Dose] 						VARCHAR(200),
+	[Supplementation] 				VARCHAR(200),
+	[Received ITN] 					VARCHAR(200),
+	[PartnerTested] 				VARCHAR(200),
+	[PartnerHIVResult] 				VARCHAR(200),
+  Voided                           	INT(11)
 );
 
 -- 21. MCH Delivery
