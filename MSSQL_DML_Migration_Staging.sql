@@ -1420,7 +1420,9 @@ lt.DisplayName as ScreeningValue,ROW_NUMBER() OVER(partition by psc.PatientId,ps
 
 exec pr_OpenDecryptedSession;
 insert into OpenQuery(IQCare_OPENMRS,'
-select Person_Id,Encouner_Date,Encounter_ID,Lab_test,Urgency
+select Person_Id,Encounter_Date,Encounter_ID,
+Lab_test,
+Urgency
 ,Test_Result,
 Date_test_requested,
 Date_test_result_received,
