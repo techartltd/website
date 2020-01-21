@@ -2102,3 +2102,439 @@ LEFT JOIN
    INNER JOIN [dbo].[lookupitemview]c ON c.itemid = b.value
    WHERE b.[description] = 'Vitamin A Supplementation')VITS ON VITS.patientid = b.id
 AND VITS.patientmastervisitid = d.id
+
+
+
+---PNCVisit
+
+SELECT  distinct   b.PersonId as Person_Id,h.VisitDate as Encounter_Date,NULL as Encounter_ID,  h.IdentifierValue AS [PNC_Register_Number],h.VisitNumber as PNC_VisitNumber,delivery.DateOfDelivery as Delivery_Date,lkdel.itemName Mode_Of_Delivery,''Place_Of_Delivery,k.Temperature,k.[HeartRate] as Pulse_rate , k.BPSystolic as Systolic_bp, k.BPDiastolic as Diastoic_bp,k.RespiratoryRate as Respiratory_rate,k.SpO2 as Oxygen_Saturation,k.[Weight] ,k.Height,k.BMI,k.Muac,NULL as General_Condition,pallor.Pallor,breast.Breast as Breast_Examination,PPH.PPH as PPH,C_SectionSite.C_SectionSite as CS_Scar ,NUll AS Haemoglobin,Uterus.Uterus as Involution_Of_Uterus,Episiotomy.Episiotomy as Condition_Of_Episiotomy,Lochia.Lochia,pcc.Counselling as Counselling_On_Infant_Feeding,NULL Counselling_On_FamilyPlanning,NULL Delivery_Outcome,bcc.babyCondition as Baby_Condition,Breastfeeding.Breastfeeding as Breast_Feeding, NULL as Feeding_Method,NULL as Umblical_Cord,NULL as Immunization_Started
+						 ,case when h.[DaysPostPartum] between 0 and 2 then 1 when h.[DaysPostPartum] between 3 and 30 then 2 when h.[DaysPostPartum] between 31 and 44 then 3 end as [DaysPostPartum], HIVTest.OneKitId as Test_1_kit_name, HIVTest.OneLotNumber as Test_1_kit_lot_no, 
+						 HIVTest.OneExpiryDate as Test_1_kit_expiry
+						 , HIVTest.FinalTestOneResult as Test_1_result
+						 , HIVTest.twokitid as Test_2_kit_name
+						 , HIVTest.twolotnumber as Test_2_kit_lot_no,
+						  HIVTest.twoexpirydate as Test_2_kit_expiry 
+						  , HIVTest.FinalTestTwoResult as Test_2_result
+						  , z.FinalResult as Final_test_result,
+						  HIVTest.TestType,
+						  HIVTest.FinalResultGiven as Patient_given_result,
+						  partnerTesting.[PartnerTested] as Partner_hiv_Tested,
+						  partnerTesting.[PartnerHIVResult] as Partner_hiv_status,
+						  CTX.CTX  as Prophylaxis_given ,
+						  [AZT for Baby] [Baby_azt_dispensed],
+						  [NVP for Baby] [Baby_nvp_dispensed],
+						  [Started HAART PNC] as HAART_PNC,
+						  PNCExercise [PNC Exercises],
+						  NULL Maternal_Condition,
+						  hae.hae  as Iron_Supplementation,
+						  Cacx.Results [Cacx_screening],
+						  Cacx.ScreeningCategory [Cacx_screening_method],
+						  Fistula_Screening.Fistula_Screening,
+						  
+					    pfp.FamilyPlanning as On_FP,
+						 ----Remember <=6wks and >6wks
+						FP.FP [Modern FP] ,
+						ref.ReferredFrom as Referred_From,ref.ReferredTo as Referred_To
+						,diag.Diagnosis
+						, TCAs.[Description] as Clinical_notes,
+						TCAs.AppointmentDate as Next_Appointment_Date
+FROM           
+                         dbo.Patient AS b INNER JOIN
+                         dbo.PatientMasterVisit AS d ON b.Id = d.PatientId INNER JOIN
+                        (select a.patientID,EnrollmentDate,IdentifierValue,Name,Visitdate,PatientMasterVisitId,
+							VisitType ,[VisitNumber] ,[DaysPostPartum]  from PatientEnrollment a 
+							inner  join ServiceArea b on a.ServiceAreaId=b.id
+								inner join PatientIdentifier c on c.PatientId=a.PatientId
+							inner join ServiceAreaIdentifiers d on c.IdentifierTypeId=d.IdentifierId and b.id=d.ServiceAreaId
+							inner join dbo.VisitDetails AS g ON a.PatientId = g.PatientId AND b.Id = g.ServiceAreaId
+							where b.name='PNC') AS h ON b.ID = h.patientID and d.Id = h.PatientMasterVisitId
+						 LEFT OUTER JOIN
+						(SELECT DISTINCT b.PatientId,b.PatientMasterVisitId,c.[ItemName] [Started HAART PNC]
+							FROM dbo.PatientDrugAdministration b inner join  [dbo].[LookupItemView]a  on b.DrugAdministered=a.itemid
+							inner join [dbo].[LookupItemView]c on c.itemid=b.value
+							where b.[Description] ='Started HAART in PNC')HAARTPNC on HAARTPNC.PatientId=b.Id and HAARTPNC.PatientMasterVisitId=d.Id left outer join 
+                         dbo.PatientDiagnosis AS diag ON diag.PatientMasterVisitId = d.Id LEFT OUTER JOIN
+                         dbo.PatientVitals AS k ON d.VisitDate = k.VisitDate AND b.Id = k.PatientId LEFT OUTER JOIN
+                         dbo.PatientDelivery AS delivery ON delivery.PatientMasterVisitID = d.Id left JOIN 
+						 dbo.LookupItemView AS lkdel ON lkdel.ItemId = delivery.[ModeOfDelivery] LEFT OUTER JOIN
+                         dbo.PatientOutcome AS outc ON outc.PatientMasterVisitID = d.Id LEFT OUTER JOIN
+                         dbo.DeliveredBabyBirthInformation AS baby ON baby.PatientMasterVisitId = d.Id Left Outer join
+						(SELECT DISTINCT b.PatientId,b.PatientMasterVisitId,case when [ItemName] in ('Start','Continue') then 'Yes' else [ItemName] end as [AZT for Baby]
+							FROM [dbo].[LookupItemView]a inner join dbo.PatientDrugAdministration b on b.value=a.itemid
+							where description like'%AZT%')AZTBaby on AZTBaby.PatientId=b.Id and AZTBaby.PatientMasterVisitId=d.Id left outer join 
+						(SELECT DISTINCT b.PatientId,b.PatientMasterVisitId,case when [ItemName] in ('Start','Continue') then 'Yes' else [ItemName] end as [NVP for Baby]
+							FROM [dbo].[LookupItemView]a inner join dbo.PatientDrugAdministration b on b.value=a.itemid
+								where description like'%NVP%')NVPBaby on NVPBaby.PatientId=b.Id and NVPBaby.PatientMasterVisitId=d.Id 
+							left join (select distinct patientid,PatientMasterVisitId,b.ItemName as PNCExercise  from PatientPncExercises a inner join  lookupitemview b on b.itemid=PncExercisesDone)PncExer on d.ID=pncexer.PatientMasterVisitId and b.id=pncexer.PatientID
+							left outer join 
+						 (select distinct [PatientId],[PatientMasterVisitId], case when lkup.ItemName ='Normal' then 1 when lkup.ItemName ='Cracked' then 2 when lkup.ItemName ='Engorged' then 3 when lkup.ItemName ='Mastitis' then 4 end as Breast 
+						  from [dbo].[PhysicalExamination] a inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='Breast') breast on d.id=breast.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId], case when lkup.ItemName ='Contracted' then 1 when lkup.ItemName ='Not Contracted' then 2 when lkup.ItemName like'Other%' then 3 end as Uterus from [dbo].[PhysicalExamination] a 
+						inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='Uterus')Uterus on d.id=Uterus.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId],case when lkup.ItemName ='Absent' then 1 when lkup.ItemName ='Present' then 2 when lkup.ItemName like 'Other%' then 3 end as PPH 
+						from [dbo].[PhysicalExamination] a inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='PostPartumHaemorrhage')PPH on d.id=PPH.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId],case when lkup.ItemName ='Normal' then 1 when lkup.ItemName ='Foul smelling' then 2 when lkup.ItemName ='Excessive' then 3 end as Lochia from [dbo].[PhysicalExamination] a 
+						inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='Lochia')Lochia on d.id=Lochia.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId],case when lkup.ItemName ='Yes' then 'Y'when lkup.ItemName ='No' then 'N' when lkup.ItemName ='N/A' then 'N/A' end as Pallor  from [dbo].[PhysicalExamination] a 
+						inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='Pallor')Pallor on d.id=Pallor.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId],case when lkup.ItemName ='Repaired' then 1 when lkup.ItemName ='Gaping' then 2 when lkup.ItemName ='Infected' then 3 when lkup.ItemName ='Healed' then 4 
+									when lkup.ItemName ='N/A' then 5 end as Episiotomy from [dbo].[PhysicalExamination] a inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='Episiotomy')Episiotomy on d.id=Episiotomy.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId],case when lkup.ItemName ='Normal' then 1 when lkup.ItemName ='Bleeding' then 2 when lkup.ItemName ='Infected' then 3 when lkup.ItemName ='Gaping' then 4 
+									when lkup.ItemName ='N/A' then 5 end as C_SectionSite from [dbo].[PhysicalExamination] a inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='C_SectionSite')C_SectionSite on d.id=C_SectionSite.[PatientMasterVisitId] LEFT OUTER JOIN
+						 (select distinct [PatientId],[PatientMasterVisitId],lkup.ItemName  as BabyCondition
+						from [dbo].[PhysicalExamination] a inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='babycondition') bcc on
+						bcc.PatientId =b.Id and bcc.PatientMasterVisitId=d.Id
+
+						left Outer Join (select distinct [PatientId],[PatientMasterVisitId],case when lkup.ItemName ='None' then 'None' when lkup.ItemName ='Rectovaginal Fistula' then 'RVF' when lkup.ItemName ='Vesicovaginal Fistula' then 'VVF' when lkup.ItemName ='N/A' then 'N/A' end as Fistula_Screening 
+						from [dbo].[PhysicalExamination] a inner join lookupitemview lkup on lkup.itemid=a.FindingId  inner join lookupitemview lkup1 on lkup1.itemid=a.ExamID where lkup1.itemname='Fistula_Screening')Fistula_Screening on d.id=Fistula_Screening.[PatientMasterVisitId] LEFT OUTER JOIN
+
+						(select distinct [PatientId],[PatientMasterVisitId],case when lkup1.ItemName ='Yes' then 'Y'when lkup1.ItemName ='No' then 'N' when lkup1.ItemName ='N/A' then 'N/A' end as Breastfeeding from [dbo].[PhysicalExamination] a 
+						inner join lookupitemview lkup on lkup.itemid=a.ExamId inner join lookupitemview lkup1 on lkup1.itemid=a.FindingId where lkup.itemname='Breastfeeding')Breastfeeding on d.id=Breastfeeding.[PatientMasterVisitId] LEFT OUTER JOIN
+						(SELECT    distinct    a.PatientId, a.PatientMasterVisitId,d.itemname [PartnerTested], e.itemname [PartnerHIVResult]
+								FROM            [dbo].[PatientPartnerTesting] a INNER JOIN
+														 dbo.PatientEncounter b  ON a.PatientMasterVisitId = b.PatientMasterVisitId LEFT OUTER JOIN
+														 dbo.LookupItemView c ON c.ItemId = b.EncounterTypeId LEFT OUTER JOIN
+														 dbo.LookupItemView d ON d.ItemId = a.[PartnerTested] LEFT OUTER JOIN
+														 dbo.LookupItemView e ON e.ItemId = a.[PartnerHIVResult]
+								WHERE        (c.ItemName = 'pnc-encounter'))partnerTesting on partnerTesting.PatientId=b.Id and partnerTesting.PatientMasterVisitId=d.id 
+								left join (select pfp.PatientId,pfp.PatientMasterVisitId,pfp.FamilyPlanningStatusId,CASE WHEN lt.[Name]= 'NOFP' then 'No' when lt.[Name]='FP' then 'Yes' end as FamilyPlanning from PatientFamilyPlanning pfp
+								inner join LookupItem lt on lt.Id=pfp.FamilyPlanningStatusId) pfp on pfp.PatientId=b.Id and pfp.PatientMasterVisitId=d.Id
+						left outer join
+								(SELECT a.[PatientId],b.ItemName FP,PatientMasterVisitId FROM [dbo].[PatientFamilyPlanningMethod] a inner join lookupitemview b on b.ItemId=a.[FPMethodId] inner join [PatientFamilyPlanning]c on c.[Id]=a.PatientFPId
+								inner join [PatientMasterVisit] d on d.[Id]=c.[PatientMasterVisitId]  where b.ItemName not in ('UND') or [FPMethodId] is null)FP on FP.PatientId=b.Id and FP.PatientMasterVisitId=d.id	left outer join
+						(SELECT distinct [PatientId],[PatientMasterVisitId],[ScreeningDate],c.Itemname ScreeningCategory,d.itemname Results,[VisitDate]
+							FROM [dbo].[PatientScreening] a inner join lookupitemview b on b.masterid=a.[ScreeningTypeId]
+							inner join lookupitemview c on c.itemid=a.[ScreeningCategoryId] inner join lookupitemview d on d.itemid=a.[ScreeningValueId]
+							where b.mastername='CacxMethod')Cacx on Cacx.PatientId=b.Id and Cacx.PatientMasterVisitId=d.id	 left join
+
+                        (SELECT DISTINCT 
+                                                         e.PersonId, one.kitid AS OneKitId, one.KitLotNumber AS OneLotNumber, one.outcome AS FinalTestOneResult,ISNULL(CAST((CASE e.EncounterType WHEN 1 THEN 'Initial Test' WHEN 2 THEN 'Repeat Test' END) AS VARCHAR(50)),'Initial') AS TestType, FinalResultGiven = (SELECT TOP 1 ItemName FROM [dbo].[LookupItemView] WHERE ItemId = e.FinalResultGiven),
+														 two.outcome AS FinalTestTwoResult, one.ExpiryDate AS OneExpiryDate, two.kitid AS twokitid, 
+                                                         two.KitLotNumber AS twolotnumber, two.ExpiryDate AS twoexpirydate
+                               FROM            dbo.Testing AS t INNER JOIN
+                                                         dbo.HtsEncounter AS e ON t.HtsEncounterId = e.Id FULL OUTER JOIN
+                                                             (SELECT DISTINCT t.HtsEncounterId, b.ItemName AS kitid, t.KitLotNumber, t.ExpiryDate, e.PersonId, l.ItemName AS outcome
+                                                               FROM            dbo.Testing AS t INNER JOIN
+                                                                                         dbo.HtsEncounter AS e ON t.HtsEncounterId = e.Id INNER JOIN
+                                                                                         dbo.LookupItemView AS l ON l.ItemId = t.Outcome INNER JOIN
+                                                                                         dbo.LookupItemView AS b ON b.ItemId = t.KitId INNER JOIN
+                                                                                         dbo.PatientEncounter AS pe ON pe.Id = e.PatientEncounterID LEFT OUTER JOIN
+                                                                                         dbo.LookupItemView AS lk ON lk.ItemId = pe.EncounterTypeId
+                                                               WHERE        (t.TestRound = 1) AND (lk.ItemName = 'pnc-encounter')) AS one ON one.PersonId = e.PersonId FULL OUTER JOIN
+                                                             (SELECT DISTINCT t.HtsEncounterId, b.ItemName AS kitid, t.KitLotNumber, t.ExpiryDate, e.PersonId, l.ItemName AS outcome
+                                                               FROM            dbo.Testing AS t INNER JOIN
+                                                                                         dbo.HtsEncounter AS e ON t.HtsEncounterId = e.Id INNER JOIN
+                                                                                         dbo.LookupItemView AS l ON l.ItemId = t.Outcome INNER JOIN
+                                                                                         dbo.LookupItemView AS b ON b.ItemId = t.KitId INNER JOIN
+                                                                                         dbo.PatientEncounter AS pe ON pe.Id = e.PatientEncounterID LEFT OUTER JOIN
+                                                                                         dbo.LookupItemView AS lk ON lk.ItemId = pe.EncounterTypeId
+                                                               WHERE        (t.TestRound = 2) AND (lk.ItemName = 'pnc-encounter')) AS two ON two.PersonId = e.PersonId) AS HIVTest ON HIVTest.PersonId = b.PersonId LEFT OUTER JOIN
+                             (SELECT he.PersonId, he.PatientEncounterID, lk.ItemName AS FinalResult
+							   FROM  dbo.HtsEncounter AS he INNER JOIN
+								dbo.HtsEncounterResult AS her ON he.Id = her.HtsEncounterId INNER JOIN
+								dbo.PatientEncounter AS pe ON pe.Id = he.PatientEncounterID LEFT OUTER JOIN
+								dbo.LookupItemView AS lk1 ON lk1.ItemId = pe.EncounterTypeId LEFT OUTER JOIN
+								dbo.LookupItemView AS lk ON lk.ItemId = her.FinalResult
+								WHERE  (lk1.ItemName = 'pnc-encounter')) AS z ON z.PersonId = b.PersonId
+left join (select pc.PatientId,pc.PatientMasterVisitId,CASE WHEN pc.CounsellingTopicId  = 0 then 'No' when pc.CounsellingTopicId > 0 then lt.[Name] end as Counselling,pc.CounsellingTopicId,pc.CounsellingDate
+ from PatientCounselling pc
+ left join LookupItem lt on lt.Id=pc.CounsellingTopicId)pcc on pcc.PatientId=b.Id and pcc.PatientMasterVisitId=d.Id
+ left outer join 
+	(SELECT distinct b.PatientId,b.PatientMasterVisitId,c.[ItemName] [CTX]
+	FROM dbo.PatientDrugAdministration b inner join  [dbo].[LookupItemView]a  on b.DrugAdministered=a.itemid
+	inner join [dbo].[LookupItemView]c on c.itemid=b.value
+	where a.itemname ='Cotrimoxazole')CTX on CTX.PatientId=b.Id and CTX.PatientMasterVisitId=d.Id 
+
+	 left outer join 
+	(SELECT distinct b.PatientId,b.PatientMasterVisitId,c.[ItemName] [hae]
+	FROM dbo.PatientDrugAdministration b inner join  [dbo].[LookupItemView]a  on b.DrugAdministered=a.itemid
+	inner join [dbo].[LookupItemView]c on c.itemid=b.value
+	where a.itemname ='Haematinics given')hae on hae.PatientId=b.Id and hae.PatientMasterVisitId=d.Id
+	left join (SELECT    distinct    a.PatientId, a.PatientMasterVisitId,d.itemname ReferredFrom, e.itemname ReferredTo
+	FROM            dbo.PMTCTReferral a INNER JOIN
+							 dbo.PatientEncounter b  ON a.PatientMasterVisitId = b.PatientMasterVisitId LEFT OUTER JOIN
+							 dbo.LookupItemView c ON c.ItemId = b.EncounterTypeId LEFT OUTER JOIN
+							 dbo.LookupItemView d ON d.ItemId = a.ReferredFrom LEFT OUTER JOIN
+							 dbo.LookupItemView e ON e.ItemId = a.ReferredTo
+							 )ref on ref.PatientId=b.Id and ref.PatientMasterVisitId=d.Id 
+
+LEFT JOIN (select distinct * from (select * ,ROW_NUMBER() OVER(partition by tc.PatientId,tc.PatientMasterVisitId order by tc.CreateDate desc)rownum 
+	from(SELECT  [PatientMasterVisitId]
+		  ,[PatientId]
+		  ,[AppointmentDate]
+		  ,[AppointmentReason]=(SELECT        TOP 1 ItemName
+		  FROM            [dbo].[LookupItemView]
+		  WHERE        ItemId = [ReasonId])
+		  ,[Description]
+		  ,DeleteFlag
+		  ,CreateDate
+	  FROM [dbo].[PatientAppointment]
+	  where deleteflag = 0 and serviceareaid=3)
+	  tc where tc.AppointmentReason='Follow Up')tc where tc.rownum=1
+	  )TCAs on TCAs.PatientId=b.Id and TCAs.PatientMasterVisitId=d.Id 
+WHERE        (h.Name = 'PNC')
+
+
+---Hei Visit st_hei_enrollment 
+
+
+
+exec pr_OpenDecryptedSession;
+select distinct p.PersonId as Person_Id,
+v.Id,
+  CAST(DECRYPTBYKEY(per.FirstName) AS VARCHAR(50)) AS First_Name,
+  CAST(DECRYPTBYKEY(per.MidName) AS VARCHAR(50)) AS Middle_Name,
+  CAST(DECRYPTBYKEY(per.LastName) AS VARCHAR(50)) AS Last_Name,
+  per.DateOfBirth as DOB,
+  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = per.Sex),
+  pid.IdentifierValue as UPN,
+  v.VisitDate as Encounter_Date,
+  NULL as gestation_at_birth,
+  he.BirthWeight,
+  NULL as child_exposed,
+  pid.IdentifierValue as hei_id_number,
+  NULL spd_number,
+  NULL birth_length,
+  NULL birth_order,
+ NULL birth_type,
+(select lt.[Name] from LookupItem lt where lt.Id=he.PlaceOfDeliveryId) as place_of_delivery,
+(select lt.[Name] from LookupItem lt where lt.Id=he.ModeOfDeliveryId) as mode_of_delivery,
+birth_notification_number =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = p.PersonId and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+date_birth_notification_number_issued =(select top 1 pdd.CreateDate from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = p.PersonId and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+birth_certificate_number =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = p.PersonId and pdd.[Name]='BirthCertificate' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ) ,
+pe.EnrollmentDate as date_first_enrolled_in_hei_care,
+NULL birth_registration_place,
+pe.EnrollmentDate as birth_registration_date,
+mf.FacilityName as  health_Facility_name,
+he.MotherName AS Mothers_name,
+NULL as Fathers_name,
+NULL as Guardians_name,
+NULL as Community_HealthWorkers_name,
+NULL as Alternate_Contact_name,
+NULL as Contactcs,
+NULL as need_for_special_care,
+NULL as reason_for_special_care,
+NULL as hiv_status_at_exit,
+CASE WHEN pif.ContactWithTb='1' then 'Yes' when pif.ContactWithTB='0' then 'No'
+else NULL end as TB_contact_history_in_household, 
+hf.Feeding as mother_breastfeeding,
+hf.InfantFeeding as mother_breastfeedingmode,
+NULL referral_source,
+NULL transfer_in,
+NULL transfer_in_date,
+NULL as facility_transferred_from,
+NULL as district_transferred_from,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.ArvProphylaxisId) as arv_prophylaxis,
+NULL as mother_on_NVP_during_breastfeeding,
+NULL as infant_mother_link,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherPMTCTDrugsId) as mother_on_pmtct_drugs,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherPMTCTRegimenId) as mother_on_pmtct_drugsregimen,
+he.MotherPMTCTRegimenOther as mother_on_pmtct_otherregimen ,
+(select lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolId) as mother_On_art_at_infant_enrollment,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolRegimenId) as mother_drug_regimen,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.ArvProphylaxisId) as infant_prophylaxis,
+he.ArvProphylaxisOther as infant_prophylaxis_other,
+he.MotherCCCNumber as parent_ccc_number,
+pcr.OrderedByDate as date_sample_collected,
+NULL as  exit_date_result_given,
+CASE WHEN vt.Vaccine is not null then 'Yes' else NULL end  as immunization_given,
+vt.VaccineDate as  date_immunized,
+TCAs.AppointmentDate as Date_of_next_appointment,
+NULL as revisit_this_year,
+(select lt.[Name]  from LookupItem lt where lt.Id=he.PrimaryCareGiverID) as Primary_Care_Give,
+datediff(month,p.DateOfBirth,v.VisitDate) as Age,
+pvs.Muac,
+NULL as Exclusive_breastfeeding_0_6_months,
+NULL as [Stunted?],
+NULL as Medication_Given_If_HIV_Expose,
+tbs.ScreeningValue as  Tb_Assessment_Outcome,
+pml.MilestoneType as Development_Milestones_by_ge,
+pml.[Status] as Achieving_Milestones,
+NULL as Weight_Category,
+NULL as Type_of_Follow_up ,
+NULL as  Test_COntextual_Status,
+NULL First_DBS_Sample_Code,
+NULL Date_First_DBS_Sample_Code_Result_Collected,
+hrt.TestResults as Final_Antibody_test,
+hrt.ReportedByDate as Date_Final_Antibody_test,
+NULL as 	Final_DBS_Sample_Code_Result ,
+NULL as	DBS_Sample_Code,
+NULL as	Date_DBS_Sample_Code_Result_collected,
+NULL as [Tetracycline_Eye_Ointment_(TEO)_Given],
+NULL PUPIL,
+NULL SIGHT,
+NULL [SQUINT(Crossed_Eyes)],
+NULL Deworming_and_Vitamin_A_Supp,
+NULL Deworming_Next_Visit,
+NULL Deworming_Drug,
+NULL Deworming_Dosage_Units,
+NULL Vitamin_A,
+NULL Any_disability,
+NULL ClinicianS_Notes,
+NULL Counselled_On,
+NULL [Supplemented_with_MNPS_6-23_Months],
+NULL [Physical Features Colouration],
+vt.Immunization as Immunization_vaccinine,
+NULL Immunization_Batch_num,
+NULL Immunization_Expiry_Date,
+NULL Immunization_Dose,
+vt.VaccineDate as Immunization_Dte_Given,
+NULL Immunization_BCG_ScarChecked,
+NULL Immunization_BCG_Date_Checked,
+NULL Immunization_BCG_Repeated,
+NULL Immunization_Vitamin_Capsule_Given_Dose ,
+NULL Immunization_Vitamin_Capsule_Given,     
+NULL	Immunization_Vitamin_Capsule_Date_Given , 
+NULL Immunization_Vitamin_Capsule_Date_Of_Next_visit , 
+NULL Immunization_Vitamin_Capsule_Fully_Immunized_child, 
+NULL	Immunization_Vitamin_Capsule_Date_Given_Last_Vaccine,
+NULL	Child_Hei_Outcomes_Exit_date,			
+NULL	Child_Hei_Outcomes_HIV_Status		
+from   dbo.PatientMasterVisit AS v INNER JOIN
+                         dbo.Patient AS p ON v.PatientId = p.Id INNER JOIN
+						  dbo.mst_Patient AS mp ON mp.Ptn_Pk = p.ptn_pk INNER JOIN
+                         dbo.PatientEnrollment AS pe ON p.Id = pe.PatientId INNER JOIN
+                         dbo.PatientIdentifier AS pid ON p.Id = pid.PatientId INNER JOIN
+						   Person  per on per.Id=p.PersonId INNER JOIN
+                         dbo.HEIEncounter AS he ON v.Id = he.PatientMasterVisitId
+						 left join mst_Facility mf on mf.PosID=mf.FacilityID and (mf.DeleteFlag = 0 or mf.DeleteFlag is null)
+						 left join PatientIcf pif on pif.PatientId=p.Id and pif.PatientMasterVisitId=he.PatientMasterVisitId
+						 left join(select hf.PatientId,hf.PatientMasterVisitId,hf.FeedingModeId,lt.[Name] as InfantFeeding,
+						 CASE WHEN lt.[Name]='Not Breastfeeding' then 'No'
+						 when lt.[Name] is not null  and lt.[Name] !='Not Breastfeeding' then 'Yes'
+						 else null end as Feeding
+						  from  HEIFeeding hf
+						  left join LookupItem lt on lt.Id=hf.FeedingModeId)hf
+						   on hf.PatientId=p.Id and hf.PatientMasterVisitId=he.PatientMasterVisitId
+						   left join (	Select	O.Id				LabId
+		,o.Ptn_Pk
+		,o.PatientMasterVisitId
+		,o.PatientId
+		,O.LocationId
+		,O.OrderedBy		OrderedByName
+		,O.OrderNumber
+		,o.OrderDate		OrderedByDate
+		,Ot.ResultBy		ReportedByName
+		,OT.ResultDate		ReportedByDate
+		,O.OrderedBy		CheckedbyName
+		,o.OrderDate		CheckedbyDate
+		,O.PreClinicLabDate
+		,LT.ParameterName	TestName
+		,LT.ParameterId		TestId
+		,LT.LabTestId		[Test GroupId]
+		,lt.LabTestName		[Test GroupName]
+		,LT.DepartmentId	LabDepartmentId
+		,LT.LabDepartmentName
+		,0					LabTypeId
+		,'Additional Lab'	LabTypeName
+		,R.ResultValue		TestResults
+		,R.ResultText		TestResults1
+		,R.ResultOptionId	 TestResultId
+		,R.ResultOption		[Parameter Result]
+		,R.Undetectable
+		,R.DetectionLimit
+		,R.ResultUnit
+		,R.HasResult
+		,V.VisitDate
+		,Null				LabPeriod
+		,LT.TestReferenceId
+		,LT.ParameterReferenceId		
+	From dbo.ord_LabOrder O
+	Inner Join dtl_LabOrderTest OT On OT.LabOrderId = O.Id
+	Inner Join dtl_LabOrderTestResult R On R.LabOrderTestId = OT.Id
+	Inner Join VW_LabTest LT On LT.ParameterId = R.ParameterId
+	Inner Join ord_Visit V On v.Visit_Id = O.VisitId
+	Where    (o.DeleteFlag is null or o.DeleteFlag=0) and ParameterName='PCR')pcr
+	on pcr.PatientId=p.id and pcr.PatientMasterVisitId=he.PatientMasterVisitId
+
+left join( select PatientId,PatientMasterVisitId,Vaccine,lti.[Name] as Immunization,VaccineStage,lt.[Name] as Stage,v.VaccineDate,v.DeleteFlag from Vaccination v
+left join LookupItem lti on lti.Id=v.Vaccine
+left join LookupItem lt on lt.Id=v.VaccineStage
+where (v.DeleteFlag is null or v.DeleteFlag =0))vt on vt.PatientId=p.Id and vt.PatientMasterVisitId=he.PatientMasterVisitId
+
+LEFT JOIN (select distinct * from (select * ,ROW_NUMBER() OVER(partition by tc.PatientId,tc.PatientMasterVisitId order by tc.CreateDate desc)rownum 
+	from(SELECT  [PatientMasterVisitId]
+		  ,[PatientId]
+		  ,[AppointmentDate]
+		  ,[AppointmentReason]=(SELECT        TOP 1 ItemName
+		  FROM            [dbo].[LookupItemView]
+		  WHERE        ItemId = [ReasonId])
+		  ,[Description]
+		  ,DeleteFlag
+		  ,CreateDate
+	  FROM [dbo].[PatientAppointment]
+	  where deleteflag = 0 and serviceareaid=3)
+	  tc where tc.AppointmentReason='Follow Up')tc where tc.rownum=1
+	  )TCAs on TCAs.PatientId=p.Id and TCAs.PatientMasterVisitId=he.PatientMasterVisitId
+	  left join PatientVitals pvs on pvs.PatientId=p.Id and pvs.PatientMasterVisitId=he.PatientMasterVisitId
+
+	  left join(select ps.PatientId,ps.PatientMasterVisitId,ps.ScreeningTypeId,ltv.MasterName as ScreeningType,
+lt.[Name] as ScreeningValue
+ from PatientScreening ps
+inner join LookupItemView ltv on ltv.MasterId=ps.ScreeningTypeId
+inner join LookupItem lt on lt.Id=ps.ScreeningValueId
+ where  ltv.MasterName='TbScreeningOutcome')tbs on tbs.PatientId=p.Id and tbs.PatientMasterVisitId=he.PatientMasterVisitId
+left join(select pmi.PatientId,pmi.PatientMasterVisitId,pmi.TypeAssessedId, lt.[Name] as MilestoneType
+,pmi.StatusId,lti.[Name] as [Status],pmi.DeleteFlag ,pmi.DateAssessed from PatientMilestone pmi
+inner join LookupItem lt on lt.Id=pmi.TypeAssessedId
+inner join LookupItem lti on lti.Id=pmi.StatusId
+where (pmi.DeleteFlag is null or pmi.DeleteFlag =0)) pml on pml.PatientId=p.Id and pml.PatientMasterVisitId=he.PatientMasterVisitId
+
+left join (	Select	O.Id				LabId
+		,o.Ptn_Pk
+		,o.PatientMasterVisitId
+		,o.PatientId
+		,O.LocationId
+		,O.OrderedBy		OrderedByName
+		,O.OrderNumber
+		,o.OrderDate		OrderedByDate
+		,Ot.ResultBy		ReportedByName
+		,OT.ResultDate		ReportedByDate
+		,O.OrderedBy		CheckedbyName
+		,o.OrderDate		CheckedbyDate
+		,O.PreClinicLabDate
+		,LT.ParameterName	TestName
+		,LT.ParameterId		TestId
+		,LT.LabTestId		[Test GroupId]
+		,lt.LabTestName		[Test GroupName]
+		,LT.DepartmentId	LabDepartmentId
+		,LT.LabDepartmentName
+		,0					LabTypeId
+		,'Additional Lab'	LabTypeName
+		,R.ResultValue		TestResults
+		,R.ResultText		TestResults1
+		,R.ResultOptionId	 TestResultId
+		,R.ResultOption		[Parameter Result]
+		,R.Undetectable
+		,R.DetectionLimit
+		,R.ResultUnit
+		,R.HasResult
+		,V.VisitDate
+		,Null				LabPeriod
+		,LT.TestReferenceId
+		,LT.ParameterReferenceId		
+	From dbo.ord_LabOrder O
+	Inner Join dtl_LabOrderTest OT On OT.LabOrderId = O.Id
+	Inner Join dtl_LabOrderTestResult R On R.LabOrderTestId = OT.Id
+	Inner Join VW_LabTest LT On LT.ParameterId = R.ParameterId
+	Inner Join ord_Visit V On v.Visit_Id = O.VisitId
+	Where    (o.DeleteFlag is null or o.DeleteFlag=0) and ParameterName='HIV Rapid Test')hrt
+	on hrt.PatientId=p.id and hrt.PatientMasterVisitId=he.PatientMasterVisitId
