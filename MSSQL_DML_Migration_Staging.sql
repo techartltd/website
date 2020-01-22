@@ -341,6 +341,7 @@ left join LookupItemView lt on lt.ItemId=pp.PopulationCategory
 where (DeleteFlag=0 or DeleteFlag is null)
 
 )t where rownum='1')PopType on PopType.PersonId=P.Id
+where (hr.TestType= 'Initial Test' or hr.TestType='Initial')
 
 
 -- 5. HTS Retest Test
@@ -409,6 +410,7 @@ left join LookupItemView lt on lt.ItemId=pp.PopulationCategory
 where (DeleteFlag=0 or DeleteFlag is null)
 
 )t where rownum='1')PopType on PopType.PersonId=P.Id
+where hr.TestType='Repeat Test'
 
 -- 6. HTS Client Tracing
 
@@ -1062,7 +1064,7 @@ left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMaste
     Id,
     PatientMasterVisitId,
     PatientId,
-    ExaminationTypeId,
+    ExaminationTypeIdht
 	(SELECT top 1 l.Name FROM LookupMaster l WHERE l.Id=e.ExaminationTypeId) ExaminationType,
 	ExamId, 
 	(SELECT top 1 l.DisplayName FROM LookupItem l WHERE l.Id=e.ExamId) Exam,
