@@ -2280,9 +2280,9 @@ FROM
 								dbo.LookupItemView AS lk1 ON lk1.ItemId = pe.EncounterTypeId LEFT OUTER JOIN
 								dbo.LookupItemView AS lk ON lk.ItemId = her.FinalResult
 								WHERE  (lk1.ItemName = 'pnc-encounter')) AS z ON z.PersonId = b.PersonId
-left join (select pc.PatientId,pc.PatientMasterVisitId,CASE WHEN pc.CounsellingTopicId  = 0 then 'No' when pc.CounsellingTopicId > 0 then lt.[Name] end as Counselling,pc.CounsellingTopicId,pc.CounsellingDate
+left join (select pc.PatientId,pc.PatientMasterVisitId,lt.[Name],CASE WHEN pc.CounsellingTopicId  = 0 then 'No' when pc.CounsellingTopicId > 0 then 'Yes' end as Counselling,pc.CounsellingTopicId,pc.CounsellingDate
  from PatientCounselling pc
- left join LookupItem lt on lt.Id=pc.CounsellingTopicId)pcc on pcc.PatientId=b.Id and pcc.PatientMasterVisitId=d.Id
+ inner join LookupItem lt on lt.Id=pc.CounsellingTopicId where [Name]='Infant Feeding')pcc on pcc.PatientId=b.Id and pcc.PatientMasterVisitId=d.Id
  left outer join 
 	(SELECT distinct b.PatientId,b.PatientMasterVisitId,c.[ItemName] [CTX]
 	FROM dbo.PatientDrugAdministration b inner join  [dbo].[LookupItemView]a  on b.DrugAdministered=a.itemid
@@ -2317,6 +2317,10 @@ LEFT JOIN (select distinct *  from (select  * ,ROW_NUMBER() OVER(partition by tc
 	  tc where tc.AppointmentReason='Follow Up')tc where tc.rownum=1
 	  )TCAs on TCAs.PatientId=b.Id and TCAs.PatientMasterVisitId=d.Id 
 WHERE        (h.Name = 'PNC')
+
+
+
+
 
 
 
