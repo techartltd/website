@@ -2147,7 +2147,7 @@ SELECT  distinct
  NULL as Feeding_Method,
  NULL as Umblical_Cord,
  NULL as Immunization_Started
- ,case when h.[DaysPostPartum] between 0 and 2 then 1 when h.[DaysPostPartum] between 3 and 30 then 2 when h.[DaysPostPartum] between 31 and 44 then 3 end as [DaysPostPartum], 
+ ,h.[DaysPostPartum], 
  HIVTest.OneKitId as Test_1_kit_name,
  HIVTest.OneLotNumber as Test_1_kit_lot_no, 
  HIVTest.OneExpiryDate as Test_1_kit_expiry,
