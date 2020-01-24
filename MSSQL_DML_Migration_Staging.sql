@@ -2379,6 +2379,7 @@ NULL as reason_for_special_care,
 NULL as hiv_status_at_exit,
 CASE WHEN pif.ContactWithTb='1' then 'Yes' when pif.ContactWithTB='0' then 'No'
 else NULL end as TB_contact_history_in_household, 
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherStatusId) as Mother_alive,
 hf.Feeding as mother_breastfeeding,
 hf.InfantFeeding as mother_breastfeedingmode,
 NULL referral_source,
@@ -2450,8 +2451,8 @@ NULL	Immunization_Vitamin_Capsule_Date_Given ,
 NULL Immunization_Vitamin_Capsule_Date_Of_Next_visit , 
 NULL Immunization_Vitamin_Capsule_Fully_Immunized_child, 
 NULL	Immunization_Vitamin_Capsule_Date_Given_Last_Vaccine,
-NULL	Child_Hei_Outcomes_Exit_date,			
-NULL	Child_Hei_Outcomes_HIV_Status		
+CASE WHEN he.Outcome24MonthId > 0 then v.VisitDate  else NULL end as  	Child_Hei_Outcomes_Exit_date,			
+(select lt.[Name]  from LookupItem lt where lt.Id=he.Outcome24MonthId)	Child_Hei_Outcomes_HIV_Status		
 from   dbo.PatientMasterVisit AS v INNER JOIN
                          dbo.Patient AS p ON v.PatientId = p.Id INNER JOIN
 						  dbo.mst_Patient AS mp ON mp.Ptn_Pk = p.ptn_pk INNER JOIN
