@@ -256,7 +256,6 @@ CREATE TABLE migration_st.st_hts_contact_listing
   Currently_Living_With_Index      VARCHAR(100),
   IPV_Physically_Hurt              VARCHAR(50),
   IPV_Threatened_Hurt              VARCHAR(50),
-  IPV_Physically_Hurt              VARCHAR(50),
   IPV_Sexual_Hurt                  VARCHAR(50),
   IPV_Outcome                      VARCHAR(50),
   HIV_Status                       VARCHAR(100),
