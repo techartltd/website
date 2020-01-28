@@ -449,10 +449,10 @@ r.ExpectedDate as Date_To_Be_Enrolled
 
    --9 HTC Contact Listing
    exec pr_OpenDecryptedSession
-  select distinct hts.PatientId,p.PersonId as Person_Id,	CAST(DECRYPTBYKEY(per.[FirstName]) AS VARCHAR(50)) AS [FirstName],
-	CAST(DECRYPTBYKEY(per.[MidName]) AS VARCHAR(50)) AS [MidName],
-	CAST(DECRYPTBYKEY(per.[LastName]) AS VARCHAR(50)) AS [LastName],
-  patr.PersonId as Contact_Person_Id,patr.FirstName,patr.MidName,patr.LastName,
+  select distinct p.PersonId as Person_Id,
+  patr.PersonId as Contact_Person_Id,patr.Encounter_Date,NULL as Encounter_ID,
+  	CASE WHEN patr.PersonId is not null then  'YES' end as Consent,
+  patr.FirstName as First_Name,patr.MidName as Middle_Name,patr.LastName as Last_Name,
   patr.Sex,patr.DateOfBirth as DoB
   ,patr.MaritalStatus as Marital_Status
   ,patr.PhysicalAddress as Physical_Address
@@ -498,8 +498,8 @@ r.ExpectedDate as Date_To_Be_Enrolled
 	Gender = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = P.Sex AND MasterName = 'Gender'),
 	PR.RelationshipTypeId,
 	MaritalStatus=(Select top 1 itemName from LookupItemView where itemId= pms.MaritalStatusId AND MasterName='MaritalStatus'),
-	RelationshipType = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PR.RelationshipTypeId AND MasterName = 'Relationship')
-
+	RelationshipType = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PR.RelationshipTypeId AND MasterName = 'Relationship'),
+	PR.CreateDate as Encounter_Date
 	
 FROM [dbo].[PersonRelationship] PR
 inner JOIN dbo.Patient AS PT ON PT.Id = PR.PatientId
