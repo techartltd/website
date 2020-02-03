@@ -449,10 +449,10 @@ r.ExpectedDate as Date_To_Be_Enrolled
 
    --9 HTC Contact Listing
    exec pr_OpenDecryptedSession
-  select distinct hts.PatientId,p.PersonId as Person_Id,	CAST(DECRYPTBYKEY(per.[FirstName]) AS VARCHAR(50)) AS [FirstName],
-	CAST(DECRYPTBYKEY(per.[MidName]) AS VARCHAR(50)) AS [MidName],
-	CAST(DECRYPTBYKEY(per.[LastName]) AS VARCHAR(50)) AS [LastName],
-  patr.PersonId as Contact_Person_Id,patr.FirstName,patr.MidName,patr.LastName,
+  select distinct p.PersonId as Person_Id,
+  patr.PersonId as Contact_Person_Id,patr.Encounter_Date,NULL as Encounter_ID,
+  	CASE WHEN patr.PersonId is not null then  'YES' end as Consent,
+  patr.FirstName as First_Name,patr.MidName as Middle_Name,patr.LastName as Last_Name,
   patr.Sex,patr.DateOfBirth as DoB
   ,patr.MaritalStatus as Marital_Status
   ,patr.PhysicalAddress as Physical_Address
@@ -498,8 +498,8 @@ r.ExpectedDate as Date_To_Be_Enrolled
 	Gender = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = P.Sex AND MasterName = 'Gender'),
 	PR.RelationshipTypeId,
 	MaritalStatus=(Select top 1 itemName from LookupItemView where itemId= pms.MaritalStatusId AND MasterName='MaritalStatus'),
-	RelationshipType = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PR.RelationshipTypeId AND MasterName = 'Relationship')
-
+	RelationshipType = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PR.RelationshipTypeId AND MasterName = 'Relationship'),
+	PR.CreateDate as Encounter_Date
 	
 FROM [dbo].[PersonRelationship] PR
 inner JOIN dbo.Patient AS PT ON PT.Id = PR.PatientId
@@ -2718,3 +2718,352 @@ left join (	Select	O.Id				LabId
 	Inner Join ord_Visit V On v.Visit_Id = O.VisitId
 	Where    (o.DeleteFlag is null or o.DeleteFlag=0) and ParameterName='HIV Rapid Test')hrt
 	on hrt.PatientId=p.id and hrt.PatientMasterVisitId=he.PatientMasterVisitId
+	
+	
+	
+	
+	---- 26. HEI Followup
+	select  
+ p.PersonId as Person_Id,
+ pen.VisitDate as Encounter_Date,
+ NULL as Encounter_ID,
+he.BirthWeight as [Weight],
+ pvs.Height as  [Height],
+ (select lt.[Name]  from LookupItem lt where lt.Id=he.PrimaryCareGiverID) as Primary_Care_Give,
+hf.InfantFeeding as Infant_Feeding,
+tbs.ScreeningValue as TB_Assessment_Outcome,
+
+m.[Social_smile_milestone_<2Months],
+m.Social_smile_milestone_2Months,
+m.Head_control_milestone_3Months,
+m.Head_control_milestone_4Months,
+m.Hand_extension_milestone_9months,
+m.Sitting_milestone_12months,
+m.Standing_milestone_15months,
+m.Walking_milestone_18months,
+m.Talking_milestone_36months,
+rlabs.[1st_DNA_PCRSampleDate],
+rlabs.[1st_DNA_PCRResult],
+rlabs.[1st_DNA_PCRResultDate],
+rlabs.[2nd_DNA_PCRSampleDate],
+rlabs.[2nd_DNA_PCRResult],
+rlabs.[2nd_DNA_PCRResultDate],
+rlabs.[3rd_DNA_PCRSampleDate],
+rlabs.[3rd_DNA_PCRResult],
+rlabs.[3rd_DNA_PCRResultDate],
+rlabs.ConfimatoryPCR_SampleDate,
+rlabs.ConfirmatoryPCR_Result,
+rlabs.ConfimatoryPCR_ResultDate,
+rlabs.RepeatConfirmatoryPCR_SampleDate,
+rlabs.RepeatConfirmatoryPCR_Result,
+rlabs.RepeatConfirmatoryPCR_ResultDate,
+rlabs.BaselineViralLoadSampleDate,
+rlabs.BaselineViralLoadResult,
+rlabs.BaselineViralLoadResultDate,
+rlabs.Final_AntibodySampleDate,
+rlabs.Final_AntibodyResult,
+rlabs.Final_AntibodyResultDate,
+NULL Dna_pcr_sample_date,
+NULL Dna_pcr_contextual_status,
+NULL Dna_pcr_result,
+NULL Dna_pcr_results,
+CASE WHEN ltazt.[Name]='AZT liquid BID for 12 weeks' then 'Yes' 
+when ltazt.[Name]='AZT liquid BID + NVP liquid OD for 6 weeks then NVP liquid OD for 6 weeks' then 'Yes'
+end as Azt_given,
+CASE WHEN ltazt.[Name]='NVP liquid OD for 12 weeks' then 'Yes'
+when ltazt.[Name]='AZT liquid BID + NVP liquid OD for 6 weeks then NVP liquid OD for 6 weeks' then 'Yes'
+end as NVP_Given,
+NULL CTX_Given,
+ltazt.[Name] as  [ARVProphylaxisReceived],
+he.ArvProphylaxisOther as [OtherARVProphylaxisReceived],
+NULL First_antibody_sample_date ,
+NULL First_antibody_result,      
+ NULL First_antibody_dbs_sample_code,
+ NULL First_antibody_result_date,
+ NULL Final_antibody_sample_date,  
+ NULL Final_antibody_result,   
+ NULL Final_antibody_dbs_sample_code,
+NULL  Final_antibody_result_date,
+NULL  Tetracycline_Eye_Ointment,
+NULL Pupil,
+NULL Sight,
+NULL Squint,
+NULL Deworming_Drug,
+NULL Deworming_Dosage_Units,
+heapp.AppointmentDate as [Date_of_next_appointment],
+heapp.[Description] as [Comment],
+he.DeleteFlag as Voided
+ 
+
+  from HEIEncounter he
+inner join Patient p on he.PatientId=p.Id
+inner join (select pe.PatientId,pe.PatientMasterVisitId,pe.EncounterTypeId,pmv.VisitDate,ltv.ItemName as EncounterType from PatientEncounter pe
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId 
+inner join LookupItemView ltv on ltv.ItemId=pe.EncounterTypeId and ltv.MasterName='EncounterType'
+where ltv.ItemName='hei-encounter'
+)pen
+on pen.PatientId =he.PatientId and pen.PatientMasterVisitId=he.PatientMasterVisitId 
+inner join Person per on per.Id=p.PersonId 
+left join PatientVitals pvs on pvs.PatientId=he.PatientId  and pvs.PatientMasterVisitId=he.PatientMasterVisitId
+left join(select hf.PatientId,hf.PatientMasterVisitId,hf.FeedingModeId,lt.[Name] as InfantFeeding,
+						 CASE WHEN lt.[Name]='Not Breastfeeding' then 'No'
+						 when lt.[Name] is not null  and lt.[Name] !='Not Breastfeeding' then 'Yes'
+						 else null end as Feeding
+						  from  HEIFeeding hf
+						  left join LookupItem lt on lt.Id=hf.FeedingModeId)hf
+						   on hf.PatientId=p.Id and hf.PatientMasterVisitId=he.PatientMasterVisitId
+  left join(select * from (select  ps.PatientId,ps.PatientMasterVisitId,ps.ScreeningTypeId,ltv.[Name] as ScreeningType,ps.DeleteFlag,ROW_NUMBER() OVER(partition by ps.PatientId,ps.PatientMasterVisitId
+  order by ps.Id desc)rownum,
+lt.[Name] as ScreeningValue
+ from PatientScreening ps
+inner join LookupMaster ltv on ltv.Id=ps.ScreeningTypeId
+inner join LookupItem lt on lt.Id=ps.ScreeningValueId
+ where  ltv.[Name]='TbScreeningOutcome' and (ps.DeleteFlag is null or ps.DeleteFlag=0))ps where ps.rownum='1')tbs on tbs.PatientId=p.Id and tbs.PatientMasterVisitId=he.PatientMasterVisitId
+left join(select   t.PatientId,t.PatientMasterVisitId,max(t.[<2 Months]) as [Social_smile_milestone_<2Months],
+max(t.[2 Months]) as [Social_smile_milestone_2Months],
+max(t.[3 Months]) as Head_control_milestone_3Months,
+max(t.[4 Months]) as  Head_control_milestone_4Months,
+max(t.[6 Months]) as Response_to_sound_milestone_6months,
+max(t.[9 Months]) as Hand_extension_milestone_9months,
+max(t.[12 Months]) as Sitting_milestone_12months,
+max(t.[15 Months]) as Standing_milestone_15months,
+max(t.[18 Months]) as Walking_milestone_18months,
+max(t.[36 Months]) as Talking_milestone_36months
+  from(select pmi.PatientId,pmi.PatientMasterVisitId,pmi.TypeAssessedId, lt.[Name] as MilestoneType
+,pmi.StatusId,lti.[Name] as [Status],pmi.DeleteFlag ,pmi.DateAssessed from PatientMilestone pmi
+inner join LookupItem lt on lt.Id=pmi.TypeAssessedId
+inner join LookupItem lti on lti.Id=pmi.StatusId
+where (pmi.DeleteFlag is null or pmi.DeleteFlag =0) )
+m 
+pivot (max(m.[Status]) for MilestoneType In ([<2 Months], [2 Months]
+,[3 Months],[4 Months] ,[6 Months] ,[9 Months] ,[12 Months] ,[15 Months] ,[18 Months] ,[36 Months])
+
+)T  group by T.PatientId,T.PatientMasterVisitId)m on m.PatientId=he.PatientId
+and m.PatientMasterVisitId =he.PatientMasterVisitId
+left join(select r.PatientId,r.PatientMasterVisitId,r.[1st DNA PCRResult] as [1st_DNA_PCRResult] 
+,CAST(r.[1st DNA PCRSampleDate] as datetime) as [1st_DNA_PCRSampleDate]
+,CAST(r.[1st DNA PCRResultDate] as datetime) as  [1st_DNA_PCRResultDate]
+,r.[2nd DNA PCRResult] as [2nd_DNA_PCRResult]
+,CAST(r.[2nd DNA PCRSampleDate] as datetime) as [2nd_DNA_PCRSampleDate]
+,CAST(r.[2nd DNA PCRResultDate] as datetime) as [2nd_DNA_PCRResultDate]
+,r.[3rd DNA PCRResult] as  [3rd_DNA_PCRResult]
+,CAST(r.[3rd DNA PCRSampleDate] as datetime) as [3rd_DNA_PCRSampleDate]
+,CAST(r.[3rd DNA PCRResultDate] as datetime) as [3rd_DNA_PCRResultDate]
+,r.[Final AntibodyResult] as [Final_AntibodyResult]
+,CAST(r.[Final AntibodySampleDate] as datetime) as [Final_AntibodySampleDate],
+CAST(r.[Final AntibodyResultDate] as datetime) as Final_AntibodyResultDate,
+r.[Confirmatory PCR (for  +ve)Result] as ConfirmatoryPCR_Result,
+CAST(r.[Confirmatory PCR (for  +ve)SampleDate] as datetime) as ConfimatoryPCR_SampleDate
+,CAST(r.[Confirmatory PCR (for  +ve)ResultDate] as datetime) as ConfimatoryPCR_ResultDate
+,r.[Repeat confirmatory PCR (for +ve)Result] as RepeatConfirmatoryPCR_Result,
+CAST(r.[Repeat confirmatory PCR (for +ve)SampleDate] as datetime) as RepeatConfirmatoryPCR_SampleDate
+,CAST(r.[Repeat confirmatory PCR (for +ve)ResultDate] as datetime) as RepeatConfirmatoryPCR_ResultDate,
+[Baseline Viral Load (for +ve)Result] as BaselineViralLoadResult
+,CAST([Baseline Viral Load (for +ve)SampleDate] as datetime) as BaselineViralLoadSampleDate
+,CAST([Baseline Viral Load (for +ve)ResultDate] as datetime) as BaselineViralLoadResultDate
+
+
+ from (select heilabs.PatientId,heilabs.PatientMasterVisitId,ColumnName,ColumnValue from (select hes.PatientId,lab.PatientMasterVisitId,hes.LabOrderId,hes.HeiLabTestTypeId,ltv.ItemName,lab.SampleDate ,lab.ResultDate,COALESCE(CAST(lab.TestResults as VARCHAR),lab.TestResults1)Result from HeiLabTests hes 
+inner join LookupItemView ltv on ltv.ItemId=hes.HeiLabTestTypeId  and ltv.MasterName='HeiHivTestTypes'
+inner join (Select	O.Id				LabId
+		,o.Ptn_Pk
+		,o.PatientMasterVisitId
+		,o.PatientId
+		,O.LocationId
+		,O.OrderedBy		OrderedByName
+		,O.OrderNumber
+		,o.OrderDate		OrderedByDate
+		,Ot.ResultBy		ReportedByName
+		,OT.ResultDate		ReportedByDate
+		,O.OrderedBy		CheckedbyName
+		,o.OrderDate		CheckedbyDate
+		,O.PreClinicLabDate
+		,LT.ParameterName	TestName
+		,LT.ParameterId		TestId
+		,LT.LabTestId		[Test GroupId]
+		,lt.LabTestName		[Test GroupName]
+		,LT.DepartmentId	LabDepartmentId
+		,LT.LabDepartmentName
+		,0					LabTypeId
+		,'Additional Lab'	LabTypeName
+		,R.ResultValue		TestResults
+		,R.ResultText		TestResults1
+		,R.ResultOptionId	 TestResultId
+		,R.ResultOption		[Parameter Result]
+		,R.Undetectable
+		,R.DetectionLimit
+		,R.ResultUnit
+		,R.HasResult
+		,V.VisitDate
+		,Null				LabPeriod
+		,LT.TestReferenceId
+		,LT.ParameterReferenceId,
+		plt.SampleDate,
+	   plt.ResultDate,
+	   plt.ResultOptions		
+	From dbo.ord_LabOrder O
+	left Join dtl_LabOrderTest OT On OT.LabOrderId = O.Id
+	left Join dtl_LabOrderTestResult R On R.LabOrderTestId = OT.Id
+	left join(	Select	P.Id	ParameterId
+			,P.ParameterName
+			,P.ReferenceId ParameterReferenceId
+			,T.Id	LabTestId
+			,T.Name	LabTestName
+			,T.ReferenceId TestReferenceId
+			,T.IsGroup
+			,T.DepartmentId
+			,D.LabDepartmentName
+			, T.DeleteFlag TestDeleteFlag
+			,T.Active TestActive
+			,P.DeleteFlag ParameterDeleteFlag
+	From mst_LabTestMaster T
+	Inner Join Mst_LabTestParameter P On T.Id = P.LabTestId
+	Left Outer Join mst_LabDepartment D On T.DepartmentId = D.LabDepartmentID)LT on LT.ParameterID=R.ParameterId
+	left join PatientLabTracker plt on plt.LabOrderId=O.Id
+    left Join ord_Visit V On v.Visit_Id = O.VisitId
+	Where  (O.DeleteFlag is null or O.DeleteFlag =0) ) lab on lab.LabId=hes.LabOrderId)heilabs
+	cross apply(
+	select (heilabs.ItemName + 'Result') , CAST(heilabs.Result as varchar(max))   union all
+	select (heilabs.ItemName + 'SampleDate'),CAST( heilabs.SampleDate as varchar(max))  union all
+	select (heilabs.ItemName   + 'ResultDate') ,CAST(heilabs.ResultDate as varchar(max))  
+	)c(ColumnName,ColumnValue)
+	)t pivot(
+	max(ColumnValue)
+	for columnname in ([1st DNA PCRResult],[1st DNA PCRSampleDate],[1st DNA PCRResultDate],[2nd DNA PCRResult],[2nd DNA PCRSampleDate]
+,[2nd DNA PCRResultDate],[3rd DNA PCRResult],[3rd DNA PCRSampleDate],[3rd DNA PCRResultDate],[Final AntibodyResult],[Final AntibodySampleDate],[Final AntibodyResultDate],
+[Confirmatory PCR (for  +ve)Result],[Confirmatory PCR (for  +ve)SampleDate],[Confirmatory PCR (for  +ve)ResultDate],[Repeat confirmatory PCR (for +ve)Result],
+[Repeat confirmatory PCR (for +ve)SampleDate],[Repeat confirmatory PCR (for +ve)ResultDate],
+[Baseline Viral Load (for +ve)Result],[Baseline Viral Load (for +ve)SampleDate],[Baseline Viral Load (for +ve)ResultDate])
+
+)r)rlabs on rlabs.PatientId=he.PatientId and rlabs.PatientMasterVisitId=he.PatientMasterVisitId
+left join LookupItem ltazt on ltazt.Id=he.ArvProphylaxisId
+left join  (select * from (select pa.PatientId,pa.PatientMasterVisitId,pa.ServiceAreaId,sa.Code,pa.AppointmentDate,pa.[Description],pa.StatusDate
+ as Comment,ROW_NUMBER() OVER(partition by pa.PatientId,pa.PatientMasterVisitId order by pa.Id desc)rownum from PatientAppointment pa 
+ inner join ServiceArea sa on sa.Id=pa.ServiceAreaId
+ where (pa.DeleteFlag is null or pa.DeleteFlag =0)
+ and  sa.Code='HEI'
+
+ )t where t.rownum='1')heapp on heapp.PatientMasterVisitId=he.PatientMasterVisitId  and heapp.PatientId=he.PatientId
+
+
+
+-- 27. HEI Outcome
+select p.PersonId as Person_Id ,v.VisitDate as Encounter_Date, (select ltv.[Name] from LookupItem ltv  where ltv.Id =  he.Outcome24MonthId) as Child_hei_outcomes_HIV_Status,v.VisitDate as Child_hei_outcomes_exit_date
+  from HEIEncounter he 
+inner join PatientMasterVisit v on v.Id=he.PatientMasterVisitId
+inner join Patient p on he.PatientId=p.Id
+inner join  PatientEnrollment pe on p.Id =pe.PatientId
+inner join Person per on per.Id=p.PersonId 
+left join PatientVitals pvs on pvs.PatientId=he.PatientId  and pvs.PatientMasterVisitId=v.Id
+where he.Outcome24MonthId is not null
+
+
+
+
+
+ -- 28. HEI Immunization
+	
+	
+select  p.PersonId,v.VisitDate as Encounter_Date,NULL Encounter_ID,imm.BCG,
+imm.BCG_Date,imm.BCG_Period,
+imm.OPV_Birth,imm.OPV_Birth_Date,imm.OPV_Birth_Period,
+imm.[OPV_1],imm.[OPV_1_Date],imm.[OPV_1_Period],
+imm.[OPV_2],imm.[OPV_2_Date],imm.[OPV_2_Period],
+imm.[OPV_3],imm.[OPV_3_Date],imm.[OPV_3_Period],
+imm.DPT_Hep_B_Hib_1,imm.DPT_Hep_B_Hib_2,imm.DPT_Hep_B_Hib_3,
+imm.IPV,imm.IPV_Date,imm.IPV_Period,
+imm.ROTA_1,
+imm.ROTA_1_Date,
+imm.ROTA_1_Period,
+imm.ROTA_2,
+imm.ROTA_2_Date,
+imm.ROTA_2_Period,
+convert(varchar(50), NULL) as   Measles_rubella_1 ,
+convert(varchar(50), NULL)  as Measles_rubella_2,
+convert(varchar(50), NULL) as Yellow_fever,
+imm.Measles_6_months,imm.Measles_6_Date,imm.Measles_6_Period,
+imm.Measles_9_Months,imm.Measles_9_Date,imm.Measles_9_Period,
+imm.Measles_18_Months,imm.Measles_18_Date,imm.Measles_18_Period,
+imm.Pentavalent_1,imm.Pentavalent_1_Date,imm.Pentavalent_1_Period,
+imm.Pentavalent_2,imm.Pentavalent_2_Date,imm.Pentavalent_2_Period,
+imm.Pentavalent_3,imm.Pentavalent_3_Date,imm.Pentavalent_3_Period,
+imm.[PCV_10_1]  ,imm.[PCV_10_1_Date],imm.[PCV_10_1_Period],
+imm.[PCV_10_2],imm.[PCV_10_2_Date],imm.[PCV_10_2_Period],
+imm.[PCV_10_3],imm.[PCV_10_3_Date],imm.[PCV_10_3_Period],
+imm.Other,imm.Other_Date,imm.Other_Period,
+imm.VitaminA_6_months,
+imm.VitaminA_1_yr,
+imm.VitaminA_1_and_half_yr,
+imm.VitaminA_2_yr,
+imm.VitaminA2_to_5_yr,
+imm.fully_immunized,
+imm.Voided
+
+  from  HEIEncounter he 
+inner join PatientMasterVisit v on v.Id=he.PatientMasterVisitId
+inner join Patient p on he.PatientId=p.Id
+inner join  PatientEnrollment pe on p.Id =pe.PatientId
+inner join Person per on per.Id=p.PersonId 
+left join  (
+select r.PatientId,r.PatientMasterVisitId,r.BCG,cast(r.BCG_Date as datetime) as BCG_Date,r.BCG_Period,r.[OPV 0] as OPV_Birth,CAST(r.[OPV 0_Date] as datetime) as [OPV_Birth_Date],r.[OPV 0_Period] as [OPV_Birth_Period],
+r.[OPV 1] as OPV_1,CAST(r.[OPV 1_Date] as datetime) as [OPV_1_Date]  ,r.[OPV 1_Period] as OPV_1_Period,r.[OPV 2] as OPV_2,cast(r.[OPV 2_Date] as datetime) as [OPV_2_Date]  ,r.[OPV 2_Period] as OPV_2_Period
+,r.[OPV 3] as OPV_3 ,cast (r.[OPV 3_Date] as datetime) as [OPV_3_Date] ,r.[OPV 3_Period] as OPV_3_Period 
+,r.IPV,cast(r.IPV_Date as datetime) as IPV_Date,r.IPV_Period,NULL DPT_Hep_B_Hib_1  ,
+NULL DPT_Hep_B_Hib_2  ,NULL DPT_Hep_B_Hib_3,r.[PCV-10 1] as PCV_10_1,cast(r.[PCV-10 1_Date] as datetime) as [PCV_10_1_Date]  
+ ,r.[PCV-10 1_Period] as PCV_10_1_Period, r.[PCV-10 2] as PCV_10_2 ,cast(r.[PCV-10 2_Date] as datetime) as [PCV_10_2_Date],r.[PCV-10 2_Period]
+ as PCV_10_2_Period
+ ,r.[PCV-10 3] as PCV_10_3,
+cast(r.[PCV-10 3_Date] as datetime) as [PCV_10_3_Date] ,r.[PCV-10 3_Period] as PCV_10_3_Period,
+r.[Rota virus 1] as ROTA_1,cast(r.[Rota virus 1_Date] as datetime) as ROTA_1_Date,r.[Rota virus 1_Period] as ROTA_1_Period,r.[Rota Virus 2] as ROTA_2,
+cast(r.[Rota Virus 2_Date] as datetime) as ROTA_2_Date,r.[Rota Virus 2_Period] as ROTA_2_Period,
+r.[Measles 6 Months] as Measles_6_months,
+cast(r.[Measles 6 Months_Date] as datetime) as  Measles_6_Date
+,r.[Measles 6 Months_Period] as Measles_6_Period,
+r.[Measles 9 Months] as Measles_9_Months
+,cast(r.[Measles 9 Months_Date] as datetime)  as Measles_9_Date,r.[Measles 9 Months_Period] as Measles_9_Period
+,r.[Measles 18 Months] as Measles_18_Months ,
+cast(r.[Measles 18 Months_Date] as datetime)  as Measles_18_Date 
+,r.[Measles 18 Months_Period] as Measles_18_Period,
+r.Other,cast(r.Other_Date as datetime) as Other_Date,r.Other_Period,
+
+r.[Pentavalent 1] as Pentavalent_1,cast(r.[Pentavalent 1_Date] as datetime) as Pentavalent_1_Date,r.[Pentavalent 1_Period] as Pentavalent_1_Period 
+,r.[Pentavalent 2] as  Pentavalent_2,cast(r.[Pentavalent 2_Date] as datetime) as  Pentavalent_2_Date,r.[Pentavalent 2_Period] as Pentavalent_2_Period,r.[Pentavalent 3] as Pentavalent_3 ,
+cast(r.[Pentavalent 3_Date] as datetime) as Pentavalent_3_Date 
+,r.[Pentavalent 3_Period] as Pentavalent_3_Period,
+convert(varchar(50), NULL) as VitaminA_6_months,
+convert(varchar(50), NULL) as VitaminA_1_yr,
+convert(varchar(50), NULL) as VitaminA_1_and_half_yr,
+convert(varchar(50), NULL) as VitaminA_2_yr,
+convert(varchar(50), NULL) as VitaminA2_to_5_yr,
+CONVERT(Datetime,NULL) as  fully_immunized,
+r.DeleteFlag  as Voided
+ from(
+ select  v.PatientId,v.PatientMasterVisitId,v.DeleteFlag,ColumnName,ValueVaccine from(
+select PatientId,PatientMasterVisitId,Vaccine,lti.[Name] as Immunization,VaccineStage,lt.[Name] as Stage,v.VaccineDate,v.DeleteFlag from Vaccination v
+left join LookupItem lti on lti.Id=v.Vaccine
+left join LookupItem lt on lt.Id=v.VaccineStage
+where (v.DeleteFlag is null or v.DeleteFlag =0)
+)v
+cross apply( 
+
+select (v.Immunization) ,'YES' union all
+select (v.Immunization +'_Period' ),CAST(v.Stage as varchar(max)) union all
+select (v.Immunization + '_Date' )
+,CAST(v.VaccineDate as varchar(max))
+) c( ColumnName,ValueVaccine) 
+)t pivot 
+(
+ max(ValueVaccine) 
+ for columnname in ([Measles 18 Months],[Measles 18 Months_Period],[Measles 18 Months_Date],[Measles 9 Months],[Measles 9 Months_Period],[Measles 9 Months_Date],[Measles 6 Months],[Measles 6 Months_Period]
+ ,[Measles 6 Months_Date],IPV,IPV_Period,IPV_Date,[Rota Virus 2],[Rota Virus 2_Period],[Rota Virus 2_Date],[Rota virus 1],[Rota virus 1_Period],[Rota virus 1_Date],
+ [PCV-10 3], [PCV-10 3_Period], [PCV-10 3_Date],
+[PCV-10 2],[PCV-10 2_Period],[PCV-10 2_Date],[PCV-10 1],[PCV-10 1_Period],[PCV-10 1_Date],[Pentavalent 3],[Pentavalent 3_Period],[Pentavalent 3_Date]
+,[Pentavalent 2] ,[Pentavalent 2_Period],[Pentavalent 2_Date]
+,[Pentavalent 1],[Pentavalent 1_Period],[Pentavalent 1_Date]
+,[OPV 3],[OPV 3_Period],[OPV 3_Date]
+,[OPV 2],[OPV 2_Period],[OPV 2_Date]
+,[OPV 1],[OPV 1_Period],[OPV 1_Date]
+,[OPV 0],[OPV 0_Period],[OPV 0_Date]
+,BCG,BCG_Period,BCG_Date
+,Other,Other_Period,Other_Date )
+)r)imm on imm.PatientId=he.PatientId and imm.PatientMasterVisitId=v.Id
