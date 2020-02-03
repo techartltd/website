@@ -413,30 +413,20 @@ where (DeleteFlag=0 or DeleteFlag is null)
 where hr.TestType='Repeat Test'
 
 -- 6. HTS Client Tracing
-<<<<<<< HEAD
---6. HTS Client Tracing
-=======
->>>>>>> Added art preparation and enhanced adherence
+
 SELECT 
 PersonID,
 Encounter_Date = T.DateTracingDone,
 Encounter_ID = T.Id,
 Contact_Type = (SELECT ItemName FROM LookupItemView WHERE ItemId=T.Mode AND MasterName = 'TracingMode'),
 Contact_Outcome = (SELECT ItemName FROM LookupItemView WHERE ItemId=T.Outcome AND MasterName = 'TracingOutcome'),
-<<<<<<< HEAD
 Reason_uncontacted = (SELECT ItemName FROM LookupItemView WHERE ItemId= T.ReasonNotContacted AND MasterName in ('TracingReasonNotContactedPhone','TracingReasonNotContactedPhysical')),
-=======
-Reason_uncontacted = (SELECT ItemId FROM LookupItemView WHERE ItemId= T.ReasonNotContacted AND MasterName in ('TracingReasonNotContactedPhone','TracingReasonNotContactedPhysical')),
->>>>>>> Added art preparation and enhanced adherence
 T.OtherReasonSpecify,
 T.Remarks,
 T.DeleteFlag Voided
 
 FROM Tracing T
-<<<<<<< HEAD
 
-=======
->>>>>>> Added art preparation and enhanced adherence
 -- 7. HTS Client Referral
 
 select r.PersonId,r.ReferralDate  as Encounter_Date,NULL Encounter_ID, CASE WHEN r.OtherFacility is not null then r.OtherFacility else fc.FacilityName  end as Facility_Referred,
@@ -478,11 +468,20 @@ r.ExpectedDate as Date_To_Be_Enrolled
 
    --9 HTC Contact Listing
    exec pr_OpenDecryptedSession
+<<<<<<< HEAD
   select distinct p.PersonId as Person_Id,
   patr.PersonId as Contact_Person_Id,patr.Encounter_Date,NULL as Encounter_ID,
   	CASE WHEN patr.PersonId is not null then  'YES' end as Consent,
   patr.FirstName as First_Name,patr.MidName as Middle_Name,patr.LastName as Last_Name,
   patr.Sex,patr.DateOfBirth as DoB
+=======
+  select distinct hts.PatientId,p.PersonId as Person_Id,	CAST(DECRYPTBYKEY(per.[FirstName]) AS VARCHAR(50)) AS [FirstName],
+	CAST(DECRYPTBYKEY(per.[MidName]) AS VARCHAR(50)) AS [MidName],
+	CAST(DECRYPTBYKEY(per.[LastName]) AS VARCHAR(50)) AS [LastName],
+  patr.PersonId as Contact_Person_Id,patr.FirstName,patr.MidName,patr.LastName,
+  patr.Gender as Sex,
+  patr.DateOfBirth as DoB
+>>>>>>> updated HEI enrollment
   ,patr.MaritalStatus as Marital_Status
   ,patr.PhysicalAddress as Physical_Address
   ,patr.PhoneNumber as Phone_Number
