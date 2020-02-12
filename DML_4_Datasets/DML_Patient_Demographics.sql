@@ -1,11 +1,11 @@
 -- 1. Demographics/Registration  DML
-
 exec pr_OpenDecryptedSession;
 SELECT
 P.Id Person_Id, 
-CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
+PT.Id Patient_Id,
+CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS FirstName,
+CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS MiddleName,
+CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS LastName,
 CAST(DECRYPTBYKEY(P.NickName) AS VARCHAR(50)) AS Nickname,
 format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
 CASE(ISNULL(P.DobPrecision, PT.DobPrecision))
@@ -13,7 +13,7 @@ CASE(ISNULL(P.DobPrecision, PT.DobPrecision))
 	WHEN 1 THEN 'ESTIMATED'
 	ELSE 'ESTIMATED' END AS Exact_DOB,
 Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-UPN = (SELECT Top 1 IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
+UPN = (SELECT IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
 format(cast(ISNULL(P.RegistrationDate, PT.RegistrationDate) as date),'yyyy-MM-dd') AS Encounter_Date,
 NULL Encounter_ID,
 (CASE(Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
@@ -59,34 +59,14 @@ Ward = (select TOP 1 C.WardName from PersonLocation PL INNER JOIN County C ON C.
 Village = (select TOP 1 PL.Village from PersonLocation PL WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
 Landmark = (select TOP 1 PL.LandMark from PersonLocation PL WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
 Nearest_Health_Centre = (select TOP 1 PL.NearestHealthCentre from PersonLocation PL WHERE PL.PersonId = P.Id AND PL.DeleteFlag = 0 ORDER BY PL.Id DESC),
-ts.Next_of_kin as Next_of_kin,
- ts.Next_of_kin_phone as  Next_of_kin_phone,
-ts.Next_of_kin_relationship as Next_of_kin_relationship,
-ts.Next_of_kin_address as  Next_of_kin_address,
 Marital_status = (SELECT TOP 1 ItemName FROM PatientMaritalStatus PM INNER JOIN LookupItemView LK ON LK.ItemId = PM.MaritalStatusId WHERE PM.PersonId = P.Id AND PM.DeleteFlag = 0 AND LK.MasterName = 'MaritalStatus'),
 Occupation = (SELECT TOP 1 ItemName FROM PersonOccupation PO INNER JOIN LookupItemView LK ON LK.ItemId = PO.Occupation WHERE PO.PersonId = P.Id AND MasterName = 'Occupation' AND PO.DeleteFlag = 0 ORDER BY Id DESC),
 Education_level = (SELECT TOP 1 ItemName FROM PersonEducation EL INNER JOIN LookupItemView LK ON LK.ItemId = EL.EducationLevel WHERE EL.PersonId = P.Id and MasterName = 'EducationalLevel' AND EL.DeleteFlag = 0 ORDER BY Id DESC),
 Dead = (SELECT top 1  'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
 Death_date = (SELECT TOP 1 DateOfDeath FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
-ts.Consent as Consent,
-ts.Consent_Decline_Reason as Consent_Decline_Reason,
 PT.DeleteFlag AS voided 
+
 
 FROM Person P
 LEFT JOIN Patient PT ON PT.PersonId = P.Id
-LEFT JOIN  (select t.PersonId,t.SupporterId,t.Next_of_kin,t.Next_of_kin_phone,t.Next_of_kin_relationship,t.Next_of_kin_address,t.Consent,t.Consent_Decline_Reason from (select  pts.PersonId ,pts.SupporterId,(pt.FirstName + ' ' + pt.MiddleName + ' '  + pt.LastName) as Next_of_kin,pts.ContactCategory,pts.ContactRelationship,lts.DisplayName as Next_of_kin_relationship 
- ,pts.MobileContact as Next_of_kin_phone,pcv.PhysicalAddress as [Next_of_kin_address],pcc.Consent,pcc.Consent_Decline_Reason
-,pts.CreateDate ,ROW_NUMBER() OVER(Partition by   pts.PersonId order by pts.CreateDate desc)rownum  from PatientTreatmentSupporter pts
-inner join PersonView p  on pts.PersonId=p.Id
-inner join PersonView pt on pt.Id=pts.SupporterId
-inner join ( SELECT        Id, PersonId, CAST(DECRYPTBYKEY(PhysicalAddress) AS VARCHAR(50)) AS PhysicalAddress, CAST(DECRYPTBYKEY(MobileNumber) AS VARCHAR(50)) AS MobileNumber, 
-                         CAST(DECRYPTBYKEY(AlternativeNumber) AS VARCHAR(50)) AS AlternativeNumber, CAST(DECRYPTBYKEY(EmailAddress) AS VARCHAR(50)) AS EmailAddress, Active, DeleteFlag, CreatedBy, CreateDate
-FROM            dbo.PersonContact
-)pcv on pcv.PersonId=pts.SupporterId
-inner join LookupItemView lt on lt.ItemId=pts.ContactCategory and lt.MasterName='ContactCategory'
-inner join LookupItemView lts on lts.ItemId=pts.ContactRelationship and lts.MasterName='KinRelationship'
-left join(select pc.PatientId,pc.PersonId,pc.ConsentValue,lt.DisplayName as Consent,pc.[Comments] as [Consent_Decline_Reason] from PatientConsent pc
-inner join LookupItem lt on lt.Id=pc.ConsentValue) pcc on pcc.PersonId=pts.SupporterId
-where lt.ItemName  in ('NextofKin','EmergencyContact')) t where t.rownum='1'
-)ts on ts.PersonId=P.Id
 ORDER BY P.Id ASC

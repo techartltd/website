@@ -1,13 +1,11 @@
 
  
  --17 LaboratoryExtract
- 
-
-exec pr_OpenDecryptedSession;
+ ---5.Laboratory
 select p.PersonId as Person_Id 
 ,v.VisitDate as Encounter_Date,
 NULL as Encounter_ID,
-vlw.LabTestName as Lab_test,
+vlw.LabTestName as Lab_Test,
 NULL as Urgency, 
 COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) as  Test_Result,
 plo.OrderDate as Date_test_Requested,
@@ -23,6 +21,7 @@ plo.OrderStatus,
 (select  usr.UserFirstName + ' ' + usr.UserLastName  from mst_User usr where usr.UserID=plo.DeletedBy) as DeletedBy ,
 plo.DeleteDate,
 plo.DeleteReason,
+ plo.DeleteFlag as Voided,
  OT.ResultStatus,
  OT.StatusDate,
  COALESCE(cast(r.ResultValue as varchar(max)),r.ResultText) as LabResult,
@@ -35,8 +34,7 @@ plo.DeleteReason,
  r.HasResult,
  vlw.LabTestName,
  vlw.ParameterName,
- vlw.LabDepartmentName,
-  plo.DeleteFlag as Voided
+ vlw.LabDepartmentName
 
 from ord_LabOrder	 plo
 inner join dtl_LabOrderTest OT on OT.LabOrderId=plo.Id
@@ -60,5 +58,4 @@ left join (Select	P.Id	ParameterId
 	Inner Join Mst_LabTestParameter P On T.Id = P.LabTestId
 	Left Outer Join mst_LabDepartment D On T.DepartmentId = D.LabDepartmentID)
 	vlw on vlw.ParameterId=r.ParameterId
-
 
