@@ -1163,6 +1163,10 @@ CREATE TABLE migration_st.st_Enhanced_Adherence (
   First_session_date               DATE,
   Pill_count                       INT(100),
   Arv_adherence                    varchar(100),
+  MMAS4AdherenceRatiing				varchar(100),
+  MMAS4Score						varchar(100),
+  MMAS8Score						varchar(100),
+  MMAS8AdherenceRating				varchar(100),
   Has_vl_results                   varchar(100),
   Vl_results_suppressed            varchar(100),
   Vl_results_feeling               varchar(255),
@@ -1179,11 +1183,16 @@ CREATE TABLE migration_st.st_Enhanced_Adherence (
   Patient_has_people_to_talk         varchar(100),
   Patient_enlisting_social_support   varchar(255),
   Patient_income_sources             varchar(255),
-  Patient_challenges_reaching_clinic varchar(100),
-  Patient_worried_of_accidental_disclosure varchar(100),
-  Patient_treated_differently        varchar(100),
+  Patient_challenges_reaching_clinicScreening varchar(300),
+  Patient_challenges_reaching_clinic varchar(1000),
+  Patient_worried_of_accidental_disclosureScreening varchar(400),
+  Patient_worried_of_accidental_disclosure varchar(1000),
+  Patient_treated_differentlyScreening varchar(300),
+  Patient_treated_differently        varchar(1000),
+  Stigma_hinders_adherenceScreening   varchar(3000),
   Stigma_hinders_adherence           varchar(100),
-  Patient_tried_faith_healing        varchar(100),
+  Patient_tried_faith_healingScreening	varchar(300),
+  Patient_tried_faith_healing        varchar(1000),
   Patient_adherence_improved         varchar(100),
   Patient_doses_missed               varchar(100),
   Review_and_barriers_to_adherence   varchar(255),
@@ -1212,3 +1221,9 @@ CREATE TABLE migration_st.st_defaulter_tracing (
   Comments                         VARCHAR(100),
   Voided                           INT(11)
 );
+
+
+
+
+
+

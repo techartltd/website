@@ -879,21 +879,45 @@ insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_
   Voided 
   FROM migration_st.st_hiv_followup')
 
+exec pr_OpenDecryptedSession;
   select  P.Id as Person_Id,
-   format(cast(pmv.VisitDate as date),'yyyy-MM-dd') AS Encounter_Date
-,NULL as Encounter_ID
- , CASE WHEN pmv.VisitScheduled='0' then 'No' when pmv.VisitScheduled='1' then 'Yes' end as Visit_scheduled,
-ltv.[Name] as Visit_by,
+  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
+  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
+  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
+  format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
+  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+  UPN =P.Id,
+  pmv.VisitDate  as [EncounterDate],
+  CASE WHEN pmv.VisitScheduled='0' then 'No' when pmv.VisitScheduled='1' then 'Yes' end as visit_scheduled,
+ltv.[Name] as VisitBy,
 NULL Visit_by_other
-,psc.ItemDisplayName as Nutritional_status,
+,pvs.[Weight],pvs.Height,pvs.Systolic_pressure,pvs.Diastolic_pressure,pvs.Temperature,
+pvs.Pulse_rate,pvs.Respiratory_rate,pvs.Oxygen_Saturation,pvs.BMI,pvs.Muac,
+psc.ItemDisplayName as Nutritional_status,
 pop.PopulationType as Population_type,
-pop.Population_Type as Key_population_type,
-pws.WHO_Stage as Who_stage,
- CASE WHEN pres.PresentingComplaint is null then 'No' else 'Yes' end as Presenting_complaints,
-pres.PresentingComplaint as Complaint,
-NULL as Duration,
-NULL as Onset_Date,
+pop.Population_Type as Key_populationType,
+pws.WHO_Stage as Who_Stage,
+pres.PresentingComplaint as Presenting_complaints,
 cl.ClinicalNotes as Clinical_notes,
+CASE when pic.OnAntiTbDrugs='0' then 'No' when pic.OnAntiTbDrugs='1' then 'Yes' end as On_anti_tb_drugs,
+CASE when pic.Cough='0' then 'No' when pic.Cough='1' then 'Yes' end as Tb_Screening_cough,
+CASE when pic.Fever='0' then 'No' when pic.Fever='1' then 'Yes' end as Tb_Screening_Fever,
+CASE when pic.WeightLoss='0' then 'No' when pic.WeightLoss='1' then 'Yes' end as Tb_Screening_weightloss,
+CASE when pic.NightSweats='0' then 'No' when pic.NightSweats='1' then 'Yes' end as Tb_Screening_night_sweats,
+NULL as  Tests_ordered,
+picf.Spatum_smear_Ordered,
+picf.Chest_xray_ordered,
+picf.Genexpert_ordered,
+picf.Spatum_smear_result,
+picf.Chest_xray_result,
+picf.Geneexpert_result,
+NULL as Referral,
+NULL as clinical_tb_diagnosis,
+CASE when pia.InvitationOfContacts='0' then 'No' when pia.InvitationOfContacts='1' then 'Yes' end as Contact_invitation,
+CASE when pia.EvaluatedForIpt='0' then 'No' when pia.EvaluatedForIpt='1' then 'Yes' end as   Evaluated_for_ipt,
+ptb.Tb_Status,
+trx.TBRxStartDate as Tb_treatment_date,
+trx.RegimenName as  Tb_regimen,
 CASE WHEN paa.Has_Known_allergies is null then 'No' else paa.Has_Known_allergies end as Has_Known_allergies,
 paa.Allergies_causative_agents,
 paa.Allergies_reactions,
@@ -911,11 +935,11 @@ vss.Vaccinations_today,
 vss.VaccineStage as Vaccine_Stage,
 vss.VaccineDate as Vaccine_Date,
 pov.LMP as Last_menstrual_period,
-pov.PregnancyStatus as Pregnancy_status,
-pov.PlanningGetPregnant as Wants_pregnancy,
-pov.Outcome as Pregnancy_outcome,
+pov.PregnancyStatus,
+pov.PlanningGetPregnant as Wants_Pregnancy,
+pov.Outcome as Pregnancy_Outcome,
 panc.IdentifierValue as Anc_number,
-pov.Anc_profile,
+pov.Anc_Profile,
 pov.EDD  as Expected_delivery_date,
 pov.Gravidae as Gravida,
 pov.Parity as Parity,
@@ -924,18 +948,16 @@ pfm.FamilyPlanningMethod as Family_planning_method,
 pfm.Reason_not_using_family_planning,
 ge.Exam as General_examinations_findings,
 CASE when srs.System_review_finding is null then 'No' else srs.System_review_finding end as System_review_finding,
-sk.Findings as Skin,
-sk.FindingsNotes as Skin_finding_notes,
 ey.Findings as Eyes,
 ey.FindingsNotes as Eyes_Finding_notes,
-ent.Findings as ENT,
-ent.FindingsNotes as ENT_finding_notes,
+sk.Findings as Skins,
+sk.FindingsNotes as Skin_finding_notes,
 ch.Findings as Chest,
 ch.FindingsNotes as Chest_finding_notes,
 cvs.Findings as CVS,
-cvs.FindingsNotes as CVS_finding_notes,
+cvs.FindingsNotes as CVS_Finding_notes,
 ab.Findings as Abdomen,
-ab.FindingsNotes as Abdomen_finding_notes,
+ab.FindingsNotes as Abdomen_Finding_notes,
 cns.Findings as CNS,
 cns.FindingsNotes as CNS_finding_notes,
 gn.Findings as Genitourinary,
@@ -943,7 +965,7 @@ gn.FindingsNotes as Genitourinary_finding_notes,
 pd.Diagnosis as Diagnosis,
 pd.ManagementPlan as Treatment_plan,
 ctx.ScoreName as Ctx_adherence,
-CASE when ctx.VisitDate  is not null then 'Yes' else' No' end as Ctx_dispensed,
+ctx.VisitDate as Ctx_dispensed,
 NULL as Dapson_adherence,
 NULL as Dapsone_dispensed,
 adass.Morisky_forget_taking_drugs,
@@ -962,12 +984,11 @@ phdp.Pwp_partner_tested,
 cacx.ScreeningValue  as Cacx_Screening,
 phdp.Screened_for_sti,
 pcc.Stability as Stability,
- format(cast(papp.Next_appointment_date as date),'yyyy-MM-dd') AS Next_appointment_date,
+papp.Next_appointment_date,
 papp.Next_appointment_reason,
 papp.Appointment_type,
 pdd.DifferentiatedCare as Differentiated_care,
-'0' as Voided   
-
+'0' as Voided
   from Person P
    INNER JOIN Patient PT ON PT.PersonId = P.Id
   INNER JOIN PatientEncounter pe on pe.PatientId=PT.Id
@@ -1171,6 +1192,9 @@ FROM            dbo.PhysicalExamination e
 )ex 
 where ex.rownum ='1'
 )ch on ch.PatientId =pe.PatientId and ch.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
 left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
     Id,
     PatientMasterVisitId,
@@ -1187,35 +1211,14 @@ left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMaste
     FindingsNotes
 FROM            dbo.PhysicalExamination e
 
-)ex where ex.ExaminationType='ReviewOfSystems' and Ex.Exam='ENT'
-
-)ex 
-where ex.rownum ='1'
-)ent on ent.PatientId =pe.PatientId and ent.PatientMasterVisitId=pe.PatientMasterVisitId
-
-
-
-left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
-    Id,
-    PatientMasterVisitId,
-    PatientId,
-    ExaminationTypeIdht
-	(SELECT top 1 l.Name FROM LookupMaster l WHERE l.Id=e.ExaminationTypeId) ExaminationType,
-	ExamId, 
-	(SELECT top 1 l.DisplayName FROM LookupItem l WHERE l.Id=e.ExamId) Exam,
-	DeleteFlag,
-	CreateBy,	  
-	CreateDate,
-	FindingId, 
-	(SELECT top 1 l.ItemName FROM LookupItemView l WHERE l.ItemId=e.FindingId) Findings,
-    FindingsNotes
-FROM            dbo.PhysicalExamination e
-
 )ex where ex.ExaminationType='ReviewOfSystems' and Ex.Exam='CVS'
 
 )ex 
 where ex.rownum ='1'
 )cvs on cvs.PatientId =pe.PatientId and cvs.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
 
 left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
     Id,
@@ -1238,6 +1241,9 @@ FROM            dbo.PhysicalExamination e
 )ex 
 where ex.rownum ='1'
 )ab on ab.PatientId =pe.PatientId and ab.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
 
 left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
     Id,
@@ -1330,7 +1336,8 @@ and ISNUMERIC(pd.Diagnosis) =1)pd inner join LookupItem lt on lt.Id=pd.Diagnosis
 
  left join(select * from (select ao.Id,ao.PatientId,ao.PatientMasterVisitId,ao.Score,ROW_NUMBER() OVER(partition by ao.PatientId,
  ao.PatientMasterVisitId order by ao.CreateDate desc)rownum,
-ao.AdherenceType,lm.[Name] as AdherenceTypeName, lti.DisplayName as ScoreName ,ao.DeleteFlag,pmv.VisitDate from AdherenceOutcome  ao
+ao.AdherenceType,lm.[Name] as AdherenceTypeName,
+ lti.DisplayName as ScoreName ,ao.DeleteFlag,pmv.VisitDate from AdherenceOutcome  ao
 inner join  LookupMaster  lm on lm.Id=ao.AdherenceType
 inner join LookupItem lti on lti.Id=ao.Score
 inner join PatientMasterVisit pmv on pmv.Id =ao.PatientMasterVisitId
@@ -1402,6 +1409,8 @@ lt.DisplayName as ScreeningValue,ROW_NUMBER() OVER(partition by psc.PatientId,ps
  cacx.PatientMasterVisitId=pe.PatientMasterVisitId
  where lt.[Name]='ccc-encounter' 
  
+
+   
 
  
  
@@ -3067,3 +3076,898 @@ select (v.Immunization + '_Date' )
 ,BCG,BCG_Period,BCG_Date
 ,Other,Other_Period,Other_Date )
 )r)imm on imm.PatientId=he.PatientId and imm.PatientMasterVisitId=v.Id
+
+
+
+
+-- ART Treatment preparation
+
+
+
+
+  select p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL
+   as Encounter_ID,
+   psc.Understands_hiv_art_benefits,
+   psc.Screened_negative_substance_abuse,
+   psc.Screened_negative_psychiatric_illness,
+   psc.HIV_status_disclosure,
+   psc.Trained_drug_admin,
+   psc.Informed_drug_side_effects,
+   psc.Caregiver_committed,
+   psc.Adherance_barriers_identified,
+   psc.Caregiver_location_contacts_known,
+   psc.Ready_to_start_art,
+   pssc.Identified_drug_time,
+   pssc.Treatment_supporter_engaged,
+   pssc.Support_grp_meeting_awareness,
+   pssc.Enrolled_in_reminder_system,
+   pssc.Other_support_systems,
+   part.DeleteFlag
+  from (
+  select  psc.PatientId,psc.PatientMasterVisitId,psc.DeleteFlag from PatientSupportSystemCriteria 
+  psc
+  union 
+  select  pscr.PatientId,pscr.PatientMasterVisitId,pscr.DeleteFlag from PatientPsychosocialCriteria pscr
+  )part   inner join Patient p on p.Id=part.PatientId
+  inner join PatientMasterVisit pmv on pmv.Id=part.PatientMasterVisitId
+ left join(select  psc.PatientId,psc.PatientMasterVisitId,
+ CASE when psc.BenefitART ='1' then 'Yes' when psc.BenefitART='0' then 'No'
+ end as  Understands_hiv_art_benefits,
+ CASE when psc.Alcohol='1' then 'Yes' when psc.Alcohol='0' then 'No'
+ end as Screened_negative_substance_abuse,
+ CASE when psc.Depression ='1' then 'Yes' when psc.Depression='0' then 
+ 'No' end as Screened_negative_psychiatric_illness,
+ CASE when psc.Disclosure='1' then 'Yes' when psc.Disclosure='0' then
+ 'No' end as HIV_status_disclosure,
+ CASE when psc.AdministerART='1' then 'Yes' when psc.AdministerART='0' then
+ 'No' end as Trained_drug_admin,
+ CASE when psc.effectsART='1' then 'Yes' when psc.effectsART='0' then 'No' end as
+ Informed_drug_side_effects,
+ CASE when psc.dependents='1' then 'Yes' when psc.dependents='0' then 'No' end as Caregiver_committed,
+ CASE when psc.AdherenceBarriers='1' then 'Yes' when psc.AdherenceBarriers='0' then 'No'
+ end as Adherance_barriers_identified,
+ CASE when psc.AccurateLocator='1' then 'Yes' when psc.AccurateLocator='0' then 'No'
+ end as Caregiver_location_contacts_known,
+CASE when psc.StartART ='1' then 'Yes' when psc.StartART='0' then 'No' end as
+ Ready_to_start_art
+
+  from  PatientPsychosocialCriteria psc
+ 
+)psc on psc.PatientId=part.PatientId  
+and psc.PatientMasterVisitId =part.PatientMasterVisitId
+left join (
+select psc.PatientId,psc.PatientMasterVisitId,
+  CASE when psc.TakingART='1' then 'Yes' when psc.TakingART='0' then 'No' end 
+  as Identified_drug_time,
+  CASE when psc.TSIdentified='1' then 'Yes' when psc.TSIdentified='0' then 'No'
+  end as Treatment_supporter_engaged,
+  CASE when psc.supportGroup='1' then 'Yes' when psc.supportGroup='0' then 'No'
+  end as Support_grp_meeting_awareness,
+  CASE when psc.EnrollSMSReminder='1' then 'Yes' when 
+  psc.EnrollSMSReminder='0' then 'No' end as Enrolled_in_reminder_system,
+  CASE when psc.OtherSupportSystems='1' then 'Yes' when 
+  psc.OtherSupportSystems='0' then 'No' end as Other_support_systems
+   from PatientSupportSystemCriteria psc)
+   pssc on pssc.PatientId=part.PatientId and pssc.PatientMasterVisitId=part.PatientMasterVisitId
+   
+   
+   
+   
+   ----- 30. Enhanced Adherence Screening
+   select * from ( select pd.PersonId as Person_Id,pd.VisitDate as Encounter_Date,
+NULL as Encounter_ID,'1' as Session_number,
+pilladh.Answer as Pill_Count,
+NULL as Arv_adherence,
+mmas4Adhr.Answer as MMAS4AdherenceRating,
+mmas4Score.Answer  as MMAS4Score,
+mmas8score.Answer as MMAS8Score,
+mmas8Adher.Answer as MMAS8AdherenceRating,
+NULL as Has_vl_results,
+NULL as Vl_results_suppressed,
+uvfeel.Answer as Vl_results_feeling,
+uvcause.Answer as Cause_of_high_vl,
+NULL as Way_Forward,
+cognhiv.Answer as  Patient_hiv_knowledge,
+behhiv.Answer as Patient_drugs_uptake,
+behhiv2.Answer as  Patient_drugs_reminder_tools,
+behhiv3.Answer as Patient_drugs_uptake_during_travels,
+behhiv4.Answer as Patient_drugs_side_effects_response,
+behhiv5.Answer as Patient_drugs_uptake_most_difficult_times,
+emq1.Answer as   Patient_drugs_daily_uptake_feeling,
+emq2.Answer as Patient_ambitions,
+sociq1.Answer as Patient_has_people_to_talk,
+sociq2.Answer as Patient_enlisting_social_support,
+sociq3.Answer as Patient_income_sources,
+sociq4scr.Answer as Patient_challenges_reaching_clinicScreening,
+sociq4.Answer as Patient_challenges_reaching_clinic,
+sociq5scr.Answer as Patient_worried_of_accidental_disclosureScreening,
+sociq5.Answer	as  Patient_worried_of_accidental_disclosure,
+sociq6scr.Answer as Patient_treated_differentlyScreening,
+sociq6.Answer as Patient_treated_differently,
+sociq7scr.Answer as Stigma_hinders_adherenceScreening,
+sociq7.Answer as Stigma_hinders_adherence,
+sociq8scr.Answer as Patient_tried_faith_healingScreening,
+sociq8.Answer as Patient_tried_faith_healing,
+NULL as Patient_adherence_improved,
+NULL as Patient_doses_missed,
+NULL as Review_and_Barriers_to_adherence,
+sessionrefq1.Answer as Other_referrals,
+sessionrefq2.Answer as Appointments_honoured,
+sessionrefq3.Answer as Referral_experience,
+sessionrefq4.Answer as Home_visit_benefit,
+sessionrefq5.Answer as Adherence_Plan,
+session1followup.Answer as Next_Appointment_Date,
+pd.DeleteFlag as Voided
+  from (select pe.PatientId,pe.PatientMasterVisitId,pe.DeleteFlag,p.PersonId,pe.EncounterTypeId,lt.ItemName,pm.VisitDate from PatientEncounter pe
+inner join PatientMasterVisit pm on pe.PatientMasterVisitId=pm.Id
+inner join Patient p on p.Id =pe.PatientId
+inner join LookupItemView lt on lt.ItemId=pe.EncounterTypeId
+where lt.ItemName='EnhanceAdherence'
+)pd
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='PillAdherence' and lt.ItemName='PillAdherenceQ1')lt
+on lt.ItemId=pc.NotesCategoryId)
+pilladh  on pilladh.PatientMasterVisitId=pd.PatientMasterVisitId and pilladh.PatientId=pd.PatientId
+
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='mmas4screeningNotes' and lt.ItemName='mmas4Adherence')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Adhr  on mmas4Adhr.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Adhr.PatientId=pd.PatientId
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='mmas4screeningNotes' and lt.ItemName='mmas4Score')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Score  on mmas4Score.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Score.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='mmas8screeningNotes' and lt.ItemName='mmas8Score')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8score on mmas8score.PatientMasterVisitId =pd.PatientMasterVisitId
+and mmas8score.PatientId=pd.PatientId
+
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='mmas8screeningNotes' and lt.ItemName='mmas8Adherence')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8Adher on mmas8Adher.PatientMasterVisitId =pd.PatientMasterVisitId
+and mmas8Adher.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='UnderstandingViralLoad' and lt.ItemName='UVLQ1')lt
+on lt.ItemId=pc.NotesCategoryId
+)uvfeel on uvfeel.PatientMasterVisitId=pd.PatientMasterVisitId
+and uvfeel.PatientId=pd.PatientId
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='UnderstandingViralLoad' and lt.ItemName='UVLQ2')lt
+on lt.ItemId=pc.NotesCategoryId
+)uvcause on uvcause.PatientMasterVisitId=pd.PatientMasterVisitId
+and uvcause.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='CognitiveBarriers' and lt.ItemName='CognitiveBarriersQ1')lt
+on lt.ItemId=pc.NotesCategoryId
+)cognhiv on cognhiv.PatientMasterVisitId=pd.PatientMasterVisitId and cognhiv.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='BehaviouralBarriers' and lt.ItemName='BehaviouralBarriersQ1')lt
+on lt.ItemId=pc.NotesCategoryId
+)behhiv on behhiv.PatientMasterVisitId=pd.PatientMasterVisitId
+and behhiv.PatientId=pd.PatientId
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='BehaviouralBarriers' and lt.ItemName='BehaviouralBarriersQ2')lt
+on lt.ItemId=pc.NotesCategoryId
+)behhiv2 on behhiv2.PatientMasterVisitId=pd.PatientMasterVisitId
+ and behhiv2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='BehaviouralBarriers' and lt.ItemName='BehaviouralBarriersQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+)behhiv3 on behhiv3.PatientMasterVisitId=pd.PatientMasterVisitId
+and behhiv3.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='BehaviouralBarriers' and lt.ItemName='BehaviouralBarriersQ4')lt
+on lt.ItemId=pc.NotesCategoryId
+)behhiv4 on behhiv4.PatientMasterVisitId=pd.PatientMasterVisitId and behhiv4.PatientId =pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='BehaviouralBarriers' and lt.ItemName='BehaviouralBarriersQ5')lt
+on lt.ItemId=pc.NotesCategoryId
+)behhiv5 on behhiv5.PatientMasterVisitId=pd.PatientMasterVisitId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='EmotionalBarriers' and lt.ItemName='EmotionalBarriersQ1')lt
+on lt.ItemId=pc.NotesCategoryId
+)emq1 on emq1.PatientMasterVisitId=pd.PatientMasterVisitId and emq1.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='EmotionalBarriers' and lt.ItemName='EmotionalBarriersQ2')lt
+on lt.ItemId=pc.NotesCategoryId
+)emq2 on emq2.PatientMasterVisitId=pd.PatientMasterVisitId
+ and emq2.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ1')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sociq1 on sociq1.PatientMasterVisitId =pd.PatientMasterVisitId and 
+sociq1.PatientId =pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ2')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq2 on sociq2.PatientMasterVisitId=pd.PatientMasterVisitId
+and sociq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq3 on sociq3.PatientMasterVisitId=pd.PatientMasterVisitId and sociq3.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ4')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sociq4Scr on sociq4Scr.PatientMasterVisitId =pd.PatientMasterVisitId and sociq4Scr.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ4')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq4 on sociq4.PatientMasterVisitId=pd.PatientMasterVisitId and sociq4.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ5')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq5 on sociq5.PatientMasterVisitId=pd.PatientMasterVisitId and sociq5.PatientId=pd.PatientId
+
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ5')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sociq5Scr on sociq5Scr.PatientMasterVisitId =pd.PatientMasterVisitId
+and sociq5Scr.PatientId=pd.PatientId
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ6')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq6 on sociq6.PatientMasterVisitId=pd.PatientMasterVisitId
+and sociq6.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ6')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sociq6Scr on sociq6Scr.PatientMasterVisitId =pd.PatientMasterVisitId
+and sociq6Scr.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ7')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq7 on sociq7.PatientMasterVisitId=pd.PatientMasterVisitId
+
+and sociq7.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ7')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sociq7Scr on sociq7Scr.PatientMasterVisitId =pd.PatientMasterVisitId and
+sociq7Scr.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ8')lt
+on lt.ItemId=pc.NotesCategoryId
+)sociq8 on sociq8.PatientMasterVisitId=pd.PatientMasterVisitId and sociq8.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SocioEconomicBarriers' and lt.ItemName='SocioEconomicBarriersQ8')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sociq8Scr on sociq8Scr.PatientMasterVisitId =pd.PatientMasterVisitId and sociq8Scr.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ1')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq1 on sessionrefq1.PatientMasterVisitId =pd.PatientMasterVisitId
+ and sessionrefq1.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ2')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq2 on sessionrefq2.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq3 on sessionrefq3.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq3.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ4')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq4 on sessionrefq4.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq4.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ5')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq5 on sessionrefq5.PatientMasterVisitId=pd.PatientMasterVisitId
+and sessionrefq5.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session1PillAdherence' and lt.ItemName='Session1FollowupDate')lt
+on lt.ItemId=pc.NotesCategoryId
+)session1followup on session1followup.PatientMasterVisitId=pd.PatientMasterVisitId
+and session1followup.PatientId=pd.PatientId
+
+
+
+union 
+
+select pd.PersonId as Person_Id,pd.VisitDate as Encounter_Date,
+NULL as Encounter_ID,'2' as Session_number,pilladh.Answer as Pill_Count,
+NULL as Arv_adherence,
+mmas4Adhr.Answer as MMAS4AdherenceRating,
+mmas4Score.Answer  as MMAS4Score,
+mmas8score.Answer as MMAS8Score,
+mmas8Adher.Answer as MMAS8AdherenceRating,
+NULL as Has_vl_results,
+NULL as Vl_results_suppressed,
+NULL as Vl_results_feeling,
+NULL as Cause_of_high_vl,
+NULL as Way_Forward,
+NULL as  Patient_hiv_knowledge,
+NULL as Patient_drugs_uptake,
+NULL as  Patient_drugs_reminder_tools,
+NULL as Patient_drugs_uptake_during_travels,
+NULL as Patient_drugs_side_effects_response,
+NULL as Patient_drugs_uptake_most_difficult_times,
+NULL as   Patient_drugs_daily_uptake_feeling,
+NULL as Patient_ambitions,
+NULL as Patient_has_people_to_talk,
+NULL as Patient_enlisting_social_support,
+NULL as Patient_income_sources,
+NULL as Patient_challenges_reaching_clinicScreening,
+NULL as Patient_challenges_reaching_clinic,
+NULL as Patient_worried_of_accidental_disclosureScreening,
+NULL	as  Patient_worried_of_accidental_disclosure,
+NULL as Patient_treated_differentlyScreening,
+NULL as Patient_treated_differently,
+NULL as Stigma_hinders_adherenceScreening,
+NULL as Stigma_hinders_adherence,
+NULL as Patient_tried_faith_healingScreening,
+NULL as Patient_tried_faith_healing,
+adhrevq1.Answer as Patient_adherence_improved,
+adhrevq2.Answer as Patient_doses_missed,
+adhrevq3.Answer as Review_and_Barriers_to_adherence,
+sessionrefq1.Answer as Other_referrals,
+sessionrefq2.Answer as Appointments_honoured,
+sessionrefq3.Answer as Referral_experience,
+sessionrefq4.Answer as Home_visit_benefit,
+sessionrefq5.Answer as Adherence_Plan,
+session1followup.Answer as Next_Appointment_Date,
+pd.DeleteFlag as Voided
+  from (select pe.PatientId,pe.PatientMasterVisitId,pe.DeleteFlag,p.PersonId,pe.EncounterTypeId,lt.ItemName,pm.VisitDate from PatientEncounter pe
+inner join PatientMasterVisit pm on pe.PatientMasterVisitId=pm.Id
+inner join Patient p on p.Id =pe.PatientId
+inner join LookupItemView lt on lt.ItemId=pe.EncounterTypeId
+where lt.ItemName='EnhanceAdherence'
+)pd
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2PillAdherence' and lt.ItemName='Session2PillAdherenceQ1')lt
+on lt.ItemId=pc.NotesCategoryId)
+pilladh  on pilladh.PatientMasterVisitId=pd.PatientMasterVisitId and pilladh.PatientId=pd.PatientId
+
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2mmas4screeningNotes' and lt.ItemName='Session2mmas4Adherence')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Adhr  on mmas4Adhr.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Adhr.PatientId=pd.PatientId
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2mmas4screeningNotes' and lt.ItemName='Session2mmas4Score')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Score  on mmas4Score.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Score.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2mmas8screeningNotes' and lt.ItemName='Session2mmas8Score')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8score on mmas8score.PatientMasterVisitId =pd.PatientMasterVisitId and mmas8score.PatientId=pd.PatientId
+
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2mmas8screeningNotes' and lt.ItemName='Session2mmas8Adherence')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8Adher on mmas8Adher.PatientMasterVisitId =pd.PatientMasterVisitId and mmas8Adher.PatientId=mmas8Adher.PatientId
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='UnderstandingViralLoad' and lt.ItemName='UVLQ1')lt
+on lt.ItemId=pc.NotesCategoryId
+)uvfeel on uvfeel.PatientMasterVisitId=pd.PatientMasterVisitId and uvfeel.PatientId=pd.PatientId
+
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ1')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq1 on sessionrefq1.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq1.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session2ReferralsNetworks' and lt.ItemName='Session2ReferralsNetworksQ2')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq2 on sessionrefq2.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2ReferralsNetworks' and lt.ItemName='Session2ReferralsNetworksQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq3 on sessionrefq3.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq3.PatientId=sessionrefq3.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session2ReferralsNetworks' and lt.ItemName='Session2ReferralsNetworksQ4')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq4 on sessionrefq4.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq4.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2ReferralsNetworks' and lt.ItemName='Session2ReferralsNetworksQ5')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq5 on sessionrefq5.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq5.PatientId =pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2PillAdherence' and lt.ItemName='Session2FollowupDate')lt
+on lt.ItemId=pc.NotesCategoryId
+)session1followup on session1followup.PatientMasterVisitId=pd.PatientMasterVisitId and session1followup.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session2AdherenceReviews'
+and lt.ItemName='Session2AdherenceReviewsQ1'
+)lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+adhrevq1 on adhrevq1.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq1.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session2AdherenceReviews'
+and lt.ItemName='Session2AdherenceReviewsQ2'
+)lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+adhrevq2 on adhrevq2.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session2AdherenceReviews' and lt.ItemName='Session2AdherenceReviewsQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+) adhrevq3 on adhrevq3.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq3.PatientId=pd.PatientId
+
+union
+
+select pd.PersonId as Person_Id,pd.VisitDate as Encounter_Date,
+NULL as Encounter_ID,'3' as Session_number,pilladh.Answer as Pill_Count,
+NULL as Arv_adherence
+,mmas4Adhr.Answer as MMAS4AdherenceRating,
+mmas4Score.Answer  as MMAS4Score,
+mmas8score.Answer as MMAS8Score,
+mmas8Adher.Answer as MMAS8AdherenceRating,
+NULL as Has_vl_results,
+NULL as Vl_results_suppressed,
+NULL as Vl_results_feeling,
+NULL as Cause_of_high_vl,
+NULL as Way_Forward,
+NULL as  Patient_hiv_knowledge,
+NULL as Patient_drugs_uptake,
+NULL as  Patient_drugs_reminder_tools,
+NULL as Patient_drugs_uptake_during_travels,
+NULL as Patient_drugs_side_effects_response,
+NULL as Patient_drugs_uptake_most_difficult_times,
+NULL as   Patient_drugs_daily_uptake_feeling,
+NULL as Patient_ambitions,
+NULL as Patient_has_people_to_talk,
+NULL as Patient_enlisting_social_support,
+NULL as Patient_income_sources,
+NULL as Patient_challenges_reaching_clinicScreening,
+NULL as Patient_challenges_reaching_clinic,
+NULL as Patient_worried_of_accidental_disclosureScreening,
+NULL	as  Patient_worried_of_accidental_disclosure,
+NULL as Patient_treated_differentlyScreening,
+NULL as Patient_treated_differently,
+NULL as Stigma_hinders_adherenceScreening,
+NULL as Stigma_hinders_adherence,
+NULL as Patient_tried_faith_healingScreening,
+NULL as Patient_tried_faith_healing,
+adhrevq1.Answer as Patient_adherence_improved,
+adhrevq2.Answer as Patient_doses_missed,
+adhrevq3.Answer as Review_and_Barriers_to_adherence,
+sessionrefq1.Answer as Other_referrals,
+sessionrefq2.Answer as Appointments_honoured,
+sessionrefq3.Answer as Referral_experience,
+sessionrefq4.Answer as Home_visit_benefit,
+sessionrefq5.Answer as Adherence_Plan,
+session1followup.Answer as Next_Appointment_Date,
+pd.DeleteFlag as Voided
+  from (select pe.PatientId,pe.PatientMasterVisitId,pe.DeleteFlag,p.PersonId,pe.EncounterTypeId,lt.ItemName,pm.VisitDate from PatientEncounter pe
+inner join PatientMasterVisit pm on pe.PatientMasterVisitId=pm.Id
+inner join Patient p on p.Id =pe.PatientId
+inner join LookupItemView lt on lt.ItemId=pe.EncounterTypeId
+where lt.ItemName='EnhanceAdherence'
+)pd
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3PillAdherence' and lt.ItemName='Session3PillAdherenceQ1')lt
+on lt.ItemId=pc.NotesCategoryId)
+pilladh  on pilladh.PatientMasterVisitId=pd.PatientMasterVisitId and pilladh.PatientId=pd.PatientId
+
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3mmas4screeningNotes' and lt.ItemName='Session3mmas4Adherence')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Adhr  on mmas4Adhr.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Adhr.PatientId=pd.PatientId
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3mmas4screeningNotes' and lt.ItemName='Session3mmas4Score')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Score  on mmas4Score.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Score.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3mmas8screeningNotes' and lt.ItemName='Session3mmas8Score')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8score on mmas8score.PatientMasterVisitId =pd.PatientMasterVisitId and mmas8score.PatientId=pd.PatientId
+
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3mmas8screeningNotes' and lt.ItemName='Session3mmas8Adherence')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8Adher on mmas8Adher.PatientMasterVisitId =pd.PatientMasterVisitId and mmas8Adher.PatientId=pd.PatientId
+
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ1')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq1 on sessionrefq1.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq1.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session3ReferralsNetworks' and lt.ItemName='Session3ReferralsNetworksQ2')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq2 on sessionrefq2.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3ReferralsNetworks' and lt.ItemName='Session3ReferralsNetworksQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq3 on sessionrefq3.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq3.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session3ReferralsNetworks' and lt.ItemName='Session3ReferralsNetworksQ4')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq4 on sessionrefq4.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq4.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3ReferralsNetworks' and lt.ItemName='Session3ReferralsNetworksQ5')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq5 on sessionrefq5.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq5.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3PillAdherence' and lt.ItemName='Session3FollowupDate')lt
+on lt.ItemId=pc.NotesCategoryId
+)session1followup on session1followup.PatientMasterVisitId=pd.PatientMasterVisitId and session1followup.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session3AdherenceReviews'
+and lt.ItemName='Session3AdherenceReviewsQ1'
+)lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+adhrevq1 on adhrevq1.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq1.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session3AdherenceReviews'
+and lt.ItemName='Session3AdherenceReviewsQ2'
+)lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+adhrevq2 on adhrevq2.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session3AdherenceReviews' and lt.ItemName='Session3AdherenceReviewsQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+) adhrevq3 on adhrevq3.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq3.PatientId=pd.PatientId
+
+
+
+union 
+
+
+
+select pd.PersonId as Person_Id,pd.VisitDate as Encounter_Date,
+NULL as Encounter_ID,'4' as Session_number,pilladh.Answer as Pill_Count,
+NULL as Arv_adherence
+,mmas4Adhr.Answer as MMAS4AdherenceRating,
+mmas4Score.Answer  as MMAS4Score,
+mmas8score.Answer as MMAS8Score,
+mmas8Adher.Answer as MMAS8AdherenceRating,
+NULL as Has_vl_results,
+NULL as Vl_results_suppressed,
+NULL as Vl_results_feeling,
+NULL as Cause_of_high_vl,
+NULL as Way_Forward,
+NULL as  Patient_hiv_knowledge,
+NULL as Patient_drugs_uptake,
+NULL as  Patient_drugs_reminder_tools,
+NULL as Patient_drugs_uptake_during_travels,
+NULL as Patient_drugs_side_effects_response,
+NULL as Patient_drugs_uptake_most_difficult_times,
+NULL as   Patient_drugs_daily_uptake_feeling,
+NULL as Patient_ambitions,
+NULL as Patient_has_people_to_talk,
+NULL as Patient_enlisting_social_support,
+NULL as Patient_income_sources,
+NULL as Patient_challenges_reaching_clinicScreening,
+NULL as Patient_challenges_reaching_clinic,
+NULL as Patient_worried_of_accidental_disclosureScreening,
+NULL	as  Patient_worried_of_accidental_disclosure,
+NULL as Patient_treated_differentlyScreening,
+NULL as Patient_treated_differently,
+NULL as Stigma_hinders_adherenceScreening,
+NULL as Stigma_hinders_adherence,
+NULL as Patient_tried_faith_healingScreening,
+NULL as Patient_tried_faith_healing,
+adhrevq1.Answer as Patient_adherence_improved,
+adhrevq2.Answer as Patient_doses_missed,
+adhrevq3.Answer as Review_and_Barriers_to_adherence,
+sessionrefq1.Answer as Other_referrals,
+sessionrefq2.Answer as Appointments_honoured,
+sessionrefq3.Answer as Referral_experience,
+sessionrefq4.Answer as Home_visit_benefit,
+sessionrefq5.Answer as Adherence_Plan,
+session1followup.Answer as Next_Appointment_Date,
+pd.DeleteFlag as Voided
+  from (select pe.PatientId,pe.PatientMasterVisitId,pe.DeleteFlag,p.PersonId,pe.EncounterTypeId,lt.ItemName,pm.VisitDate from PatientEncounter pe
+inner join PatientMasterVisit pm on pe.PatientMasterVisitId=pm.Id
+inner join Patient p on p.Id =pe.PatientId
+inner join LookupItemView lt on lt.ItemId=pe.EncounterTypeId
+where lt.ItemName='EnhanceAdherence'
+)pd
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4PillAdherence' and lt.ItemName='Session4PillAdherenceQ1')lt
+on lt.ItemId=pc.NotesCategoryId)
+pilladh  on pilladh.PatientMasterVisitId=pd.PatientMasterVisitId and pilladh.PatientId=pd.PatientId
+
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4mmas4screeningNotes' and lt.ItemName='Session4mmas4Adherence')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Adhr  on mmas4Adhr.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Adhr.PatientId=pd.PatientId
+
+left join (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question ,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4mmas4screeningNotes' and lt.ItemName='Session4mmas4Score')lt
+on lt.ItemId=pc.NotesCategoryId)
+mmas4Score  on mmas4Score.PatientMasterVisitId=pd.PatientMasterVisitId and mmas4Score.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4mmas8screeningNotes' and lt.ItemName='Session4mmas8Score')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8score on mmas8score.PatientMasterVisitId =pd.PatientMasterVisitId and mmas8score.PatientId=pd.PatientId
+
+
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4mmas8screeningNotes' and lt.ItemName='Session4mmas8Adherence')lt
+on lt.ItemId=pc.NotesCategoryId
+)mmas8Adher on mmas8Adher.PatientMasterVisitId =pd.PatientMasterVisitId and mmas8Adher.PatientId=pd.PatientId
+
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'SessionReferralsNetworks' and lt.ItemName='SessionReferralsNetworksQ1')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq1 on sessionrefq1.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq1.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session4ReferralsNetworks' and lt.ItemName='Session4ReferralsNetworksQ2')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq2 on sessionrefq2.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4ReferralsNetworks' and lt.ItemName='Session4ReferralsNetworksQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq3 on sessionrefq3.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq3.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session4ReferralsNetworks' and lt.ItemName='Session4ReferralsNetworksQ4')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+sessionrefq4 on sessionrefq4.PatientMasterVisitId =pd.PatientMasterVisitId and sessionrefq4.PatientId=pd.PatientId
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4ReferralsNetworks' and lt.ItemName='Session4ReferralsNetworksQ5')lt
+on lt.ItemId=pc.NotesCategoryId
+)sessionrefq5 on sessionrefq5.PatientMasterVisitId=pd.PatientMasterVisitId and sessionrefq5.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4PillAdherence' and lt.ItemName='Session4FollowupDate')lt
+on lt.ItemId=pc.NotesCategoryId
+)session1followup on session1followup.PatientMasterVisitId=pd.PatientMasterVisitId and session1followup.PatientId=pd.PatientId
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session4AdherenceReviews'
+and lt.ItemName='Session4AdherenceReviewsQ1'
+)lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+adhrevq1 on adhrevq1.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq1.PatientId=pd.PatientId
+
+left join (select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'Session4AdherenceReviews'
+and lt.ItemName='Session4AdherenceReviewsQ2'
+)lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+adhrevq2 on adhrevq2.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq2.PatientId=pd.PatientId
+
+left join(select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='Session4AdherenceReviews' and lt.ItemName='Session4AdherenceReviewsQ3')lt
+on lt.ItemId=pc.NotesCategoryId
+) adhrevq3 on adhrevq3.PatientMasterVisitId=pd.PatientMasterVisitId and adhrevq3.PatientId=pd.PatientId
+
+union
+
+
+select pd.PersonId as Person_Id,pd.VisitDate as Encounter_Date,
+NULL as Encounter_ID,'5' as Session_number,NULL as Pill_Count,NULL as Arv_adherence,
+NULL as MMAS4AdherenceRating,
+NULL as MMAS4Score,
+NULL as MMAS8Score,
+NULL as MMAS8AdherenceRating,
+NULL as Has_vl_results,
+NULL as Vl_results_suppressed,
+NULL as Vl_results_feeling,
+NULL as Cause_of_high_vl,
+EndSessQ1.Answer as Way_Forward,
+NULL as  Patient_hiv_knowledge,
+NULL as Patient_drugs_uptake,
+NULL as  Patient_drugs_reminder_tools,
+NULL as Patient_drugs_uptake_during_travels,
+NULL as Patient_drugs_side_effects_response,
+NULL as Patient_drugs_uptake_most_difficult_times,
+NULL as   Patient_drugs_daily_uptake_feeling,
+NULL as Patient_ambitions,
+NULL as Patient_has_people_to_talk,
+NULL as Patient_enlisting_social_support,
+NULL as Patient_income_sources,
+NULL as Patient_challenges_reaching_clinicScreening,
+NULL as Patient_challenges_reaching_clinic,
+NULL as Patient_worried_of_accidental_disclosureScreening,
+NULL	as  Patient_worried_of_accidental_disclosure,
+NULL as Patient_treated_differentlyScreening,
+NULL as Patient_treated_differently,
+NULL as Stigma_hinders_adherenceScreening,
+NULL as Stigma_hinders_adherence,
+NULL as Patient_tried_faith_healingScreening,
+NULL as Patient_tried_faith_healing,
+NULL as Patient_adherence_improved,
+NULL as Patient_doses_missed,
+NULL as Review_and_Barriers_to_adherence,
+NULL as Other_referrals,
+NULL as Appointments_honoured,
+NULL as Referral_experience,
+NULL as Home_visit_benefit,
+NULL as Adherence_Plan,
+NULL as Next_Appointment_Date,
+pd.DeleteFlag as Voided
+  from (select pe.PatientId,pe.PatientMasterVisitId,pe.DeleteFlag,p.PersonId,pe.EncounterTypeId,lt.ItemName,pm.VisitDate from PatientEncounter pe
+inner join PatientMasterVisit pm on pe.PatientMasterVisitId=pm.Id
+inner join Patient p on p.Id =pe.PatientId
+inner join LookupItemView lt on lt.ItemId=pe.EncounterTypeId
+where lt.ItemName='EnhanceAdherence'
+)pd left join(
+select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,lt.ItemName ,pc.ClinicalNotes as Answer
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='EndSessionViralLoad' and lt.ItemName='EndSessionViralLoadQ1')lt
+on lt.ItemId=pc.NotesCategoryId
+)EndSessQ1 on  EndSessQ1.PatientMasterVisitId =pd.PatientMasterVisitId and EndSessQ1.PatientId=pd.PatientId
+left join(
+select  psc.PatientId,psc.PatientMasterVisitId,lt.ItemDisplayName as Question,lt.ItemName ,li.[Name] as Answer
+  from PatientScreening psc
+inner join (select * from LookupItemView lt where lt.MasterName like 'EndSessionViralLoad' and lt.ItemName='EndSessionViralLoadQ2')lt
+on lt.ItemId=psc.ScreeningCategoryId
+left join LookupItem li on li.Id=psc.ScreeningValueId)
+EndSessQ2 on EndSessQ2.PatientMasterVisitId =pd.PatientMasterVisitId and EndSessQ2.PatientId=pd.PatientId
+
+
+)t
+
+
+
+
+---Defaultet Tracing
+   
+   
+   
+select t.PersonID as Person_Id,t.DateTracingDone as Encounter_Date,
+NULL as Encounter_ID,
+(select top 1 lt.[Name] from LookupItem lt where lt.Id=t.Mode) as Tracing_Type,
+(select top 1 lt.[Name] from LookupItem lt where lt.Id=t.Outcome) as Tracing_outcome,
+NULL as Attempt_number,
+NULL as Is_final_trace,
+NULL as True_Status,
+NULL as Cause_of_death,
+t.Remarks as Comments,
+t.DeleteFlag as Voided
+  from Tracing 
+  
+   
+   
+   
+   
+   
+  
