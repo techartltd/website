@@ -879,21 +879,45 @@ insert into OpenQuery(IQCare_OPENMRS,'Select Person_Id,Encounter_Date,Encounter_
   Voided 
   FROM migration_st.st_hiv_followup')
 
+exec pr_OpenDecryptedSession;
   select  P.Id as Person_Id,
-   format(cast(pmv.VisitDate as date),'yyyy-MM-dd') AS Encounter_Date
-,NULL as Encounter_ID
- , CASE WHEN pmv.VisitScheduled='0' then 'No' when pmv.VisitScheduled='1' then 'Yes' end as Visit_scheduled,
-ltv.[Name] as Visit_by,
+  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
+  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
+  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
+  format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
+  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+  UPN =P.Id,
+  pmv.VisitDate  as [EncounterDate],
+  CASE WHEN pmv.VisitScheduled='0' then 'No' when pmv.VisitScheduled='1' then 'Yes' end as visit_scheduled,
+ltv.[Name] as VisitBy,
 NULL Visit_by_other
-,psc.ItemDisplayName as Nutritional_status,
+,pvs.[Weight],pvs.Height,pvs.Systolic_pressure,pvs.Diastolic_pressure,pvs.Temperature,
+pvs.Pulse_rate,pvs.Respiratory_rate,pvs.Oxygen_Saturation,pvs.BMI,pvs.Muac,
+psc.ItemDisplayName as Nutritional_status,
 pop.PopulationType as Population_type,
-pop.Population_Type as Key_population_type,
-pws.WHO_Stage as Who_stage,
- CASE WHEN pres.PresentingComplaint is null then 'No' else 'Yes' end as Presenting_complaints,
-pres.PresentingComplaint as Complaint,
-NULL as Duration,
-NULL as Onset_Date,
+pop.Population_Type as Key_populationType,
+pws.WHO_Stage as Who_Stage,
+pres.PresentingComplaint as Presenting_complaints,
 cl.ClinicalNotes as Clinical_notes,
+CASE when pic.OnAntiTbDrugs='0' then 'No' when pic.OnAntiTbDrugs='1' then 'Yes' end as On_anti_tb_drugs,
+CASE when pic.Cough='0' then 'No' when pic.Cough='1' then 'Yes' end as Tb_Screening_cough,
+CASE when pic.Fever='0' then 'No' when pic.Fever='1' then 'Yes' end as Tb_Screening_Fever,
+CASE when pic.WeightLoss='0' then 'No' when pic.WeightLoss='1' then 'Yes' end as Tb_Screening_weightloss,
+CASE when pic.NightSweats='0' then 'No' when pic.NightSweats='1' then 'Yes' end as Tb_Screening_night_sweats,
+NULL as  Tests_ordered,
+picf.Spatum_smear_Ordered,
+picf.Chest_xray_ordered,
+picf.Genexpert_ordered,
+picf.Spatum_smear_result,
+picf.Chest_xray_result,
+picf.Geneexpert_result,
+NULL as Referral,
+NULL as clinical_tb_diagnosis,
+CASE when pia.InvitationOfContacts='0' then 'No' when pia.InvitationOfContacts='1' then 'Yes' end as Contact_invitation,
+CASE when pia.EvaluatedForIpt='0' then 'No' when pia.EvaluatedForIpt='1' then 'Yes' end as   Evaluated_for_ipt,
+ptb.Tb_Status,
+trx.TBRxStartDate as Tb_treatment_date,
+trx.RegimenName as  Tb_regimen,
 CASE WHEN paa.Has_Known_allergies is null then 'No' else paa.Has_Known_allergies end as Has_Known_allergies,
 paa.Allergies_causative_agents,
 paa.Allergies_reactions,
@@ -911,11 +935,11 @@ vss.Vaccinations_today,
 vss.VaccineStage as Vaccine_Stage,
 vss.VaccineDate as Vaccine_Date,
 pov.LMP as Last_menstrual_period,
-pov.PregnancyStatus as Pregnancy_status,
-pov.PlanningGetPregnant as Wants_pregnancy,
-pov.Outcome as Pregnancy_outcome,
+pov.PregnancyStatus,
+pov.PlanningGetPregnant as Wants_Pregnancy,
+pov.Outcome as Pregnancy_Outcome,
 panc.IdentifierValue as Anc_number,
-pov.Anc_profile,
+pov.Anc_Profile,
 pov.EDD  as Expected_delivery_date,
 pov.Gravidae as Gravida,
 pov.Parity as Parity,
@@ -924,18 +948,16 @@ pfm.FamilyPlanningMethod as Family_planning_method,
 pfm.Reason_not_using_family_planning,
 ge.Exam as General_examinations_findings,
 CASE when srs.System_review_finding is null then 'No' else srs.System_review_finding end as System_review_finding,
-sk.Findings as Skin,
-sk.FindingsNotes as Skin_finding_notes,
 ey.Findings as Eyes,
 ey.FindingsNotes as Eyes_Finding_notes,
-ent.Findings as ENT,
-ent.FindingsNotes as ENT_finding_notes,
+sk.Findings as Skins,
+sk.FindingsNotes as Skin_finding_notes,
 ch.Findings as Chest,
 ch.FindingsNotes as Chest_finding_notes,
 cvs.Findings as CVS,
-cvs.FindingsNotes as CVS_finding_notes,
+cvs.FindingsNotes as CVS_Finding_notes,
 ab.Findings as Abdomen,
-ab.FindingsNotes as Abdomen_finding_notes,
+ab.FindingsNotes as Abdomen_Finding_notes,
 cns.Findings as CNS,
 cns.FindingsNotes as CNS_finding_notes,
 gn.Findings as Genitourinary,
@@ -943,7 +965,7 @@ gn.FindingsNotes as Genitourinary_finding_notes,
 pd.Diagnosis as Diagnosis,
 pd.ManagementPlan as Treatment_plan,
 ctx.ScoreName as Ctx_adherence,
-CASE when ctx.VisitDate  is not null then 'Yes' else' No' end as Ctx_dispensed,
+ctx.VisitDate as Ctx_dispensed,
 NULL as Dapson_adherence,
 NULL as Dapsone_dispensed,
 adass.Morisky_forget_taking_drugs,
@@ -962,12 +984,11 @@ phdp.Pwp_partner_tested,
 cacx.ScreeningValue  as Cacx_Screening,
 phdp.Screened_for_sti,
 pcc.Stability as Stability,
- format(cast(papp.Next_appointment_date as date),'yyyy-MM-dd') AS Next_appointment_date,
+papp.Next_appointment_date,
 papp.Next_appointment_reason,
 papp.Appointment_type,
 pdd.DifferentiatedCare as Differentiated_care,
-'0' as Voided   
-
+'0' as Voided
   from Person P
    INNER JOIN Patient PT ON PT.PersonId = P.Id
   INNER JOIN PatientEncounter pe on pe.PatientId=PT.Id
@@ -1171,6 +1192,9 @@ FROM            dbo.PhysicalExamination e
 )ex 
 where ex.rownum ='1'
 )ch on ch.PatientId =pe.PatientId and ch.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
 left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
     Id,
     PatientMasterVisitId,
@@ -1187,35 +1211,14 @@ left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMaste
     FindingsNotes
 FROM            dbo.PhysicalExamination e
 
-)ex where ex.ExaminationType='ReviewOfSystems' and Ex.Exam='ENT'
-
-)ex 
-where ex.rownum ='1'
-)ent on ent.PatientId =pe.PatientId and ent.PatientMasterVisitId=pe.PatientMasterVisitId
-
-
-
-left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
-    Id,
-    PatientMasterVisitId,
-    PatientId,
-    ExaminationTypeIdht
-	(SELECT top 1 l.Name FROM LookupMaster l WHERE l.Id=e.ExaminationTypeId) ExaminationType,
-	ExamId, 
-	(SELECT top 1 l.DisplayName FROM LookupItem l WHERE l.Id=e.ExamId) Exam,
-	DeleteFlag,
-	CreateBy,	  
-	CreateDate,
-	FindingId, 
-	(SELECT top 1 l.ItemName FROM LookupItemView l WHERE l.ItemId=e.FindingId) Findings,
-    FindingsNotes
-FROM            dbo.PhysicalExamination e
-
 )ex where ex.ExaminationType='ReviewOfSystems' and Ex.Exam='CVS'
 
 )ex 
 where ex.rownum ='1'
 )cvs on cvs.PatientId =pe.PatientId and cvs.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
 
 left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
     Id,
@@ -1238,6 +1241,9 @@ FROM            dbo.PhysicalExamination e
 )ex 
 where ex.rownum ='1'
 )ab on ab.PatientId =pe.PatientId and ab.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
 
 left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMasterVisitId,ex.PatientId order by ex.CreateDate desc)rownum FROM(SELECT       
     Id,
@@ -1330,7 +1336,8 @@ and ISNUMERIC(pd.Diagnosis) =1)pd inner join LookupItem lt on lt.Id=pd.Diagnosis
 
  left join(select * from (select ao.Id,ao.PatientId,ao.PatientMasterVisitId,ao.Score,ROW_NUMBER() OVER(partition by ao.PatientId,
  ao.PatientMasterVisitId order by ao.CreateDate desc)rownum,
-ao.AdherenceType,lm.[Name] as AdherenceTypeName, lti.DisplayName as ScoreName ,ao.DeleteFlag,pmv.VisitDate from AdherenceOutcome  ao
+ao.AdherenceType,lm.[Name] as AdherenceTypeName,
+ lti.DisplayName as ScoreName ,ao.DeleteFlag,pmv.VisitDate from AdherenceOutcome  ao
 inner join  LookupMaster  lm on lm.Id=ao.AdherenceType
 inner join LookupItem lti on lti.Id=ao.Score
 inner join PatientMasterVisit pmv on pmv.Id =ao.PatientMasterVisitId
@@ -1402,6 +1409,8 @@ lt.DisplayName as ScreeningValue,ROW_NUMBER() OVER(partition by psc.PatientId,ps
  cacx.PatientMasterVisitId=pe.PatientMasterVisitId
  where lt.[Name]='ccc-encounter' 
  
+
+   
 
  
  
