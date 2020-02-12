@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>Transform_labs</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2020/01/15 11:32:07.514</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2020/01/15 11:32:07.514</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>mysql_tr</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mysql_tr</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+  </order>
+  <step>
+    <name>load_tr_laboratory</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_tr</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>-- 18. Laboratory Extract transformed table
+DROP TABLE IF EXISTS migration_tr.tr_laboratory;
+CREATE TABLE migration_tr.tr_laboratory
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,     
+      Urgency,
+      (case Lab_test
+       when "CD4" then 5497
+       when "CD4PERCENT" then 730
+       when "VIRALLOAD" then 856
+       when "VIRALLOADUNDETECTABLE" then 1305
+       when "HCT" then 1015
+       when "HB" then 21
+       when "WBC" then 678
+       when "WBCDIFF" then 1026
+       when "WBCDIFF_NEUT" then 1022
+       when "WBCDIFF_NEUT%" then 1336
+       when "WBCDIFF_LYMPH" then 1021
+       when "WBCDIFF_LYMPH%" then 1338
+       when "WBCDIFF_MONO" then 1023
+       when "WBCDIFF_MONO%" then 1339
+       when "WBCDIFF_EOSIN" then 1024
+       when "WBCDIFF_EOSIN%" then 1340
+       when "PLATELETS" then 729
+       when "AST_SGOT" then 653
+       when "ALT_SGPT" then 654
+       when "CREATININE" then 790
+       when "CREATININEMM" then 164364
+       when "AMYLASE" then 1299
+       when "PREGNANCY" then 1945
+       when "MALARIA" then 32
+       when "SERUMCRYPTO" then 163613
+       when "SPUTUMAFB1" then 159866
+       when "SPUTUMAFB2" then 159867
+       when "SPUTUMAFB3" then 159869
+       when "SPUTUMGRAMSTAIN" then 1367
+       when "URINALYSIS" then 302
+       when "URINALYSIS_SPECGRAV" then 161439
+       when "URINALYSIS_GLUCOSE" then 159734
+       when "URINALYSIS_KETONE" then 161442
+       when "URINALYSIS_PROTEIN" then 163684
+       when "URINALYSIS_LEUKEST" then 135850
+       when "URINALYSIS_NITRATE" then 161440
+       when "URINALYSIS_BLOOD" then 162096
+       when "URINALYSISMICROSCOPICBLOOD" then 134191
+       when "URINALYSISMICROSCOPICWBC" then 163684
+       when "URINALYSISMICROSCOPICBACTERIA" then 163683
+       when "URINALYSISMICROSCOPICCASTS" then 163696
+       when "CULTURESENSITIVITY" then 161156
+       when "STOOL" then 161451
+       when "URINECULTURE_SENSIVITY" then 161156
+       when "CSFCRYPTO" then 163613
+       when "CSFCULTURE" then 159648
+       when "CSFBIOCHEMISTRY" then 159645
+       when "GLUCOSEMG" then 159647
+       when "GLUCOSEMM" then 159647
+       when "ESR" then 855
+       when "CELLCOUNTNEUTROPHILS" then 1330
+       when "CELLCOUNTLYMPHOCYTES" then 952
+       when "PROTEIN" then 848
+       when "PROTEINMG" then 848
+       when "PROTEINMM" then 848
+       when "HIVRAPIDTEST" then 163722
+       when "CSFBIOCHEMISTRY_GLUCOSE" then 159647
+       when "CELLCOUNTRBCS" then 679
+       when "RBC" then 679
+       when "CELLCOUNTWBCS" then 678
+       when "ALBUMIN_MG_DL_" then 848
+       when "COLPOSCOPY_CERVICALCA_FEMALEONLY_" then 160705
+       when "CYTOMEGALOVIRUS_CMV_" then 161232
+       when "HDL_MG_DL_" then 1007
+       when "HEPATITISBSURFACE_ANTIGEN_HBSAG_" then 159430
+       when "LDL_MG_DL_" then 1008
+       when "PAPSMEAR_CERVICALCA_FEMALEONLY_" then 885
+       when "GONORRHEA" then 1036
+       when "RECTALPAPSMEAR" then 885
+       when "SYPHILIS_FTA_" then 1031
+       when "SYPHILIS_RPR_" then 1619
+       when "TOTALCHOLESTEROL_MG_DL_" then 1006
+       when "TOXOPLASMAIGGANTIBODY" then 160708
+       when "TRIGLYCERIDES_MG_DL_" then 1009
+       when "VAGINALINSPECTIONWITHACETICACID_VIA_" then 164805
+       when "HEPATITISCANTIBODY" then 161471
+       when "HIVCONFIRM" then 103
+       when "PCR" then 844
+       when "RDT" then 1643
+       when "MPS" then 32
+       when "SPECIES_REPORT" then 33
+       when "CAS" then 32
+       when "SAFB" then 308
+       when "QBL" then 309
+       when "GeneXpert" then 162202
+       else NULL end)as Lab_test,
+      CD4 ,
+      CD4PERCENT,
+      VIRALLOAD,
+      VIRALLOADUNDETECTABLE,
+      STOREPLASMA,
+      HCT ,
+      HB  ,
+      WBC ,
+      WBCDIFF,
+      WBCDIFF_NEUT,
+      WBCDIFF_NEUT_PERCENT,
+      WBCDIFF_LYMPH,
+      WBCDIFF_LYMPH_PERCENT,
+      WBCDIFF_MONO,
+      WBCDIFF_MONO_PERCENT,
+      WBCDIFF_EOSIN,
+      WBCDIFF_EOSIN_PERCENT,
+      PLATELETS,
+      AST_SGOT,
+      ALT_SGPT,
+      CREATININE,
+      CREATININEMM,
+      AMYLASE,
+      PREGNANCY,
+      MALARIA,
+      SERUMCRYPTO,
+      SPUTUMAFB1,
+      SPUTUMAFB2,
+      SPUTUMAFB3,
+      SPUTUMGRAMSTAIN,
+      URINALYSIS,
+      STOOLSTATUS,
+      URINALYSIS_SPECGRAV,
+      URINALYSIS_GLUCOSE,
+      URINALYSIS_KETONE,
+      URINALYSIS_PROTEIN,
+      URINALYSIS_LEUKEST,
+      URINALYSIS_NITRATE,
+      URINALYSIS_BLOOD,
+      URINALYSISMICROSCOPICBLOOD,
+      URINALYSISMICROSCOPICWBC,
+      URINALYSISMICROSCOPICBACTERIA,
+      URINALYSISMICROSCOPICCASTS,
+      CULTURESENSITIVITY,
+      STOOL   ,
+      URINECULTURE_SENSIVITY,
+      CSFCRYPTO,
+      CSFINDIAINK,
+      CSFGRAMSTAIN,
+      CSFCULTURE,
+      CSFBIOCHEMISTRY,
+      GLUCOSEMG,
+      GLUCOSEMM,
+      ESR     ,
+      CELLCOUNTNEUTROPHILS,
+      CELLCOUNTLYMPHOCYTES,
+      PROTEIN  ,
+      PROTEINMG,
+      PROTEINMM,
+      HIVRAPIDTEST,
+      CSFBIOCHEMISTRY_GLUCOSE,
+      CELLCOUNTRBCS,
+      RBC      ,
+      CELLCOUNTWBCS,
+      ALBUMIN_MG_DL_,
+      COLPOSCOPY_CERVICALCA_FEMALEONLY_,
+      CYTOMEGALOVIRUS_CMV_,
+      EPSTEINBARRVIRUS_EBV_,
+      HDL_MG_DL_ ,
+      HEPATITISAAB_TOTAL,
+      HEPATITISAAB_IGM,
+      HEPATITISBCORE_ANTIBODYIGM_HBSAB_,
+      HEPATITISBCORE_ANTIBODY_TOTAL,
+      HEPATITISBSURFACE_ANTIBODY_HBSAB_,
+      HEPATITISBSURFACE_ANTIGEN_HBSAG_,
+      LDL_MG_DL_ ,
+      PAPSMEAR_CERVICALCA_FEMALEONLY_,
+      GONORRHEA   ,
+      CHLAMYDIA   ,
+      RECTALPAPSMEAR,
+      SYPHILIS_FTA_,
+      SYPHILIS_RPR_,
+      TOTALCHOLESTEROL_MG_DL_,
+      TOXOPLASMAIGGANTIBODY,
+      TRIGLYCERIDES_MG_DL_,
+      VAGINALINSPECTIONWITHACETICACID_VIA_,
+      VARICELLA_CHICKENPOX_,
+      HEPATITISCANTIBODY,
+      HIVCONFIRM ,
+      PCR,
+      RDT,
+      MPS,
+      SPECIES_REPORT,
+      CAS,
+      SAFB,
+      QBL,
+      GeneXpert,
+      Voided
+    FROM migration_st.st_laboratory  ;</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>673</xloc>
+      <yloc>167</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>

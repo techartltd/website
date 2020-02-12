@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>Migrate_hei_immunization</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2020/02/04 10:17:03.535</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2020/02/04 10:17:03.535</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>mssql</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mysql_st</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mysql_st</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>Create_st_hei_immunization</from>
+      <to>iqcare_source_hei_immunization</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_hei_immunization</from>
+      <to>load_st_hei_immunization</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>Create_st_hei_immunization</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql> -- 28. HEI Immunization
+  DROP TABLE IF EXISTS migration_st.st_hei_immunization;
+CREATE TABLE migration_st.st_hei_immunization (
+  Person_Id				  INT(11),
+  Encounter_Date		  DATE,
+  Encounter_ID			  VARCHAR(50),
+  BCG                     VARCHAR(50),
+  BCG_Date 				  DATE,
+  BCG_Period 			  VARCHAR(50), 
+  OPV_birth               VARCHAR(50),
+  OPV_Birth_Date          DATE,
+  OPV_Birth_Period  	  VARCHAR(50),
+  OPV_1                   VARCHAR(50),
+  OPV_1_Date 			  DATE,
+  OPV_1_Period 		      VARCHAR(50),
+  OPV_2                   VARCHAR(50),
+  OPV_2_Date              DATE,
+  OPV_2_Period   		  VARCHAR(100),
+  OPV_3                   VARCHAR(50),
+  OPV_3_Date              DATE,
+  OPV_3_Period		      VARCHAR(50),
+  DPT_Hep_B_Hib_1         VARCHAR(50),
+  DPT_Hep_B_Hib_2         VARCHAR(50),
+  DPT_Hep_B_Hib_3         VARCHAR(50),
+  IPV                     VARCHAR(50),
+  IPV_Date				  DATE,
+  IPV_Period			  VARCHAR(50),
+  ROTA_1 				  VARCHAR(100),
+  ROTA_1_Date  		      DATE,
+  ROTA_1_Period   	      VARCHAR(100),
+  ROTA_2  			      VARCHAR(100),
+  ROTA_2_Date  		      DATE,
+  ROTA_2_Period 	      VARCHAR(100),
+  Measles_rubella_1       VARCHAR(50),
+  Measles_rubella_2       VARCHAR(50),
+  Yellow_fever 		      VARCHAR(50),
+  Measles_6_months 	      VARCHAR(100),
+  Measles_6_Date          DATE,
+  Measles_6_Period        VARCHAR(100),
+  Measles_9_Months        VARCHAR(100),
+  Measles_9_Date          DATE,
+  Measles_9_Period        VARCHAR(100),
+  Measles_18_Months       VARCHAR(100),
+  Measles_18_Date         DATE,
+  Measles_18_Period       VARCHAR(100),
+  Pentavalent_1           VARCHAR(100),
+  Pentavalent_1_Date      DATE,
+  Pentavalent_1_Period    VARCHAR(100),
+  Pentavalent_2           VARCHAR(100),
+  Pentavalent_2_Date      DATE,
+  Pentavalent_2_Period    VARCHAR(100),
+  Pentavalent_3           VARCHAR(100),
+  Pentavalent_3_Date      DATE,
+  Pentavalent_3_Period    VARCHAR(100),
+  PCV_10_1                VARCHAR(50),
+  PCV_10_1_Date 	      DATE,
+  PCV_10_1_Period		  VARCHAR(50),
+  PCV_10_2 				  VARCHAR(50),
+  PCV_10_2_Date  		  DATE,
+  PCV_10_2_Period  		  VARCHAR(50),
+  PCV_10_3 			      VARCHAR(50),
+  PCV_10_3_Date  		  DATE,
+  PCV_10_3_Period 		  VARCHAR(50),
+  Other 				  VARCHAR(50),
+  Other_Date 			  DATE,
+  Other_Period            VARCHAR(50),
+  VitaminA_6_months       VARCHAR(50),
+  VitaminA_1_yr           VARCHAR(50),
+  VitaminA_1_and_half_yr  VARCHAR(50),
+  VitaminA_2_yr           VARCHAR(50),
+  VitaminA2_to_5_yr      VARCHAR(50),
+  fully_immunized         DATE,
+  Voided                  INT(11)
+);</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>239</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_hei_immunization</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <sql> -- 28. HEI Immunization
+	
+	
+select  
+p.PersonId as Person_Id,
+v.VisitDate as Encounter_Date,
+NULL Encounter_ID,
+imm.BCG,
+imm.BCG_Date,
+imm.BCG_Period,
+imm.OPV_Birth,imm.OPV_Birth_Date,imm.OPV_Birth_Period,
+imm.[OPV_1],imm.[OPV_1_Date],imm.[OPV_1_Period],
+imm.[OPV_2],imm.[OPV_2_Date],imm.[OPV_2_Period],
+imm.[OPV_3],imm.[OPV_3_Date],imm.[OPV_3_Period],
+imm.DPT_Hep_B_Hib_1,imm.DPT_Hep_B_Hib_2,imm.DPT_Hep_B_Hib_3,
+imm.IPV,imm.IPV_Date,imm.IPV_Period,
+imm.ROTA_1,
+imm.ROTA_1_Date,
+imm.ROTA_1_Period,
+imm.ROTA_2,
+imm.ROTA_2_Date,
+imm.ROTA_2_Period,
+convert(varchar(50), NULL) as   Measles_rubella_1 ,
+convert(varchar(50), NULL)  as Measles_rubella_2,
+convert(varchar(50), NULL) as Yellow_fever,
+imm.Measles_6_months,imm.Measles_6_Date,imm.Measles_6_Period,
+imm.Measles_9_Months,imm.Measles_9_Date,imm.Measles_9_Period,
+imm.Measles_18_Months,imm.Measles_18_Date,imm.Measles_18_Period,
+imm.Pentavalent_1,imm.Pentavalent_1_Date,imm.Pentavalent_1_Period,
+imm.Pentavalent_2,imm.Pentavalent_2_Date,imm.Pentavalent_2_Period,
+imm.Pentavalent_3,imm.Pentavalent_3_Date,imm.Pentavalent_3_Period,
+imm.[PCV_10_1]  ,imm.[PCV_10_1_Date],imm.[PCV_10_1_Period],
+imm.[PCV_10_2],imm.[PCV_10_2_Date],imm.[PCV_10_2_Period],
+imm.[PCV_10_3],imm.[PCV_10_3_Date],imm.[PCV_10_3_Period],
+imm.Other,imm.Other_Date,imm.Other_Period,
+imm.VitaminA_6_months,
+imm.VitaminA_1_yr,
+imm.VitaminA_1_and_half_yr,
+imm.VitaminA_2_yr,
+imm.VitaminA2_to_5_yr,
+imm.fully_immunized,
+imm.Voided
+
+  from  HEIEncounter he 
+inner join PatientMasterVisit v on v.Id=he.PatientMasterVisitId
+inner join Patient p on he.PatientId=p.Id
+inner join  PatientEnrollment pe on p.Id =pe.PatientId
+inner join Person per on per.Id=p.PersonId 
+left join  (
+select r.PatientId,r.PatientMasterVisitId,r.BCG,cast(r.BCG_Date as datetime) as BCG_Date,r.BCG_Period,r.[OPV 0] as OPV_Birth,CAST(r.[OPV 0_Date] as datetime) as [OPV_Birth_Date],r.[OPV 0_Period] as [OPV_Birth_Period],
+r.[OPV 1] as OPV_1,CAST(r.[OPV 1_Date] as datetime) as [OPV_1_Date]  ,r.[OPV 1_Period] as OPV_1_Period,r.[OPV 2] as OPV_2,cast(r.[OPV 2_Date] as datetime) as [OPV_2_Date]  ,r.[OPV 2_Period] as OPV_2_Period
+,r.[OPV 3] as OPV_3 ,cast (r.[OPV 3_Date] as datetime) as [OPV_3_Date] ,r.[OPV 3_Period] as OPV_3_Period 
+,r.IPV,cast(r.IPV_Date as datetime) as IPV_Date,r.IPV_Period,NULL DPT_Hep_B_Hib_1  ,
+NULL DPT_Hep_B_Hib_2  ,NULL DPT_Hep_B_Hib_3,r.[PCV-10 1] as PCV_10_1,cast(r.[PCV-10 1_Date] as datetime) as [PCV_10_1_Date]  
+ ,r.[PCV-10 1_Period] as PCV_10_1_Period, r.[PCV-10 2] as PCV_10_2 ,cast(r.[PCV-10 2_Date] as datetime) as [PCV_10_2_Date],r.[PCV-10 2_Period]
+ as PCV_10_2_Period
+ ,r.[PCV-10 3] as PCV_10_3,
+cast(r.[PCV-10 3_Date] as datetime) as [PCV_10_3_Date] ,r.[PCV-10 3_Period] as PCV_10_3_Period,
+r.[Rota virus 1] as ROTA_1,cast(r.[Rota virus 1_Date] as datetime) as ROTA_1_Date,r.[Rota virus 1_Period] as ROTA_1_Period,r.[Rota Virus 2] as ROTA_2,
+cast(r.[Rota Virus 2_Date] as datetime) as ROTA_2_Date,r.[Rota Virus 2_Period] as ROTA_2_Period,
+r.[Measles 6 Months] as Measles_6_months,
+cast(r.[Measles 6 Months_Date] as datetime) as  Measles_6_Date
+,r.[Measles 6 Months_Period] as Measles_6_Period,
+r.[Measles 9 Months] as Measles_9_Months
+,cast(r.[Measles 9 Months_Date] as datetime)  as Measles_9_Date,r.[Measles 9 Months_Period] as Measles_9_Period
+,r.[Measles 18 Months] as Measles_18_Months ,
+cast(r.[Measles 18 Months_Date] as datetime)  as Measles_18_Date 
+,r.[Measles 18 Months_Period] as Measles_18_Period,
+r.Other,cast(r.Other_Date as datetime) as Other_Date,r.Other_Period,
+
+r.[Pentavalent 1] as Pentavalent_1,cast(r.[Pentavalent 1_Date] as datetime) as Pentavalent_1_Date,r.[Pentavalent 1_Period] as Pentavalent_1_Period 
+,r.[Pentavalent 2] as  Pentavalent_2,cast(r.[Pentavalent 2_Date] as datetime) as  Pentavalent_2_Date,r.[Pentavalent 2_Period] as Pentavalent_2_Period,r.[Pentavalent 3] as Pentavalent_3 ,
+cast(r.[Pentavalent 3_Date] as datetime) as Pentavalent_3_Date 
+,r.[Pentavalent 3_Period] as Pentavalent_3_Period,
+convert(varchar(50), NULL) as VitaminA_6_months,
+convert(varchar(50), NULL) as VitaminA_1_yr,
+convert(varchar(50), NULL) as VitaminA_1_and_half_yr,
+convert(varchar(50), NULL) as VitaminA_2_yr,
+convert(varchar(50), NULL) as VitaminA2_to_5_yr,
+CONVERT(Datetime,NULL) as  fully_immunized,
+r.DeleteFlag  as Voided
+ from(
+ select  v.PatientId,v.PatientMasterVisitId,v.DeleteFlag,ColumnName,ValueVaccine from(
+select PatientId,PatientMasterVisitId,Vaccine,lti.[Name] as Immunization,VaccineStage,lt.[Name] as Stage,v.VaccineDate,v.DeleteFlag from Vaccination v
+left join LookupItem lti on lti.Id=v.Vaccine
+left join LookupItem lt on lt.Id=v.VaccineStage
+where (v.DeleteFlag is null or v.DeleteFlag =0)
+)v
+cross apply( 
+
+select (v.Immunization) ,'YES' union all
+select (v.Immunization +'_Period' ),CAST(v.Stage as varchar(max)) union all
+select (v.Immunization + '_Date' )
+,CAST(v.VaccineDate as varchar(max))
+) c( ColumnName,ValueVaccine) 
+)t pivot 
+(
+ max(ValueVaccine) 
+ for columnname in ([Measles 18 Months],[Measles 18 Months_Period],[Measles 18 Months_Date],[Measles 9 Months],[Measles 9 Months_Period],[Measles 9 Months_Date],[Measles 6 Months],[Measles 6 Months_Period]
+ ,[Measles 6 Months_Date],IPV,IPV_Period,IPV_Date,[Rota Virus 2],[Rota Virus 2_Period],[Rota Virus 2_Date],[Rota virus 1],[Rota virus 1_Period],[Rota virus 1_Date],
+ [PCV-10 3], [PCV-10 3_Period], [PCV-10 3_Date],
+[PCV-10 2],[PCV-10 2_Period],[PCV-10 2_Date],[PCV-10 1],[PCV-10 1_Period],[PCV-10 1_Date],[Pentavalent 3],[Pentavalent 3_Period],[Pentavalent 3_Date]
+,[Pentavalent 2] ,[Pentavalent 2_Period],[Pentavalent 2_Date]
+,[Pentavalent 1],[Pentavalent 1_Period],[Pentavalent 1_Date]
+,[OPV 3],[OPV 3_Period],[OPV 3_Date]
+,[OPV 2],[OPV 2_Period],[OPV 2_Date]
+,[OPV 1],[OPV 1_Period],[OPV 1_Date]
+,[OPV 0],[OPV 0_Period],[OPV 0_Date]
+,BCG,BCG_Period,BCG_Date
+,Other,Other_Period,Other_Date )
+)r)imm on imm.PatientId=he.PatientId and imm.PatientMasterVisitId=v.Id
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>543</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_hei_immunization</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <schema>migration_st</schema>
+    <table>st_hei_immunization</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>911</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>

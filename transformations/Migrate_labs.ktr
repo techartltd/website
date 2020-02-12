@@ -1,0 +1,983 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>Migrate_labs</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
+    <directory>/</directory>
+    <parameters>
+      <parameter>
+        <name>mssql</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>mysql_st</name>
+        <default_value/>
+        <description/>
+      </parameter>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2020/01/15 10:54:57.865</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2020/01/15 10:54:57.865</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>mssql</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mysql_st</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mysql_st</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>Create_st_laboratory</from>
+      <to>iqcare_source_labs</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_labs</from>
+      <to>load_st__tb_screening</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>Create_st_laboratory</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>-- 17. Laboratory Extract
+DROP TABLE IF EXISTS migration_st.st_laboratory;
+CREATE TABLE migration_st.st_laboratory
+(
+  Person_Id       INT(11),
+  Encounter_Date  DATE,
+  Encounter_ID    VARCHAR(50),
+  Lab_test        VARCHAR(180),
+  CD4             VARCHAR(180),
+  CD4PERCENT      VARCHAR(180),
+  VIRALLOAD       VARCHAR(180),
+  VIRALLOADUNDETECTABLE  VARCHAR(180),
+  STOREPLASMA     VARCHAR(180),
+  HCT             VARCHAR(180),
+  HB              VARCHAR(180),
+  WBC             VARCHAR(180),
+  WBCDIFF         VARCHAR(180),
+  WBCDIFF_NEUT    VARCHAR(180),
+  WBCDIFF_NEUT_PERCENT VARCHAR(180),
+  WBCDIFF_LYMPH   VARCHAR(180),
+  WBCDIFF_LYMPH_PERCENT VARCHAR(180),
+  WBCDIFF_MONO   VARCHAR(180),
+  WBCDIFF_MONO_PERCENT VARCHAR(180),
+  WBCDIFF_EOSIN   VARCHAR(180),
+  WBCDIFF_EOSIN_PERCENT VARCHAR(180),
+  PLATELETS       VARCHAR(180),
+  AST_SGOT        VARCHAR(180),
+  ALT_SGPT        VARCHAR(180),
+  CREATININE      VARCHAR(180),
+  CREATININEMM    VARCHAR(180),
+  AMYLASE         VARCHAR(180),
+  PREGNANCY       VARCHAR(180),
+  MALARIA         VARCHAR(180),
+  SERUMCRYPTO     VARCHAR(180),
+  SPUTUMAFB1      VARCHAR(180),
+  SPUTUMAFB2      VARCHAR(180),
+  SPUTUMAFB3      VARCHAR(180),
+  SPUTUMGRAMSTAIN VARCHAR(180),
+  URINALYSIS      VARCHAR(180),
+  STOOLSTATUS     VARCHAR(180),
+  URINALYSIS_SPECGRAV VARCHAR(180),
+  URINALYSIS_GLUCOSE VARCHAR(180),
+  URINALYSIS_KETONE VARCHAR(180),
+  URINALYSIS_PROTEIN VARCHAR(180),
+  URINALYSIS_LEUKEST VARCHAR(180),
+  URINALYSIS_NITRATE VARCHAR(180),
+  URINALYSIS_BLOOD  VARCHAR(180),
+  URINALYSISMICROSCOPICBLOOD VARCHAR(180),
+  URINALYSISMICROSCOPICWBC VARCHAR(180),
+  URINALYSISMICROSCOPICBACTERIA VARCHAR(180),
+  URINALYSISMICROSCOPICCASTS VARCHAR(180),
+  CULTURESENSITIVITY  VARCHAR(180),
+  STOOL               VARCHAR(180),
+  URINECULTURE_SENSIVITY VARCHAR(180),
+  CSFCRYPTO           VARCHAR(180),
+  CSFINDIAINK         VARCHAR(180),
+  CSFGRAMSTAIN        VARCHAR(180),
+  CSFCULTURE          VARCHAR(180),
+  CSFBIOCHEMISTRY     VARCHAR(180),
+  GLUCOSEMG           VARCHAR(180),
+  GLUCOSEMM           VARCHAR(180),
+  ESR                 VARCHAR(180),
+  CELLCOUNTNEUTROPHILS VARCHAR(180),
+  CELLCOUNTLYMPHOCYTES VARCHAR(180),
+  PROTEIN              VARCHAR(180),
+  PROTEINMG            VARCHAR(180),
+  PROTEINMM            VARCHAR(180),
+  HIVRAPIDTEST         VARCHAR(180),
+  CSFBIOCHEMISTRY_GLUCOSE VARCHAR(180),
+  CELLCOUNTRBCS        VARCHAR(180),
+  RBC                  VARCHAR(180),
+  CELLCOUNTWBCS        VARCHAR(180),
+  ALBUMIN_MG_DL_       VARCHAR(180),
+  COLPOSCOPY_CERVICALCA_FEMALEONLY_ VARCHAR(180),
+  CYTOMEGALOVIRUS_CMV_   VARCHAR(180),
+  EPSTEINBARRVIRUS_EBV_  VARCHAR(180),
+  HDL_MG_DL_             VARCHAR(180),
+  HEPATITISAAB_TOTAL     VARCHAR(180),
+  HEPATITISAAB_IGM       VARCHAR(180),
+  HEPATITISBCORE_ANTIBODYIGM_HBSAB_ VARCHAR(180),
+  HEPATITISBCORE_ANTIBODY_TOTAL VARCHAR(180),
+  HEPATITISBSURFACE_ANTIBODY_HBSAB_ VARCHAR(180),
+  HEPATITISBSURFACE_ANTIGEN_HBSAG_ VARCHAR(180),
+  LDL_MG_DL_             VARCHAR(180),
+  PAPSMEAR_CERVICALCA_FEMALEONLY_ VARCHAR(180),
+  GONORRHEA               VARCHAR(180),
+  CHLAMYDIA               VARCHAR(180),
+  RECTALPAPSMEAR          VARCHAR(180),
+  SYPHILIS_FTA_           VARCHAR(180),
+  SYPHILIS_RPR_           VARCHAR(180),
+  TOTALCHOLESTEROL_MG_DL_ VARCHAR(180),
+  TOXOPLASMAIGGANTIBODY   VARCHAR(180),
+  TRIGLYCERIDES_MG_DL_    VARCHAR(180),
+  VAGINALINSPECTIONWITHACETICACID_VIA_ VARCHAR(180),
+  VARICELLA_CHICKENPOX_    VARCHAR(180),
+  HEPATITISCANTIBODY       VARCHAR(180),
+  HIVCONFIRM               VARCHAR(180),
+  PCR                      VARCHAR(180),
+  RDT                      VARCHAR(180),
+  MPS                      VARCHAR(180),
+  SPECIES_REPORT           VARCHAR(180),
+  CAS                      VARCHAR(180),
+  SAFB                     VARCHAR(180),
+  QBL                      VARCHAR(180),
+  GeneXpert                VARCHAR(180),
+  Urgency         VARCHAR(50),
+  Test_result     VARCHAR(200),
+  Date_test_requested DATE,
+  Date_test_result_received DATE,
+  Test_requested_by VARCHAR(100),
+  OrderStatus      VARCHAR(100),
+  PreClinicLabDate  DATE,
+  ClinicalOrderNotes  VARCHAR(200),
+  OrderNumber      VARCHAR(100),
+  CreateDate       DATE,
+  CreatedBy        VARCHAR(100),
+  DeletedBy        VARCHAR(100),
+  DeleteDate       DATE,
+  DeleteReason     VARCHAR(200),
+  ResultStatus     VARCHAR(100),
+  StatusDate       DATE,
+  LabResult        VARCHAR(200),
+  ResultValue      VARCHAR(200),
+  ResultText       VARCHAR(200),
+  ResultOption     VARCHAR(200),
+  Undetectable     VARCHAR(200),
+  DetectionLimit   VARCHAR(200),
+  ResultUnit       VARCHAR(200),
+  HasResult        VARCHAR(200),
+  LabTestName      VARCHAR(200),
+  ParameterName    VARCHAR(200),
+  LabDepartmentName VARCHAR(200),
+  Voided           INT(11)
+);</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>192</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_labs</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <sql>-- .17 Laboratory 
+exec pr_OpenDecryptedSession;
+
+select p.PersonId as Person_Id 
+,v.VisitDate as Encounter_Date,
+NULL as Encounter_ID,
+vlw.ParameterReferenceId as Lab_test,
+
+CASE WHEN vlw.ParameterReferenceId='CD4' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CD4,
+CASE WHEN vlw.ParameterReferenceId='CD4PERCENT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CD4PERCENT,
+CASE WHEN vlw.ParameterReferenceId='VIRALLOAD' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VIRALLOAD,
+CASE WHEN vlw.ParameterReferenceId='VIRALLOADUNDETECTABLE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VIRALLOADUNDETECTABLE,
+CASE WHEN vlw.ParameterReferenceId='STOREPLASMA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as STOREPLASMA,
+CASE WHEN vlw.ParameterReferenceId='HCT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HCT,
+CASE WHEN vlw.ParameterReferenceId='HB' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HB,
+CASE WHEN vlw.ParameterReferenceId='WBC' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBC,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_NEUT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_NEUT,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_NEUT%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_NEUT_PERCENT,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_LYMPH' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_LYMPH,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_LYMPH%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_LYMPH_PERCENT,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_MONO' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_MONO,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_MONO%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_MONO_PERCENT,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_EOSIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_EOSIN,
+CASE WHEN vlw.ParameterReferenceId='WBCDIFF_EOSIN%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_EOSIN_PERCENT,
+CASE WHEN vlw.ParameterReferenceId='PLATELETS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PLATELETS,
+CASE WHEN vlw.ParameterReferenceId='AST_SGOT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as AST_SGOT,
+CASE WHEN vlw.ParameterReferenceId='ALT_SGPT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as ALT_SGPT,
+CASE WHEN vlw.ParameterReferenceId='CREATININE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CREATININE,
+CASE WHEN vlw.ParameterReferenceId='CREATININEMM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CREATININEMM,
+CASE WHEN vlw.ParameterReferenceId='AMYLASE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as AMYLASE,
+CASE WHEN vlw.ParameterReferenceId='PREGNANCY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PREGNANCY,
+CASE WHEN vlw.ParameterReferenceId='MALARIA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as MALARIA,
+CASE WHEN vlw.ParameterReferenceId='SERUMCRYPTO' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SERUMCRYPTO,
+CASE WHEN vlw.ParameterReferenceId='SPUTUMAFB1' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMAFB1,
+CASE WHEN vlw.ParameterReferenceId='SPUTUMAFB2' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMAFB2,
+CASE WHEN vlw.ParameterReferenceId='SPUTUMAFB3' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMAFB3,
+CASE WHEN vlw.ParameterReferenceId='SPUTUMGRAMSTAIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMGRAMSTAIN,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS,
+CASE WHEN vlw.ParameterReferenceId='STOOLSTATUS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as STOOLSTATUS,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_SPECGRAV' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_SPECGRAV,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_GLUCOSE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_GLUCOSE,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_KETONE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_KETONE,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_PROTEIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_PROTEIN,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_LEUKEST' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_LEUKEST,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_NITRATE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_NITRATE,
+CASE WHEN vlw.ParameterReferenceId='URINALYSIS_BLOOD' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_BLOOD,
+CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICBLOOD' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICBLOOD,
+CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICWBC' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICWBC,
+CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICBACTERIA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICBACTERIA,
+CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICCASTS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICCASTS,
+CASE WHEN vlw.ParameterReferenceId='CULTURESENSITIVITY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CULTURESENSITIVITY,
+CASE WHEN vlw.ParameterReferenceId='STOOL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as STOOL,
+CASE WHEN vlw.ParameterReferenceId='URINECULTURE_SENSIVITY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINECULTURE_SENSIVITY,
+CASE WHEN vlw.ParameterReferenceId='CSFCRYPTO' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFCRYPTO,
+CASE WHEN vlw.ParameterReferenceId='CSFINDIAINK' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFINDIAINK,
+CASE WHEN vlw.ParameterReferenceId='CSFGRAMSTAIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFGRAMSTAIN,
+CASE WHEN vlw.ParameterReferenceId='CSFCULTURE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFCULTURE,
+CASE WHEN vlw.ParameterReferenceId='CSFBIOCHEMISTRY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFBIOCHEMISTRY,
+CASE WHEN vlw.ParameterReferenceId='GLUCOSEMG' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GLUCOSEMG,
+CASE WHEN vlw.ParameterReferenceId='GLUCOSEMM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GLUCOSEMM,
+CASE WHEN vlw.ParameterReferenceId='ESR' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as ESR,
+CASE WHEN vlw.ParameterReferenceId='CELLCOUNTNEUTROPHILS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTNEUTROPHILS,
+CASE WHEN vlw.ParameterReferenceId='CELLCOUNTLYMPHOCYTES' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTLYMPHOCYTES,
+CASE WHEN vlw.ParameterReferenceId='PROTEIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PROTEIN,
+CASE WHEN vlw.ParameterReferenceId='PROTEINMG' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PROTEINMG,
+CASE WHEN vlw.ParameterReferenceId='PROTEINMM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PROTEINMM,
+CASE WHEN vlw.ParameterReferenceId='HIVRAPIDTEST' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HIVRAPIDTEST,
+CASE WHEN vlw.ParameterReferenceId='CSFBIOCHEMISTRY_GLUCOSE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFBIOCHEMISTRY_GLUCOSE,
+CASE WHEN vlw.ParameterReferenceId='CELLCOUNTRBCS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTRBCS,
+CASE WHEN vlw.ParameterReferenceId='RBC' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as RBC,
+CASE WHEN vlw.ParameterReferenceId='CELLCOUNTWBCS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTWBCS,
+CASE WHEN vlw.ParameterReferenceId='ALBUMIN_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as ALBUMIN_MG_DL_,
+CASE WHEN vlw.ParameterReferenceId='COLPOSCOPY_CERVICALCA_FEMALEONLY_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as COLPOSCOPY_CERVICALCA_FEMALEONLY_,
+CASE WHEN vlw.ParameterReferenceId='CYTOMEGALOVIRUS_CMV_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CYTOMEGALOVIRUS_CMV_,
+CASE WHEN vlw.ParameterReferenceId='EPSTEINBARRVIRUS_EBV_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as EPSTEINBARRVIRUS_EBV_,
+CASE WHEN vlw.ParameterReferenceId='HDL_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HDL_MG_DL_,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISAAB_TOTAL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISAAB_TOTAL,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISAAB_IGM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISAAB_IGM,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISBCORE_ANTIBODYIGM_HBSAB_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBCORE_ANTIBODYIGM_HBSAB_,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISBCORE_ANTIBODY_TOTAL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBCORE_ANTIBODY_TOTAL,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISBSURFACE_ANTIBODY_HBSAB_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBSURFACE_ANTIBODY_HBSAB_,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISBSURFACE_ANTIGEN_HBSAG_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBSURFACE_ANTIGEN_HBSAG_,
+CASE WHEN vlw.ParameterReferenceId='LDL_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as LDL_MG_DL_,
+CASE WHEN vlw.ParameterReferenceId='PAPSMEAR_CERVICALCA_FEMALEONLY_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PAPSMEAR_CERVICALCA_FEMALEONLY_,
+CASE WHEN vlw.ParameterReferenceId='GONORRHEA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GONORRHEA,
+CASE WHEN vlw.ParameterReferenceId='CHLAMYDIA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CHLAMYDIA,
+CASE WHEN vlw.ParameterReferenceId='RECTALPAPSMEAR' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as RECTALPAPSMEAR,
+CASE WHEN vlw.ParameterReferenceId='SYPHILIS_FTA_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SYPHILIS_FTA_,
+CASE WHEN vlw.ParameterReferenceId='SYPHILIS_RPR_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SYPHILIS_RPR_,
+CASE WHEN vlw.ParameterReferenceId='TOTALCHOLESTEROL_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as TOTALCHOLESTEROL_MG_DL_,
+CASE WHEN vlw.ParameterReferenceId='TOXOPLASMAIGGANTIBODY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as TOXOPLASMAIGGANTIBODY,
+CASE WHEN vlw.ParameterReferenceId='TRIGLYCERIDES_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as TRIGLYCERIDES_MG_DL_,
+CASE WHEN vlw.ParameterReferenceId='VAGINALINSPECTIONWITHACETICACID_VIA_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VAGINALINSPECTIONWITHACETICACID_VIA_,
+CASE WHEN vlw.ParameterReferenceId='HEPATITISCANTIBODY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISCANTIBODY,
+CASE WHEN vlw.ParameterReferenceId='HIVCONFIRM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HIVCONFIRM,
+CASE WHEN vlw.ParameterReferenceId='VARICELLA_CHICKENPOX_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VARICELLA_CHICKENPOX_,
+CASE WHEN vlw.ParameterReferenceId='PCR' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PCR,
+CASE WHEN vlw.ParameterReferenceId='RDT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as RDT,
+CASE WHEN vlw.ParameterReferenceId='MPS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as MPS,
+CASE WHEN vlw.ParameterReferenceId='SPECIES_REPORT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPECIES_REPORT,
+CASE WHEN vlw.ParameterReferenceId='CAS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CAS,
+CASE WHEN vlw.ParameterReferenceId='SAFB' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SAFB,
+CASE WHEN vlw.ParameterReferenceId='QBL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as QBL,
+CASE WHEN vlw.ParameterReferenceId='GeneXpert' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GeneXpert,
+
+NULL as Urgency, 
+COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) as  Test_Result,
+plo.OrderDate as Date_test_Requested,
+OT.ResultDate as Date_test_result_received,
+u.UserFirstName + ' ' + u.UserLastName as Test_Requested_By,
+plo.PreClinicLabDate,
+plo.ClinicalOrderNotes,
+plo.OrderNumber,
+plo.CreateDate,
+(select  usr.UserFirstName + ' ' + usr.UserLastName  from mst_User usr where usr.UserID=plo.CreatedBy) 
+as CreatedBy,
+plo.OrderStatus,
+(select  usr.UserFirstName + ' ' + usr.UserLastName  from mst_User usr where usr.UserID=plo.DeletedBy) as DeletedBy ,
+plo.DeleteDate,
+plo.DeleteReason,
+ OT.ResultStatus,
+ OT.StatusDate,
+ COALESCE(cast(r.ResultValue as varchar(max)),r.ResultText) as LabResult,
+ r.ResultValue,
+ r.ResultText,
+ r.ResultOption,
+ r.Undetectable,
+ r.DetectionLimit,
+ r.ResultUnit,
+ r.HasResult,
+ vlw.LabTestName,
+ vlw.ParameterName,
+ vlw.LabDepartmentName,
+  plo.DeleteFlag as Voided
+
+from ord_LabOrder	 plo
+inner join dtl_LabOrderTest OT on OT.LabOrderId=plo.Id
+inner join dtl_LabOrderTestResult r on r.LabOrderTestId=OT.Id
+inner join Patient  p on p.ptn_pk=plo.Ptn_Pk
+inner join ord_Visit v on v.Visit_Id=plo.VisitId
+left join mst_User u on u.UserID=plo.OrderedBy
+left join (Select	P.Id	ParameterId
+			,P.ParameterName
+			,P.ReferenceId ParameterReferenceId
+			,T.Id	LabTestId
+			,T.Name	LabTestName
+			,T.ReferenceId TestReferenceId
+			,T.IsGroup
+			,T.DepartmentId
+			,D.LabDepartmentName
+			, T.DeleteFlag TestDeleteFlag
+			,T.Active TestActive
+			,P.DeleteFlag ParameterDeleteFlag
+	From mst_LabTestMaster T
+	Inner Join Mst_LabTestParameter P On T.Id = P.LabTestId
+	Left Outer Join mst_LabDepartment D On T.DepartmentId = D.LabDepartmentID)
+	vlw on vlw.ParameterId=r.ParameterId
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>416</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st__tb_screening</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <schema>migration_st</schema>
+    <table>st_laboratory</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>688</xloc>
+      <yloc>112</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>

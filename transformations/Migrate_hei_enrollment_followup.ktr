@@ -1,0 +1,1049 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>Migrate_hei_enrollment_followup</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2020/01/22 16:06:05.516</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2020/01/22 16:06:05.516</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>mssql</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mysql_st</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mysql_st</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>Create_st_hei_enrollment_followup</from>
+      <to>iqcare_source_hei_enrollment_followup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_hei_enrollment_followup</from>
+      <to>load_st_hei_enrollment_followup</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>Create_st_hei_enrollment_followup</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>-- master
+-- 25. HEI Enrollment_Followup
+DROP TABLE IF EXISTS migration_st.st_hei_enrollment_followup;
+CREATE TABLE migration_st.st_hei_enrollment_followup (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Gestation_at_birth 					     DOUBLE,
+  Birth_weight 			          		 DOUBLE,
+  Child_exposed 						       VARCHAR(100),
+  Hei_id_number 				        	VARCHAR(100),
+  Spd_number 						         	VARCHAR(100),
+  Birth_length 					        	VARCHAR(100),
+  Birth_order 						        VARCHAR(100),
+  Birth_type            					VARCHAR(50),
+  Place_of_delivery 	    				VARCHAR(100),
+  Mode_of_delivery 				      	VARCHAR(100),
+  Birth_notification_number 			VARCHAR(50),
+  Date_birth_notification_number_issued 	DATE,
+  Birth_certificate_number 			  VARCHAR(100),
+  Date_first_enrolled_in_hei_care 	DATE,
+  Birth_registration_place 			   VARCHAR(50),
+  Birth_registration_date 			   DATE,
+  Health_facility_name 			     	VARCHAR(50),
+  Mothers_name 			        			VARCHAR(100),
+  Fathers_name 					        	VARCHAR(100),
+  Guardians_name 			      			VARCHAR(100),
+  Community_HealthWorkers_name 		VARCHAR(100),
+  Alternative_Contact_name 		  	VARCHAR(100),
+  Contacts_For_Alternative_Contact 	VARCHAR(100),
+  Need_for_special_care 				 VARCHAR(100),
+  Reason_for_special_care 		  	VARCHAR(100),
+  Hiv_status_at_exit 				      VARCHAR(100),
+  TB_contact_history_in_household 	VARCHAR(100),
+  Mother_alive 					        	VARCHAR(100),
+  Mother_breastfeeding 	    			VARCHAR(100),
+  Mother_breastfeeding_mode		  	VARCHAR(100),
+  Referral_source 		      			VARCHAR(100),
+  Transfer_in 			        			VARCHAR(100),
+  Transfer_in_date 			      		DATE,
+  Facility_transferred_from 			VARCHAR(50),
+  District_transferred_from 			VARCHAR(50),
+  Child_arv_prophylaxis 			      		VARCHAR(100),
+  Infant_prophylaxis_other 	  		VARCHAR(200),
+  Mother_on_NVP_during_breastfeeding 	VARCHAR(100),
+  Infant_mother_link 				    	VARCHAR(100),
+  Mother_on_pmtct_drugs 		  		VARCHAR(100),
+  Mother_on_pmtct_drugs_regimen		VARCHAR(100),
+  Mother_on_pmtct_other_regimen 	VARCHAR(300),
+  Mother_on_art_at_infant_enrollment 	VARCHAR(100),
+  Mother_drug_regimen 				    VARCHAR(100),  
+  Mother_ccc_number 					    VARCHAR(100),
+  Date_sample_collected 	  			DATE,
+  Exit_date_result_collected 			DATE,
+  Immunization_given 		    			VARCHAR(100),
+  Date_immunized 				      		DATE,
+  Date_of_next_appointment	  		DATE,
+  Revisit_this_year 			  	    VARCHAR(100),
+  Primary_care_giver			      		VARCHAR(100),
+  MUAC								                VARCHAR(100),
+  Exclusive_breastfeeding_0_6_Months  VARCHAR(100),
+  Stunted                             VARCHAR(100),
+  Medication_Given_If_HIV_Exposed     VARCHAR(100),
+  TB_screening_outcome				        VARCHAR(100),
+  Development_Milestones_by_age	     	VARCHAR(100),
+  Achieving_milestones				        VARCHAR(100),
+  Weight_category					          	VARCHAR(100),
+  Type_of_follow_up				          	VARCHAR(100),
+  Test_contextual_status		      		VARCHAR(100),
+  Contextual_status_results	       		VARCHAR(100),
+  First_DBS_sample_code				    		VARCHAR(50),
+  Date_first_DBS_sample_code_result_collected	DATE,
+  First_antibody_test				        	VARCHAR(50),
+  Date_first_antibody_test		      	DATE,
+  First_DBS_sample_code_result        VARCHAR(100),
+  Final_DBS_sample_code				        VARCHAR(50),
+  Date_Final_DBS_Sample_Code_Result_collected	DATE,
+  Final_Antibody_test					      	VARCHAR(50),
+  Date_Final_Antibody_test			    	DATE,
+  Final_DBS_Sample_Code_Result        VARCHAR(100),
+  DBS_Sample_Code							        VARCHAR(100),
+  Date_DBS_Sample_Code_Result_collected	 DATE,
+  Tetracycline_Eye_Ointment  	          VARCHAR(100),
+  Pupil 								                VARCHAR(100),
+  Sight              				  		  		VARCHAR(100),
+  Squint				                        VARCHAR(100),
+  Deworming_and_Vitamin_A_supp		    	VARCHAR(100),
+  Deworming_Next_Visit					        DATE,
+  Deworming_Drug						          	VARCHAR(100),
+  Deworming_Dosage_Units				      	VARCHAR(100),
+  Vitamin_A							              	VARCHAR(100),
+  Any_disability					          		VARCHAR(100),
+  Clinicians_notes					          	VARCHAR(350),
+  Counselled_On						            	DATE,
+  Supplemented_with_MNPS_6_23_Months   	VARCHAR(100),
+  Physical_features_colouration 		  	VARCHAR(100),
+  Immunization_vaccine				      	VARCHAR(100),
+  Immunization_Batch_num				      	VARCHAR(50),
+  Immunization_Expiry_Date		      		DATE,
+  Immunization_Dose						          VARCHAR(50),
+  Immunization_Date_Given 		    			DATE,
+
+  Immunization_BCG_scar_checked		    	VARCHAR(100),
+  Immunization_BCG_date_checked	    		DATE,
+  Immunization_BCG_repeated	       			VARCHAR(100),
+  Immunization_Vitamin_capsule_given_dose  VARCHAR(100),
+  Immunization_Vitamin_capsule_given       VARCHAR(100),
+  Immunization_Vitamin_capsule_date_given  VARCHAR(100),
+  Immunization_Vitamin_capsule_date_of_Next_visit      DATE,
+  Immunization_Vitamin_capsule_fully_immunized_child   VARCHAR(100),
+  Immunization_Vitamin_capsule_date_given_last_vaccine DATE,
+  Child_hei_outcomes_exit_date 		                   	DATE,
+  Child_hei_outcomes_HIV_status			                  VARCHAR(100),
+  Voided                          INT(11)
+);</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>576</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_hei_enrollment_followup</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <sql>exec pr_OpenDecryptedSession;
+
+exec pr_OpenDecryptedSession;
+select distinct p.PersonId as Person_Id,
+v.VisitDate as Encounter_Date,
+   NULL as Encounter_ID,   
+  NULL as Gestation_at_birth,
+  he.BirthWeight as Birth_weight,
+  NULL as Child_exposed,
+  pid.IdentifierValue as Hei_id_number,
+  NULL Spd_number,
+  NULL Birth_length,
+  NULL Birth_order,
+  NULL Birth_type,
+(select lt.[Name] from LookupItem lt where lt.Id=he.PlaceOfDeliveryId) as Place_of_delivery,
+(select lt.[Name] from LookupItem lt where lt.Id=he.ModeOfDeliveryId) as Mode_of_delivery,
+Birth_notification_number =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = p.PersonId and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+Date_birth_notification_number_issued =(select top 1 pdd.CreateDate from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = p.PersonId and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+Birth_certificate_number =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
+inner join (
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = p.PersonId and pdd.[Name]='BirthCertificate' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ) ,
+pe.EnrollmentDate as Date_first_enrolled_in_hei_care,
+NULL Birth_registration_place,
+pe.EnrollmentDate as Birth_registration_date,
+mf.FacilityName as  Health_Facility_name,
+he.MotherName AS Mothers_name,
+NULL as Fathers_name,
+NULL as Guardians_name,
+NULL as Community_HealthWorkers_name,
+NULL as Alternative_Contact_name,
+NULL as Contacts_For_Alternative_Contact,
+NULL as Need_for_special_care,
+NULL as Reason_for_special_care,
+NULL as Hiv_status_at_exit,
+CASE WHEN pif.ContactWithTb='1' then 'Yes' when pif.ContactWithTB='0' then 'No'
+else NULL end as TB_contact_history_in_household,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherStatusId) as Mother_alive,
+hf.Feeding as Mother_breastfeeding,
+hf.InfantFeeding as Mother_breastfeeding_mode,
+NULL Referral_source,
+NULL Transfer_in,
+NULL Transfer_in_date,
+NULL as Facility_transferred_from,
+NULL as District_transferred_from,
+NULL as Mother_on_NVP_during_breastfeeding,
+NULL as Infant_mother_link,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherPMTCTDrugsId) as Mother_on_pmtct_drugs,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherPMTCTRegimenId) as Mother_on_pmtct_drugs_regimen,
+he.MotherPMTCTRegimenOther as Mother_on_pmtct_other_regimen ,
+(select lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolId) as Mother_on_art_at_infant_enrollment,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolRegimenId) as Mother_drug_regimen,
+(select  lt.[Name] from LookupItem lt where lt.Id=he.ArvProphylaxisId) as Child_arv_prophylaxis,
+he.ArvProphylaxisOther as Infant_prophylaxis_other,
+he.MotherCCCNumber as Mother_ccc_number,
+pcr.OrderedByDate as Date_sample_collected,
+NULL as  Exit_date_result_collected,
+CASE WHEN vt.Vaccine is not null then 'Yes' else NULL end  as Immunization_given,
+vt.VaccineDate as  Date_immunized,
+TCAs.AppointmentDate as Date_of_next_appointment,
+NULL as Revisit_this_year,
+(select lt.[Name]  from LookupItem lt where lt.Id=he.PrimaryCareGiverID) as Primary_care_giver,
+pvs.Muac as MUAC,
+NULL as Exclusive_breastfeeding_0_6_Months,
+NULL as Stunted,
+NULL as Medication_Given_If_HIV_Exposed,
+tbs.ScreeningValue as  TB_screening_outcome,
+pml.MilestoneType as Development_milestones_by_age,
+pml.[Status] as Achieving_milestones,
+NULL as Weight_category,
+NULL as Type_of_follow_up ,
+NULL as  Test_contextual_status,
+NULL as  Contextual_status_results,
+NULL as First_DBS_sample_code,
+NULL Date_first_DBS_sample_code_result_collected,
+hrt.TestResults as First_antibody_test,
+hrt.ReportedByDate as Date_first_antibody_test,
+
+
+NULL as  First_DBS_sample_code_result,
+NULL as  Final_DBS_sample_code,
+NULL as  Date_Final_DBS_Sample_Code_Result_collected,
+NULL as  Final_Antibody_test,
+NULL as  Date_Final_Antibody_test,
+NULL as  Final_DBS_Sample_Code_Result,
+NULL as  DBS_Sample_Code,
+NULL as  Date_DBS_Sample_Code_Result_collected,
+NULL as  Tetracycline_Eye_Ointment,
+NULL Pupil,
+NULL Sight,
+NULL Squint,
+NULL Deworming_and_Vitamin_A_supp,
+NULL Deworming_Next_Visit,
+NULL Deworming_Drug,
+NULL Deworming_Dosage_Units,
+NULL Vitamin_A,
+NULL Any_disability,
+NULL Clinicians_notes,
+NULL Counselled_On,
+NULL Supplemented_with_MNPS_6_23_Months,
+NULL Physical_features_colouration,
+vt.Immunization as Immunization_vaccine,
+NULL Immunization_Batch_num,
+NULL Immunization_Expiry_Date,
+NULL Immunization_Dose,
+vt.VaccineDate as Immunization_Date_Given,
+NULL Immunization_BCG_scar_checked,
+NULL Immunization_BCG_date_checked,
+NULL Immunization_BCG_repeated,
+NULL Immunization_Vitamin_capsule_given_dose ,
+NULL Immunization_Vitamin_capsule_given,     
+NULL Immunization_Vitamin_capsule_date_given,
+NULL Immunization_Vitamin_capsule_date_of_Next_visit , 
+NULL Immunization_Vitamin_capsule_fully_immunized_child, 
+NULL Immunization_Vitamin_capsule_date_given_last_vaccine,
+CASE WHEN he.Outcome24MonthId > 0 then v.VisitDate  else NULL end as  	Child_Hei_Outcomes_Exit_date,			
+(select lt.[Name]  from LookupItem lt where lt.Id=he.Outcome24MonthId)	Child_Hei_Outcomes_HIV_Status	
+from   dbo.PatientMasterVisit AS v INNER JOIN
+                         dbo.Patient AS p ON v.PatientId = p.Id INNER JOIN
+						  dbo.mst_Patient AS mp ON mp.Ptn_Pk = p.ptn_pk INNER JOIN
+                         dbo.PatientEnrollment AS pe ON p.Id = pe.PatientId INNER JOIN
+                         dbo.PatientIdentifier AS pid ON p.Id = pid.PatientId INNER JOIN
+						   Person  per on per.Id=p.PersonId INNER JOIN
+                         dbo.HEIEncounter AS he ON v.Id = he.PatientMasterVisitId
+						 left join mst_Facility mf on mf.PosID=mf.FacilityID and (mf.DeleteFlag = 0 or mf.DeleteFlag is null)
+						 left join PatientIcf pif on pif.PatientId=p.Id and pif.PatientMasterVisitId=he.PatientMasterVisitId
+						 left join(select hf.PatientId,hf.PatientMasterVisitId,hf.FeedingModeId,lt.[Name] as InfantFeeding,
+						 CASE WHEN lt.[Name]='Not Breastfeeding' then 'No'
+						 when lt.[Name] is not null  and lt.[Name] !='Not Breastfeeding' then 'Yes'
+						 else null end as Feeding
+						  from  HEIFeeding hf
+						  left join LookupItem lt on lt.Id=hf.FeedingModeId)hf
+						   on hf.PatientId=p.Id and hf.PatientMasterVisitId=he.PatientMasterVisitId
+						   left join (	Select	O.Id				LabId
+		,o.Ptn_Pk
+		,o.PatientMasterVisitId
+		,o.PatientId
+		,O.LocationId
+		,O.OrderedBy		OrderedByName
+		,O.OrderNumber
+		,o.OrderDate		OrderedByDate
+		,Ot.ResultBy		ReportedByName
+		,OT.ResultDate		ReportedByDate
+		,O.OrderedBy		CheckedbyName
+		,o.OrderDate		CheckedbyDate
+		,O.PreClinicLabDate
+		,LT.ParameterName	TestName
+		,LT.ParameterId		TestId
+		,LT.LabTestId		[Test GroupId]
+		,lt.LabTestName		[Test GroupName]
+		,LT.DepartmentId	LabDepartmentId
+		,LT.LabDepartmentName
+		,0					LabTypeId
+		,'Additional Lab'	LabTypeName
+		,R.ResultValue		TestResults
+		,R.ResultText		TestResults1
+		,R.ResultOptionId	 TestResultId
+		,R.ResultOption		[Parameter Result]
+		,R.Undetectable
+		,R.DetectionLimit
+		,R.ResultUnit
+		,R.HasResult
+		,V.VisitDate
+		,Null				LabPeriod
+		,LT.TestReferenceId
+		,LT.ParameterReferenceId		
+	From dbo.ord_LabOrder O
+	Inner Join dtl_LabOrderTest OT On OT.LabOrderId = O.Id
+	Inner Join dtl_LabOrderTestResult R On R.LabOrderTestId = OT.Id
+	Inner Join VW_LabTest LT On LT.ParameterId = R.ParameterId
+	Inner Join ord_Visit V On v.Visit_Id = O.VisitId
+	Where    (o.DeleteFlag is null or o.DeleteFlag=0) and ParameterName='PCR')pcr
+	on pcr.PatientId=p.id and pcr.PatientMasterVisitId=he.PatientMasterVisitId
+
+left join( select PatientId,PatientMasterVisitId,Vaccine,lti.[Name] as Immunization,VaccineStage,lt.[Name] as Stage,v.VaccineDate,v.DeleteFlag from Vaccination v
+left join LookupItem lti on lti.Id=v.Vaccine
+left join LookupItem lt on lt.Id=v.VaccineStage
+where (v.DeleteFlag is null or v.DeleteFlag =0))vt on vt.PatientId=p.Id and vt.PatientMasterVisitId=he.PatientMasterVisitId
+
+LEFT JOIN (select distinct * from (select * ,ROW_NUMBER() OVER(partition by tc.PatientId,tc.PatientMasterVisitId order by tc.CreateDate desc)rownum 
+	from(SELECT  [PatientMasterVisitId]
+		  ,[PatientId]
+		  ,[AppointmentDate]
+		  ,[AppointmentReason]=(SELECT        TOP 1 ItemName
+		  FROM            [dbo].[LookupItemView]
+		  WHERE        ItemId = [ReasonId])
+		  ,[Description]
+		  ,DeleteFlag
+		  ,CreateDate
+	  FROM [dbo].[PatientAppointment]
+	  where deleteflag = 0 and serviceareaid=3)
+	  tc where tc.AppointmentReason='Follow Up')tc where tc.rownum=1
+	  )TCAs on TCAs.PatientId=p.Id and TCAs.PatientMasterVisitId=he.PatientMasterVisitId
+	  left join PatientVitals pvs on pvs.PatientId=p.Id and pvs.PatientMasterVisitId=he.PatientMasterVisitId
+
+	  left join(select ps.PatientId,ps.PatientMasterVisitId,ps.ScreeningTypeId,ltv.MasterName as ScreeningType,
+lt.[Name] as ScreeningValue
+ from PatientScreening ps
+inner join LookupItemView ltv on ltv.MasterId=ps.ScreeningTypeId
+inner join LookupItem lt on lt.Id=ps.ScreeningValueId
+ where  ltv.MasterName='TbScreeningOutcome')tbs on tbs.PatientId=p.Id and tbs.PatientMasterVisitId=he.PatientMasterVisitId
+left join(select pmi.PatientId,pmi.PatientMasterVisitId,pmi.TypeAssessedId, lt.[Name] as MilestoneType
+,pmi.StatusId,lti.[Name] as [Status],pmi.DeleteFlag ,pmi.DateAssessed from PatientMilestone pmi
+inner join LookupItem lt on lt.Id=pmi.TypeAssessedId
+inner join LookupItem lti on lti.Id=pmi.StatusId
+where (pmi.DeleteFlag is null or pmi.DeleteFlag =0)) pml on pml.PatientId=p.Id and pml.PatientMasterVisitId=he.PatientMasterVisitId
+
+left join (	Select	O.Id				LabId
+		,o.Ptn_Pk
+		,o.PatientMasterVisitId
+		,o.PatientId
+		,O.LocationId
+		,O.OrderedBy		OrderedByName
+		,O.OrderNumber
+		,o.OrderDate		OrderedByDate
+		,Ot.ResultBy		ReportedByName
+		,OT.ResultDate		ReportedByDate
+		,O.OrderedBy		CheckedbyName
+		,o.OrderDate		CheckedbyDate
+		,O.PreClinicLabDate
+		,LT.ParameterName	TestName
+		,LT.ParameterId		TestId
+		,LT.LabTestId		[Test GroupId]
+		,lt.LabTestName		[Test GroupName]
+		,LT.DepartmentId	LabDepartmentId
+		,LT.LabDepartmentName
+		,0					LabTypeId
+		,'Additional Lab'	LabTypeName
+		,R.ResultValue		TestResults
+		,R.ResultText		TestResults1
+		,R.ResultOptionId	 TestResultId
+		,R.ResultOption		[Parameter Result]
+		,R.Undetectable
+		,R.DetectionLimit
+		,R.ResultUnit
+		,R.HasResult
+		,V.VisitDate
+		,Null				LabPeriod
+		,LT.TestReferenceId
+		,LT.ParameterReferenceId		
+	From dbo.ord_LabOrder O
+	Inner Join dtl_LabOrderTest OT On OT.LabOrderId = O.Id
+	Inner Join dtl_LabOrderTestResult R On R.LabOrderTestId = OT.Id
+	Inner Join VW_LabTest LT On LT.ParameterId = R.ParameterId
+	Inner Join ord_Visit V On v.Visit_Id = O.VisitId
+	Where    (o.DeleteFlag is null or o.DeleteFlag=0) and ParameterName='HIV Rapid Test')hrt
+	on hrt.PatientId=p.id and hrt.PatientMasterVisitId=he.PatientMasterVisitId</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_hei_enrollment_followup</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <schema>migration_st</schema>
+    <table>st_hei_enrollment_followup</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1248</xloc>
+      <yloc>176</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>
