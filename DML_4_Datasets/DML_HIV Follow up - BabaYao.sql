@@ -1,6 +1,6 @@
+ -- 12 HIV Follow up
 
--- 16. HIV Follow up
-exec pr_OpenDecryptedSession;
+ exec pr_OpenDecryptedSession;
 
   select  P.Id as Person_Id,
    format(cast(pmv.VisitDate as date),'yyyy-MM-dd') AS Encounter_Date
@@ -32,7 +32,7 @@ paa.OnsetDate as Drug_reaction_onset_date,
 NULL as Drug_reaction_action_taken,
 vss.Vaccinations_today,
 vss.VaccineStage as Vaccine_Stage,
-vss.VaccineDate as Vaccine_Date,
+vss.VaccineDate as Vaccination_Date,
 pov.LMP as Last_menstrual_period,
 pov.PregnancyStatus as Pregnancy_status,
 pov.PlanningGetPregnant as Wants_pregnancy,
@@ -41,7 +41,8 @@ panc.IdentifierValue as Anc_number,
 pov.Anc_profile,
 pov.EDD  as Expected_delivery_date,
 pov.Gravidae as Gravida,
-pov.Parity as Parity,
+pov.Parity as Parity_term,
+pov.Parity2 as Parity_abortion,
 pfm.FamilyPlanningStatus as Family_planning_status,
 pfm.FamilyPlanningMethod as Family_planning_method,
 pfm.Reason_not_using_family_planning,
@@ -67,7 +68,7 @@ pd.Diagnosis as Diagnosis,
 pd.ManagementPlan as Treatment_plan,
 ctx.ScoreName as Ctx_adherence,
 CASE when ctx.VisitDate  is not null then 'Yes' else' No' end as Ctx_dispensed,
-NULL as Dapson_adherence,
+NULL as Dapsone_adherence,
 NULL as Dapsone_dispensed,
 adass.Morisky_forget_taking_drugs,
 adass.Morisky_careless_taking_drugs,
@@ -84,6 +85,7 @@ phdp.Pwp_Disclosure,
 phdp.Pwp_partner_tested,
 cacx.ScreeningValue  as Cacx_Screening,
 phdp.Screened_for_sti,
+scp.PartnerNotification as Sti_partner_notification,
 pcc.Stability as Stability,
  format(cast(papp.Next_appointment_date as date),'yyyy-MM-dd') AS Next_appointment_date,
 papp.Next_appointment_reason,
@@ -185,7 +187,7 @@ left join(
  left join LookupItem lt on lt.Id=v.Vaccine) vs
  left join LookupItem lti on lti.id=vs.VaccineStage )vss on vss.PatientId=pe.PatientId and vss.PatientMasterVisitId=pe.PatientMasterVisitId
  left join (
-SELECT        dbo.PregnancyIndicator.Id,dbo.Pregnancy.Gravidae,dbo.Pregnancy.Parity, dbo.PregnancyIndicator.PatientId, dbo.PregnancyIndicator.PatientMasterVisitId, dbo.PregnancyIndicator.LMP, dbo.PregnancyIndicator.EDD,CASE WHEN dbo.PregnancyIndicator.ANCProfile='1' then 'Yes' when dbo.PregnancyIndicator.ANCProfile='0' then 'No' end as Anc_Profile,
+SELECT        dbo.PregnancyIndicator.Id,dbo.Pregnancy.Gravidae,dbo.Pregnancy.Parity,dbo.Pregnancy.Parity2, dbo.PregnancyIndicator.PatientId, dbo.PregnancyIndicator.PatientMasterVisitId, dbo.PregnancyIndicator.LMP, dbo.PregnancyIndicator.EDD,CASE WHEN dbo.PregnancyIndicator.ANCProfile='1' then 'Yes' when dbo.PregnancyIndicator.ANCProfile='0' then 'No' end as Anc_Profile,
 
                              (SELECT        TOP (1) DisplayName
                                FROM            dbo.LookupItemView
@@ -322,7 +324,7 @@ left join(select * from (SELECT *,ROW_NUMBER() OVER(partition by ex.PatientMaste
     Id,
     PatientMasterVisitId,
     PatientId,
-    ExaminationTypeIdht
+    ExaminationTypeId,
 	(SELECT top 1 l.Name FROM LookupMaster l WHERE l.Id=e.ExaminationTypeId) ExaminationType,
 	ExamId, 
 	(SELECT top 1 l.DisplayName FROM LookupItem l WHERE l.Id=e.ExamId) Exam,
@@ -523,4 +525,11 @@ lt.DisplayName as ScreeningValue,ROW_NUMBER() OVER(partition by psc.PatientId,ps
  inner join LookupItem lt on  lt.Id=psc.ScreeningValueId
  where lm.[Name] ='CacxScreening' and (psc.DeleteFlag is null or psc.DeleteFlag =0))psc where psc.rownum='1')cacx on cacx.PatientId=pe.PatientId and
  cacx.PatientMasterVisitId=pe.PatientMasterVisitId
+ left join (select  scp.PatientId,scp.PatientMasterVisitId,scp.Name as PartnerNotification from(select  sc.PatientId,sc.PatientMasterVisitId,sc.ScreeningTypeId,sc.ScreeningValueId,li.Name,ROW_NUMBER() OVER(partition by sc.PatientId,sc.PatientMasterVisitid order by sc.Id desc )rownum from PatientScreening sc
+ inner join LookupMaster lm on lm.Id=sc.ScreeningTypeId and lm.Name='STIPartnerNotification'
+ inner join LookupItem li on li.Id=sc.ScreeningValueId 
+ where sc.DeleteFlag is null or sc.DeleteFlag =0)scp where scp.rownum='1')scp on scp.PatientId=pe.PatientId and scp.PatientMasterVisitId=pe.PatientMasterVisitId
  where lt.[Name]='ccc-encounter' 
+ 
+
+ 
