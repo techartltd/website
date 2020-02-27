@@ -1231,7 +1231,66 @@ CREATE TABLE migration_st.st_otz_enrollment (
     Srh                              VARCHAR(100),
     Beyond_third_ninety              VARCHAR(100),
     Transfer_in                      VARCHAR(100),
-    voided                           INT(11),
+    voided                           INT(11)
   );
 
+   -- 34. Creating OTZ activity table
+DROP TABLE IF EXISTS migration_st.st_otz_activity;
+CREATE TABLE migration_st.st_otz_activity (
+    Person_Id                        INT(11),
+    Encounter_Date                   DATE,
+    Encounter_ID                     VARCHAR(50),
+    Orientation                      VARCHAR(255),
+    Leadership                       VARCHAR(255),
+    Participation                    VARCHAR(255),
+    Treatment_Literacy               VARCHAR(255),
+    Transition_to_Adult_Care         VARCHAR(255),
+    Making_Decision_Future           VARCHAR(255),
+    srh                              VARCHAR(255),
+    Beyond_Third_Ninety              VARCHAR(255),
+    Attended_Support_Group           VARCHAR(255),
+    Remarks                          TEXT,
+    Voided                           INT(11)
+    );
+
+   -- 35. Creating OVC enrollment table
+DROP TABLE IF EXISTS migration_st.st_ovc_enrollment;
+CREATE TABLE migration_st.st_ovc_enrollment (
+    Person_Id                        INT(11),
+    Encounter_Date                   DATE,
+    Encounter_ID                     VARCHAR(50),
+    Caregiver_enrolled_here          VARCHAR(255),
+    Caregiver_name                   VARCHAR(255),
+    Caregiver_gender                 VARCHAR(255),
+    Relationship_to_Client           VARCHAR(255),
+    Caregiver_Phone_Number           VARCHAR(255),
+    Client_Enrolled_cpims            VARCHAR(255),
+    Partner_Offering_OVC             VARCHAR(255),
+    Voided                           INT(11)
+  );
+
+     -- 36. Creating OTZ Outcome table
+DROP TABLE IF EXISTS migration_st.st_otz_outcome;
+CREATE TABLE migration_st.st_otz_outcome (
+    Person_Id                        INT(11),
+    Encounter_Date                   DATE,
+    Encounter_ID                     VARCHAR(50),
+    Discontinuation_Reason           VARCHAR(255),
+    Death_Date                       DATE,
+    Transfer_Facility                VARCHAR(255),
+    Transfer_Date                    DATE,
+    Voided                           int(11)
+    );
+
+   -- 37. Creating OVC Outcome table
+DROP TABLE IF EXISTS migration_st.st_ovc_outcome;
+CREATE TABLE migration_st.st_ovc_outcome (
+    Person_Id                        INT(11),
+    Encounter_Date                   DATE,
+    Encounter_ID                     VARCHAR(50),
+    Exit_Reason                      VARCHAR(255),
+    Transfer_Facility                VARCHAR(255),
+    Transfer_Date                    DATE,
+    Voided                           int(11)
+    );
 
