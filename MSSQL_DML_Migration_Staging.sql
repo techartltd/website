@@ -4243,7 +4243,7 @@ EndSessQ2 on EndSessQ2.PatientMasterVisitId =pd.PatientMasterVisitId and EndSess
 
 ---Defaultet Tracing
    
-   
+   --Has issues
    
 select t.PersonID as Person_Id,t.DateTracingDone as Encounter_Date,
 NULL as Encounter_ID,
@@ -4256,6 +4256,394 @@ NULL as Cause_of_death,
 t.Remarks as Comments,
 t.DeleteFlag as Voided
   from Tracing 
+  
+  
+  
+  
+-- -- 31. Gender Based Violence Screening (Grouped)
+ select distinct  p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL as Encounter_ID ,psyh.Answer as Violence_within_past_year,
+ physi.Answer as Physical_Hurt,
+ pvtr.Answer as Threatens,
+ sex.Answer as  Sexual_Violence,
+ pvup.Answer as Violence_from_unrelated_person,
+ psgb.DeleteFlag
+ 
+    from Patient p
+	inner  join(  select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVAssessment' 
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  union all 
+ select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVQuestions' 
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+ left join LookupItem lti on lti.Id=psc.ScreeningValueId
+ )psgb on psgb.PatientId=p.Id 
+ inner join PatientMasterVisit pmv on pmv.PatientId=psgb.PatientId and pmv.Id=psgb.PatientMasterVisitId
+ left join(
+  select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVAssessment' and ItemName='GbvPhysicallyHurt'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  union all
+    select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVQuestions' and ItemName='GBVQuestion1'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+ left join LookupItem lti on lti.Id=psc.ScreeningValueId
+ )psyh on psyh.PatientId=psgb.PatientId and psyh.PatientMasterVisitId=psgb.PatientMasterVisitId
+left join(
+select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVAssessment' and ItemName='GbvRelationshipPhysicalAssault'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  union all
+    select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVQuestions' and ItemName='GBVQuestion2'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+ left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+ physi on physi.PatientId=psgb.PatientId and physi.PatientMasterVisitId=psgb.PatientMasterVisitId
+
+ left join(
+  select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVAssessment' and ItemName='GbvRelationshipVerbalAssault'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  union all
+    select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVQuestions' and ItemName='GBVQuestion3'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+ left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+ pvtr on pvtr.PatientId=psgb.PatientId and pvtr.PatientMasterVisitId=psgb.PatientMasterVisitId
+
+ left join (select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVAssessment' and ItemName='GbvRelationshipUncomfSexAct'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  union all
+    select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVQuestions' and ItemName='GBVQuestion4'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+ left join LookupItem lti on lti.Id=psc.ScreeningValueId)sex on sex.PatientId =psgb.PatientId
+ and sex.PatientMasterVisitId=psgb.PatientMasterVisitId
+left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVAssessment' and ItemName='GbvNonRelationshipViolence'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  union all
+    select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='GBVQuestions' and ItemName='GBVQuestion5'
+  )ltv on ltv.ItemId=psc.ScreeningTypeId 
+ left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+ pvup on pvup.PatientId =psgb.PatientId and pvup.PatientMasterVisitId=psgb.PatientMasterVisitId
+
+
+
+--where  (psgb.DeleteFlag is null or psgb.DeleteFlag =0)
+
+
+
+
+--32 CageAid Alcohol Screening
+
+
+select pt.PersonId,pe.VisitDate as Encounter_Date,NULL as Encounter_ID ,pdra.Answer as DrinkAlcohol,pss.Answer as Smoke,pudd.Answer as UseDrugs,
+trss.Answer as [TriedStopSmoking],
+asq1.Answer as FeltCutDownDrinkingorDrugUse,
+asq2.Answer as AnnoyedByCriticizingDrinkingorDrugUse,
+asq3.Answer as FeltGuiltyDrinkingorDrugUse,
+asq4.Answer as UseToSteadyNervesGetRidHangover,
+arll.Answer as AlcoholRiskLevel,
+als.Answer as AlcoholScore,
+sh.Answer as Notes,
+pe.DeleteFlag as Voided
+
+ from Patient pt
+inner join(
+select pe.PatientId,pe.EncounterTypeId,pe.PatientMasterVisitId,pmv.VisitDate,pmv.DeleteFlag  from PatientEncounter pe
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+inner join (select * from LookupItemView where MasterName='EncounterType')
+liv on liv.ItemId=pe.EncounterTypeId
+where liv.ItemName='AlcoholandDrugAbuseScreening'
+)pe on pe.PatientId=pt.Id
+
+inner join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='SocialHistoryQuestions'  
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  psq on psq.PatientId=pe.PatientId and psq.PatientMasterVisitId=pe.PatientMasterVisitId
+left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='SocialHistoryQuestions'  and ItemName='DrinkAlcohol'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  pdra on pdra.PatientId=pe.PatientId and pdra.PatientMasterVisitId=pe.PatientMasterVisitId
+  left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='SocialHistoryQuestions'  and ItemName='Smoke'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  pss on pss.PatientId=pe.PatientId and pss.PatientMasterVisitId=pe.PatientMasterVisitId
+  left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='SocialHistoryQuestions'  and ItemName='UseDrugs'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  pudd on pudd.PatientId=pe.PatientId and pudd.PatientMasterVisitId=pe.PatientMasterVisitId
+
+   left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='SmokingScreeningQuestions'  and ItemName='SmokingScreeningQuestion1'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  trss on trss.PatientId=pe.PatientId and trss.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+
+  left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='AlcoholScreeningQuestions'  and ItemName='AlcoholScreeningQuestion1'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  asq1 on asq1.PatientId=pe.PatientId and asq1.PatientMasterVisitId=pe.PatientMasterVisitId
+
+    left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='AlcoholScreeningQuestions'  and ItemName='AlcoholScreeningQuestion2'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  asq2 on asq2.PatientId=pe.PatientId and asq2.PatientMasterVisitId=pe.PatientMasterVisitId
+
+  
+    left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='AlcoholScreeningQuestions'  and ItemName='AlcoholScreeningQuestion3'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  asq3 on asq3.PatientId=pe.PatientId and asq3.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+      left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='AlcoholScreeningQuestions'  and ItemName='AlcoholScreeningQuestion4'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  asq4 on asq4.PatientId=pe.PatientId and asq4.PatientMasterVisitId=pe.PatientMasterVisitId
+
+  left join (select  *  from (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,pc.DeleteFlag ,lt.ItemName ,pc.ClinicalNotes as Answer,
+  ROW_NUMBER() OVER(partition by pc.PatientId,pc.PatientMasterVisitId order by pc.Id desc)rownum
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='AlcoholScreeningNotes' and lt.ItemName='AlcoholRiskLevel')lt
+on lt.ItemId=pc.NotesCategoryId
+where (pc.DeleteFlag is null or pc.DeleteFlag=0)
+)pc where pc.rownum='1'
+)arll on arll.PatientId=pe.PatientId and arll.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+  left join (select  *  from (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,pc.DeleteFlag ,lt.ItemName ,pc.ClinicalNotes as Answer,
+  ROW_NUMBER() OVER(partition by pc.PatientId,pc.PatientMasterVisitId order by pc.Id desc)rownum
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='AlcoholScreeningNotes' and lt.ItemName='AlcoholScore')lt
+on lt.ItemId=pc.NotesCategoryId
+where (pc.DeleteFlag is null or pc.DeleteFlag=0)
+)pc where pc.rownum='1'
+)als on als.PatientId=pe.PatientId and als.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+left join (select  *  from (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,pc.DeleteFlag ,lt.ItemName ,pc.ClinicalNotes as Answer,
+  ROW_NUMBER() OVER(partition by pc.PatientId,pc.PatientMasterVisitId order by pc.Id desc)rownum
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocialHistory' and lt.ItemName='SocialNotes')lt
+on lt.ItemId=pc.NotesCategoryId
+where (pc.DeleteFlag is null or pc.DeleteFlag=0)
+)pc where pc.rownum='1'
+)sh on sh.PatientId=pe.PatientId and sh.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+
+
+---Crafft Alcohol Screening
+
+
+select pt.PersonId,pe.VisitDate,pdr.Answer as DrinkAlcoholMorethanSips,
+pc2ma.Answer as SmokeAnyMarijuana,
+pcq3.Answer as UseAnythingElseGetHigh,
+crs1.Answer as CARDrivenandHigh,
+crs2.Answer as UseDrugorAlcoholRelax,
+crs3.Answer as UseDrugByYourself,
+crs4.Answer as ForgetWhileUsingAlcohol,
+crs5.Answer as FamilyTellYouCutDownDrugs,
+crs6.Answer as TroubleWhileUsingDrugs,
+arll.Answer as AlcoholRiskLevel,
+als.Answer as AlcoholScore,
+sh.Answer as Notes,
+pe.DeleteFlag as Voided
+
+from Patient pt
+inner join(
+select pe.PatientId,pe.EncounterTypeId,pe.PatientMasterVisitId,pmv.VisitDate,pmv.DeleteFlag  from PatientEncounter pe
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+inner join (select * from LookupItemView where MasterName='EncounterType')
+liv on liv.ItemId=pe.EncounterTypeId
+where liv.ItemName='AlcoholandDrugAbuseScreening'
+)pe on pe.PatientId=pt.Id
+inner join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScreeningQuestions'  
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  pcss on pcss.PatientId=pe.PatientId and pcss.PatientMasterVisitId=pe.PatientMasterVisitId
+
+left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScreeningQuestions'  and ItemName='CRAFFTScreeningQuestion1'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)
+  pdr on pdr.PatientId=pe.PatientId and pdr.PatientMasterVisitId=pe.PatientMasterVisitId
+
+left join( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScreeningQuestions'  and ItemName='CRAFFTScreeningQuestion2'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId)pc2ma on pc2ma.PatientId=pe.PatientId
+  and pc2ma.PatientMasterVisitId=pe.PatientMasterVisitId
+
+left join (select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScreeningQuestions'  and ItemName='CRAFFTScreeningQuestion3'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  )pcq3 on pcq3.PatientId=pe.PatientId and pcq3.PatientMasterVisitId=pe.PatientMasterVisitId
+
+left join ( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScoreQuestions'  and ItemName='CRAFFTScoreQuestion1'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  ) crs1 on crs1.PatientId=pe.PatientId and crs1.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+  left join ( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScoreQuestions'  and ItemName='CRAFFTScoreQuestion2'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  ) crs2 on crs2.PatientId=pe.PatientId and crs2.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+   left join ( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScoreQuestions'  and ItemName='CRAFFTScoreQuestion3'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  ) crs3 on crs3.PatientId=pe.PatientId and crs3.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+   left join ( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScoreQuestions'  and ItemName='CRAFFTScoreQuestion4'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  ) crs4 on crs4.PatientId=pe.PatientId and crs4.PatientMasterVisitId=pe.PatientMasterVisitId
+
+   left join ( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScoreQuestions'  and ItemName='CRAFFTScoreQuestion5'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  ) crs5 on crs5.PatientId=pe.PatientId and crs5.PatientMasterVisitId=pe.PatientMasterVisitId
+
+   left join ( select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,ltv.ItemName,ltv.DisplayName as Question
+  ,lti.[Name] as Answer from PatientScreening psc
+   inner join(
+  select * from LookupItemView where MasterName='CRAFFTScoreQuestions'  and ItemName='CRAFFTScoreQuestion6'
+  )ltv on ltv.ItemId=psc.ScreeningCategoryId
+  left join LookupItem lti on lti.Id=psc.ScreeningValueId
+  ) crs6 on crs6.PatientId=pe.PatientId and crs6.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+  left join (select  *  from (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,pc.DeleteFlag ,lt.ItemName ,pc.ClinicalNotes as Answer,
+  ROW_NUMBER() OVER(partition by pc.PatientId,pc.PatientMasterVisitId order by pc.Id desc)rownum
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='AlcoholScreeningNotes' and lt.ItemName='AlcoholRiskLevel')lt
+on lt.ItemId=pc.NotesCategoryId
+where (pc.DeleteFlag is null or pc.DeleteFlag=0)
+)pc where pc.rownum='1'
+)arll on arll.PatientId=pe.PatientId and arll.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+  left join (select  *  from (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,pc.DeleteFlag ,lt.ItemName ,pc.ClinicalNotes as Answer,
+  ROW_NUMBER() OVER(partition by pc.PatientId,pc.PatientMasterVisitId order by pc.Id desc)rownum
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='AlcoholScreeningNotes' and lt.ItemName='AlcoholScore')lt
+on lt.ItemId=pc.NotesCategoryId
+where (pc.DeleteFlag is null or pc.DeleteFlag=0)
+)pc where pc.rownum='1'
+)als on als.PatientId=pe.PatientId and als.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+left join (select  *  from (select  pc.PatientId,pc.PatientMasterVisitId,lt.DisplayName as Question,pc.DeleteFlag ,lt.ItemName ,pc.ClinicalNotes as Answer,
+  ROW_NUMBER() OVER(partition by pc.PatientId,pc.PatientMasterVisitId order by pc.Id desc)rownum
+  from PatientClinicalNotes pc
+inner join (select * from LookupItemView lt where lt.MasterName='SocialHistory' and lt.ItemName='SocialNotes')lt
+on lt.ItemId=pc.NotesCategoryId
+where (pc.DeleteFlag is null or pc.DeleteFlag=0)
+)pc where pc.rownum='1'
+)sh on sh.PatientId=pe.PatientId and sh.PatientMasterVisitId=pe.PatientMasterVisitId
+
+
+
+
+
+
   
    
    

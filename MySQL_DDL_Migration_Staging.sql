@@ -1216,6 +1216,50 @@ CREATE TABLE migration_st.st_alcohol_screening (
   Drugs_frequency                  VARCHAR(100) 
 );
 
+
+
+CREATE TABLE migration_st.st_cageaid_alcohol_screening (
+	[Person_Id]     						INT(11),
+	[Encounter_Date] 						DATE,
+	[Encounter_ID] 							VARCHAR(50),
+	[DrinkAlcohol] 							VARCHAR(200),
+	[Smoke] 								VARCHAR(200),
+	[UseDrugs]								VARCHAR(200),
+	[TriedStopSmoking] 						VARCHAR(200),
+	[FeltCutDownDrinkingorDrugUse] 			VARCHAR(200),
+	[AnnoyedByCriticizingDrinkingorDrugUse] VARCHAR(200),
+	[FeltGuiltyDrinkingorDrugUse] 			VARCHAR(200),
+	[UseToSteadyNervesGetRidHangover] 		VARCHAR(200),
+	[AlcoholRiskLevel] 						VARCHAR(200),
+	[AlcoholScore] 							VARCHAR(200),
+	[Notes] 								VARCHAR(1000),
+	[Voided]    							int(11),
+	
+);
+
+
+
+
+CREATE TABLE     migration_st.st_craftt_alcohol_screening (
+	[Person_Id] 						INT(11)
+	[Encounter_Date] 					DATE,
+	[DrinkAlcoholMorethanSips] 			varchar(200),
+	[SmokeAnyMarijuana] 				varchar(200),
+	[UseAnythingElseGetHigh] 			varchar(200),
+	[CARDrivenandHigh] 					varchar(200),
+	[UseDrugorAlcoholRelax] 			varchar(200),
+	[UseDrugByYourself] 				varchar(200),
+	[ForgetWhileUsingAlcohol] 			varchar(200),
+	[FamilyTellYouCutDownDrugs] 		varchar(200),
+	[TroubleWhileUsingDrugs] 			varchar(200),
+	[AlcoholRiskLevel] 					varchar(400),
+	[AlcoholScore] 						varchar(400),
+	[Notes] 							varchar(400),
+	[Voided] 							INT(11)
+	
+)
+
+
    -- 33. Creating OTZ enrollment table
 DROP TABLE IF EXISTS migration_st.st_otz_enrollment;
 CREATE TABLE migration_st.st_otz_enrollment (
