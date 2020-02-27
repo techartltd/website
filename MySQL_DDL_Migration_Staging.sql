@@ -709,6 +709,7 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
   Syphilis_test_status             VARCHAR(50),
   Syphilis_treated_status          VARCHAR(50),
   Bs_for_mps                       VARCHAR(100),
+  Blood_group                      VARCHAR(100),
   Anc_exercises                    VARCHAR(50),
   Tb_screening                     VARCHAR(50),
   Cacx_screening                   VARCHAR(50),
@@ -743,28 +744,28 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
   Person_Id                       	    	  	INT(11),
   Encounter_Date                              DATE,
   Encounter_ID                                VARCHAR(50),
-  Admission_number			                  VARCHAR(200),
-  Gestation_Weeks		        			  INT(50),
-  Duration_Labour			                  INT(50),
-  Delivery_Mode				                  VARCHAR(200),
+  Admission_number			                      VARCHAR(200),
+  Gestation_Weeks		        		          	  INT(50),
+  Duration_Labour			                        INT(50),
+  Delivery_Mode				                        VARCHAR(200),
   Delivery_Date_TIme                          DATE,
   DeliveryTime                                VARCHAR(200),
-  Placenta_Complete	   				          VARCHAR(100),
-  Blood_Loss_Coded							  VARCHAR(100),
-  Blood_Loss							      VARCHAR(100),
-  Diagnosis							          VARCHAR(100),
-  ManagementPlan							  VARCHAR(100),
+  Placenta_Complete	   				                VARCHAR(100),
+  Blood_Loss_Coded						            	  VARCHAR(100),
+  Blood_Loss							                    VARCHAR(100),
+  Diagnosis							                      VARCHAR(100),
+  ManagementPlan					              		  VARCHAR(100),
   Mother_Condition                            VARCHAR(100),
-  Death_Audited				                  VARCHAR(100),
+  Death_Audited				                        VARCHAR(100),
   Death_Audit_Date                            DATE,
-  Resuscitation_Done					      VARCHAR(100),
-  Delivery_Complications				      VARCHAR(100),
-  Delivery_Complications_Type		          VARCHAR(200),
-  Delivery_Complications_Other	        	  VARCHAR(255),
-  Delivery_Place							  VARCHAR(200),
-  Delivery_Conducted_By					      VARCHAR(200),
-  Delivery_Cadre							  VARCHAR(100),
-  Delivery_Outcome							  VARCHAR(100),
+  Resuscitation_Done					                VARCHAR(100),
+  Delivery_Complications				              VARCHAR(100),
+  Delivery_Complications_Type		              VARCHAR(200),
+  Delivery_Complications_Other	          	  VARCHAR(255),
+  Delivery_Place						              	  VARCHAR(200),
+  Delivery_Conducted_By					              VARCHAR(200),
+  Delivery_Cadre						              	  VARCHAR(100),
+  Delivery_Outcome					            		  VARCHAR(100),
   Baby_Name                                   VARCHAR(200),
   Baby_Sex                                    VARCHAR(100),
   Baby_Weight                                 DOUBLE,
@@ -1190,7 +1191,7 @@ CREATE TABLE migration_st.st_defaulter_tracing (
 );
 
 
- -- 31. Gender Based Violence Screening (Grouped)  -- missing
+ -- 31. Gender Based Violence Screening (Grouped)
 DROP TABLE IF EXISTS migration_st.st_gbv_screening;
 CREATE TABLE migration_st.st_gbv_screening (
   Person_Id                        INT(11),
@@ -1204,7 +1205,7 @@ CREATE TABLE migration_st.st_gbv_screening (
   Voided                           INT(11)
 );
 
- -- 32. Alcohol and drug abuse screening   -- missing
+ -- 32. Alcohol and drug abuse screening
 DROP TABLE IF EXISTS migration_st.st_alcohol_screening;
 CREATE TABLE migration_st.st_alcohol_screening (
   Person_Id                        INT(11),
@@ -1212,12 +1213,25 @@ CREATE TABLE migration_st.st_alcohol_screening (
   Encounter_ID                     VARCHAR(50),
   Alcohol_frequency                VARCHAR(100),
   Smoking_frequency                VARCHAR(100),
-  Drugs_frequency                  VARCHAR(100),
-  Sexual_violence                  VARCHAR(100),
-  Violence_from_unrelated_person   VARCHAR(100),
-  Voided                           INT(11)
+  Drugs_frequency                  VARCHAR(100) 
 );
 
-
+   -- 33. Creating OTZ enrollment table
+DROP TABLE IF EXISTS migration_st.st_otz_enrollment;
+CREATE TABLE migration_st.st_otz_enrollment (
+    Person_Id                        INT(11),
+    Encounter_Date                   DATE,
+    Encounter_ID                     VARCHAR(50),
+    Orientation                      VARCHAR(100),
+    Leadership                       VARCHAR(100),
+    Participation                    VARCHAR(100),
+    Treatment_literacy               VARCHAR(100),
+    Transition_to_adult_care         VARCHAR(10),
+    Making_decision_future           VARCHAR(100),
+    Srh                              VARCHAR(100),
+    Beyond_third_ninety              VARCHAR(100),
+    Transfer_in                      VARCHAR(100),
+    voided                           INT(11),
+  );
 
 
