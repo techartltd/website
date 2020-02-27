@@ -1761,6 +1761,7 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Gravida,
     EDD,
     Age_at_menarche,
+    Tb_screening,
     LMP,
     -- First_anc_visit_date,
     (case On_ART_Before_First_ANC
@@ -1779,13 +1780,15 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
       when "Yes" then 1065
       when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_tested,
     (case Partner_hiv_status
+    (case Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
       when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
     -- Partner_hiv_test_date,
     -- Blood_group,
-    -- Syphilis_serology,
+    Syphilis_test_status,
     Bs_for_mps,
+    Blood_group,
     Urine_microscopy,
     Urinary_albumin,
     Glucose_measurement,
