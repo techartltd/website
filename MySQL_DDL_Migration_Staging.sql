@@ -1231,6 +1231,7 @@ CREATE TABLE migration_st.st_otz_enrollment (
     Srh                              VARCHAR(100),
     Beyond_third_ninety              VARCHAR(100),
     Transfer_in                      VARCHAR(100),
+    Initial_Enrolment_Date           DATE,
     voided                           INT(11)
   );
 
