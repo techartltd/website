@@ -1321,6 +1321,7 @@ CREATE TABLE migration_st.st_otz_outcome (
     Encounter_Date                   DATE,
     Encounter_ID                     VARCHAR(50),
     Discontinuation_Reason           VARCHAR(255),
+	Exit_Date 						 DATE
     Death_Date                       DATE,
     Transfer_Facility                VARCHAR(255),
     Transfer_Date                    DATE,
@@ -1333,6 +1334,7 @@ CREATE TABLE migration_st.st_ovc_outcome (
     Person_Id                        INT(11),
     Encounter_Date                   DATE,
     Encounter_ID                     VARCHAR(50),
+	Exit_Date						 DATE,
     Exit_Reason                      VARCHAR(255),
     Transfer_Facility                VARCHAR(255),
     Transfer_Date                    DATE,
