@@ -1341,3 +1341,15 @@ CREATE TABLE migration_st.st_ovc_outcome (
     Voided                           int(11)
     );
 
+
+DROP TABLE IF EXISTS  migration_st.st_users;
+CREATE TABLE migration_st.st_users
+(
+	[User_Id]			INT(11),
+	[First_Name]		VARCHAR(100),
+	[Last_Name]			VARCHAR(100),
+	[User_Name]			VARCHAR(100),
+	[Status]			VARCHAR(100),
+	[Designation]		VARCHAR(100),
+	[GroupNames]		VARCHAR(MAX)
+)
