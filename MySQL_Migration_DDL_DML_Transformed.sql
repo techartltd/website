@@ -585,7 +585,65 @@ CREATE TABLE migration_tr.tr_hiv_program_discontinuation as
   FROM migration_st.st_program_discontinuation  WHERE Program = "CCC"
   AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL);
   
--- 12. IPT Screening transformed table
+  --12 . TB Screening transformed table
+DROP TABLE IF EXISTS migration_tr.tr_tb_screening;
+CREATE TABLE migration_tr.tr_tb_screening
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      (case Cough
+       when "Yes" then 159799
+       when "No" then 1066  else NULL end)as Cough,
+      (case Fever
+       when "Yes" then 1494
+       when "No" then 1066  else NULL end)as Fever,
+      (case Weight_loss
+       when "Yes" then 832
+       when "No" then 1066  else NULL end)as Weight_loss,
+      (case Night_sweats
+       when "Yes" then 133027
+       when "No" then 1066  else NULL end)as Night_sweats,
+      (case Tests_Ordered
+       when "Yes" then 1065
+       when "No" then 1066  else NULL end)as Tests_Ordered,
+      (case Sputum_Smear
+       when "Positive" then 703
+       when "Ordered" then 307
+       when "Negative" then 664  else NULL end)as Sputum_Smear,
+      (case X_ray 
+       when "Ordered" then 12
+       when "Suggestive" then 152526
+       when "Normal" then 1115
+       when "Not Done" then 1118
+       when "NotDone" then 1118 else NULL end)as X_ray ,
+      (case Gene_xpert
+       when "Ordered" then 162202
+       when "Negative" then 664
+       when "Positive" then 162204
+       when "Not Done" then 1118
+       when "NotDone" then 1118  else NULL end)as Gene_xpert,     
+      Contact_tb_case,
+      Lethergy,       
+      Referral,
+      Clinical_diagnosis,
+      (case Invitation_contacts
+       when "Yes" then 1065
+       when "No" then 1066  else NULL end)as Invitation_contacts,
+      (case Evaluated_for_IPT
+       when "Yes" then 1065
+       when "No" then 1066  else NULL end)as Evaluated_for_IPT,
+      (case TB_results
+       when "No TB Signs" then 1660
+       when "Presumed TB" then 142177
+       when "TB Confirmed" then 1661
+       when "TB Rx" then  1662
+       when "INH" then 1679 
+       when "TB Screening Not Done" then  160737 else NULL end)as TB_results
+    FROM migration_st.st_tb_screening WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    GROUP BY Person_Id, Encounter_Date;
+  
+-- 13. IPT Screening transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
 CREATE TABLE migration_tr.tr_ipt_screening
     select
@@ -608,7 +666,7 @@ CREATE TABLE migration_tr.tr_ipt_screening
     FROM migration_st.st_ipt_screening WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
     GROUP BY Person_Id, Encounter_Date;
 
--- 13. IPT program Enrollment transformed table
+-- 14. IPT program Enrollment transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_program;
 CREATE TABLE migration_tr.tr_ipt_program
     select
@@ -627,7 +685,7 @@ CREATE TABLE migration_tr.tr_ipt_program
     FROM migration_st.st_ipt_program WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
     GROUP BY Person_Id, Encounter_Date;
 
--- 14. IPT program Followup transformed table
+-- 15. IPT program Followup transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_followup;
 CREATE TABLE migration_tr.tr_ipt_followup
     select
@@ -656,7 +714,7 @@ CREATE TABLE migration_tr.tr_ipt_followup
     FROM migration_st.st_ipt_followup WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
     GROUP BY Person_Id, Encounter_Date;
 
--- 15. HIV Regimen History transformed table
+-- 16. HIV Regimen History transformed table
 DROP TABLE IF EXISTS migration_tr.tr_hiv_regimen_history;
 CREATE TABLE migration_tr.tr_hiv_regimen_history
     select
@@ -1542,7 +1600,7 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
  FROM migration_st.st_hiv_followup WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 17. Laboratory Extract transformed table
+-- 18. Laboratory Extract transformed table
 DROP TABLE IF EXISTS migration_tr.tr_laboratory;
 CREATE TABLE migration_tr.tr_laboratory
     select
@@ -1744,10 +1802,74 @@ CREATE TABLE migration_tr.tr_laboratory
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 18. Create Pharmacy Extract   -- missing
+-- 18A. Laboratory Extract VL transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs_vl;
+CREATE TABLE migration_tr.tr_vital_labs_vl
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+        when "VIRALLOAD" then 856
+       else NULL end)as Lab_test,
+       VIRALLOAD
+    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test = "VIRALLOAD"
+  GROUP BY Person_Id, Encounter_Date;
+
+-- 18B. Laboratory Extract CD4 transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs_cd4;
+CREATE TABLE migration_tr.tr_vital_labs_cd4
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+       when "CD4" then 5497
+       else NULL end)as Lab_test,
+      CD4
+    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test = "CD4"
+  GROUP BY Person_Id, Encounter_Date;
+
+  -- 18C. Laboratory Extract CD4 PERCENT transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs_cd4_percent;
+CREATE TABLE migration_tr.tr_vital_labs_cd4_percent
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+       when "CD4PERCENT" then 730
+       else NULL end)as Lab_test,
+      CD4PERCENT
+      FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test = "CD4PERCENT"
+  GROUP BY Person_Id, Encounter_Date;
 
 
--- 19. Create mch enrollment transformed table
+-- 19. Create Pharmacy Extract   -- missing
+
+
+-- 20. Create mch enrollment transformed table
 DROP TABLE IF EXISTS migration_tr.tr_mch_enrollment;
 CREATE TABLE migration_tr.tr_mch_enrollment as
   select
@@ -1755,7 +1877,6 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Encounter_Date,
     Encounter_ID,
     Anc_number,
-    Maturity,
     Parity,
     Parity_abortion,
     Gravida,
@@ -1763,29 +1884,15 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Age_at_menarche,
     Tb_screening,
     LMP,
-    -- First_anc_visit_date,
-    (case On_ART_Before_First_ANC
-      when "Yes" then 1065
-      when "No" then 1066  else NULL end) as On_ART_Before_First_ANC,
-    (case Started_ART_ANC
-     when "Yes" then 1065
-     when "No" then 1066  when "N/A" then 1175 else NULL end) as Started_ART_ANC,
     (case Hiv_status
      when "U" then 1067
      when "Negative" then 664
      when "Positive" then 703
      when "KP" then 703  when "N/A" then 1175 else NULL end) as Hiv_status,
-    -- Hiv_test_date,
-    (case Partner_tested
-      when "Yes" then 1065
-      when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_tested,
-    (case Partner_hiv_status
     (case Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
       when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
-    -- Partner_hiv_test_date,
-    -- Blood_group,
     Syphilis_test_status,
     Bs_for_mps,
     Blood_group,
@@ -1807,7 +1914,7 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 20. Create mch visit transformed table
+-- 21. Create mch visit transformed table
 DROP TABLE IF EXISTS migration_tr.tr_mch_anc_visit;
 CREATE TABLE migration_tr.tr_mch_anc_visit as
   select
@@ -1824,7 +1931,6 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
     Oxygen_saturation,
     Weight,
     Height,
-    BMI,
     Muac,
     Hemoglobin,
     (case Breast_exam_done
@@ -1841,18 +1947,9 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Stage2" then 1205
      when "Stage3" then 1206
      when "Stage4" then 1207 else NULL end )as Who_stage,
-    Cd4,
     (case Viral_load_sample_taken
      when "yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as Viral_load_sample_taken,
-    Viral_load,
-    Ldl,
-    (case Hiv_status
-     when "U" then 1067
-     when "Negative" then 664
-     when "Positive" then 703
-     when "KP" then 703  when "N/A" then 1175 else NULL end) as Hiv_status,
-    -- Hiv_test_date,
     (case Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
@@ -1979,7 +2076,7 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
   GROUP BY Person_Id, Encounter_Date;
 
 
--- 21. Create mch delivery transformed table
+-- 22. Create mch delivery transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_mch_delivery;
 CREATE TABLE migration_tr.tr_mch_delivery as
@@ -2101,7 +2198,7 @@ FROM migration_st.st_mch_delivery_discharge  WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 22. Create mch discharge transformed table
+-- 23. Create mch discharge transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_mch_discharge;
 CREATE TABLE migration_tr.tr_mch_discharge as
@@ -2133,7 +2230,7 @@ CREATE TABLE migration_tr.tr_mch_discharge as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 23. Create mch pnc transformed table
+-- 24. Create mch pnc transformed table
 
   DROP TABLE IF EXISTS migration_tr.tr_mch_pnc_visit;
   CREATE TABLE migration_tr.tr_mch_pnc_visit as
@@ -2310,7 +2407,7 @@ CREATE TABLE migration_tr.tr_mch_discharge as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
-  -- 24. Create hei enrollments transformed table
+  -- 25. Create hei enrollments transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_hei_enrollment;
 CREATE TABLE migration_tr.tr_hei_enrollment as
@@ -2415,7 +2512,7 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
-  -- 25. Create HEI followup transformed table
+  -- 26. Create HEI followup transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_hei_followup;
 CREATE TABLE migration_tr.tr_hei_followup as
@@ -2539,7 +2636,7 @@ CREATE TABLE migration_tr.tr_hei_followup as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 26. Create hei outcome transformed table
+-- 27. Create hei outcome transformed table
 DROP TABLE IF EXISTS migration_tr.tr_hei_outcome;
 CREATE TABLE migration_tr.tr_hei_outcome as
   select
@@ -2561,7 +2658,7 @@ CREATE TABLE migration_tr.tr_hei_outcome as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 27. Create hei immunizations transformed table
+-- 28. Create hei immunizations transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_hei_immunization;
 CREATE TABLE migration_tr.tr_hei_immunization as
@@ -2640,7 +2737,7 @@ CREATE TABLE migration_tr.tr_hei_immunization as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 28. ART Treatment preparation
+-- 29. ART Treatment preparation
 DROP TABLE IF EXISTS migration_tr.tr_art_preparation;
 CREATE TABLE migration_tr.tr_art_preparation as
   select
@@ -2697,7 +2794,7 @@ FROM migration_st.st_art_preparation WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 29. Enhanced Adherence Screening
+-- 30. Enhanced Adherence Screening
 DROP TABLE IF EXISTS migration_tr.tr_enhanced_adherence;
 CREATE TABLE migration_tr.tr_enhanced_adherence as
   select
@@ -2743,9 +2840,9 @@ FROM migration_st.st_enhanced_adherence WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 30. Defaulter tracing -- missing
+-- 31. Defaulter tracing -- missing
 
--- 31. Gender Based Violence Screening Grouped
+-- 32. Gender Based Violence Screening Grouped
 DROP TABLE IF EXISTS migration_tr.tr_gbv_screening;
 CREATE TABLE migration_tr.tr_gbv_screening
     select
@@ -2770,7 +2867,7 @@ CREATE TABLE migration_tr.tr_gbv_screening
           Voided
     FROM migration_st.st_gbv_screening;
 
--- 32. Alcohol and drug abuse screening
+-- 33. Alcohol and drug abuse screening
 DROP TABLE IF EXISTS migration_tr.tr_alcohol_screening;
 CREATE TABLE migration_tr.tr_alcohol_screening
     select
