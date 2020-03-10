@@ -1744,6 +1744,70 @@ CREATE TABLE migration_tr.tr_laboratory
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
+-- 17A. Laboratory Extract VL transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs_vl;
+CREATE TABLE migration_tr.tr_vital_labs_vl
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+        when "VIRALLOAD" then 856
+       else NULL end)as Lab_test,
+       VIRALLOAD
+    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test = "VIRALLOAD"
+  GROUP BY Person_Id, Encounter_Date;
+
+-- 17B. Laboratory Extract CD4 transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs_cd4;
+CREATE TABLE migration_tr.tr_vital_labs_cd4
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+       when "CD4" then 5497
+       else NULL end)as Lab_test,
+      CD4
+    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test = "CD4"
+  GROUP BY Person_Id, Encounter_Date;
+
+  -- 17C. Laboratory Extract CD4 PERCENT transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs_cd4_percent;
+CREATE TABLE migration_tr.tr_vital_labs_cd4_percent
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+       when "CD4PERCENT" then 730
+       else NULL end)as Lab_test,
+      CD4PERCENT
+      FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test = "CD4PERCENT"
+  GROUP BY Person_Id, Encounter_Date;
+
+
 -- 18. Create Pharmacy Extract   -- missing
 
 
@@ -1755,7 +1819,6 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Encounter_Date,
     Encounter_ID,
     Anc_number,
-    Maturity,
     Parity,
     Parity_abortion,
     Gravida,
@@ -1763,29 +1826,15 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Age_at_menarche,
     Tb_screening,
     LMP,
-    -- First_anc_visit_date,
-    (case On_ART_Before_First_ANC
-      when "Yes" then 1065
-      when "No" then 1066  else NULL end) as On_ART_Before_First_ANC,
-    (case Started_ART_ANC
-     when "Yes" then 1065
-     when "No" then 1066  when "N/A" then 1175 else NULL end) as Started_ART_ANC,
     (case Hiv_status
      when "U" then 1067
      when "Negative" then 664
      when "Positive" then 703
      when "KP" then 703  when "N/A" then 1175 else NULL end) as Hiv_status,
-    -- Hiv_test_date,
-    (case Partner_tested
-      when "Yes" then 1065
-      when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_tested,
-    (case Partner_hiv_status
     (case Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
       when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
-    -- Partner_hiv_test_date,
-    -- Blood_group,
     Syphilis_test_status,
     Bs_for_mps,
     Blood_group,
@@ -1824,7 +1873,6 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
     Oxygen_saturation,
     Weight,
     Height,
-    BMI,
     Muac,
     Hemoglobin,
     (case Breast_exam_done
@@ -1841,18 +1889,9 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Stage2" then 1205
      when "Stage3" then 1206
      when "Stage4" then 1207 else NULL end )as Who_stage,
-    Cd4,
     (case Viral_load_sample_taken
      when "yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as Viral_load_sample_taken,
-    Viral_load,
-    Ldl,
-    (case Hiv_status
-     when "U" then 1067
-     when "Negative" then 664
-     when "Positive" then 703
-     when "KP" then 703  when "N/A" then 1175 else NULL end) as Hiv_status,
-    -- Hiv_test_date,
     (case Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
