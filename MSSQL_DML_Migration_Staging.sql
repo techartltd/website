@@ -4947,7 +4947,92 @@ where u.UserID != 1;
 
 
 
+--st_family_history
 
+exec pr_OpenDecryptedSession;
+select distinct  p.PersonId as Person_Id,
+pr.PersonId as Relative_Person_Id,
+pr.CreateDate as Encounter_Date,
+NULL as Encounter_ID,
+(CAST(DECRYPTBYKEY(pre.FirstName) AS VARCHAR(50)) + '' + CAST(DECRYPTBYKEY(pre.MidName) AS VARCHAR(50)) +  '' + CAST(DECRYPTBYKEY(pre.LastName ) AS VARCHAR(50))) as [Name],
+CAST(DECRYPTBYKEY(pre.FirstName) AS VARCHAR(50)) AS RelativeFirst_Name,
+CAST(DECRYPTBYKEY(pre.MidName) AS VARCHAR(50)) AS  RelativeMiddle_Name,
+CAST(DECRYPTBYKEY(pre.LastName ) AS VARCHAR(50)) AS RelativeLast_Name,
+pre.DateOfBirth as DOB,
+DATEDIFF(hour,pre.DateOfBirth,GETDATE())/8766 as Age,
+NULL as Age_unit,
+(Select Top 1	[Name] From LookupItem LI	Where LI.Id = pr.RelationshipTypeId) Relationship,
+(select top 1 [Name] from LookupItem li where li.Id=pr.BaselineResult) as   BaselineResult,
+re.FinalResult as  Hiv_status,
+CASE when pcc.IdentifierValue is not null then 'Yes' else 'No' end as In_Care,
+plink.CCCNumber as Linkage_CCC_Number,
+pcc.IdentifierValue as CCCNumber,
+pr.DeleteFlag
+ from Patient P
+ inner join PersonRelationship pr on pr.PatientId=p.Id
+
+left join Person pre on pre.Id=pr.PersonId
+ left join PatientLinkage plink on plink.PersonId=pr.PersonId
+ left join(  select pcc.PatientId,pcc.IdentifierValue,pcc.PersonId from( select pid.PatientId,p.PersonId,pid.PatientEnrollmentId,ROW_NUMBER() OVER(partition by pid.PatientId order by pid.PatientEnrollmentId desc)rownum,pid.IdentifierTypeId,pid.IdentifierValue,id.Code
+    from PatientIdentifier pid
+	inner join Patient p on p.Id=pid.PatientId
+	inner join Identifiers id on id.Id=pid.IdentifierTypeId
+	where id.Code='CCCNumber' and (pid.DeleteFlag is not null or pid.DeleteFlag='0'))
+	pcc where pcc.rownum='1'
+	)pcc on pcc.PersonId=pr.PersonId
+ left join (select re.PersonId,re.PatientId,re.FinalResult from (SELECT pe.PatientEncounterId,pe.PatientMasterVisitId,pe.PatientId,pe.PersonId,pe.FinalResult,ROW_NUMBER() OVER(
+ partition by pe.PatientId  order by pe.PatientMasterVisitId desc)rownum
+  from(SELECT DISTINCT
+PE.Id PatientEncounterId,
+PE.PatientMasterVisitId,
+PE.PatientId PatientId,
+HE.PersonId,
+ResultOne = (SELECT TOP 1 ItemName FROM [dbo].[LookupItemView] WHERE ItemId = (SELECT TOP 1 RoundOneTestResult FROM [dbo].[HtsEncounterResult] WHERE HtsEncounterId = HE.Id ORDER BY Id DESC)),
+ResultTwo = (SELECT TOP 1 ItemName FROM [dbo].[LookupItemView] WHERE ItemId = (SELECT TOP 1 RoundTwoTestResult FROM [dbo].[HtsEncounterResult] WHERE HtsEncounterId = HE.Id ORDER BY Id DESC)),
+FinalResult = (SELECT TOP 1 ItemName FROM [dbo].[LookupItemView] WHERE ItemId = (SELECT TOP 1 FinalResult FROM [dbo].[HtsEncounterResult] WHERE HtsEncounterId = HE.Id ORDER BY Id DESC)),
+FinalResultGiven = (SELECT TOP 1 ItemName FROM [dbo].[LookupItemView] WHERE ItemId = HE.FinalResultGiven)
+
+FROM [dbo].[PatientEncounter] PE
+INNER JOIN [dbo].[PatientMasterVisit] PM ON PM.Id = PE.PatientMasterVisitId
+INNER JOIN [dbo].[HtsEncounter] HE ON PE.Id = HE.PatientEncounterID
+)pe where pe.FinalResult is not null
+
+
+) re where re.rownum=1)re on re.PersonId=pr.PersonId
+
+
+
+--ARTFastTrack
+
+
+
+select p.PersonId  as Person_Id,pmv.VisitDate as Encounter_Date
+,NULL as Encounter_ID,
+(select top 1 [Name] from LookupItem li where li.Id=paa.ArtRefillModel) as Refill_Model,
+NULL as Condoms_Dispensed,
+CASE when paa.MissedArvDoses=0 then 'No' when paa.MissedArvDoses=1 then 'Yes' end as Missed_doses,
+CASE when paa.Fatigue=0 then 'No' when paa.Fatigue=1 then 'Yes' end as Fatigue,
+CASE when paa.Cough=0 then 'No' when paa.Cough=1 then 'Yes' end as Cough,
+CASE when paa.Fever=0 then 'No' when paa.Fever=1 then 'Yes' end as Fever,
+CASE when paa.Rash=0 then 'No' when paa.Rash=1 then 'Yes' end as Rash,
+CASE when paa.Nausea=0 then 'No' when paa.Nausea=1 then 'Yes' end as Nausea_vomiting,
+CASE when paa.GenitalSore=0 then 'No' when paa.GenitalSore=1 then 'Yes' end as Genital_sore_discharge,
+CASE when paa.Diarrhea=0 then 'No' when paa.Diarrhea=1 then 'Yes' end as Diarrhea,
+paa.OtherSymptom as Other_symptoms,
+CASE when paa.NewMedication =0 then 'No' when paa.NewMedication=1 then 'Yes' end as Other_medications,
+paa.NewMedicationText as Other_medications_specify,
+(select top 1 [Name] from LookupItem li where li.Id=paa.PregnancyStatus)as Pregnancy_Status,
+CASE when paa.FamilyPlanning =0 then 'No' when paa.FamilyPlanning=1 then 'Yes' end as FP_use,
+paa.FamilyPlanningMethod as FP_use_specify,
+NULL as Reason_not_using_FP,
+CASE when paa.ReferedToClinic= 0 then 'No' when paa.ReferedToClinic=1 then 'Yes' end as Referred,
+NULL as Referral_Specify,
+paa.ReferedToClinicDate as Next_Appointment_Date,
+paa.DeleteFlag as Voided
+ from PatientArtDistribution paa
+inner join Patient p on p.Id=paa.PatientId
+inner join PatientMasterVisit pmv on pmv.Id=paa.PatientMasterVisitId
+and pmv.PatientId=paa.PatientId
 
 
 
