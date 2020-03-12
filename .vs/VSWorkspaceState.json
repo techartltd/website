@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\DML_4_Datasets",
+    "\\DML_Validation_Queries"
   ],
+  "SelectedNode": "\\DML_4_Datasets\\DML_OVC_Enrollment.sql",
   "PreviewInSolutionExplorer": false
 }
