@@ -582,6 +582,7 @@ CREATE TABLE migration_st.st_laboratory
   GeneXpert                VARCHAR(180),
   Urgency         VARCHAR(50),
   Test_result     VARCHAR(200),
+  Lab_Reason      TEXT,  
   Date_test_requested DATE,
   Date_test_result_received DATE,
   Test_requested_by VARCHAR(100),
