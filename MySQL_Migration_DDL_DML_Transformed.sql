@@ -1865,8 +1865,28 @@ CREATE TABLE migration_tr.tr_vital_labs_cd4_percent
     AND Lab_test = "CD4PERCENT"
   GROUP BY Person_Id, Encounter_Date;
 
-
--- 19. Create Pharmacy Extract   -- missing
+-- 18D. Laboratory Extract Vital transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs;
+CREATE TABLE migration_tr.tr_vital_labs
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,
+      Test_result,
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Urgency,
+      (case Lab_test
+        when "VIRALLOAD" then 856
+		    when "CD4" then 5497
+		    when "CD4PERCENT" then 730
+            else NULL end)as Lab_test
+    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test in("VIRALLOAD","CD4","CD4PERCENT")
+  GROUP BY Person_Id, Encounter_Date;
+-- 19. Create Pharmacy Extract
 
 
 -- 20. Create mch enrollment transformed table

@@ -14,6 +14,7 @@ CREATE TABLE migration_st.st_demographics
   Middle_Name           VARCHAR(100),
   Last_Name             VARCHAR(100),
   Nickname              VARCHAR(100),
+  Ptn_PK                INT(11),
   DOB                   DATE NULL,
   Exact_DOB             VARCHAR(100),
   Sex                   VARCHAR(50),
@@ -413,7 +414,9 @@ CREATE TABLE migration_st.st_hiv_followup
   Clinical_notes                    VARCHAR(1600),
   Last_menstrual_period             DATE,
   Pregnancy_status                  VARCHAR(200),
+  FP_status                        VARCHAR(200),
   Wants_pregnancy                   VARCHAR(200),
+  Reason_not_using_FP            	 VARCHAR(100),
   Pregnancy_outcome                 VARCHAR(200),
   Anc_number                        VARCHAR(100),
   Anc_profile                       VARCHAR(100),
@@ -1419,6 +1422,50 @@ CREATE TABLE migration_st.st_vaccinations (
   Voided                           int(11)
 );
 
+-- 45. Creating Family History table
+DROP TABLE IF EXISTS migration_st.st_family_history;
+CREATE TABLE migration_st.st_family_history (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Name                             VARCHAR(255),
+  Age			              	         INT(11),
+  Age_unit 		                   	 VARCHAR(200),
+  Relationship 		                 VARCHAR(200),
+  Hiv_status 		                   VARCHAR(100),
+  In_Care 		                     VARCHAR(100),
+  CCC_Number 		                   VARCHAR(200),
+  Voided                           int(11)
+);
+
+-- 46. Creating ART Fast Track table
+DROP TABLE IF EXISTS migration_st.st_family_history;
+CREATE TABLE migration_st.st_family_history (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Refill_model                     VARCHAR(200),
+  Condoms_dispensed     	         VARCHAR(100),
+  Missed_doses                   	 VARCHAR(100),
+  Fatigue                       	 VARCHAR(100),
+  Cough                         	 VARCHAR(100),
+  Fever                         	 VARCHAR(100),
+  Rash                          	 VARCHAR(100),
+  Nausea_vomiting                	 VARCHAR(100),
+  Genital_sore_discharge         	 VARCHAR(100),
+  Diarrhea                       	 VARCHAR(100),
+  Other_symptoms                 	 TEXT,
+  Other_medications                VARCHAR(50),
+  Other_medications_specify      	 TEXT,
+  Pregnancy_status               	 VARCHAR(50),
+  FP_use                        	 VARCHAR(500),
+  FP_use_specify                   TEXT,
+  Reason_not_using_FP            	 VARCHAR(100),
+  Referred                         VARCHAR(100),
+  Referral_specify                 VARCHAR(100),
+  Next_Appointment_Date            DATE,
+  Voided                           int(11)
+);
 DROP TABLE IF EXISTS  migration_st.st_users;
 CREATE TABLE migration_st.st_users
 (
