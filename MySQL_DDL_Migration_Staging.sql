@@ -1484,4 +1484,20 @@ CREATE TABLE migration_st.st_art_fasttrack (
   Voided                           int(11)
 );
 
+-- 6. HTS Client Tracing
+DROP TABLE IF EXISTS migration_st.st_hts_contact_tracing;
+CREATE TABLE migration_st.st_hts_contact_tracing
+(
+  Person_Id                        INT(11),
+  Relationship						VARCHAR(50),
+  Index_PersonId					INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Contact_Type                     VARCHAR(100),
+  Contact_Outcome                  VARCHAR(100),
+  Reason_uncontacted               VARCHAR(255),
+  OtherReasonSpecify               VARCHAR(255),
+  Remarks                          TEXT,
+  Voided                           INT(11)
+);
 
