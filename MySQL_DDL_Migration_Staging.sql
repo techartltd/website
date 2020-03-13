@@ -14,6 +14,7 @@ CREATE TABLE migration_st.st_demographics
   Middle_Name           VARCHAR(100),
   Last_Name             VARCHAR(100),
   Nickname              VARCHAR(100),
+  Ptn_PK                INT(11),
   DOB                   DATE NULL,
   Exact_DOB             VARCHAR(100),
   Sex                   VARCHAR(50),
@@ -413,7 +414,9 @@ CREATE TABLE migration_st.st_hiv_followup
   Clinical_notes                    VARCHAR(1600),
   Last_menstrual_period             DATE,
   Pregnancy_status                  VARCHAR(200),
+  FP_status                        VARCHAR(200),
   Wants_pregnancy                   VARCHAR(200),
+  Reason_not_using_FP            	 VARCHAR(100),
   Pregnancy_outcome                 VARCHAR(200),
   Anc_number                        VARCHAR(100),
   Anc_profile                       VARCHAR(100),
@@ -579,6 +582,7 @@ CREATE TABLE migration_st.st_laboratory
   GeneXpert                VARCHAR(180),
   Urgency         VARCHAR(50),
   Test_result     VARCHAR(200),
+  Lab_Reason      TEXT,  
   Date_test_requested DATE,
   Date_test_result_received DATE,
   Test_requested_by VARCHAR(100),
@@ -1419,20 +1423,7 @@ CREATE TABLE migration_st.st_vaccinations (
   Voided                           int(11)
 );
 
-DROP TABLE IF EXISTS  migration_st.st_users;
-CREATE TABLE migration_st.st_users
-(
-	[User_Id]			INT(11),
-	[First_Name]		VARCHAR(100),
-	[Last_Name]			VARCHAR(100),
-	[User_Name]			VARCHAR(100),
-	[Status]			VARCHAR(100),
-	[Designation]		VARCHAR(100),
-	[GroupNames]		VARCHAR(MAX)
-)
-
-
-- 45. Creating Family History table
+-- 45. Creating Family History table
 DROP TABLE IF EXISTS migration_st.st_family_history;
 CREATE TABLE migration_st.st_family_history (
   Person_Id                        INT(11),
@@ -1456,8 +1447,8 @@ CREATE TABLE migration_st.st_family_history (
 )
 
 -- 46. Creating ART Fast Track table
-DROP TABLE IF EXISTS migration_st.st_art_fasttrack;
-CREATE TABLE migration_st.st_art_fasttrack (
+DROP TABLE IF EXISTS migration_st.st_family_history;
+CREATE TABLE migration_st.st_family_history (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -1483,6 +1474,21 @@ CREATE TABLE migration_st.st_art_fasttrack (
   Next_Appointment_Date            DATE,
   Voided                           int(11)
 );
+
+-- 47. Creating Users table
+DROP TABLE IF EXISTS  migration_st.st_users;
+CREATE TABLE migration_st.st_users
+(
+	User_Id			INT(11),
+	First_Name		VARCHAR(100),
+	Last_Name		VARCHAR(100),
+	User_Name		VARCHAR(100),
+	Status			VARCHAR(100),
+	Designation		VARCHAR(100),
+	GroupNames		VARCHAR(MAX)
+)
+
+
 
 -- 6. HTS Client Tracing
 DROP TABLE IF EXISTS migration_st.st_hts_contact_tracing;

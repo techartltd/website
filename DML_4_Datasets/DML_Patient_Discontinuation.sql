@@ -1,8 +1,6 @@
-
-
--- 11. Patient discontinuation
-
-select 
+SELECT COUNT(*), Care_Ending_Reason FROM
+(
+select DISTINCT
 P.Id as Person_Id,
 pe.Enrollment as Encounter_Date,
 NULL as Encounter_ID,
@@ -37,3 +35,5 @@ and pce.PatientEnrollmentId=pe.Id
 INNER JOIN ServiceArea sa on sa.Id=pe.ServiceAreaId
 INNER JOIN PatientIdentifier PI ON PI.PatientId = PT.Id 
 WHERE pe.ExitDate is not null
+) PP
+GROUP BY Care_Ending_Reason
