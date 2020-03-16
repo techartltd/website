@@ -15,12 +15,16 @@ select p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL
    pssc.Support_grp_meeting_awareness,
    pssc.Enrolled_in_reminder_system,
    pssc.Other_support_systems,
-   part.DeleteFlag
+   part.DeleteFlag,
+   created_at,
+   created_by
   from (
-  select  psc.PatientId,psc.PatientMasterVisitId,psc.DeleteFlag from PatientSupportSystemCriteria 
+  select  psc.PatientId,psc.PatientMasterVisitId,psc.DeleteFlag,psc.[CreateDate] created_at
+				,psc.[CreatedBy] created_by from PatientSupportSystemCriteria 
   psc
   union 
-  select  pscr.PatientId,pscr.PatientMasterVisitId,pscr.DeleteFlag from PatientPsychosocialCriteria pscr
+  select  pscr.PatientId,pscr.PatientMasterVisitId,pscr.DeleteFlag,pscr.[CreateDate] created_at
+				,pscr.[CreatedBy] created_by from PatientPsychosocialCriteria pscr
   )part   inner join Patient p on p.Id=part.PatientId
   inner join PatientMasterVisit pmv on pmv.Id=part.PatientMasterVisitId
  left join(select  psc.PatientId,psc.PatientMasterVisitId,
