@@ -2916,7 +2916,91 @@ CREATE TABLE migration_tr.tr_alcohol_screening
         Voided
     FROM migration_st.st_alcohol_screening;
 
+-- 34. OTZ Enrolment
+DROP TABLE IF EXISTS migration_tr.tr_otz_enrollment;
+CREATE TABLE migration_tr.tr_otz_enrollment
+   select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
+    (case Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
+    (case Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
+    (case Treatment_literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_literacy,
+    (case Transition_to_adult_care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_adult_care,
+    (case Making_decision_future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_decision_future,
+    (case Srh when "Yes" then 1065 when NULL then 1066 else NULL end) as Srh,
+    (case Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
+    (case Transfer_in when "Yes" then 1065 when NULL then 1066 else NULL end) as Transfer_in,
+    Initial_Enrolment_Date,
+    voided
+    FROM migration_st.st_otz_enrollment;
 
+-- 35. OTZ Activity
+DROP TABLE IF EXISTS migration_tr.tr_otz_activity;
+CREATE TABLE migration_tr.tr_otz_activity
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
+    (case Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
+    (case Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
+    (case Treatment_literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_literacy,
+    (case Transition_to_adult_care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_adult_care,
+    (case Making_decision_future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_decision_future,
+    (case Srh when "Yes" then 1065 when NULL then 1066 else NULL end) as Srh,
+    (case Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
+    (case Attended_Support_Group when "Yes" then 1065 when "No" then 1066 else NULL end) as Attended_Support_Group,
+    Remarks,
+    voided
+    FROM migration_st.st_otz_activity;
+
+    -- 36. OTZ Outcome
+DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
+CREATE TABLE migration_tr.tr_otz_outcome
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
+    Exit_Date,
+    Death_Date,
+    Transfer_Facility,
+    Transfer_Date,
+    voided
+    FROM migration_st.st_otz_outcome;
+
+-- 37. OVC Enrolment
+DROP TABLE IF EXISTS migration_tr.tr_ovc_enrollment;
+CREATE TABLE migration_tr.tr_ovc_enrollment
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Caregiver_enrolled_here when "Yes" then 1065 when NULL then 1066 else NULL end) as Caregiver_enrolled_here,
+    Caregiver_name,
+    (case Caregiver_gender when "Female" then 1535 when "Male" then 1534 else NULL end) as Caregiver_gender,
+    (case Relationship_to_Client when "Childrenshome" then 162722 when "Aunt" then 975 when "Uncle" then 974 when "Sibling" then 972 when "Parent" then 1527 else NULL end) as Relationship_to_Client,
+    Caregiver_Phone_Number,
+    (case Client_Enrolled_cpims when "Yes" then 1065 when "No" then 1066 else NULL end) as Client_Enrolled_cpims,
+    Partner_Offering_OVC,
+    voided
+    FROM migration_st.st_ovc_enrollment;
+
+	    -- 38. OVC Outcome
+DROP TABLE IF EXISTS migration_tr.tr_ovc_outcome;
+CREATE TABLE migration_tr.tr_ovc_outcome
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    Exit_Date,
+    (case Exit_Reason when "GraduatedOutOVC" then 1267 when "ExitWithoutGraduation" then 165219 when "TransferOutNonPepfarFacility" then 159492 when "TransferOutPepfarFacility" then 160036 else NULL end) as Exit_Reason,
+    Transfer_Facility,
+    Transfer_Date,
+    voided
+    FROM migration_st.st_ovc_outcome;
 	
 	
 	
