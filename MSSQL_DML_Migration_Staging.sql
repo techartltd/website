@@ -4243,20 +4243,30 @@ EndSessQ2 on EndSessQ2.PatientMasterVisitId =pd.PatientMasterVisitId and EndSess
 
 ---Defaultet Tracing
    
-   --Has issues
+
    
-select t.PersonID as Person_Id,t.DateTracingDone as Encounter_Date,
-NULL as Encounter_ID,
-(select top 1 lt.[Name] from LookupItem lt where lt.Id=t.Mode) as Tracing_Type,
-(select top 1 lt.[Name] from LookupItem lt where lt.Id=t.Outcome) as Tracing_outcome,
+select pce.PersonId as Person_Id,pce.VisitDate as Encounter_Date,pce.ExitDate as Exit_Date,pce.ExitReason as Exit_Reason,NULL as Encounter_ID,NULL as Tracing_type,
+pce.TracingOutcome as Tracing_Outcome,
+pce.ReasonLostToFollowup as Reason_LostToFollowup,
 NULL as Attempt_number,
-NULL as Is_final_trace,
-NULL as True_Status,
-NULL as Cause_of_death,
-t.Remarks as Comments,
-t.DeleteFlag as Voided
-  from Tracing 
-  
+NUll as Is_final_trace,
+NULL as True_status,
+pce.ReasonsForDeath as  Cause_of_death,
+pce.CareEndingNotes as Comments,
+pce.DeleteFlag  as Voided
+ from(select p.PersonId,pce.PatientId,pce.PatientMasterVisitId,pmv.VisitDate,pce.ExitDate,
+(select top 1. [Name] from Lookupitem where id= pce.ExitReason) as ExitReason,
+pce.DeleteFlag,
+(select top 1. [Name] from Lookupitem where id= pce.TracingOutome) as TracingOutcome ,
+(select top 1. [Name] from Lookupitem where id= pce.ReasonLostToFollowup) as ReasonLostToFollowup
+,(select top 1. [Name] from Lookupitem where id= pce.ReasonsForDeath) as ReasonsForDeath
+,pce.CareEndingNotes
+from PatientCareending pce
+inner join Patient p on p.Id=pce.PatientId
+inner join PatientMasterVisit pmv on pmv.Id=pce.PatientMasterVisitId
+)pce
+where pce.ExitReason='LostToFollowUp'
+
   
   
   
@@ -5081,9 +5091,28 @@ on prel.IndexPersonId=ind.PersonId and prel.IndexPatientId=ind.PatientId
 inner join  Tracing T on T.PersonID=prel.RelativePersonId
 
 
----
+---relationship
 
 
+exec pr_OpenDecryptedSession
+Select 
+	
+	P.PersonId as IndexPerson_Id,
+	PR.PersonId as RelativePerson_Id,
+	CAST(DECRYPTBYKEY(R.FirstName) as varchar(100)) RelativeFirstName,
+	CAST(DECRYPTBYKEY(R.MidName) as varchar(100)) as RelativeMiddleName
+	,CAST(DECRYPTBYKEY(R.LastName) as varchar(100)) as  RelativeLastName
+	,(Select Top 1	Name	From LookupItem LI	Where LI.Id = R.Sex)	RelativeSex
+	,(Select Top 1	Name From LookupItem LI	Where LI.Id = PR.RelationshipTypeId) Relationship,
+	PR.DeleteFlag as Voided
+From Patient P
+Inner Join PersonRelationship PR On P.Id = PR.PatientId
+Inner Join Person R On R.Id = PR.PersonId
+Inner Join Person PD On PD.Id = P.PersonId
+Where p.DeleteFlag = 0
+And PR.DeleteFlag = 0
+And R.DeleteFlag = 0 
+order by PR.PatientId desc
 
 
 

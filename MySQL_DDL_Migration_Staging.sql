@@ -1180,9 +1180,12 @@ DROP TABLE IF EXISTS migration_st.st_defaulter_tracing;
 CREATE TABLE migration_st.st_defaulter_tracing (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
+  Exit_Date						   DATE,
+  Exit_Reason						VARCHAR(200),
   Encounter_ID                     VARCHAR(50),
   Tracing_type                     VARCHAR(100),
   Tracing_outcome                  VARCHAR(100),
+  Reason_LostToFollowu				VARCHAR(100),
   Attempt_number                   VARCHAR(100),
   Is_final_trace                   VARCHAR(100),
   True_status                      VARCHAR(100),
@@ -1507,3 +1510,16 @@ CREATE TABLE migration_st.st_hts_contact_tracing
   Voided                           INT(11)
 );
 
+
+DROP TABLE IF EXISTS migration_st.st_relationships
+CREATE TABLE migration_st.st_relationships
+(
+Index_Person_Id				INT(11),
+Relative_Person_Id 			INT(11),
+RelativeFirstName			VARCHAR(200),
+RelativeMiddleame			VARCHAR(200),
+RelativeLastName			VARCHAR(200),
+RelativeSex					VARCHAR(200),
+Relationship				VARCHAR(200),
+Voided						int(11)
+)
