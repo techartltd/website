@@ -1464,6 +1464,7 @@ CREATE TABLE migration_st.st_population_type (
   Key_Population_Type              VARCHAR(255),
   Voided                           int(11)
 );
+<<<<<<< HEAD
 
 -- 49. Creating Disability table
 DROP TABLE IF EXISTS migration_st.st_disability;
@@ -1489,6 +1490,33 @@ CREATE TABLE migration_st.st_initial_hiv_test (
   Voided                           int(11)
 );
 
+=======
+
+-- 49. Creating Disability table
+DROP TABLE IF EXISTS migration_st.st_disability;
+CREATE TABLE migration_st.st_disability (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Disability                       VARCHAR(100),
+  Disability_Type                  VARCHAR(255),
+  Voided                           int(11)
+);
+
+-- 50. Creating Initial HIV_Test table
+DROP TABLE IF EXISTS migration_st.st_initial_hiv_test;
+CREATE TABLE migration_st.st_initial_hiv_test (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Test_1_Kit_Name                  VARCHAR(100),
+  Test_1_Lot_Number                VARCHAR(100),
+  Test_1_Expiry_Date               DATE,
+  Test_1_Final_Result              VARCHAR(100),
+  Voided                           int(11)
+);
+
+>>>>>>> 9d273e17d6efa78a3c9380f6e48a2c66dd396d60
 -- 51. Creating Confirmatory HIV_Test table
 DROP TABLE IF EXISTS migration_st.st_confirmatory_test;
 CREATE TABLE migration_st.st_confirmatory_test (
