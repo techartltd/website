@@ -1902,7 +1902,7 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Gravida,
     EDD,
     Age_at_menarche,
-    Tb_screening,
+    TB_screening_results,
     LMP,
     (case Hiv_status
      when "U" then 1067
@@ -2030,11 +2030,11 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Anc_exercises,
-    (case Tb_screening
+    (case TB_screening_results
      when "No TB" then 1660
      when "PrTB" then 142177
      when "TBRx" then 1662
-     when "Not Done" then 1118  else NULL end)as Tb_screening,
+     when "Not Done" then 1118  else NULL end)as TB_screening_results,
     (case Cacx_screening
      when "No" then 1066
      when "yes" then 1066
