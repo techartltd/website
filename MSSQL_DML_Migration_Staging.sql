@@ -5097,8 +5097,8 @@ inner join  Tracing T on T.PersonID=prel.RelativePersonId
 exec pr_OpenDecryptedSession
 Select 
 	
-	P.PersonId as IndexPerson_Id,
-	PR.PersonId as RelativePerson_Id,
+	P.PersonId as Index_Person_Id,
+	PR.PersonId as Relative_Person_Id,
 	CAST(DECRYPTBYKEY(R.FirstName) as varchar(100)) RelativeFirstName,
 	CAST(DECRYPTBYKEY(R.MidName) as varchar(100)) as RelativeMiddleName
 	,CAST(DECRYPTBYKEY(R.LastName) as varchar(100)) as  RelativeLastName
@@ -5113,13 +5113,3 @@ Where p.DeleteFlag = 0
 And PR.DeleteFlag = 0
 And R.DeleteFlag = 0 
 order by PR.PatientId desc
-
-
-
-  
-   
-   
-   
-   
-   
-  
