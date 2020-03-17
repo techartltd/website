@@ -2824,9 +2824,17 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
   Session_number,
   First_session_date,
   Pill_count,
-  Arv_adherence,
-  Has_vl_results,
-  Vl_results_suppressed,
+  (case Arv_adherence
+       when "Good" then 159405
+       when "Inadequate" then 163794
+       when "Poor" then 159407
+       else NULL end)as Arv_adherence,
+  (case Has_vl_results
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Has_vl_results,
+  (case Vl_results_suppressed
+    when "Suppressed" then 1302
+    when "Unsuppresed" then 1066  else NULL end)as Vl_results_suppressed,
   Vl_results_feeling,
   Cause_of_high_vl,
   Way_forward,
@@ -2838,21 +2846,43 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
   Patient_drugs_uptake_most_difficult_times,
   Patient_drugs_daily_uptake_feeling,
   Patient_ambitions,
-  Patient_has_people_to_talk,
+  (case Patient_has_people_to_talk
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as  Patient_has_people_to_talk,
   Patient_enlisting_social_support,
   Patient_income_sources,
-  Patient_challenges_reaching_clinic,
-  Patient_worried_of_accidental_disclosure,
-  Patient_treated_differently,
-  Stigma_hinders_adherence,
-  Patient_tried_faith_healing,
-  Patient_adherence_improved,
-  Patient_doses_missed,
+  (case Patient_challenges_reaching_clinic
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_challenges_reaching_clinic,
+  (case Patient_worried_of_accidental_disclosure
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_worried_of_accidental_disclosure,
+  (case Patient_treated_differently
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_treated_differently,
+  (case Stigma_hinders_adherence
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Stigma_hinders_adherence,
+  (case Patient_tried_faith_healing
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_tried_faith_healing,
+  (case Patient_adherence_improved
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_adherence_improved,
+  (case Patient_doses_missed
+    when "Yes" then 1
+    when "No" then 0  else NULL end)as Patient_doses_missed,
   Review_and_barriers_to_adherence,
-  Other_referrals,
-  Appointments_honoured,
+  (case Other_referrals
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Other_referrals,
+  (case Appointments_honoured
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Appointments_honoured,
   Referral_experience,
-  Home_visit_benefit,
+  (case Home_visit_benefit
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Home_visit_benefit,
   Adherence_plan,
   Next_appointment_date,
   Voided
