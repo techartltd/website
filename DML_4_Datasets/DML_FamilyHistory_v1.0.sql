@@ -10,10 +10,10 @@ CAST(DECRYPTBYKEY(pre.LastName ) AS VARCHAR(50)) AS RelativeLast_Name,
 pre.DateOfBirth as DOB,
 DATEDIFF(hour,pre.DateOfBirth,GETDATE())/8766 as Age,
 NULL as Age_unit,
-(Select Top 1	[Name] From LookupItem LI	Where LI.Id = pr.RelationshipTypeId) Relationship,
-(select top 1 [Name] from LookupItem li where li.Id=pr.BaselineResult) as   BaselineResult,
-re.FinalResult as  Hiv_status,
-CASE when pcc.IdentifierValue is not null then 'Yes' else 'No' end as In_Care,
+(Select Top 1	[Name] FROM LookupItem LI	Where LI.Id = pr.RelationshipTypeId) Relationship,
+(select top 1 [Name] FROM LookupItem li where li.Id=pr.BaselineResult) as   BaselineResult,
+Coalesce(relpatient.HivStatus,re.FinalResult) as  Hiv_status,
+Coalesce(relpatient.InCare,CASE when pcc.IdentifierValue is not null then 'Yes' else 'No' end )InCare,
 plink.CCCNumber as Linkage_CCC_Number,
 pcc.IdentifierValue as CCCNumber,
 pr.DeleteFlag,
@@ -23,6 +23,20 @@ pr.[CreateDate]created_at
  inner join PersonRelationship pr on pr.PatientId=p.Id
 
 left join Person pre on pre.Id=pr.PersonId
+LEFT JOIN (SELECT [Ptn_pk] 
+	  ,CASE WHEN d.Name IS NULL THEN 'Unknown'
+		ELSE d.Name END AS[RelationshipType]
+	  ,b.Name HivStatus
+	  ,CASE WHEN c.Name in ('In HIV Care','On ART') THEN 'Yes'
+		WHEN c.Name in ('Not in HIV Care') THEN 'No'
+		ELSE c.Name END AS InCare
+	  ,a.CreateDate
+  FROM [dbo].[dtl_FamilyInfo] a
+  LEFT JOIN mst_decode d on d.id=[RelationshipType]
+  INNER JOIN mst_decode b on b.id=[HivStatus]
+  INNER JOIN [mst_HIVCareStatus] c on c.id=a.[HivCareStatus]
+  where a.deleteflag=0 --and ptn_pk=2184
+) relpatient on relpatient.ptn_pk=p.ptn_pk and p.id=pr.patientid and pr.createdate=relpatient.CreateDate
  left join PatientLinkage plink on plink.PersonId=pr.PersonId
  left join(  select pcc.PatientId,pcc.IdentifierValue,pcc.PersonId from( select pid.PatientId,p.PersonId,pid.PatientEnrollmentId,ROW_NUMBER() OVER(partition by pid.PatientId order by pid.PatientEnrollmentId desc)rownum,pid.IdentifierTypeId,pid.IdentifierValue,id.Code
     from PatientIdentifier pid
@@ -50,3 +64,5 @@ INNER JOIN [dbo].[HtsEncounter] HE ON PE.Id = HE.PatientEncounterID
 
 
 ) re where re.rownum=1)re on re.PersonId=pr.PersonId
+
+--where p.ptn_pk=2184
