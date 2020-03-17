@@ -34,5 +34,6 @@ NULL Voided
 
 FROM [dbo].[PersonRelationship] PR
 LEFT JOIN dbo.Patient AS PT ON PT.Id = PR.PatientId
+INNER JOIN HtsEncounter HE ON HE.PersonId = PT.PersonId
 LEFT JOIN [dbo].[Person] P ON P.Id = PR.PersonId
 ORDER BY PT.Id ASC
