@@ -1,8 +1,4 @@
-
-
--- 11. Patient discontinuation
-
-select 
+select DISTINCT
 P.Id as Person_Id,
 pe.Enrollment as Encounter_Date,
 NULL as Encounter_ID,
