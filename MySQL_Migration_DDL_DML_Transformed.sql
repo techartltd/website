@@ -645,7 +645,7 @@ CREATE TABLE migration_tr.tr_tb_screening
   
 -- 13. IPT Screening transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
-CREATE TABLE migration_tr.tr_ipt_screening
+CREATE TABLE migration_tr.tr_ipt_screening as
     select
       Person_Id,
       Encounter_Date,
@@ -2891,10 +2891,31 @@ FROM migration_st.st_enhanced_adherence WHERE
   GROUP BY Person_Id, Encounter_Date;
 
 -- 31. Defaulter tracing -- missing
+DROP TABLE IF EXISTS migration_tr.tr_defaulter_tracing;
+CREATE TABLE migration_tr.tr_defaulter_tracing as
+    select
+          Person_Id,
+          Encounter_Date,
+          Encounter_ID,
+          Tracing_type,
+          (case Tracing_outcome
+           when "Traced patient (unable to locate)" then 1118
+           when "Traced and located" then 1267 when "Did not attempt to trace patient" then 1118 else NULL end)as Tracing_outcome,
+           Attempt_number,
+           Is_final_trace,
+           True_status,
+           (case Cause_of_death
+           when "Other HIV disease resulting in other diseases or conditions leading to death" then 162574
+           when "HIV disease resulting in cancer" then 116030 when "HIV disease resulting in TB" then 164500
+           when "HIV disease resulting in other infectious and parasitic diseases" then 151522 when "Other natural causes not directly related to HIV" then 133481
+           when "Non-natural causes (e.g, trauma, accident, suicide, war, etc)" then 1603 when "Unknown cause" then 5622 else NULL end)as Cause_of_death,
+           Comments,
+           Voided
+    FROM migration_st.st_defaulter_tracing;
 
 -- 32. Gender Based Violence Screening Grouped
 DROP TABLE IF EXISTS migration_tr.tr_gbv_screening;
-CREATE TABLE migration_tr.tr_gbv_screening
+CREATE TABLE migration_tr.tr_gbv_screening as
     select
          Person_Id,
           Encounter_Date,
@@ -2919,7 +2940,7 @@ CREATE TABLE migration_tr.tr_gbv_screening
 
 -- 33. Alcohol and drug abuse screening
 DROP TABLE IF EXISTS migration_tr.tr_alcohol_screening;
-CREATE TABLE migration_tr.tr_alcohol_screening
+CREATE TABLE migration_tr.tr_alcohol_screening as
     select
        Person_Id,
         Encounter_Date,
@@ -2948,7 +2969,7 @@ CREATE TABLE migration_tr.tr_alcohol_screening
 
 -- 34. OTZ Enrolment
 DROP TABLE IF EXISTS migration_tr.tr_otz_enrollment;
-CREATE TABLE migration_tr.tr_otz_enrollment
+CREATE TABLE migration_tr.tr_otz_enrollment as
    select
     Person_Id,
     Encounter_Date,
@@ -2968,7 +2989,7 @@ CREATE TABLE migration_tr.tr_otz_enrollment
 
 -- 35. OTZ Activity
 DROP TABLE IF EXISTS migration_tr.tr_otz_activity;
-CREATE TABLE migration_tr.tr_otz_activity
+CREATE TABLE migration_tr.tr_otz_activity as
     select
     Person_Id,
     Encounter_Date,
@@ -2988,7 +3009,7 @@ CREATE TABLE migration_tr.tr_otz_activity
 
     -- 36. OTZ Outcome
 DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
-CREATE TABLE migration_tr.tr_otz_outcome
+CREATE TABLE migration_tr.tr_otz_outcome as
     select
     Person_Id,
     Encounter_Date,
@@ -3003,7 +3024,7 @@ CREATE TABLE migration_tr.tr_otz_outcome
 
 -- 37. OVC Enrolment
 DROP TABLE IF EXISTS migration_tr.tr_ovc_enrollment;
-CREATE TABLE migration_tr.tr_ovc_enrollment
+CREATE TABLE migration_tr.tr_ovc_enrollment as
     select
     Person_Id,
     Encounter_Date,
@@ -3020,7 +3041,7 @@ CREATE TABLE migration_tr.tr_ovc_enrollment
 
 	    -- 38. OVC Outcome
 DROP TABLE IF EXISTS migration_tr.tr_ovc_outcome;
-CREATE TABLE migration_tr.tr_ovc_outcome
+CREATE TABLE migration_tr.tr_ovc_outcome as
     select
     Person_Id,
     Encounter_Date,
@@ -3031,6 +3052,7 @@ CREATE TABLE migration_tr.tr_ovc_outcome
     Transfer_Date,
     voided
     FROM migration_st.st_ovc_outcome;
+
 	
 	
 	
