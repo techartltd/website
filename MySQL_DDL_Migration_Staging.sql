@@ -1163,7 +1163,7 @@ CREATE TABLE migration_st.st_enhanced_adherence (
 );
 
 
--- 30. Defaulter tracing -- missing
+-- 30. Defaulter tracing
 DROP TABLE IF EXISTS migration_st.st_defaulter_tracing;
 CREATE TABLE migration_st.st_defaulter_tracing (
   Person_Id                        INT(11),
@@ -1246,8 +1246,8 @@ CREATE TABLE migration_st.st_craft_alcohol_screening (
 );
 
 -- 33. Creating OTZ enrollment table
-DROP TABLE IF EXISTS migration_st.st_otz_enrollment;
-CREATE TABLE migration_st.st_otz_enrollment (
+DROP TABLE IF EXISTS migration_st.st_otz_enrolment;
+CREATE TABLE migration_st.st_otz_enrolment (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -1284,8 +1284,8 @@ CREATE TABLE migration_st.st_otz_activity (
 );
 
 -- 35. Creating OVC enrollment table
-DROP TABLE IF EXISTS migration_st.st_ovc_enrollment;
-CREATE TABLE migration_st.st_ovc_enrollment (
+DROP TABLE IF EXISTS migration_st.st_ovc_enrolment;
+CREATE TABLE migration_st.st_ovc_enrolment (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -1306,7 +1306,6 @@ CREATE TABLE migration_st.st_otz_outcome (
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Discontinuation_Reason           VARCHAR(255),
-  Exit_Date 						 DATE,
   Death_Date                       DATE,
   Transfer_Facility                VARCHAR(255),
   Transfer_Date                    DATE,
@@ -1319,7 +1318,6 @@ CREATE TABLE migration_st.st_ovc_outcome (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
-  Exit_Date						 DATE,
   Exit_Reason                      VARCHAR(255),
   Transfer_Facility                VARCHAR(255),
   Transfer_Date                    DATE,
