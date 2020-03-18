@@ -124,9 +124,9 @@ CREATE TABLE migration_st.st_triage
 );
 
 
--- 4. HTS Initial Encounter
-DROP TABLE IF EXISTS migration_st.st_hts_initial;
-CREATE TABLE migration_st.st_hts_initial
+-- 4. HTS TEST Encounter
+DROP TABLE IF EXISTS migration_st.st_hts_test;
+CREATE TABLE migration_st.st_hts_test
 (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
@@ -158,41 +158,8 @@ CREATE TABLE migration_st.st_hts_initial
   Remarks                          TEXT,
   Voided                           INT(11)
 );
--- 5. HTS Retest Encounter
-DROP TABLE IF EXISTS migration_st.st_hts_retest;
-CREATE TABLE migration_st.st_hts_retest
-(
-  Person_Id                        INT(11),
-  Encounter_Date                   DATE,
-  Encounter_ID                     VARCHAR(50),
-  Pop_Type                         VARCHAR(50),
-  Key_Pop_Type                     VARCHAR(50),
-  Priority_Pop_Type                VARCHAR(50),
-  Patient_disabled                 VARCHAR(50),
-  Disability                       VARCHAR(100),
-  Ever_Tested                      VARCHAR(50),
-  Self_Tested                      VARCHAR(50),
-  HTS_Strategy                     VARCHAR(100),
-  HTS_Entry_Point                  VARCHAR(100),
-  Consented                        VARCHAR(50),
-  Tested_As                        VARCHAR(100),
-  TestType                         VARCHAR(50),
-  Test_1_Kit_Name                  VARCHAR(100),
-  Test_1_Lot_Number                VARCHAR(100),
-  Test_1_Expiry_Date               DATE,
-  Test_1_Final_Result              VARCHAR(100),
-  Test_2_Kit_Name                  VARCHAR(100),
-  Test_2_Lot_Number                VARCHAR(100),
-  Test_2_Expiry_Date               DATE,
-  Test_2_Final_Result              VARCHAR(100),
-  Final_Result                     VARCHAR(100),
-  Result_given                     VARCHAR(50),
-  Couple_Discordant                VARCHAR(50),
-  Tb_Screening_Results             VARCHAR(100),
-  Remarks                          TEXT,
-  Voided                           INT(11)
-);
--- 6. HTS Client Tracing
+
+-- 5. HTS Client Tracing
 DROP TABLE IF EXISTS migration_st.st_hts_tracing;
 CREATE TABLE migration_st.st_hts_tracing
 (
@@ -207,7 +174,7 @@ CREATE TABLE migration_st.st_hts_tracing
   Voided                           INT(11)
 );
 
--- 7. HTS Referral
+-- 6. HTS Referral
 DROP TABLE IF EXISTS migration_st.st_hts_referral;
 CREATE TABLE migration_st.st_hts_referral
 (
@@ -219,7 +186,7 @@ CREATE TABLE migration_st.st_hts_referral
   Remarks                          TEXT,
   Voided                           INT(11)
 );
--- 8. HTS Linkage
+-- 7. HTS Linkage
 DROP TABLE IF EXISTS migration_st.st_hts_linkage;
 CREATE TABLE migration_st.st_hts_linkage
 (
@@ -236,7 +203,7 @@ CREATE TABLE migration_st.st_hts_linkage
   Voided                           INT(11)
 );
 
--- 9. HTS Contact Listing
+-- 8. HTS Contact Listing
 DROP TABLE IF EXISTS migration_st.st_hts_contact_listing;
 CREATE TABLE migration_st.st_hts_contact_listing
 (
@@ -272,7 +239,7 @@ CREATE TABLE migration_st.st_hts_contact_listing
   Voided                           INT(11)
 );
 
--- 10. Program Enrollment
+-- 9. Program Enrollment
 DROP TABLE IF EXISTS migration_st.st_program_enrollment;
 CREATE TABLE migration_st.st_program_enrollment
 (
@@ -284,7 +251,7 @@ CREATE TABLE migration_st.st_program_enrollment
   Date_Completed                   DATE
 );
 
--- 11. Program Discontinuation
+-- 10. Program Discontinuation
 DROP TABLE IF EXISTS migration_st.st_program_discontinuation;
 CREATE TABLE migration_st.st_program_discontinuation
 (
@@ -299,7 +266,7 @@ CREATE TABLE migration_st.st_program_discontinuation
   Death_Date                       DATE
 );
 
--- 12. TB Screening
+-- 11. TB Screening
 DROP TABLE IF EXISTS migration_st.st_tb_screening;
 CREATE TABLE migration_st.st_tb_screening
 (
@@ -324,7 +291,7 @@ CREATE TABLE migration_st.st_tb_screening
 );
 
 
--- 13. IPT Program Screening
+-- 12. IPT Program Screening
 DROP TABLE IF EXISTS migration_st.st_ipt_screening;
 CREATE TABLE migration_st.st_ipt_screening
 (
@@ -338,7 +305,7 @@ CREATE TABLE migration_st.st_ipt_screening
   IPT_Start_Date                   DATE
 );
 
--- 14. IPT Program Enrollment
+-- 13. IPT Program Enrollment
 DROP TABLE IF EXISTS migration_st.st_ipt_program;
 CREATE TABLE migration_st.st_ipt_program
 (
@@ -353,7 +320,7 @@ CREATE TABLE migration_st.st_ipt_program
 
 
 
--- 15. IPT Program Followup
+-- 14. IPT Program Followup
 DROP TABLE IF EXISTS migration_st.st_ipt_followup;
 CREATE TABLE migration_st.st_ipt_followup
 (
@@ -375,7 +342,7 @@ CREATE TABLE migration_st.st_ipt_followup
   Outcome_Date                     DATE
 );
 
--- 16. Regimen History
+-- 15. Regimen History
 DROP TABLE IF EXISTS migration_st.st_regimen_history;
 CREATE TABLE migration_st.st_regimen_history
 (
@@ -397,7 +364,7 @@ CREATE TABLE migration_st.st_regimen_history
   Date_voided                      DATE
 );
 
--- 17. HIV Followup
+-- 16. HIV Followup
 DROP TABLE IF EXISTS migration_st.st_hiv_followup;
 CREATE TABLE migration_st.st_hiv_followup
 (
@@ -475,7 +442,7 @@ CREATE TABLE migration_st.st_hiv_followup
 
 
 
--- 18. Laboratory Extract
+-- 17. Laboratory Extract
 DROP TABLE IF EXISTS migration_st.st_laboratory;
 CREATE TABLE migration_st.st_laboratory
 (
@@ -763,7 +730,7 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
 
 
 
--- 22_23.  MCH Delivery and Discharge
+-- 21_22.  MCH Delivery and Discharge
 DROP TABLE IF EXISTS migration_st.st_mch_delivery_discharge;
 CREATE TABLE migration_st.st_mch_delivery_discharge
 (
@@ -837,7 +804,7 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
   Voided                                     INT(11)
 );
 
--- 24. MCH PNC Visit
+-- 23. MCH PNC Visit
 DROP TABLE IF EXISTS migration_st.st_mch_pnc_visit;
 CREATE TABLE migration_st.st_mch_pnc_visit (
   Person_Id                        INT(11),
@@ -892,10 +859,10 @@ CREATE TABLE migration_st.st_mch_pnc_visit (
   Prophylaxis_given                VARCHAR(50),
   Baby_azt_dispensed               VARCHAR(50),
   Baby_nvp_dispensed               VARCHAR(50),
-  HAART_PNC						             VARCHAR(50),
+  HAART_PNC						   VARCHAR(50),
   Pnc_exercises	                   VARCHAR(50),
-  Maternal_condition			         VARCHAR(255),
-  Iron_supplementation			        VARCHAR(50),
+  Maternal_condition			   VARCHAR(255),
+  Iron_supplementation			   VARCHAR(50),
   CaCx_screening				   VARCHAR(50),
   CaCx_screening_method			   VARCHAR(200),
   Fistula_screening			       VARCHAR(50),
@@ -908,7 +875,7 @@ CREATE TABLE migration_st.st_mch_pnc_visit (
   Next_Appointment_Date            DATE
 );
 
--- 25. HEI Enrollment
+-- 24. HEI Enrollment
 DROP TABLE IF EXISTS migration_st.st_hei_enrollment;
 CREATE TABLE migration_st.st_hei_enrollment (
   Person_Id                        INT(11),
@@ -960,8 +927,7 @@ CREATE TABLE migration_st.st_hei_enrollment (
 );
 
 
--- 26. HEI Followup
-
+-- 25. HEI Followup
 DROP TABLE IF EXISTS migration_st.st_hei_followup;
 CREATE TABLE migration_st.st_hei_followup (
   Person_Id                        INT(11),
@@ -1033,7 +999,7 @@ CREATE TABLE migration_st.st_hei_followup (
 );
 
 
--- 27. HEI Outcome
+-- 26. HEI Outcome
 DROP TABLE IF EXISTS migration_st.st_hei_outcome;
 CREATE TABLE migration_st.st_hei_outcome (
   Person_Id                        INT(11),
@@ -1044,7 +1010,7 @@ CREATE TABLE migration_st.st_hei_outcome (
   Voided                           INT(11)
 );
 
--- 28. HEI Immunization
+-- 27. HEI Immunization
 DROP TABLE IF EXISTS migration_st.st_hei_immunization;
 CREATE TABLE migration_st.st_hei_immunization (
   Person_Id				  INT(11),
@@ -1119,7 +1085,7 @@ CREATE TABLE migration_st.st_hei_immunization (
   Voided                  INT(11)
 );
 
--- 29. ART Treatment preparation
+-- 28. ART Treatment preparation
 DROP TABLE IF EXISTS migration_st.st_art_preparation;
 CREATE TABLE migration_st.st_art_preparation (
   Person_Id                           INT(11),
@@ -1144,7 +1110,7 @@ CREATE TABLE migration_st.st_art_preparation (
 );
 
 
--- 30. Enhanced Adherence Screening
+-- 29. Enhanced Adherence Screening
 DROP TABLE IF EXISTS migration_st.st_enhanced_adherence;
 CREATE TABLE migration_st.st_enhanced_adherence (
   Person_Id                        INT(11),
@@ -1197,17 +1163,14 @@ CREATE TABLE migration_st.st_enhanced_adherence (
 );
 
 
--- 31. Defaulter tracing -- missing
+-- 30. Defaulter tracing -- missing
 DROP TABLE IF EXISTS migration_st.st_defaulter_tracing;
 CREATE TABLE migration_st.st_defaulter_tracing (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
-  Exit_Date						   DATE,
-  Exit_Reason						VARCHAR(200),
   Encounter_ID                     VARCHAR(50),
   Tracing_type                     VARCHAR(100),
   Tracing_outcome                  VARCHAR(100),
-  Reason_LostToFollowu				VARCHAR(100),
   Attempt_number                   VARCHAR(100),
   Is_final_trace                   VARCHAR(100),
   True_status                      VARCHAR(100),
@@ -1217,7 +1180,7 @@ CREATE TABLE migration_st.st_defaulter_tracing (
 );
 
 
--- 32. Gender Based Violence Screening (Grouped)
+-- 31. Gender Based Violence Screening (Grouped)
 DROP TABLE IF EXISTS migration_st.st_gbv_screening;
 CREATE TABLE migration_st.st_gbv_screening (
   Person_Id                        INT(11),
@@ -1231,7 +1194,7 @@ CREATE TABLE migration_st.st_gbv_screening (
   Voided                           INT(11)
 );
 
-/* -- 33. Alcohol and drug abuse screening
+/* -- 32. Alcohol and drug abuse screening
 DROP TABLE IF EXISTS migration_st.st_alcohol_screening;
 CREATE TABLE migration_st.st_alcohol_screening (
   Person_Id                        INT(11),
@@ -1243,7 +1206,7 @@ CREATE TABLE migration_st.st_alcohol_screening (
 );
 */
 
--- 33A. Alcohol and drug abuse screening_cage
+-- 32A. Alcohol and drug abuse screening_cage
 CREATE TABLE migration_st.st_cage_alcohol_screening (
   Person_Id     						      INT(11),
   Encounter_Date					      	DATE,
@@ -1263,7 +1226,7 @@ CREATE TABLE migration_st.st_cage_alcohol_screening (
 );
 
 
--- 33B. Alcohol and drug abuse screening_craft
+-- 32B. Alcohol and drug abuse screening_craft
 CREATE TABLE migration_st.st_craft_alcohol_screening (
   Person_Id 						      INT(11),
   Encounter_Date				      DATE,
@@ -1282,7 +1245,7 @@ CREATE TABLE migration_st.st_craft_alcohol_screening (
   Voided 						          INT(11)
 );
 
--- 34. Creating OTZ enrollment table
+-- 33. Creating OTZ enrollment table
 DROP TABLE IF EXISTS migration_st.st_otz_enrollment;
 CREATE TABLE migration_st.st_otz_enrollment (
   Person_Id                        INT(11),
@@ -1301,7 +1264,7 @@ CREATE TABLE migration_st.st_otz_enrollment (
   voided                           INT(11)
 );
 
--- 35. Creating OTZ activity table
+-- 34. Creating OTZ activity table
 DROP TABLE IF EXISTS migration_st.st_otz_activity;
 CREATE TABLE migration_st.st_otz_activity (
   Person_Id                        INT(11),
@@ -1320,7 +1283,7 @@ CREATE TABLE migration_st.st_otz_activity (
   Voided                           INT(11)
 );
 
--- 36. Creating OVC enrollment table
+-- 35. Creating OVC enrollment table
 DROP TABLE IF EXISTS migration_st.st_ovc_enrollment;
 CREATE TABLE migration_st.st_ovc_enrollment (
   Person_Id                        INT(11),
@@ -1336,7 +1299,7 @@ CREATE TABLE migration_st.st_ovc_enrollment (
   Voided                           INT(11)
 );
 
--- 37. Creating OTZ Outcome table
+-- 36. Creating OTZ Outcome table
 DROP TABLE IF EXISTS migration_st.st_otz_outcome;
 CREATE TABLE migration_st.st_otz_outcome (
   Person_Id                        INT(11),
@@ -1350,7 +1313,7 @@ CREATE TABLE migration_st.st_otz_outcome (
   Voided                           int(11)
 );
 
--- 38. Creating OVC Outcome table
+-- 37. Creating OVC Outcome table
 DROP TABLE IF EXISTS migration_st.st_ovc_outcome;
 CREATE TABLE migration_st.st_ovc_outcome (
   Person_Id                        INT(11),
@@ -1363,7 +1326,7 @@ CREATE TABLE migration_st.st_ovc_outcome (
   Voided                           int(11)
 );
 
--- 39. Creating Complaints table
+-- 38. Creating Complaints table
 DROP TABLE IF EXISTS migration_st.st_complaints;
 CREATE TABLE migration_st.st_complaints (
   Person_Id                        INT(11),
@@ -1376,7 +1339,7 @@ CREATE TABLE migration_st.st_complaints (
   Voided                           int(11)
 );
 
--- 40. Creating Allergies table
+-- 39. Creating Allergies table
 DROP TABLE IF EXISTS migration_st.st_allergies;
 CREATE TABLE migration_st.st_allergies (
   Person_Id                        INT(11),
@@ -1389,7 +1352,7 @@ CREATE TABLE migration_st.st_allergies (
   Voided                           int(11)
 );
 
--- 41. Creating Chronic Illness table
+-- 40. Creating Chronic Illness table
 DROP TABLE IF EXISTS migration_st.st_chronic_illness;
 CREATE TABLE migration_st.st_chronic_illness (
   Person_Id                        INT(11),
@@ -1401,7 +1364,7 @@ CREATE TABLE migration_st.st_chronic_illness (
   Voided                           int(11)
 );
 
--- 42. Creating Adverse Drug Reactions table
+-- 41. Creating Adverse Drug Reactions table
 DROP TABLE IF EXISTS migration_st.st_drug_reactions;
 CREATE TABLE migration_st.st_drug_reactions (
   Person_Id                        INT(11),
@@ -1416,7 +1379,7 @@ CREATE TABLE migration_st.st_drug_reactions (
   Voided                           int(11)
 );
 
--- 43. Creating Family planning  table
+-- 42. Creating Family planning  table
 DROP TABLE IF EXISTS migration_st.st_fp_methods;
 CREATE TABLE migration_st.st_fp_methods (
   Person_Id                        INT(11),
@@ -1426,7 +1389,7 @@ CREATE TABLE migration_st.st_fp_methods (
   Voided                           int(11)
 );
 
--- 44. Creating Diagnosis table
+-- 43. Creating Diagnosis table
 DROP TABLE IF EXISTS migration_st.st_diagnosis;
 CREATE TABLE migration_st.st_diagnosis (
   Person_Id                        INT(11),
@@ -1469,7 +1432,7 @@ CREATE TABLE migration_st.st_family_history (
   Linkage_CCC_Number 					VARCHAR(100),
   CCC_Number 		                   VARCHAR(200),
   Voided                           int(11)
-)
+);
 
 -- 46. Creating ART Fast Track table
 DROP TABLE IF EXISTS migration_st.st_family_history;
@@ -1510,38 +1473,84 @@ CREATE TABLE migration_st.st_users
 	User_Name		VARCHAR(100),
 	Status			VARCHAR(100),
 	Designation		VARCHAR(100),
-	GroupNames		VARCHAR(MAX)
-)
-
-
-
--- 6. HTS Client Tracing
-DROP TABLE IF EXISTS migration_st.st_hts_contact_tracing;
-CREATE TABLE migration_st.st_hts_contact_tracing
-(
-  Person_Id                        INT(11),
-  Relationship						VARCHAR(50),
-  Index_PersonId					INT(11),
-  Encounter_Date                   DATE,
-  Encounter_ID                     VARCHAR(50),
-  Contact_Type                     VARCHAR(100),
-  Contact_Outcome                  VARCHAR(100),
-  Reason_uncontacted               VARCHAR(255),
-  OtherReasonSpecify               VARCHAR(255),
-  Remarks                          TEXT,
-  Voided                           INT(11)
+	GroupNames		VARCHAR(100)
 );
 
+-- 48. Creating Population_Type table
+DROP TABLE IF EXISTS migration_st.st_population_type;
+CREATE TABLE migration_st.st_population_type (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Population_Type                  VARCHAR(255),
+  Key_Population_Type              VARCHAR(255),
+  Voided                           int(11)
+);
+<<<<<<< HEAD
 
-DROP TABLE IF EXISTS migration_st.st_relationships
-CREATE TABLE migration_st.st_relationships
-(
-Index_Person_Id				INT(11),
-Relative_Person_Id 			INT(11),
-RelativeFirstName			VARCHAR(200),
-RelativeMiddleame			VARCHAR(200),
-RelativeLastName			VARCHAR(200),
-RelativeSex					VARCHAR(200),
-Relationship				VARCHAR(200),
-Voided						int(11)
-)
+-- 49. Creating Disability table
+DROP TABLE IF EXISTS migration_st.st_disability;
+CREATE TABLE migration_st.st_disability (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Disability                       VARCHAR(100),
+  Disability_Type                  VARCHAR(255),
+  Voided                           int(11)
+);
+
+-- 50. Creating Initial HIV_Test table
+DROP TABLE IF EXISTS migration_st.st_initial_hiv_test;
+CREATE TABLE migration_st.st_initial_hiv_test (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Test_1_Kit_Name                  VARCHAR(100),
+  Test_1_Lot_Number                VARCHAR(100),
+  Test_1_Expiry_Date               DATE,
+  Test_1_Final_Result              VARCHAR(100),
+  Voided                           int(11)
+);
+
+=======
+
+-- 49. Creating Disability table
+DROP TABLE IF EXISTS migration_st.st_disability;
+CREATE TABLE migration_st.st_disability (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Disability                       VARCHAR(100),
+  Disability_Type                  VARCHAR(255),
+  Voided                           int(11)
+);
+
+-- 50. Creating Initial HIV_Test table
+DROP TABLE IF EXISTS migration_st.st_initial_hiv_test;
+CREATE TABLE migration_st.st_initial_hiv_test (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Test_1_Kit_Name                  VARCHAR(100),
+  Test_1_Lot_Number                VARCHAR(100),
+  Test_1_Expiry_Date               DATE,
+  Test_1_Final_Result              VARCHAR(100),
+  Voided                           int(11)
+);
+
+>>>>>>> 9d273e17d6efa78a3c9380f6e48a2c66dd396d60
+-- 51. Creating Confirmatory HIV_Test table
+DROP TABLE IF EXISTS migration_st.st_confirmatory_test;
+CREATE TABLE migration_st.st_confirmatory_test (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Test_2_Kit_Name                  VARCHAR(100),
+  Test_2_Lot_Number                VARCHAR(100),
+  Test_2_Expiry_Date               DATE,
+  Test_2_Final_Result              VARCHAR(100),
+  Final_Result                     VARCHAR(100),
+  Result_given                     VARCHAR(50),
+  Voided                           int(11)
+);
+
