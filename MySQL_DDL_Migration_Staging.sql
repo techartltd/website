@@ -577,35 +577,57 @@ CREATE TABLE migration_st.st_laboratory
   LabDepartmentName VARCHAR(200),
   Voided           INT(11)
 );
--- 18. Pharmacy Extract
-DROP TABLE IF EXISTS migration_st.st_pharmacy_extract;
-CREATE TABLE migration_st.st_pharmacy_extract
+-- 19. Pharmacy Extract
+
+DROP TABLE IF EXISTS pharmacy_extract;
+CREATE TABLE pharmacy_extract
 (
   Person_Id       INT(11),
+  First_Name      VARCHAR(100) NOT NULL,
+  Middle_Name     VARCHAR(100) NULL,
+  Last_Name       VARCHAR(100) NULL,
+  DOB             DATE         NOT NULL,
+  Sex             VARCHAR(10)  NOT NULL,
+  UPN             VARCHAR(20)  NOT NULL,
   Encounter_Date  DATE,
-  Encounter_ID    VARCHAR(50),
   Drug            VARCHAR(100),
+  TreatmentProgram VARCHAR(100),
   Is_arv          VARCHAR(50),
   Is_ctx          VARCHAR(50),
   Is_dapsone      VARCHAR(50),
+  Prophylaxis	 VARCHAR(50),
+  StrengthName		VARCHAR(255),
   Drug_name       VARCHAR(255),
   Dose            VARCHAR(50),
+  MorningDose		VARCHAR(50),
+  MiddayDose	VARCHAR(50),
+  EveningDose	VARCHAR(50),
+  NightDose		VARCHAR(50),
   Unit            VARCHAR(50),
   Frequency       VARCHAR(50),
+  FrequencyMultiplier	VARCHAR(50),
   Duration        VARCHAR(50),
   Duration_units  VARCHAR(20) ,
   Duration_in_days  VARCHAR(50),
+  OrderedQuantity  VARCHAR(100),
+  DispensedQuantity VARCHAR(100),
+  BatchName VARCHAR(50),
+  ExpiryDate DATE,
+  Prescription_providerName VARCHAR(50),
   Prescription_provider VARCHAR(50),
+ Dispensing_providerName varchar(50),
   Dispensing_provider VARCHAR(50),
+  RegimenLine     VARCHAR(50),
   Regimen          VARCHAR(50),
+  TreatmentPlan			VARCHAR(50),
+  TreatmentPlanReason  VARCHAR(50),
   Adverse_effects  VARCHAR(100),
   Date_of_refill   DATE,
   Voided INT(11),
   Date_voided      DATE
 
 );
-
--- 19_20.  MCH Enrollment and ANC Visit
+-- 20_21.  MCH Enrollment and ANC Visit
 DROP TABLE IF EXISTS migration_st.st_mch_enrollment_visit;
 CREATE TABLE migration_st.st_mch_enrollment_visit
 (
