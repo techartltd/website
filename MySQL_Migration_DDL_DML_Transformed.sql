@@ -645,7 +645,7 @@ CREATE TABLE migration_tr.tr_tb_screening
   
 -- 13. IPT Screening transformed table
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
-CREATE TABLE migration_tr.tr_ipt_screening
+CREATE TABLE migration_tr.tr_ipt_screening as
     select
       Person_Id,
       Encounter_Date,
@@ -1902,7 +1902,7 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Gravida,
     EDD,
     Age_at_menarche,
-    Tb_screening,
+    TB_screening_results,
     LMP,
     (case Hiv_status
      when "U" then 1067
@@ -2030,11 +2030,11 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Anc_exercises,
-    (case Tb_screening
+    (case TB_screening_results
      when "No TB" then 1660
      when "PrTB" then 142177
      when "TBRx" then 1662
-     when "Not Done" then 1118  else NULL end)as Tb_screening,
+     when "Not Done" then 1118  else NULL end)as TB_screening_results,
     (case Cacx_screening
      when "No" then 1066
      when "yes" then 1066
@@ -2824,9 +2824,17 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
   Session_number,
   First_session_date,
   Pill_count,
-  Arv_adherence,
-  Has_vl_results,
-  Vl_results_suppressed,
+  (case Arv_adherence
+       when "Good" then 159405
+       when "Inadequate" then 163794
+       when "Poor" then 159407
+       else NULL end)as Arv_adherence,
+  (case Has_vl_results
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Has_vl_results,
+  (case Vl_results_suppressed
+    when "Suppressed" then 1302
+    when "Unsuppresed" then 1066  else NULL end)as Vl_results_suppressed,
   Vl_results_feeling,
   Cause_of_high_vl,
   Way_forward,
@@ -2838,21 +2846,43 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
   Patient_drugs_uptake_most_difficult_times,
   Patient_drugs_daily_uptake_feeling,
   Patient_ambitions,
-  Patient_has_people_to_talk,
+  (case Patient_has_people_to_talk
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as  Patient_has_people_to_talk,
   Patient_enlisting_social_support,
   Patient_income_sources,
-  Patient_challenges_reaching_clinic,
-  Patient_worried_of_accidental_disclosure,
-  Patient_treated_differently,
-  Stigma_hinders_adherence,
-  Patient_tried_faith_healing,
-  Patient_adherence_improved,
-  Patient_doses_missed,
+  (case Patient_challenges_reaching_clinic
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_challenges_reaching_clinic,
+  (case Patient_worried_of_accidental_disclosure
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_worried_of_accidental_disclosure,
+  (case Patient_treated_differently
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_treated_differently,
+  (case Stigma_hinders_adherence
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Stigma_hinders_adherence,
+  (case Patient_tried_faith_healing
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_tried_faith_healing,
+  (case Patient_adherence_improved
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Patient_adherence_improved,
+  (case Patient_doses_missed
+    when "Yes" then 1
+    when "No" then 0  else NULL end)as Patient_doses_missed,
   Review_and_barriers_to_adherence,
-  Other_referrals,
-  Appointments_honoured,
+  (case Other_referrals
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Other_referrals,
+  (case Appointments_honoured
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Appointments_honoured,
   Referral_experience,
-  Home_visit_benefit,
+  (case Home_visit_benefit
+    when "Yes" then 1065
+    when "No" then 1066  else NULL end)as Home_visit_benefit,
   Adherence_plan,
   Next_appointment_date,
   Voided
@@ -2860,11 +2890,34 @@ FROM migration_st.st_enhanced_adherence WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
--- 31. Defaulter tracing -- missing
+-- 31. Defaulter tracing
+DROP TABLE IF EXISTS migration_tr.tr_defaulter_tracing;
+CREATE TABLE migration_tr.tr_defaulter_tracing as
+    select
+          Person_Id,
+          Encounter_Date,
+          Encounter_ID,
+          Tracing_type,
+          (case Tracing_outcome
+           when "Traced patient (unable to locate)" then 1118
+           when "Traced and located" then 1267 when "Did not attempt to trace patient" then 1118 else NULL end)as Tracing_outcome,
+           Attempt_number,
+           Is_final_trace,
+           True_status,
+           (case Cause_of_death
+           when "Other HIV disease resulting in other diseases or conditions leading to death" then 162574
+           when "HIV disease resulting in cancer" then 116030 when "HIV disease resulting in TB" then 164500
+           when "HIV disease resulting in other infectious and parasitic diseases" then 151522 when "Other natural causes not directly related to HIV" then 133481
+           when "Non-natural causes (e.g, trauma, accident, suicide, war, etc)" then 1603 when "Unknown cause" then 5622 else NULL end)as Cause_of_death,
+           Comments,
+           Voided
+    FROM migration_st.st_defaulter_tracing WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
 
 -- 32. Gender Based Violence Screening Grouped
 DROP TABLE IF EXISTS migration_tr.tr_gbv_screening;
-CREATE TABLE migration_tr.tr_gbv_screening
+CREATE TABLE migration_tr.tr_gbv_screening as
     select
          Person_Id,
           Encounter_Date,
@@ -2889,7 +2942,7 @@ CREATE TABLE migration_tr.tr_gbv_screening
 
 -- 33. Alcohol and drug abuse screening
 DROP TABLE IF EXISTS migration_tr.tr_alcohol_screening;
-CREATE TABLE migration_tr.tr_alcohol_screening
+CREATE TABLE migration_tr.tr_alcohol_screening as
     select
        Person_Id,
         Encounter_Date,
@@ -2916,6 +2969,99 @@ CREATE TABLE migration_tr.tr_alcohol_screening
         Voided
     FROM migration_st.st_alcohol_screening;
 
+-- 34. OTZ Enrolment
+DROP TABLE IF EXISTS migration_tr.tr_otz_enrolment;
+CREATE TABLE migration_tr.tr_otz_enrolment as
+   select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
+    (case Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
+    (case Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
+    (case Treatment_literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_literacy,
+    (case Transition_to_adult_care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_adult_care,
+    (case Making_decision_future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_decision_future,
+    (case Srh when "Yes" then 1065 when NULL then 1066 else NULL end) as Srh,
+    (case Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
+    (case Transfer_in when "Yes" then 1065 when NULL then 1066 else NULL end) as Transfer_in,
+    Initial_Enrolment_Date,
+    voided
+    FROM migration_st.st_otz_enrolment WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+
+-- 35. OTZ Activity
+DROP TABLE IF EXISTS migration_tr.tr_otz_activity;
+CREATE TABLE migration_tr.tr_otz_activity as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
+    (case Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
+    (case Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
+    (case Treatment_Literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_Literacy,
+    (case Transition_to_Adult_Care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_Adult_Care,
+    (case Making_Decision_Future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_Decision_Future,
+    (case srh when "Yes" then 1065 when NULL then 1066 else NULL end) as srh,
+    (case Beyond_Third_Ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_Third_Ninety,
+    (case Attended_Support_Group when "Yes" then 1065 when "No" then 1066 else NULL end) as Attended_Support_Group,
+    Remarks,
+    voided
+    FROM migration_st.st_otz_activity WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+
+    -- 36. OTZ Outcome
+DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
+CREATE TABLE migration_tr.tr_otz_outcome as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
+    Death_Date,
+    Transfer_Facility,
+    Transfer_Date,
+    voided
+    FROM migration_st.st_otz_outcome WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+
+-- 37. OVC Enrolment
+DROP TABLE IF EXISTS migration_tr.tr_ovc_enrolment;
+CREATE TABLE migration_tr.tr_ovc_enrolment as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Caregiver_enrolled_here when "Yes" then 1065 when NULL then 1066 else NULL end) as Caregiver_enrolled_here,
+    Caregiver_name,
+    (case Caregiver_gender when "Female" then 1535 when "Male" then 1534 else NULL end) as Caregiver_gender,
+    (case Relationship_to_Client when "Childrenshome" then 162722 when "Aunt" then 975 when "Uncle" then 974 when "Sibling" then 972 when "Parent" then 1527 else NULL end) as Relationship_to_Client,
+    Caregiver_Phone_Number,
+    (case Client_Enrolled_cpims when "Yes" then 1065 when "No" then 1066 else NULL end) as Client_Enrolled_cpims,
+    Partner_Offering_OVC,
+    voided
+    FROM migration_st.st_ovc_enrolment WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+
+	    -- 38. OVC Outcome
+DROP TABLE IF EXISTS migration_tr.tr_ovc_outcome;
+CREATE TABLE migration_tr.tr_ovc_outcome as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Exit_Reason when "GraduatedOutOVC" then 1267 when "ExitWithoutGraduation" then 165219 when "TransferOutNonPepfarFacility" then 159492 when "TransferOutPepfarFacility" then 160036 else NULL end) as Exit_Reason,
+    Transfer_Facility,
+    Transfer_Date,
+    voided
+    FROM migration_st.st_ovc_outcome WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
 
 	
 	
