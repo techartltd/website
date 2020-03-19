@@ -1554,3 +1554,23 @@ CREATE TABLE migration_st.st_confirmatory_test (
   Voided                           int(11)
 );
 
+
+
+DROP TABLE IF EXISTS migration_st.st_obstetric_history;
+CREATE TABLE migration_st.st_obstetric_history (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Pregnancy_order                  VARCHAR(100),
+  Year                             VARCHAR(100),
+  Number_ANC_Visits_Attended       VARCHAR(255),
+  Place_of_delivery                VARCHAR(100),
+  Maturity_in_weeks                VARCHAR(100),
+  Duration_of_labour               VARCHAR(255),
+  Type_of_delivery                 VARCHAR(255),
+  Birth_weight                     VARCHAR(50),
+  Sex                              VARCHAR(50),
+  Outcome                          VARCHAR(255),
+  Puerperium_events                VARCHAR(255),
+  Voided                           int(11)
+);
