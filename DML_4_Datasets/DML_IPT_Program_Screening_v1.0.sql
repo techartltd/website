@@ -33,6 +33,8 @@ SELECT p.PersonId
 		ELSE NULL
 		END AS Tenderness
 	,pipt.IptStartDate AS IPT_Start_Date
+	,pipt.CreateDate created_at
+	,pipt.CreatedBy created_by
 FROM PatientIptWorkup pipt
 INNER JOIN PatientMasterVisit pmv ON pmv.Id = pipt.PatientMasterVisitId
 INNER JOIN Patient p ON p.Id = pipt.PatientId
