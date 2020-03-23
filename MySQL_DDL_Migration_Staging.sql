@@ -1572,3 +1572,105 @@ CREATE TABLE migration_st.st_obstetric_history (
   Puerperium_events                VARCHAR(255),
   Voided                           int(11)
 );
+
+
+
+
+
+
+DROP TABLE IF EXISTS migration_st.st_case_summary;
+CREATE TABLE migration_st.st_case_summary
+
+	Person_Id							int(11),
+	Encounter_Date						DATE,				
+	Encounter_ID						 VARCHAR(50),
+	PrimaryReasonConsulation			VARCHAR(8000),
+	CaseClinicalEvaluation				VARCHAR(8000),
+	NoAdherenceCounsellingAssessment	VARCHAR(8000),
+	HomeVisits36Months					VARCHAR(8000),
+	SupportStructures					varchar(8000),
+	EvidenceAdherenceConcerns			VARCHAR(8000),
+	NoofDots36Months					VARCHAR(8000),
+	NoofDots36Months2					VARCHAR(8000),
+	RootCausePoorAdherence				VARCHAR(8000),
+	EvaluationTreatmentFailure			VARCHAR(8000),
+	EvaluationTreatmentFailureNotes		VARCHAR(8000),
+	CommentonTreatment					VARCHAR(8000),
+	DrugResistanceSensitivityTesting	VARCHAR(8000),
+	MultidisciplinaryTeamDiscussedPatientCase VARCHAR(8000),
+	MDTMembers								VARCHAR(8000)
+);
+
+
+
+DROP TABLE IF EXISTS migration_st.st_Depression_Screening;
+CREATE TABLE migration_st.st_Depression_Screening
+(
+	Person_Id						int(11),
+	Encounter_Date					DATE,
+	Encounter_ID					VARCHAR(50),
+	FeelingDownDepressed			VARCHAR(200),
+	LittleNoInterest				VARCHAR(200),
+	PHQLittleNoInterest				VARCHAR(200),
+	PHQFeelingDownDepressed			VARCHAR(200),
+	PHQTroubleSleeping				VARCHAR(200),
+	PHQFeelingTiredLittleEnergy		VARCHAR(200),
+	PHQPoorAppetiteOvereating		VARCHAR(200),
+	PHQFeelingBadAboutYourSelf		VARCHAR(200),
+	PHQTroubleConcentrating			VARCHAR(200),
+	PHQMovingSpeakingSlowly			VARCHAR(200),
+	RecommendedManagement			 VARCHAR(200),
+	DepressionSeverity				VARCHAR(200),
+	DepressionTotal					VARCHAR(200),
+);
+
+
+
+DROP TABLE IF EXISTS migration_st.st_Adherence_Barriers;
+CREATE TABLE migration_st.st_Adherence_Barriers
+(
+	Person_Id								INT(11),
+	Encounter_Date							DATE
+	Encounter_ID							VARCHAR(50),
+	AcceptedHivStatus						VARCHAR(200),
+	AppropiateDisclosureUnderWay			VARCHAR(200),
+	UnderstandingHIVAffectBody				VARCHAR(200),
+	UndestandingARTHowWorks					VARCHAR(200),
+	UnderstandSideEffects					VARCHAR(200),
+	UnderstandBenefitAdherence				VARCHAR(200),
+	UnderstandConsequenceNonAdherence		VARCHAR(200),
+	AboutTypicalDay							VARCHAR(8000),
+	TellHowYouTakeEachMedicine				VARCHAR(8000),
+	DoIncaseofVisitTravel					VARCHAR(8000),
+	WhoIsThePrimaryGiverLevelCommitment		VARCHAR(8000),
+	WhodoyouliveWith						VARCHAR(8000),
+	WhoIsAwareHivStatus						VARCHAR(8000),
+	SupportSystem							VARCHAR(8000),
+	SupportSystemNotes						VARCHAR(8000),
+	ChangesRelationshipFamilyMembers		VARCHAR(8000),
+	ChangesRelationshipFamilyMembersNotes	VARCHAR(8000),
+	BotherFindHivStatus						VARCHAR(8000),
+	BotherFindHivStatusNotes				VARCHAR(8000),
+	TreatDifferently						VARCHAR(8000),
+	TreatDifferentlyNotes					VARCHAR(8000),
+	Stigma									VARCHAR(8000),
+	StigmaNotes								VARCHAR(8000),
+	StopMedicineReligousBelief				VARCHAR(8000),
+	StopMedicineReligousBeliefNotes			VARCHAR(8000),
+	ReferredToOtherServices					VARCHAR(8000),
+	AttendAppointments						VARCHAR(8000),
+	NeedReorganizedReferrals				VARCHAR(8000),
+);
+
+
+
+DROP TABLE IF EXISTS migration_st.st_Followup_Education;
+CREATE TABLE migration_st.st_Followup_Education
+(
+	Person_Id								int(11),
+	Encounter_Date							DATE,				
+	Encounter_ID							VARCHAR(50),
+	CounsellingType							VARCHAR(200),
+	CounsellingTopic						VARCHAR(200),
+	Comments								VARCHAR(200),
+)
