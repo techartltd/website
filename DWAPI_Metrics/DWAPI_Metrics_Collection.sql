@@ -174,4 +174,16 @@ from PatientPsychosocialCriteria part
 inner join Patient p on p.Id=part.PatientId
 inner join PatientMasterVisit pmv on pmv.Id=part.PatientMasterVisitId) A
 
+-- Counts all Family Members HIV History
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)
+SELECT 'HIV Family History', 'Number of Family Members HIV History', COUNT(*)Total FROM (
+Select distinct  p.PersonId as Person_Id, pr.PersonId as Relative_Person_Id, pr.CreateDate as Encounter_Date
+From Patient P
+Inner join PersonRelationship pr on pr.PatientId=p.Id
+left join Person pre on pre.Id=pr.PersonId
+LEFT JOIN (SELECT [Ptn_pk] ,a.CreateDate FROM [dbo].[dtl_FamilyInfo] a
+  INNER JOIN [mst_HIVCareStatus] c on c.id=a.[HivCareStatus]
+  where a.deleteflag=0) relpatient on relpatient.ptn_pk=p.ptn_pk and p.id=pr.patientid and pr.createdate=relpatient.CreateDate
+ left join PatientLinkage plink on plink.PersonId=pr.PersonId)A
+
 select * from DWAPI_Migration_Metrics
