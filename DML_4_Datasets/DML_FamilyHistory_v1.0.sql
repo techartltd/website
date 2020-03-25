@@ -1,4 +1,4 @@
-exec pr_OpenDecryptedSession;
+--exec pr_OpenDecryptedSession;
 select distinct  p.PersonId as Person_Id,
 pr.PersonId as Relative_Person_Id,
 pr.CreateDate as Encounter_Date,
@@ -23,7 +23,7 @@ pr.[CreateDate]created_at
  inner join PersonRelationship pr on pr.PatientId=p.Id
 
 left join Person pre on pre.Id=pr.PersonId
-LEFT JOIN (SELECT [Ptn_pk] 
+LEFT JOIN (SELECT distinct [Ptn_pk] 
 	  ,CASE WHEN d.Name IS NULL THEN 'Unknown'
 		ELSE d.Name END AS[RelationshipType]
 	  ,b.Name HivStatus
@@ -32,10 +32,10 @@ LEFT JOIN (SELECT [Ptn_pk]
 		ELSE c.Name END AS InCare
 	  ,a.CreateDate
   FROM [dbo].[dtl_FamilyInfo] a
-  LEFT JOIN mst_decode d on d.id=[RelationshipType]
+  LEFT JOIN mst_RelationshipType d on d.id=[RelationshipType]
   INNER JOIN mst_decode b on b.id=[HivStatus]
   INNER JOIN [mst_HIVCareStatus] c on c.id=a.[HivCareStatus]
-  where a.deleteflag=0 --and ptn_pk=2184
+  where a.deleteflag=0 
 ) relpatient on relpatient.ptn_pk=p.ptn_pk and p.id=pr.patientid and pr.createdate=relpatient.CreateDate
  left join PatientLinkage plink on plink.PersonId=pr.PersonId
  left join(  select pcc.PatientId,pcc.IdentifierValue,pcc.PersonId from( select pid.PatientId,p.PersonId,pid.PatientEnrollmentId,ROW_NUMBER() OVER(partition by pid.PatientId order by pid.PatientEnrollmentId desc)rownum,pid.IdentifierTypeId,pid.IdentifierValue,id.Code
