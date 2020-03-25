@@ -1,4 +1,4 @@
---exec pr_OpenDecryptedSession;
+exec pr_OpenDecryptedSession;
 select distinct  p.PersonId as Person_Id,
 pr.PersonId as Relative_Person_Id,
 pr.CreateDate as Encounter_Date,
