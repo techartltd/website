@@ -231,3 +231,19 @@ inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
 and pmv.PatientId=pe.PatientId 
 ) a
 
+--OVC Enrollments
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue) 
+SELECT 'OVC Enrollment', 'Total Number of OVC Enrollments', count(p.PersonId)Total
+FROM  Patient p
+INNER JOIN PatientEnrollment pe on  p.Id=pe.PatientId
+INNER JOIN ServiceArea sa on sa.Id=pe.ServiceAreaId 
+WHERE sa.Code='OVC' 
+
+--OVC Outcomes
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue) 
+SELECT 'OVC Outcome', 'Total Number of OVC Outcomes', count(p.PersonId)Total
+FROM PatientCareending  pce
+INNER JOIN Patient p on pce.PatientId=p.Id
+INNER JOIN PatientEnrollment pe on  pe.Id=pce.PatientEnrollmentId
+INNER JOIN ServiceArea sa on sa.Id=pe.ServiceAreaId 
+WHERE sa.Code='OVC' 
