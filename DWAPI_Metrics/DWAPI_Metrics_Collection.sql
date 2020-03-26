@@ -79,6 +79,8 @@ join Identifiers i ON i.Id = p.IdentifierTypeId WHERE i.DeleteFlag = 0 group by 
 INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue) SELECT 'Care Termination',  l.ItemDisplayName, COUNT(*) FROM PatientCareending p
 join LookupItemView l ON p.ExitReasON = l.ItemId WHERE p.ExitDate is not null group by l.ItemDisplayName
 
+<<<<<<< HEAD
+=======
 
 -- Selects Patients who have been screen for TB
 INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)  
@@ -187,3 +189,45 @@ LEFT JOIN (SELECT [Ptn_pk] ,a.CreateDate FROM [dbo].[dtl_FamilyInfo] a
  left join PatientLinkage plink on plink.PersonId=pr.PersonId)A
 
 select * from DWAPI_Migration_Metrics
+
+-- depression screening
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)  select 'Depression Screening', 'Patients screened', count (*) from (
+select distinct pe.PatientId ,pmv.VisitDate
+ from  PatientEncounter pe
+inner join
+(select * from LookupItemView where MasterName='EncounterType'
+and ItemName in('DepressionScreening','Adherence-Barriers') )ab on ab.ItemId=pe.EncounterTypeId
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+and pmv.PatientId=pe.PatientId) a
+
+
+-- followup education
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)  
+
+select 'Followup Education', 'Patients screened', count (*) from (
+select distinct p.PersonId as Person_Id,fe.VisitDate as Encounter_Date,NULL as Encounter_ID,
+mct.[Name]
+as CounsellingType,
+mctt.[Name] as CounsellingTopic,
+fe.Comments
+
+from dtl_FollowupEducation fe
+inner join Patient p on p.ptn_pk=fe.Ptn_pk
+inner join mst_CouncellingType mct on mct.ID=fe.CouncellingTypeId
+inner join mst_CouncellingTopic mctt on mctt.ID=fe.CouncellingTopicId) a
+
+
+-- Adherence Barriers
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)  
+
+select 'Adherence Barriers', 'Patients screened', count (*) from (
+select pe.PatientId
+,pmv.VisitDate
+ from PatientEncounter pe
+inner join
+(select * from LookupItemView where MasterName='EncounterType'
+and ItemName='Adherence-Barriers')ab on ab.ItemId=pe.EncounterTypeId
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+and pmv.PatientId=pe.PatientId 
+) a
+
