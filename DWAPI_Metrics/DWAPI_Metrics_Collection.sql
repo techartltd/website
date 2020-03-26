@@ -79,5 +79,4 @@ join Identifiers i ON i.Id = p.IdentifierTypeId WHERE i.DeleteFlag = 0 group by 
 INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue) SELECT 'Care Termination',  l.ItemDisplayName, COUNT(*) FROM PatientCareending p
 join LookupItemView l ON p.ExitReasON = l.ItemId WHERE p.ExitDate is not null group by l.ItemDisplayName
 
-
 select * from DWAPI_Migration_Metrics
