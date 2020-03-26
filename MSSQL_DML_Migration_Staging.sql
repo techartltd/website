@@ -4942,6 +4942,70 @@ left join Mst_Batch ba on ba.Id=dpo.BatchNo
 
 
 
+SELECT  p.Id as Person_Id, 
+d.visitdate AS Encounter_Date,
+       NULL AS Encounter_ID,
+	   NULL as Pregnancy_Order,
+	   h.VisitNumber as Number_ANC_Visits_Attended,
+	   NULL as Place_of_Delivery,
+	   pr.Gravidae as Maturity_in_weeks,
+	   delivery.DurationOfLabour as Duration_Of_Labour,
+	   delivery.ModeOfDelivery as Type_of_Delivery,
+	   dbbi.BirthWeight as Birth_Weight,
+	   (SELECT TOP 1 itemname
+   FROM [dbo].[lookupitemview]
+   WHERE itemid = dbbi.sex) as  Sex,
+   NULL as Outcome,
+   NULL as Puerperium_events,
+  h.DeleteFlag as Voided
+FROM person p
+INNER JOIaN ptient b ON b.personid = p.id
+INNER JOIN patientmastervisit d ON b.id=d.PatientId
+INNER JOIN
+  (SELECT a.patientid,
+          enrollmentdate,
+          identifiervalue,
+          NAME,
+          visitdate,
+          patientmastervisitid,
+          visittype,
+          [visitnumber],
+          [dayspostpartum],
+		  g.DeleteFlag
+   FROM patientenrollment a
+   INNER JOIN servicearea b ON a.serviceareaid = b.id
+   INNER JOIN patientidentifier c ON c.patientid = a.patientid
+   INNER JOIN serviceareaidentifiers d ON c.identifiertypeid = d.identifierid
+   AND b.id = d.serviceareaid
+   INNER JOIN dbo.visitdetails AS g ON a.patientid = g.patientid
+   AND b.id = g.serviceareaid
+   WHERE b.NAME = 'Maternity') AS h ON b.id = h.patientid and h.PatientMasterVisitId=d.Id
+   LEFT JOIN
+  (SELECT DISTINCT delivery.deliveryid,
+                   [patientmastervisitid],
+                   [durationoflabour],
+                   [dateofdelivery],
+                   [timeofdelivery],
+                   lkup2.itemname ModeOfDelivery,
+                   lkup3.itemname [PlacentaComplete],
+                   [bloodlosscapacity],
+                   lkup4.itemname [MotherCondition],
+                   lkup.itemname [DeliveryComplicationsExperienced],
+                   [deliverycomplicationnotes],
+                   [deliveryconductedby],
+                   [maternaldeathauditdate],
+                   lt.[name] AS MaternalDeathAudited,
+                   lkbl.itemname AS [BloodLossClassification]
+   FROM dbo.patientdelivery AS delivery
+   LEFT JOIN dbo.lookupitemview AS lkup2 ON lkup2.itemid = delivery.[modeofdelivery]
+   LEFT JOIN dbo.lookupitemview AS lkup3 ON lkup3.itemid = delivery.[placentacomplete]
+   LEFT JOIN dbo.lookupitemview AS lkup4 ON lkup4.itemid = delivery.[mothercondition]
+   LEFT JOIN dbo.lookupitemview AS lkup ON lkup.itemid = delivery.[deliverycomplicationsexperienced]
+   LEFT JOIN dbo.lookupitemview AS lkbl ON lkbl.itemid = delivery.bloodlossclassification
+   LEFT JOIN lookupitem lt ON lt.id = delivery.maternaldeathaudited) delivery ON delivery.patientmastervisitid = d.id
+   left join Pregnancy pr on pr.PatientId=b.Id and pr.PatientMasterVisitId=d.Id
+   LEFT JOIN dbo.deliveredbabybirthinformation dbbi ON dbbi.patientmastervisitid = d.id
+AND delivery.deliveryid = dbbi.deliveryid
 
  
  
@@ -4950,3 +5014,505 @@ left join Mst_Batch ba on ba.Id=dpo.BatchNo
  
  
  
+ 
+ ---CaseSummary
+ select p.PersonId as Person_Id
+,pmv.VisitDate as Encounter_Date,
+NULL as Encounter_ID,
+prr.ClinicalNotes as PrimaryReasonConsulation,
+cce.ClinicalNotes as CaseClinicalEvaluation,
+cq1.ClinicalNotes as NoAdherenceCounsellingAssessment,
+cq2.ClinicalNotes as HomeVisits36Months,
+cq3.ClinicalNotes as SupportStructures,
+cq4.ClinicalNotes as EvidenceAdherenceConcerns,
+cq5.ClinicalNotes as NoofDots36Months,
+cq6.ClinicalNotes as NoofDots36Months2,
+cq7.ClinicalNotes as RootCausePoorAdherence,
+cq8screen.Answer as EvaluationTreatmentFailure,
+cq8.ClinicalNotes as EvaluationTreatmentFailureNotes,
+cott.ClinicalNotes as CommentonTreatment,
+drtd.ClinicalNotes as DrugResistanceSensitivityTesting,
+mtd.ClinicalNotes as MultidisciplinaryTeamDiscussedPatientCase,
+mdtmem.ClinicalNotes as MDTMembers
+
+ from  PatientEncounter pe
+inner join
+(select * from LookupItemView where MasterName='EncounterType'
+and ItemName = 'CaseSummary' )ab on ab.ItemId=pe.EncounterTypeId
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+and pmv.PatientId=pe.PatientId
+inner join Patient p on p.Id=pe.PatientId
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PrimaryReason' and lt.MasterName='CaseSummary'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) prr on  prr.PatientId=p.id  and prr.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='CaseClinicalEvaluation' and lt.MasterName='CaseSummary'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cce on  cce.PatientId=p.id  and cce.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ1' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq1 on  cq1.PatientId=p.id  and cq1.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ2' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq2 on  cq2.PatientId=p.id  and cq2.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ3' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq3 on  cq3.PatientId=p.id  and cq3.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ4' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq4 on  cq4.PatientId=p.id  and cq4.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ5' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq5 on  cq5.PatientId=p.id  and cq5.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ6' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq6 on  cq6.PatientId=p.id  and cq6.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ7' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq7 on  cq7.PatientId=p.id  and cq7.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ClinicalEvaluationQ8' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq8 on  cq8.PatientId=p.id  and cq8.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='ClinicalEvaluationQ8' and lt.MasterName='ClinicalEvaluation'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cq8screen on  cq8screen.PatientId=p.id  and cq8screen.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='CommentOnTreatment' and lt.MasterName='OtherRelevantARTHistory'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) cott on  cott.PatientId=p.id  and cott.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DrugResistanceTestDone' and lt.MasterName='OtherRelevantARTHistory'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) drtd on  drtd.PatientId=p.id  and drtd.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='MultidisciplinaryTeamDiscussedPatientCase' and lt.MasterName='OtherRelevantARTHistory'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) mtd on  mtd.PatientId=p.id  and mtd.PatientMasterVisitId=pmv.Id
+
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='MDTmembers' and lt.MasterName='OtherRelevantARTHistory'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) mdtmem on  mdtmem.PatientId=p.id  and mdtmem.PatientMasterVisitId=pmv.Id
+ 
+ --DepressionScreening
+ 
+ 
+ select distinct p.PersonId as Person_Id
+,pmv.VisitDate as Encounter_Date,
+NULL as Encounter_ID,
+ds1.Answer as  FeelingDownDepressed,
+ds2.Answer as LittleNoInterest,
+phq1.Answer as PHQLittleNoInterest,
+phq2.Answer as PHQFeelingDownDepressed,
+phq3.Answer as PHQTroubleSleeping,
+phq4.Answer as PHQFeelingTiredLittleEnergy,
+phq5.Answer as PHQPoorAppetiteOvereating,
+phq6.Answer as PHQFeelingBadAboutYourSelf,
+phq7.Answer as PHQTroubleConcentrating,
+phq8.Answer as PHQMovingSpeakingSlowly,
+rcm.ClinicalNotes as RecommendedManagement,
+dss.ClinicalNotes as DepressionSeverity,
+dst.ClinicalNotes as DepressionTotal
+
+ from  PatientEncounter pe
+inner join
+(select * from LookupItemView where MasterName='EncounterType'
+and ItemName in('DepressionScreening','Adherence-Barriers') )ab on ab.ItemId=pe.EncounterTypeId
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+and pmv.PatientId=pe.PatientId
+inner join Patient p on p.Id=pe.PatientId
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Question1' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq1 on  phq1.PatientId=p.id  and phq1.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions2' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq2 on  phq2.PatientId=p.id  and phq2.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions3' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq3 on  phq3.PatientId=p.id  and phq3.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions4' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq4 on  phq4.PatientId=p.id  and phq4.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions5' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq5 on  phq5.PatientId=p.id  and phq5.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions6' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq6 on  phq6.PatientId=p.id  and phq6.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions7' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq7 on  phq7.PatientId=p.id  and phq7.PatientMasterVisitId=pmv.Id
+
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PHQ9Questions8' and lt.MasterName='PHQ9Questions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) phq8 on  phq8.PatientId=p.id  and phq8.PatientMasterVisitId=pmv.Id
+
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='DSQuestion1' and lt.MasterName='DepressionScreeningQuestions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) ds1 on  ds1.PatientId=p.id  and ds1.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='DSQuestion2' and lt.MasterName='DepressionScreeningQuestions'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) ds2 on  ds2.PatientId=p.id  and ds2.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='ReccommendedManagement' and lt.MasterName='DepressionScreeningNotes'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) rcm on  rcm.PatientId=p.id  and rcm.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DepressionSeverity' and lt.MasterName='DepressionScreeningNotes'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) dss on  dss.PatientId=p.id  and dss.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DepressionTotal' and lt.MasterName='DepressionScreeningNotes'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) dst on  dst.PatientId=p.id  and dst.PatientMasterVisitId=pmv.Id
+
+
+
+--AdherenceBarriers
+
+
+
+
+
+select p.PersonId as Person_Id
+,pmv.VisitDate as Encounter_Date,
+NULL as Encounter_ID,
+ahsq1.Answer as AcceptedHivStatus,
+ahsq2.Answer as AppropiateDisclosureUnderWay,
+uhq1.Answer as UnderstandingHIVAffectBody,
+uhq2.Answer as UndestandingARTHowWorks,
+uhq3.Answer as UnderstandSideEffects,
+uhq4.Answer as UnderstandBenefitAdherence,
+uhq5.Answer as UnderstandConsequenceNonAdherence,
+dr1.ClinicalNotes as AboutTypicalDay,
+dr2.ClinicalNotes as TellHowYouTakeEachMedicine,
+dr3.ClinicalNotes as DoIncaseofVisitTravel,
+dr4.ClinicalNotes as WhoIsThePrimaryGiverLevelCommitment,
+pcq1.ClinicalNotes as WhodoyouliveWith,
+pcq2.ClinicalNotes as WhoIsAwareHivStatus,
+pcq3screen.Answer as SupportSystem,
+pcq3.ClinicalNotes as SupportSystemNotes,
+pcq4screen.Answer as ChangesRelationshipFamilyMembers,
+pcq4.ClinicalNotes as ChangesRelationshipFamilyMembersNotes,
+pcq5screen.Answer as BotherFindHivStatus,
+pcq5.ClinicalNotes as BotherFindHivStatusNotes,
+pcq6screen.Answer as TreatDifferently,
+pcq6.ClinicalNotes as TreatDifferentlyNotes,
+pcq7screen.Answer as   Stigma,
+pcq7.ClinicalNotes as StigmaNotes,
+pcq8screen.Answer as   StopMedicineReligousBelief,
+pcq8.ClinicalNotes as StopMedicineReligousBeliefNotes,
+rnq1.Answer as ReferredToOtherServices,
+rnq2.Answer as AttendAppointments,
+rnq3.ClinicalNotes as NeedReorganizedReferrals
+
+ from PatientEncounter pe
+inner join
+(select * from LookupItemView where MasterName='EncounterType'
+and ItemName='Adherence-Barriers')ab on ab.ItemId=pe.EncounterTypeId
+inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
+and pmv.PatientId=pe.PatientId
+inner join Patient p on p.Id=pe.PatientId
+left  join (select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='AHSQuestion1' and lt.MasterName='AwarenessofHIVStatus'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) ahsq1 on ahsq1.PatientId=p.id  and ahsq1.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='AHSQuestion2' and lt.MasterName='AwarenessofHIVStatus'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) ahsq2 on ahsq2.PatientId=p.id  and ahsq2.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='UHIQ1' and lt.MasterName='UnderstandingOfHIVInfection'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) uhq1 on  uhq1.PatientId=p.id  and uhq1.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='UHIQ2' and lt.MasterName='UnderstandingOfHIVInfection'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) uhq2 on  uhq2.PatientId=p.id  and uhq2.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='UHIQ3' and lt.MasterName='UnderstandingOfHIVInfection'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) uhq3 on  uhq3.PatientId=p.id  and uhq3.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='UHIQ4' and lt.MasterName='UnderstandingOfHIVInfection'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) uhq4 on  uhq4.PatientId=p.id  and uhq4.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='UHIQ5' and lt.MasterName='UnderstandingOfHIVInfection'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) uhq5 on  uhq5.PatientId=p.id  and uhq5.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DR1' and lt.MasterName='DailyRoutine'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) dr1 on  dr1.PatientId=p.id  and dr1.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DR2' and lt.MasterName='DailyRoutine'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) dr2 on  dr2.PatientId=p.id  and dr2.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DR3' and lt.MasterName='DailyRoutine'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) dr3 on  dr3.PatientId=p.id  and dr3.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='DR4' and lt.MasterName='DailyRoutine'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) dr4 on  dr4.PatientId=p.id  and dr4.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ1' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq1 on  pcq1.PatientId=p.id  and pcq1.PatientMasterVisitId=pmv.Id
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ2' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq2 on  pcq2.PatientId=p.id  and pcq2.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PCQ3' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq3screen on  pcq3screen.PatientId=p.id  and pcq3screen.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ3' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq3 on  pcq3.PatientId=p.id  and pcq3.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PCQ4' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq4screen on  pcq4screen.PatientId=p.id  and pcq4screen.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ4' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq4 on  pcq4.PatientId=p.id  and pcq4.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PCQ5' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq5screen on  pcq5screen.PatientId=p.id  and pcq5screen.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ5' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq5 on  pcq5.PatientId=p.id  and pcq5.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PCQ6' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq6screen on  pcq6screen.PatientId=p.id  and pcq6screen.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ6' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq6 on  pcq6.PatientId=p.id  and pcq6.PatientMasterVisitId=pmv.Id
+
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PCQ7' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq7screen on  pcq7screen.PatientId=p.id  and pcq7screen.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ7' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq7 on  pcq7.PatientId=p.id  and pcq7.PatientMasterVisitId=pmv.Id
+
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='PCQ8' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq8screen on  pcq8screen.PatientId=p.id  and pcq7screen.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='PCQ8' and lt.MasterName='PsychosocialCircumstances'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) pcq8 on  pcq8.PatientId=p.id  and pcq8.PatientMasterVisitId=pmv.Id
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='RNQ1' and lt.MasterName='ReferralsNetworks'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) rnq1 on  rnq1.PatientId=p.id  and rnq1.PatientMasterVisitId=pmv.Id
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,(select top 1 [Name] from LookupItem lt where lt.Id= ps.ScreeningValueId) as Answer  from PatientScreening ps
+inner join LookupItemView lt on lt.ItemId=ps.ScreeningCategoryId
+where lt.ItemName='RNQ2' and lt.MasterName='ReferralsNetworks'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) rnq2 on  rnq2.PatientId=p.id  and rnq2.PatientMasterVisitId=pmv.Id
+
+
+
+left join(select  ps.PatientId,ps.PatientMasterVisitId,ps.DeleteFlag,lt.ItemDisplayName as Question,ps.ClinicalNotes
+ from PatientClinicalNotes ps
+inner join LookupItemView lt on lt.ItemId=ps.NotesCategoryId
+where lt.ItemName='RNQ3' and lt.MasterName='ReferralsNetworks'
+and (ps.DeleteFlag is null or ps.DeleteFlag =0)
+) rnq3 on  rnq3.PatientId=p.id  and rnq3.PatientMasterVisitId=pmv.Id
+
+--FollowupEducation
+
+
+select p.PersonId as Person_Id,fe.VisitDate as Encounter_Date,NULL as Encounter_ID,
+mct.[Name]
+as CounsellingType,
+mctt.[Name] as CounsellingTopic,
+fe.Comments
+
+from dtl_FollowupEducation fe
+inner join Patient p on p.ptn_pk=fe.Ptn_pk
+inner join mst_CouncellingType mct on mct.ID=fe.CouncellingTypeId
+inner join mst_CouncellingTopic mctt on mctt.ID=fe.CouncellingTopicId
+
+

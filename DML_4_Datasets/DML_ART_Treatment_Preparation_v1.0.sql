@@ -1,4 +1,4 @@
-select p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL
+select distinct p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL
    as Encounter_ID,
    psc.Understands_hiv_art_benefits,
    psc.Screened_negative_substance_abuse,
@@ -16,7 +16,7 @@ select p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL
    pssc.Enrolled_in_reminder_system,
    pssc.Other_support_systems,
    part.DeleteFlag,
-   created_at,
+   cast(created_at as date)created_at,
    created_by
   from (
   select  psc.PatientId,psc.PatientMasterVisitId,psc.DeleteFlag,psc.[CreateDate] created_at
