@@ -20,7 +20,10 @@ NULL as Reason_not_using_FP,
 CASE when paa.ReferedToClinic= 0 then 'No' when paa.ReferedToClinic=1 then 'Yes' end as Referred,
 NULL as Referral_Specify,
 paa.ReferedToClinicDate as Next_Appointment_Date,
-paa.DeleteFlag as Voided
+paa.DeleteFlag as Voided,
+paa.CreateDate,
+(select  usr.UserFirstName + ' ' + usr.UserLastName  from mst_User usr where usr.UserID=paa.CreatedBy) 
+as CreatedBy
  from PatientArtDistribution paa
 inner join Patient p on p.Id=paa.PatientId
 inner join PatientMasterVisit pmv on pmv.Id=paa.PatientMasterVisitId

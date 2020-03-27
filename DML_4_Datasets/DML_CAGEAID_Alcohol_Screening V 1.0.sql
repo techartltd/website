@@ -7,10 +7,13 @@ asq4.Answer as UseToSteadyNervesGetRidHangover,
 arll.Answer as AlcoholRiskLevel,
 als.Answer as AlcoholScore,
 sh.Answer as Notes,
-pe.DeleteFlag as Voided
+pe.DeleteFlag as Voided,
+pe.CreateDate,
+(select  usr.UserFirstName + ' ' + usr.UserLastName  from mst_User usr where usr.UserID=pe.CreatedBy) 
+as CreatedBy
 from Patient pt
 inner join(
-select pe.PatientId,pe.EncounterTypeId,pe.PatientMasterVisitId,pmv.VisitDate,pmv.DeleteFlag  from PatientEncounter pe
+select pe.PatientId,pe.EncounterTypeId,pe.PatientMasterVisitId,pmv.VisitDate,pmv.DeleteFlag,pe.CreateDate,pe.CreatedBy from PatientEncounter pe
 inner join PatientMasterVisit pmv on pmv.Id=pe.PatientMasterVisitId
 inner join (select * from LookupItemView where MasterName='EncounterType' OR MasterName='SocialHistoryQuestions' )
 liv on liv.ItemId=pe.EncounterTypeId
