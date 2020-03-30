@@ -1,15 +1,22 @@
 
-select p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL as Encounter_ID
-,(select top 1.[Name] from LookupItem li where li.Id=pce.ExitReason)as 
-Discontinuation_Reason,pce.ExitDate as ExitDate,
-pce.DateOfDeath,
-pce.TransferOutfacility as Transfer_Facility,
-NULL as Transfer_Date,
-pce.DeleteFlag as Voided
-  from PatientCareending  pce
-  inner join Patient p on pce.PatientId=p.Id
-  inner join PatientMasterVisit pmv on pmv.Id=pce.PatientMasterVisitId
-inner join PatientEnrollment pe on  pe.Id=pce.PatientEnrollmentId
-inner join ServiceArea sa on sa.Id=pe.ServiceAreaId 
-where sa.Code='OTZ' 
+
+SELECT p.PersonId AS Person_Id
+	,pmv.VisitDate AS Encounter_Date
+	,NULL AS Encounter_ID
+	,(
+		SELECT TOP 1. [Name]
+		FROM LookupItem li
+		WHERE li.Id = pce.ExitReason
+		) AS Discontinuation_Reason
+	,pce.ExitDate AS ExitDate
+	,pce.DateOfDeath
+	,pce.TransferOutfacility AS Transfer_Facility
+	,NULL AS Transfer_Date
+	,pce.DeleteFlag AS Voided
+FROM PatientCareending pce
+INNER JOIN Patient p ON pce.PatientId = p.Id
+INNER JOIN PatientMasterVisit pmv ON pmv.Id = pce.PatientMasterVisitId
+INNER JOIN PatientEnrollment pe ON pe.Id = pce.PatientEnrollmentId
+INNER JOIN ServiceArea sa ON sa.Id = pe.ServiceAreaId
+WHERE sa.Code = 'OTZ'
 
