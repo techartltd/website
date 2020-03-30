@@ -29,6 +29,7 @@ SELECT D.Item_PK AS Drug_pk
 	,D.MidDose
 	,D.EvenDose
 	,D.NightDose
+	,I.ItemName ItemType
 FROM dbo.Mst_ItemMaster AS D
 INNER JOIN dbo.Mst_ItemType AS I ON I.ItemTypeID = D.ItemTypeID
 LEFT OUTER JOIN (
