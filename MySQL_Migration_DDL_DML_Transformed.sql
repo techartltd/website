@@ -1902,7 +1902,11 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
     Gravida,
     EDD,
     Age_at_menarche,
-    TB_screening_results,
+    (case TB_screening_results
+     when "No TB" then 1660
+     when "PrTB" then 142177
+     when "TBRx" then 1662
+     when "Not Done" then 1118  else NULL end)as TB_screening_results,
     LMP,
     (case Hiv_status
      when "U" then 1067
@@ -1911,24 +1915,85 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
      when "KP" then 703  when "N/A" then 1175 else NULL end) as Hiv_status,
     (case Partner_hiv_status
      when "Negative" then 664
-     when  "Positive" then 703
-      when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
-    Syphilis_test_status,
-    Bs_for_mps,
-    Blood_group,
+     when "Positive" then 703
+     when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
+    (case Syphilis_test_status
+     when "yes" then 1065
+     when "No" then 1066
+     when "Positive" then 703
+     when "Negative" then 664
+     when "REACTIVE" then 1228
+     when "NON-REACTIVE" then 1229
+     when "POOR SAMPLE QUALITY" then 1304
+     when "N/A" then 1175 else NULL end) as Syphilis_test_status,
+    (case Bs_for_mps
+     when "NEGATIVE" then 664
+     when "POSITIVE" then 703
+     when "INDETERMINATE" then 1138  else NULL end) as Bs_for_mps,
+    (case Blood_group when "A POSITIVE" then 690 when "A NEGATIVE" then 692 when "B POSITIVE" then 694 when "B NEGATIVE" then 696 when "O POSITIVE" then 699
+       when "O NEGATIVE" then 701 when "AB POSITIVE" then 1230 when "AB NEGATIVE" then 1231 else NULL end) as Blood_group,
     Urine_microscopy,
-    Urinary_albumin,
-    Glucose_measurement,
+    (case Urinary_albumin
+      when "Negative" then 664
+      when "Trace - 15" then 1874
+      when "One Plus(+) - 30" then 1362
+      when "Two Plus(++) - 100" then 1363
+      when "Three Plus(+++) - 300" then 1364
+      when "Four Plus(++++) - 1000" then 1365 else "" end) as Urinary_albumin,
+    (case Glucose_measurement
+       when "Normal" then 1115
+       when "Trace" then 1874
+       when "One Plus(+)" then 1362
+       when "Two Plus(++)" then 1363
+       when "Three Plus(+++)" then 1364
+       when "Four Plus(++++)" then 1365 else NULL end) as Glucose_measurement,
     Urine_ph,
     Urine_gravity,
-    Urine_nitrite_test,
-    Urine_leukocyte_esterace_test,
-    Urinary_ketone,
-    Urine_bile_salt_test,
-    Urine_bile_pigment_test,
-    Urine_colour ,
-    Urine_turbidity,
-    Urine_dipstick_for_blood,
+    (case Urine_nitrite_test
+      when "NEGATIVE" then 664
+      when "POSITIVE" then 703
+      when "One Plus(+)" then 1362
+      when "Two Plus(++)" then 1363 else NULL end) as Urine_nitrite_test,
+    (case Urine_leukocyte_esterace_test
+       when "NEGATIVE" then 664
+       when "Trace"  then 1874
+       when "One Plus(+)" then 1362
+       when "Two Plus(++)" then 1363
+       when "Three Plus(+++)" then 1364 else NULL end) as Urine_leukocyte_esterace_test,
+    (case Urinary_ketone
+        when "NEGATIVE" then 664
+        when "Trace - 5" then 1874
+        when "One Plus(+) - 15" then 1362
+        when "Two Plus(++) - 50" then 1363
+        when "Three Plus(+++) - 150" then 1364  else NULL end) as Urinary_ketone,
+    (case Urine_bile_salt_test
+        when "Normal" then 1115
+        when "Trace - 1"  then 1874
+        when "One Plus(+) - 4" then 1362
+        when "Two Plus(++) - 8" then 1363
+        when "Three Plus(+++) - 12" then 1364 else NULL end) as Urine_bile_salt_test,
+    (case Urine_bile_pigment_test
+        when "NEGATIVE" then 664
+        when "One Plus(+)" then 1362
+        when "Two Plus(++)" then 1363
+        when "Three Plus(+++)" then 1364 else NULL end) as Urine_bile_pigment_test,
+    (case Urine_colour
+         when "Colourless" then 162099
+         when "Red color" then 127778
+         when "Light yellow colour" then 162097
+         when "Yellow-green colour" then 162105
+         when "Dark yellow colour" then 162098
+         when "Brown color" then 162100 else NULL end) as Urine_colour,
+    (case Urine_turbidity
+         when "Urine appears clear" then 162102
+         when "Cloudy urine" then 162103
+         when "Urine appears turbid" then 162104 else NULL end) as Urine_turbidity,
+    (case Urine_dipstick_for_blood
+         when "NEGATIVE"  then 664
+         when "Trace" then 1874
+         when "One Plus(+)" then 1362
+         when "Two Plus(++)" then 1363
+         when "Three Plus(+++)" then 1364 else NULL end) as Urine_dipstick_for_blood,
     Voided
   FROM migration_st.st_mch_enrollment_visit WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
@@ -2005,18 +2070,67 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when  "Positive" then 703
      when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
     Urine_microscopy,
-    Urinary_albumin,
-    Glucose_measurement,
+    (case Urinary_albumin
+      when "Negative" then 664
+      when "Trace - 15" then 1874
+      when "One Plus(+) - 30" then 1362
+      when "Two Plus(++) - 100" then 1363
+      when "Three Plus(+++) - 300" then 1364
+      when "Four Plus(++++) - 1000" then 1365 else "" end) as Urinary_albumin,
+    (case Glucose_measurement
+       when "Normal" then 1115
+       when "Trace" then 1874
+       when "One Plus(+)" then 1362
+       when "Two Plus(++)" then 1363
+       when "Three Plus(+++)" then 1364
+       when "Four Plus(++++)" then 1365 else NULL end) as Glucose_measurement,
     Urine_ph,
     Urine_gravity,
-    Urine_nitrite_test,
-    Urine_leukocyte_esterace_test,
-    Urinary_ketone,
-    Urine_bile_salt_test,
-    Urine_bile_pigment_test,
-    Urine_colour,
-    Urine_turbidity,
-    Urine_dipstick_for_blood,
+    (case Urine_nitrite_test
+      when "NEGATIVE" then 664
+      when "POSITIVE" then 703
+      when "One Plus(+)" then 1362
+      when "Two Plus(++)" then 1363 else NULL end) as Urine_nitrite_test,
+    (case Urine_leukocyte_esterace_test
+       when "NEGATIVE" then 664
+       when "Trace"  then 1874
+       when "One Plus(+)" then 1362
+       when "Two Plus(++)" then 1363
+       when "Three Plus(+++)" then 1364 else NULL end) as Urine_leukocyte_esterace_test,
+    (case Urinary_ketone
+        when "NEGATIVE" then 664
+        when "Trace - 5" then 1874
+        when "One Plus(+) - 15" then 1362
+        when "Two Plus(++) - 50" then 1363
+        when "Three Plus(+++) - 150" then 1364  else NULL end) as Urinary_ketone,
+    (case Urine_bile_salt_test
+        when "Normal" then 1115
+        when "Trace - 1"  then 1874
+        when "One Plus(+) - 4" then 1362
+        when "Two Plus(++) - 8" then 1363
+        when "Three Plus(+++) - 12" then 1364 else NULL end) as Urine_bile_salt_test,
+    (case Urine_bile_pigment_test
+        when "NEGATIVE" then 664
+        when "One Plus(+)" then 1362
+        when "Two Plus(++)" then 1363
+        when "Three Plus(+++)" then 1364 else NULL end) as Urine_bile_pigment_test,
+    (case Urine_colour
+         when "Colourless" then 162099
+         when "Red color" then 127778
+         when "Light yellow colour" then 162097
+         when "Yellow-green colour" then 162105
+         when "Dark yellow colour" then 162098
+         when "Brown color" then 162100 else NULL end) as Urine_colour,
+    (case Urine_turbidity
+         when "Urine appears clear" then 162102
+         when "Cloudy urine" then 162103
+         when "Urine appears turbid" then 162104 else NULL end) as Urine_turbidity,
+    (case Urine_dipstick_for_blood
+         when "NEGATIVE"  then 664
+         when "Trace" then 1874
+         when "One Plus(+)" then 1362
+         when "Two Plus(++)" then 1363
+         when "Three Plus(+++)" then 1364 else NULL end) as Urine_dipstick_for_blood,
     (case Syphilis_test_status
      when "No" then 1066
      when "yes" then 1065
@@ -2114,7 +2228,10 @@ CREATE TABLE migration_tr.tr_mch_delivery as
     when "Assisted Vaginal Delivery" then 118159
     when "Other" then 5622 else NULL end) as Delivery_Mode,
   Delivery_Date_TIme,
-  Placenta_Complete,
+  (case Placenta_Complete
+        when "Yes" then 1065
+        when "No" then 1066
+        when "Unknown" then 1067 else NULL end) as Placenta_Complete,
   (case Blood_Loss
       when "Medium" then 1499
       when "None" then 1107
