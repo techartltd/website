@@ -9,12 +9,13 @@ CREATE DATABASE migration_st;
 DROP TABLE IF EXISTS migration_st.st_demographics;
 CREATE TABLE migration_st.st_demographics
 (
-  Person_Id             INT(11),
+  Person_Id             INT(11),  
+  Patient_Id            INT(11),
+  Ptn_PK                INT(11),
   First_Name            VARCHAR(100),
   Middle_Name           VARCHAR(100),
   Last_Name             VARCHAR(100),
-  Nickname              VARCHAR(100),
-  Ptn_PK                INT(11),
+  Nickname              VARCHAR(100),  
   DOB                   DATE NULL,
   Exact_DOB             VARCHAR(100),
   Sex                   VARCHAR(50),
@@ -100,6 +101,7 @@ DROP TABLE IF EXISTS migration_st.st_triage;
 CREATE TABLE migration_st.st_triage
 (
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Visit_reason                     VARCHAR(255),
@@ -129,6 +131,7 @@ DROP TABLE IF EXISTS migration_st.st_hts_test;
 CREATE TABLE migration_st.st_hts_test
 (
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Pop_Type                         VARCHAR(50),
@@ -138,6 +141,8 @@ CREATE TABLE migration_st.st_hts_test
   Disability                       VARCHAR(100),
   Ever_Tested                      VARCHAR(50),
   Self_Tested                      VARCHAR(50),
+  MonthSinceSelfTest               VARCHAR(50),
+  MonthsSinceLastTest              VARCHAR(50),
   HTS_Strategy                     VARCHAR(100),
   HTS_Entry_Point                  VARCHAR(100),
   Consented                        VARCHAR(50),
@@ -208,6 +213,7 @@ DROP TABLE IF EXISTS migration_st.st_hts_contact_listing;
 CREATE TABLE migration_st.st_hts_contact_listing
 (
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Contact_Person_Id                INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -248,7 +254,9 @@ CREATE TABLE migration_st.st_program_enrollment
   Encounter_ID                     VARCHAR(50),
   Program                          VARCHAR(100),
   Date_Enrolled                    DATE,
-  Date_Completed                   DATE
+  Date_Completed                   DATE,
+  Created_At                       DATETIME,
+  Created_By                       INT(11)
 );
 
 -- 10. Program Discontinuation
@@ -266,6 +274,7 @@ CREATE TABLE migration_st.st_program_discontinuation
   Death_Date                       DATE
 );
 
+
 -- 11. TB Screening
 DROP TABLE IF EXISTS migration_st.st_tb_screening;
 CREATE TABLE migration_st.st_tb_screening
@@ -282,12 +291,14 @@ CREATE TABLE migration_st.st_tb_screening
   X_ray                            VARCHAR(100),
   Gene_xpert                       VARCHAR(100),
   Contact_tb_case                  VARCHAR(100),
-  Lethergy                         VARCHAR(100),
+  Lethergy                         VARCHAR(100), 
   Referral                         VARCHAR(100),
   Clinical_diagnosis               VARCHAR(100),
   Invitation_contacts              VARCHAR(100),
   Evaluated_for_IPT                VARCHAR(100),
-  TB_results                       VARCHAR(100)
+  TB_results                       VARCHAR(100),
+  created_at                       DATETIME,
+  created_by                       INT(11)
 );
 
 
@@ -1471,7 +1482,8 @@ CREATE TABLE migration_st.st_users
 	User_Name		VARCHAR(100),
 	Status			VARCHAR(100),
 	Designation		VARCHAR(100),
-	GroupNames		VARCHAR(100)
+	GroupNames		VARCHAR(100),
+	OpenMRS_User_Id INT(11)
 );
 
 -- 48. Creating Population_Type table
@@ -1484,7 +1496,6 @@ CREATE TABLE migration_st.st_population_type (
   Key_Population_Type              VARCHAR(255),
   Voided                           int(11)
 );
-<<<<<<< HEAD
 
 -- 49. Creating Disability table
 DROP TABLE IF EXISTS migration_st.st_disability;
@@ -1510,8 +1521,6 @@ CREATE TABLE migration_st.st_initial_hiv_test (
   Voided                           int(11)
 );
 
-=======
-
 -- 49. Creating Disability table
 DROP TABLE IF EXISTS migration_st.st_disability;
 CREATE TABLE migration_st.st_disability (
@@ -1536,7 +1545,6 @@ CREATE TABLE migration_st.st_initial_hiv_test (
   Voided                           int(11)
 );
 
->>>>>>> 9d273e17d6efa78a3c9380f6e48a2c66dd396d60
 -- 51. Creating Confirmatory HIV_Test table
 DROP TABLE IF EXISTS migration_st.st_confirmatory_test;
 CREATE TABLE migration_st.st_confirmatory_test (
@@ -1552,8 +1560,7 @@ CREATE TABLE migration_st.st_confirmatory_test (
   Voided                           int(11)
 );
 
-
-
+-- 52. Creating obstetric history table
 DROP TABLE IF EXISTS migration_st.st_obstetric_history;
 CREATE TABLE migration_st.st_obstetric_history (
   Person_Id                        INT(11),
@@ -1574,10 +1581,7 @@ CREATE TABLE migration_st.st_obstetric_history (
 );
 
 
-
-
-
-
+-- 53. Creating case summary table
 DROP TABLE IF EXISTS migration_st.st_case_summary;
 CREATE TABLE migration_st.st_case_summary
 
@@ -1602,7 +1606,7 @@ CREATE TABLE migration_st.st_case_summary
 );
 
 
-
+-- 54. Creating depression screening table
 DROP TABLE IF EXISTS migration_st.st_Depression_Screening;
 CREATE TABLE migration_st.st_Depression_Screening
 (
@@ -1625,7 +1629,7 @@ CREATE TABLE migration_st.st_Depression_Screening
 );
 
 
-
+-- 55. Creating adherence barriers table
 DROP TABLE IF EXISTS migration_st.st_Adherence_Barriers;
 CREATE TABLE migration_st.st_Adherence_Barriers
 (
@@ -1663,7 +1667,7 @@ CREATE TABLE migration_st.st_Adherence_Barriers
 );
 
 
-
+-- 56. Creating followup education table
 DROP TABLE IF EXISTS migration_st.st_Followup_Education;
 CREATE TABLE migration_st.st_Followup_Education
 (
