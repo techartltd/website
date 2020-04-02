@@ -46,7 +46,7 @@ FROM (
 		,sessionrefq3.Answer AS Referral_experience
 		,sessionrefq4.Answer AS Home_visit_benefit
 		,sessionrefq5.Answer AS Adherence_Plan
-		,session1followup.Answer AS Next_Appointment_Date
+		,format(cast(session1followup.Answer AS DATE), 'yyyy-MM-dd') AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
 	FROM (
 		SELECT pe.PatientId
@@ -627,7 +627,7 @@ FROM (
 		,sessionrefq3.Answer AS Referral_experience
 		,sessionrefq4.Answer AS Home_visit_benefit
 		,sessionrefq5.Answer AS Adherence_Plan
-		,session1followup.Answer AS Next_Appointment_Date
+		,format(cast(session1followup.Answer AS DATE), 'yyyy-MM-dd') AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
 	FROM (
 		SELECT pe.PatientId
@@ -920,7 +920,7 @@ FROM (
 		,sessionrefq3.Answer AS Referral_experience
 		,sessionrefq4.Answer AS Home_visit_benefit
 		,sessionrefq5.Answer AS Adherence_Plan
-		,session1followup.Answer AS Next_Appointment_Date
+		,format(cast(session1followup.Answer AS DATE), 'yyyy-MM-dd') AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
 	FROM (
 		SELECT pe.PatientId
@@ -1198,7 +1198,7 @@ FROM (
 		,sessionrefq3.Answer AS Referral_experience
 		,sessionrefq4.Answer AS Home_visit_benefit
 		,sessionrefq5.Answer AS Adherence_Plan
-		,session1followup.Answer AS Next_Appointment_Date
+		,format(cast(session1followup.Answer AS DATE), 'yyyy-MM-dd') AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
 	FROM (
 		SELECT pe.PatientId
