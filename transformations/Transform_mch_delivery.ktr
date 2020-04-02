@@ -509,7 +509,7 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>
--- 22. Create mch delivery transformed table
+-- 21. Create mch delivery transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_mch_delivery;
 CREATE TABLE migration_tr.tr_mch_delivery as
@@ -526,8 +526,11 @@ CREATE TABLE migration_tr.tr_mch_delivery as
     when "Breech" then 1172
     when "Assisted Vaginal Delivery" then 118159
     when "Other" then 5622 else NULL end) as Delivery_Mode,
-  Delivery_Date_TIme,
-  Placenta_Complete,
+  Delivery_Date_Time,
+ (case Placenta_Complete
+        when "Yes" then 1065
+        when "No" then 1066
+        when "Unknown" then 1067 else NULL end) as Placenta_Complete,
   (case Blood_Loss
       when "Medium" then 1499
       when "None" then 1107
@@ -541,7 +544,10 @@ CREATE TABLE migration_tr.tr_mch_delivery as
         when "Yes" then 1065
         when "No" then 1066
         when "Unknown" then 1067 else NULL end) as Resuscitation_Done,
-  Delivery_Complications,
+ (case Delivery_Complications
+        when "Yes" then 1065
+        when "No" then 1066
+        when "Unknown" then 1067 else NULL end) as Delivery_Complications,
   Delivery_Complications_Type,
   Delivery_Complications_Other,
  (case Delivery_Place
@@ -627,7 +633,9 @@ CREATE TABLE migration_tr.tr_mch_delivery as
   Clinical_notes,
   Next_Appointment_Date,
   Voided                                     
-FROM migration_st.st_mch_delivery_discharge;</sql>
+FROM migration_st.st_mch_delivery_discharge  WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -644,8 +652,8 @@ FROM migration_st.st_mch_delivery_discharge;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>483</xloc>
-      <yloc>158</yloc>
+      <xloc>240</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

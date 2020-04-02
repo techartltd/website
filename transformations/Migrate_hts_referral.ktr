@@ -430,7 +430,7 @@
     <created_date>2020/01/27 13:53:47.377</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/01/27 13:53:47.377</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -582,7 +582,7 @@ CREATE TABLE migration_st.st_hts_referral
   Encounter_ID                     VARCHAR(50),
   Facility_Referred                VARCHAR(255),
   Date_To_Be_Enrolled              DATE,
-  Remarks                          VARCHAR(255),
+  Remarks                          TEXT,
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -601,8 +601,8 @@ CREATE TABLE migration_st.st_hts_referral
       </output>
     </remotesteps>
     <GUI>
-      <xloc>414</xloc>
-      <yloc>215</yloc>
+      <xloc>128</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -618,18 +618,19 @@ CREATE TABLE migration_st.st_hts_referral
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 6. HTS Client Referral
-exec pr_OpenDecryptedSession;
+    <sql>-- 6. HTS Client Referral Validated by FG
 
 select 
-r.PersonId as Person_Id,
-r.ReferralDate  as Encounter_Date,
-NULL Encounter_ID, 
-CASE WHEN r.OtherFacility is not null then r.OtherFacility else fc.FacilityName  end as Facility_Referred,
-r.ExpectedDate as Date_To_Be_Enrolled
- from Referral r
- left join mst_Facility fc on fc.PosID=r.ToFacility
-</sql>
+R.PersonID Person_Id,
+format(cast(R.ReferralDate AS DATE), 'yyyy-MM-dd') Encounter_Date,
+NULL Encounter_ID,
+Facility_Referred = CASE WHEN (SELECT Name FROM FacilityList WHERE MFLCode = R.ToFacility) IS NULL THEN 'OTHER' ELSE (SELECT Name FROM FacilityList WHERE MFLCode = R.ToFacility) END,
+R.ExpectedDate Date_To_Be_Enrolled,
+NULL Remarks,
+R.DeleteFlag Voided
+
+from Referral R
+LEFT join HtsEncounter HE ON HE.PersonId = R.PersonId;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -644,8 +645,8 @@ r.ExpectedDate as Date_To_Be_Enrolled
       </output>
     </remotesteps>
     <GUI>
-      <xloc>686</xloc>
-      <yloc>215</yloc>
+      <xloc>480</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -688,8 +689,8 @@ r.ExpectedDate as Date_To_Be_Enrolled
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1038</xloc>
-      <yloc>215</yloc>
+      <xloc>816</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

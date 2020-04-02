@@ -574,76 +574,76 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 26. HEI Followup
--- 26. HEI Followup
+    <sql>-- 25. HEI Followup
+
 DROP TABLE IF EXISTS migration_st.st_hei_followup;
 CREATE TABLE migration_st.st_hei_followup (
-  Person_Id                        INT(11),
-  Encounter_Date                   DATE,
-  Encounter_ID                     VARCHAR(50),
-  Weight                          DOUBLE,
-  Height                          DOUBLE,
-  Primary_care_give			      		VARCHAR(100),
-  Infant_feeding                  VARCHAR(100),
-  TB_Assessment_Outcome				    VARCHAR(100),
-  Social_smile_milestone_Under_2Months   VARCHAR(100),
-  Social_smile_milestone_2Months          VARCHAR(100),
-  Head_control_milestone_3Months          VARCHAR(100),
-  Head_control_milestone_4Months          VARCHAR(100),
+  Person_Id                        			INT(11),
+  Encounter_Date                  		    DATE,
+  Encounter_ID                              VARCHAR(50),
+  Weight                                    DOUBLE,
+  Height                                    DOUBLE,
+  Primary_care_give			      	    	VARCHAR(100),
+  Infant_feeding                            VARCHAR(100),
+  TB_Assessment_Outcome				        VARCHAR(100),
+  Social_smile_milestone_Under_2Months      VARCHAR(100),
+  Social_smile_milestone_2Months            VARCHAR(100),
+  Head_control_milestone_3Months            VARCHAR(100),
+  Head_control_milestone_4Months            VARCHAR(100),
   Hand_extension_milestone_9months          VARCHAR(100),
-  Sitting_milestone_12months          VARCHAR(100),
-  Standing_milestone_15months          VARCHAR(100),
-  Walking_milestone_18months          VARCHAR(100),
-  Talking_milestone_36months          VARCHAR(100),
-  First_DNA_PCRSampleDate             DATE,
-  First_DNA_PCRResult                 VARCHAR(100),
-  First_DNA_PCRResultDate              DATE,
-  Second_DNA_PCRSampleDate             DATE,
-  Second_DNA_PCRResult                 VARCHAR(100),
-  Second_DNA_PCRResultDate              DATE,
-  Third_DNA_PCRSampleDate               DATE,
-  Third_DNA_PCRResult                   VARCHAR(100),
-  Third_DNA_PCRResultDate               DATE,
-  ConfimatoryPCR_SampleDate             DATE,
-  ConfirmatoryPCR_Result                VARCHAR(100),
-  ConfimatoryPCR_ResultDate              DATE,
-  RepeatConfirmatoryPCR_SampleDate       DATE,
-  RepeatConfirmatoryPCR_Result           VARCHAR(100),
-  RepeatConfirmatoryPCR_ResultDate       DATE,
-  BaselineViralLoadSampleDate            DATE,
-  BaselineViralLoadResult                VARCHAR(100),
-  BaselineViralLoadResultDate            DATE,
-  Final_AntibodySampleDate               DATE,
-  Final_AntibodyResult                   VARCHAR(100),
-  Final_AntibodyResultDate               DATE,
-  -- Review_of_systems_developmental VARCHAR(100),
-    ARV_prophylaxis_received         VARCHAR(100),
-  ARV_prophylaxis_Other_received  VARCHAR(100),
-  Dna_pcr_sample_date             DATE,
-  Dna_pcr_contextual_status       VARCHAR(100),
-  Dna_pcr_results                  VARCHAR(100),
-  Dna_pcr_dbs_sample_code          VARCHAR(100),
-  Dna_pcr_results_date            DATE,
-  Azt_given                       VARCHAR(100),
-  Nvp_given                       VARCHAR(100),
-  Ctx_given                       VARCHAR(100),
-  First_antibody_sample_date      DATE,
-  First_antibody_result           VARCHAR(100),
-  First_antibody_dbs_sample_code  VARCHAR(100),
-  First_antibody_result_date      DATE,
-  Final_antibody_sample_date      DATE,
-  Final_antibody_result           VARCHAR(100),
-  Final_antibody_dbs_sample_code VARCHAR(100),
-  Final_antibody_result_date     DATE,
-  Tetracycline_Eye_Ointment  	   VARCHAR(100),
-  Pupil 								         VARCHAR(100),
+  Sitting_milestone_12months                VARCHAR(100),
+  Standing_milestone_15months               VARCHAR(100),
+  Walking_milestone_18months                VARCHAR(100),
+  Talking_milestone_36months                VARCHAR(100),
+  First_DNA_PCRSampleDate                   DATE,
+  First_DNA_PCRResult                       VARCHAR(100),
+  First_DNA_PCRResultDate                   DATE,
+  Second_DNA_PCRSampleDate                  DATE,
+  Second_DNA_PCRResult                      VARCHAR(100),
+  Second_DNA_PCRResultDate                  DATE,
+  Third_DNA_PCRSampleDate                   DATE,
+  Third_DNA_PCRResult                       VARCHAR(100),
+  Third_DNA_PCRResultDate                   DATE,
+  ConfimatoryPCR_SampleDate                 DATE,
+  ConfirmatoryPCR_Result                    VARCHAR(100),
+  ConfimatoryPCR_ResultDate                 DATE,
+  RepeatConfirmatoryPCR_SampleDate          DATE,
+  RepeatConfirmatoryPCR_Result              VARCHAR(100),
+  RepeatConfirmatoryPCR_ResultDate          DATE,
+  BaselineViralLoadSampleDate               DATE,
+  BaselineViralLoadResult                   VARCHAR(100),
+  BaselineViralLoadResultDate               DATE,
+  Final_AntibodySampleDate                  DATE,
+  Final_AntibodyResult                      VARCHAR(100),
+  Final_AntibodyResultDate                  DATE,
+  -- Review_of_systems_developmental        VARCHAR(100),
+  ARV_prophylaxis_received                  VARCHAR(100),
+  ARV_prophylaxis_Other_received            VARCHAR(100),
+  Dna_pcr_sample_date                       DATE,
+  Dna_pcr_contextual_status                 VARCHAR(100),
+  Dna_pcr_results                           VARCHAR(100),
+  Dna_pcr_dbs_sample_code                   VARCHAR(100),
+  Dna_pcr_results_date                      DATE,
+  Azt_given                                 VARCHAR(100),
+  Nvp_given                                 VARCHAR(100),
+  Ctx_given                                 VARCHAR(100),
+  First_antibody_sample_date                DATE,
+  First_antibody_result                     VARCHAR(100),
+  First_antibody_dbs_sample_code            VARCHAR(100),
+  First_antibody_result_date                DATE,
+  Final_antibody_sample_date                DATE,
+  Final_antibody_result                     VARCHAR(100),
+  Final_antibody_dbs_sample_code            VARCHAR(100),
+  Final_antibody_result_date                DATE,
+  Tetracycline_Eye_Ointment  	            VARCHAR(100),
+  Pupil 						            VARCHAR(100),
   Sight              				    	VARCHAR(100),
-  Squint				                 VARCHAR(100),
-  Deworming_Drug                 VARCHAR(100),
-  Deworming_Dosage_Units         VARCHAR(100),
-  Date_of_next_appointment       DATE,
-  Comments                       VARCHAR(100),
-  Voided                          INT(11)
+  Squint				                    VARCHAR(100),
+  Deworming_Drug                            VARCHAR(100),
+  Deworming_Dosage_Units                    VARCHAR(100),
+  Date_of_next_appointment                  DATE,
+  Comments                                  VARCHAR(100),
+  Voided                                    INT(11)
 );
 </sql>
     <set_params>N</set_params>
@@ -662,8 +662,8 @@ CREATE TABLE migration_st.st_hei_followup (
       </output>
     </remotesteps>
     <GUI>
-      <xloc>384</xloc>
-      <yloc>176</yloc>
+      <xloc>112</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -679,7 +679,8 @@ CREATE TABLE migration_st.st_hei_followup (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>	---- 26. HEI Followup
+    <sql>	
+	---- 25. HEI Followup Validated by DNG
 	select  
  p.PersonId as Person_Id,
  pen.VisitDate as Encounter_Date,
@@ -690,8 +691,8 @@ he.BirthWeight as [Weight],
 hf.InfantFeeding as Infant_Feeding,
 tbs.ScreeningValue as TB_Assessment_Outcome,
 
-m.[Social_smile_milestone_Under_2Months],
-m.Social_smile_milestone_2Months,
+m.[Social_smile_milestone_&lt;2Months] as Social_smile_milestone_Under_2Months,
+m.Social_smile_milestone_2Months as Social_smile_milestone_2Months,
 m.Head_control_milestone_3Months,
 m.Head_control_milestone_4Months,
 m.Hand_extension_milestone_9months,
@@ -775,7 +776,7 @@ lt.[Name] as ScreeningValue
 inner join LookupMaster ltv on ltv.Id=ps.ScreeningTypeId
 inner join LookupItem lt on lt.Id=ps.ScreeningValueId
  where  ltv.[Name]='TbScreeningOutcome' and (ps.DeleteFlag is null or ps.DeleteFlag=0))ps where ps.rownum='1')tbs on tbs.PatientId=p.Id and tbs.PatientMasterVisitId=he.PatientMasterVisitId
-left join(select   t.PatientId,t.PatientMasterVisitId,max(t.[&lt;2 Months]) as [Social_smile_milestone_Under_2Months],
+left join(select   t.PatientId,t.PatientMasterVisitId,max(t.[&lt;2 Months]) as [Social_smile_milestone_&lt;2Months],
 max(t.[2 Months]) as [Social_smile_milestone_2Months],
 max(t.[3 Months]) as Head_control_milestone_3Months,
 max(t.[4 Months]) as  Head_control_milestone_4Months,
@@ -808,9 +809,9 @@ left join(select r.PatientId,r.PatientMasterVisitId,r.[1st DNA PCRResult] as [1s
 ,r.[Final AntibodyResult] as [Final_AntibodyResult]
 ,CAST(r.[Final AntibodySampleDate] as datetime) as [Final_AntibodySampleDate],
 CAST(r.[Final AntibodyResultDate] as datetime) as Final_AntibodyResultDate,
-r.[Confirmatory PCR (for  +ve)Result] as ConfirmatoryPCR_Result,
-CAST(r.[Confirmatory PCR (for  +ve)SampleDate] as datetime) as ConfimatoryPCR_SampleDate
-,CAST(r.[Confirmatory PCR (for  +ve)ResultDate] as datetime) as ConfimatoryPCR_ResultDate
+r.[Confirmatory PCR (for ?+ve)Result] as ConfirmatoryPCR_Result,
+CAST(r.[Confirmatory PCR (for ?+ve)SampleDate] as datetime) as ConfimatoryPCR_SampleDate
+,CAST(r.[Confirmatory PCR (for ?+ve)ResultDate] as datetime) as ConfimatoryPCR_ResultDate
 ,r.[Repeat confirmatory PCR (for +ve)Result] as RepeatConfirmatoryPCR_Result,
 CAST(r.[Repeat confirmatory PCR (for +ve)SampleDate] as datetime) as RepeatConfirmatoryPCR_SampleDate
 ,CAST(r.[Repeat confirmatory PCR (for +ve)ResultDate] as datetime) as RepeatConfirmatoryPCR_ResultDate,
@@ -887,7 +888,7 @@ inner join (Select	O.Id				LabId
 	max(ColumnValue)
 	for columnname in ([1st DNA PCRResult],[1st DNA PCRSampleDate],[1st DNA PCRResultDate],[2nd DNA PCRResult],[2nd DNA PCRSampleDate]
 ,[2nd DNA PCRResultDate],[3rd DNA PCRResult],[3rd DNA PCRSampleDate],[3rd DNA PCRResultDate],[Final AntibodyResult],[Final AntibodySampleDate],[Final AntibodyResultDate],
-[Confirmatory PCR (for  +ve)Result],[Confirmatory PCR (for  +ve)SampleDate],[Confirmatory PCR (for  +ve)ResultDate],[Repeat confirmatory PCR (for +ve)Result],
+[Confirmatory PCR (for ?+ve)Result],[Confirmatory PCR (for ?+ve)SampleDate],[Confirmatory PCR (for ?+ve)ResultDate],[Repeat confirmatory PCR (for +ve)Result],
 [Repeat confirmatory PCR (for +ve)SampleDate],[Repeat confirmatory PCR (for +ve)ResultDate],
 [Baseline Viral Load (for +ve)Result],[Baseline Viral Load (for +ve)SampleDate],[Baseline Viral Load (for +ve)ResultDate])
 
@@ -899,10 +900,7 @@ left join  (select * from (select pa.PatientId,pa.PatientMasterVisitId,pa.Servic
  where (pa.DeleteFlag is null or pa.DeleteFlag =0)
  and  sa.Code='HEI'
 
- )t where t.rownum='1')heapp on heapp.PatientMasterVisitId=he.PatientMasterVisitId  and heapp.PatientId=he.PatientId
-
-
-</sql>
+ )t where t.rownum='1')heapp on heapp.PatientMasterVisitId=he.PatientMasterVisitId  and heapp.PatientId=he.PatientId</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -917,8 +915,8 @@ left join  (select * from (select pa.PatientId,pa.PatientMasterVisitId,pa.Servic
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
-      <yloc>176</yloc>
+      <xloc>416</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -961,8 +959,8 @@ left join  (select * from (select pa.PatientId,pa.PatientMasterVisitId,pa.Servic
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1088</xloc>
-      <yloc>176</yloc>
+      <xloc>720</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

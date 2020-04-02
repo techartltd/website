@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 29. ART Treatment preparation
+    <sql>-- 28. ART Treatment preparation
 DROP TABLE IF EXISTS migration_tr.tr_art_preparation;
 CREATE TABLE migration_tr.tr_art_preparation as
   select
@@ -559,9 +559,10 @@ CREATE TABLE migration_tr.tr_art_preparation as
      when "No" then 1066  else NULL end)as Enrolled_in_reminder_system,
   (case Other_support_systems
      when "Yes" then 1065
-     when "No" then 1066  else NULL end)as Other_support_systems,
-  Voided
-FROM migration_st.st_art_preparation;</sql>
+     when "No" then 1066  else NULL end)as Other_support_systems
+  FROM migration_st.st_art_preparation WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

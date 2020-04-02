@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 29. Create hei immunizations transformed table
+    <sql>-- 27. Create hei immunizations transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_hei_immunization;
 CREATE TABLE migration_tr.tr_hei_immunization as
@@ -583,7 +583,9 @@ CREATE TABLE migration_tr.tr_hei_immunization as
     VitaminA2_to_5_yr,
     fully_immunized,
     Voided             
-  FROM migration_st.st_hei_immunization;</sql>
+  FROM migration_st.st_hei_immunization WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -600,8 +602,8 @@ CREATE TABLE migration_tr.tr_hei_immunization as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>499</xloc>
-      <yloc>178</yloc>
+      <xloc>224</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

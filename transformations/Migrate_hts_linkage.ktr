@@ -430,7 +430,7 @@
     <created_date>2020/01/27 14:08:13.757</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/01/27 14:08:13.757</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -586,7 +586,7 @@ CREATE TABLE migration_st.st_hts_linkage
   Cadre                            VARCHAR(100),
   Date_Enrolled                    DATE,
   ART_Start_Date                   DATE,
-  Remarks                          VARCHAR(255),
+  Remarks                          TEXT,
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -605,8 +605,8 @@ CREATE TABLE migration_st.st_hts_linkage
       </output>
     </remotesteps>
     <GUI>
-      <xloc>421</xloc>
-      <yloc>48</yloc>
+      <xloc>160</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -622,21 +622,21 @@ CREATE TABLE migration_st.st_hts_linkage
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 6. HTS Client Linkage
-exec pr_OpenDecryptedSession;
+    <sql>-- 7. HTS Linkage Validated by FG
 
- select 
-    pl.PersonId as Person_Id,
-    pl.LinkageDate as Encounter_Date,
-    NULL as Encounter_ID,
-    pl.Facility as Facility_Linked,
-    pl.CCCNumber as CCC_Number,
-    pl.HealthWorker as Health_Worker_Handed_To,
-    pl.Cadre,CASE WHEN pl.Enrolled ='1' then pl.LinkageDate end as Date_Enrolled,
-    pl.ArtStartDate as ART_Start_Date ,
-    pl.Comments as Remarks,
-    pl.DeleteFlag as Voided
-   from PatientLinkage pl
+select 
+PL.PersonId Person_Id,
+PL.LinkageDate Encounter_Date,
+NULL Encounter_ID,
+PL.Facility Facility_Linked,
+PL.CCCNumber CCC_Number,
+PL.HealthWorker Health_Worker_Handed_To,
+PL.Cadre Cadre,
+Date_Enrolled = (SELECT PE.EnrollmentDate FROM PatientEnrollment PE INNER JOIN Patient P ON P.Id = PE.PatientId WHERE P.PersonId = PL.PersonId AND ServiceAreaId = 1),
+PL.ArtStartDate ART_Start_Date,
+PL.Comments Remarks
+
+from PatientLinkage PL
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -652,8 +652,8 @@ exec pr_OpenDecryptedSession;
       </output>
     </remotesteps>
     <GUI>
-      <xloc>693</xloc>
-      <yloc>48</yloc>
+      <xloc>464</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -696,8 +696,8 @@ exec pr_OpenDecryptedSession;
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1045</xloc>
-      <yloc>48</yloc>
+      <xloc>784</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

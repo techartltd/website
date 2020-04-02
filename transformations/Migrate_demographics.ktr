@@ -562,7 +562,7 @@
   </connection>
   <order>
     <hop>
-      <from>Create_Staging_DB</from>
+      <from>Create_staging_db_and_st_demographics</from>
       <to>iqcare_source_demographics</to>
       <enabled>Y</enabled>
     </hop>
@@ -573,7 +573,7 @@
     </hop>
   </order>
   <step>
-    <name>Create_Staging_DB</name>
+    <name>Create_staging_db_and_st_demographics</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -599,11 +599,13 @@ CREATE DATABASE migration_st;
 DROP TABLE IF EXISTS migration_st.st_demographics;
 CREATE TABLE migration_st.st_demographics
 (
-  Person_Id             INT(11),
+  Person_Id             INT(11), 
+  Patient_Id            INT(11),
+  Ptn_PK                INT(11),
   First_Name            VARCHAR(100),
   Middle_Name           VARCHAR(100),
   Last_Name             VARCHAR(100),
-  Nickname              VARCHAR(100),
+  Nickname              VARCHAR(100),  
   DOB                   DATE NULL,
   Exact_DOB             VARCHAR(100),
   Sex                   VARCHAR(50),
@@ -657,8 +659,8 @@ CREATE TABLE migration_st.st_demographics
       </output>
     </remotesteps>
     <GUI>
-      <xloc>464</xloc>
-      <yloc>80</yloc>
+      <xloc>96</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -674,20 +676,25 @@ CREATE TABLE migration_st.st_demographics
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>exec pr_OpenDecryptedSession;
+    <sql>
+-- 1. Demographics/Registration   Validated by FG
+
+exec pr_OpenDecryptedSession;
 SELECT
-P.Id Person_Id,
+P.Id Person_Id, 
+PT.Id Patient_Id,
+PT.Ptn_pk,
 CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
 CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
 CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
 CAST(DECRYPTBYKEY(P.NickName) AS VARCHAR(50)) AS Nickname,
 format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
 CASE(ISNULL(P.DobPrecision, PT.DobPrecision))
-WHEN 0 THEN 'EXACT'
-WHEN 1 THEN 'ESTIMATED'
-ELSE 'ESTIMATED' END AS Exact_DOB,
+	WHEN 0 THEN 'EXACT'
+	WHEN 1 THEN 'ESTIMATED'
+	ELSE 'ESTIMATED' END AS Exact_DOB,
 Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-UPN = (SELECT Top 1 IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
+UPN = (SELECT top 1 IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
 format(cast(ISNULL(P.RegistrationDate, PT.RegistrationDate) as date),'yyyy-MM-dd') AS Encounter_Date,
 NULL Encounter_ID,
 (CASE(Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
@@ -700,29 +707,29 @@ WHERE IDE.Name = 'NationalID' AND PIR.PersonId = P.Id) t) END) AS National_id_No
 (SELECT PatientClinicID FROM mst_Patient MSP WHERE MSP.Ptn_Pk = PT.ptn_pk) AS Patient_clinic_number,
 Birth_certificate=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
 inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName] from Identifiers id
-inner join IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthCertificate' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthCertificate' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
 Birth_notification=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
 inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName] from Identifiers id
-inner join IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
 Hei_no=(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
 inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName] from Identifiers id
-inner join IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='HEIRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='HEIRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
 Passport=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
 inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName] from Identifiers id
-inner join IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='Passport' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='Passport' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
 Alien_Registration=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
 inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName] from Identifiers id
-inner join IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='AlienRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
+select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
+inner join  IdentifierType it on it.Id =id.IdentifierType
+where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='AlienRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
 CAST(DECRYPTBYKEY((SELECT TOP 1 PC.MobileNumber FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) AS Phone_number,
 CAST(DECRYPTBYKEY((SELECT TOP 1 PC.AlternativeNumber FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) Alternate_Phone_number,
 CAST(DECRYPTBYKEY((SELECT TOP 1 PC.PhysicalAddress FROM PersonContact PC WHERE PC.DeleteFlag = 0 AND PC.PersonId = P.Id ORDER BY Id DESC)) AS VARCHAR(50)) Postal_Address,
@@ -740,11 +747,12 @@ ts.Next_of_kin_address as Next_of_kin_address,
 Marital_status = (SELECT TOP 1 ItemName FROM PatientMaritalStatus PM INNER JOIN LookupItemView LK ON LK.ItemId = PM.MaritalStatusId WHERE PM.PersonId = P.Id AND PM.DeleteFlag = 0 AND LK.MasterName = 'MaritalStatus'),
 Occupation = (SELECT TOP 1 ItemName FROM PersonOccupation PO INNER JOIN LookupItemView LK ON LK.ItemId = PO.Occupation WHERE PO.PersonId = P.Id AND MasterName = 'Occupation' AND PO.DeleteFlag = 0 ORDER BY Id DESC),
 Education_level = (SELECT TOP 1 ItemName FROM PersonEducation EL INNER JOIN LookupItemView LK ON LK.ItemId = EL.EducationLevel WHERE EL.PersonId = P.Id and MasterName = 'EducationalLevel' AND EL.DeleteFlag = 0 ORDER BY Id DESC),
-Dead = (SELECT top 1 'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
+Dead = (SELECT top 1  'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
 Death_date = (SELECT TOP 1 DateOfDeath FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
 ts.Consent as Consent,
 ts.Consent_Decline_Reason as Consent_Decline_Reason,
-PT.DeleteFlag AS voided
+PT.DeleteFlag AS voided 
+
 
 FROM Person P
 LEFT JOIN Patient PT ON PT.PersonId = P.Id
@@ -763,10 +771,7 @@ left join(select pc.PatientId,pc.PersonId,pc.ConsentValue,lt.DisplayName as Cons
 inner join LookupItem lt on lt.Id=pc.ConsentValue) pcc on pcc.PersonId=pts.SupporterId
 where lt.ItemName in ('NextofKin','EmergencyContact')) t where t.rownum='1'
 )ts on ts.PersonId=P.Id
-ORDER BY P.Id ASC
-
-
-</sql>
+ORDER BY P.Id ASC</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -781,8 +786,8 @@ ORDER BY P.Id ASC
       </output>
     </remotesteps>
     <GUI>
-      <xloc>768</xloc>
-      <yloc>80</yloc>
+      <xloc>368</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -825,8 +830,8 @@ ORDER BY P.Id ASC
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1056</xloc>
-      <yloc>80</yloc>
+      <xloc>720</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

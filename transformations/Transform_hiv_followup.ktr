@@ -1080,7 +1080,8 @@
        when "Yes" then 164947
        when "No" then 164942 else NULL end)as Differentiated_care,
   Voided
- FROM migration_st.st_hiv_followup ;
+ FROM migration_st.st_hiv_followup WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;;
 
 </sql>
     <set_params>N</set_params>
@@ -1099,8 +1100,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
-      <yloc>192</yloc>
+      <xloc>192</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

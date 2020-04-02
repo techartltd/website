@@ -600,8 +600,8 @@ CREATE TABLE migration_tr.tr_hiv_enrollment as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>426</xloc>
-      <yloc>217</yloc>
+      <xloc>320</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

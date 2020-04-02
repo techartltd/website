@@ -588,9 +588,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
+    <sql>
 -- 12. IPT Program Screening
 DROP TABLE IF EXISTS migration_st.st_ipt_screening;
 CREATE TABLE migration_st.st_ipt_screening
@@ -602,7 +600,9 @@ CREATE TABLE migration_st.st_ipt_screening
   Numbness                         VARCHAR(100),
   Yellow_eyes                      VARCHAR(100),
   Tenderness                       VARCHAR(100),
-  IPT_Start_Date                   DATE
+  IPT_Start_Date                   DATE,
+  created_at                       DATETIME,
+  created_by                       INT(11)
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -620,8 +620,8 @@ CREATE TABLE migration_st.st_ipt_screening
       </output>
     </remotesteps>
     <GUI>
-      <xloc>691</xloc>
-      <yloc>169</yloc>
+      <xloc>128</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -637,29 +637,46 @@ CREATE TABLE migration_st.st_ipt_screening
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 8. IPT Screening
-exec pr_OpenDecryptedSession;
+    <sql>-- 12. IPT Program Screening Validated by LO
+EXEC pr_OpenDecryptedSession;
 
- select p.PersonId as  Person_Id,
-pmv.VisitDate as Encounter_Date
-,NULL as Encounter_ID
-,CASE WHEN pipt.YellowColouredUrine =0 then 'No' when pipt.YellowColouredUrine=1 then 'Yes'
-else NULL
- end as Yellow_urine
- ,CASE WHEN pipt.Numbness =0 then 'No' when pipt.Numbness=1 then 'Yes'
-else NULL
- end as Numbness
- ,CASE WHEN pipt.YellownessOfEyes =0 then 'No' when pipt.YellownessOfEyes=1 then 'Yes'
-else NULL
- end as Yellow_eyes,
- CASE WHEN pipt.AbdominalTenderness =0 then 'No' when pipt.AbdominalTenderness=1 then 'Yes'
-else NULL
- end as Tenderness
-,pipt.IptStartDate as IPT_Start_Date
-
-from PatientIptWorkup pipt
-inner join PatientMasterVisit pmv on pmv.Id=pipt.PatientMasterVisitId
-inner join Patient p on p.Id=pipt.PatientId</sql>
+SELECT p.PersonID as Person_Id
+	,pmv.VisitDate AS Encounter_Date
+	,NULL AS Encounter_ID
+	,CASE 
+		WHEN pipt.YellowColouredUrine = 0
+			THEN 'No'
+		WHEN pipt.YellowColouredUrine = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Yellow_urine
+	,CASE 
+		WHEN pipt.Numbness = 0
+			THEN 'No'
+		WHEN pipt.Numbness = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Numbness
+	,CASE 
+		WHEN pipt.YellownessOfEyes = 0
+			THEN 'No'
+		WHEN pipt.YellownessOfEyes = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Yellow_eyes
+	,CASE 
+		WHEN pipt.AbdominalTenderness = 0
+			THEN 'No'
+		WHEN pipt.AbdominalTenderness = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Tenderness
+	,pipt.IptStartDate AS IPT_Start_Date
+	,pipt.CreateDate created_at
+	,pipt.CreatedBy created_by
+FROM PatientIptWorkup pipt
+INNER JOIN PatientMasterVisit pmv ON pmv.Id = pipt.PatientMasterVisitId
+INNER JOIN Patient p ON p.Id = pipt.PatientId</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -674,8 +691,8 @@ inner join Patient p on p.Id=pipt.PatientId</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>963</xloc>
-      <yloc>169</yloc>
+      <xloc>368</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -718,8 +735,8 @@ inner join Patient p on p.Id=pipt.PatientId</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1305</xloc>
-      <yloc>167</yloc>
+      <xloc>608</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

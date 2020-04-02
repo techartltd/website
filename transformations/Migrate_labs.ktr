@@ -564,7 +564,7 @@
     </hop>
     <hop>
       <from>iqcare_source_labs</from>
-      <to>load_st__tb_screening</to>
+      <to>load_st_laboratory</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -689,6 +689,7 @@ CREATE TABLE migration_st.st_laboratory
   SAFB                     VARCHAR(180),
   QBL                      VARCHAR(180),
   GeneXpert                VARCHAR(180),
+  Lab_Reason       TEXT,
   Urgency         VARCHAR(50),
   Test_result     VARCHAR(200),
   Date_test_requested DATE,
@@ -696,7 +697,7 @@ CREATE TABLE migration_st.st_laboratory
   Test_requested_by VARCHAR(100),
   OrderStatus      VARCHAR(100),
   PreClinicLabDate  DATE,
-  ClinicalOrderNotes  VARCHAR(200),
+  ClinicalOrderNotes  TEXT,
   OrderNumber      VARCHAR(100),
   CreateDate       DATE,
   CreatedBy        VARCHAR(100),
@@ -751,114 +752,18 @@ CREATE TABLE migration_st.st_laboratory
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- .17 Laboratory 
-exec pr_OpenDecryptedSession;
+    <sql>-- 17. Laboratory Extract Validated by MM
 
-select p.PersonId as Person_Id 
-,v.VisitDate as Encounter_Date,
+SELECT * from (
+select DISTINCT p.PersonId as Person_Id , 
+v.VisitDate as Encounter_Date,
 NULL as Encounter_ID,
-vlw.ParameterReferenceId as Lab_test,
-
-CASE WHEN vlw.ParameterReferenceId='CD4' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CD4,
-CASE WHEN vlw.ParameterReferenceId='CD4PERCENT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CD4PERCENT,
-CASE WHEN vlw.ParameterReferenceId='VIRALLOAD' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VIRALLOAD,
-CASE WHEN vlw.ParameterReferenceId='VIRALLOADUNDETECTABLE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VIRALLOADUNDETECTABLE,
-CASE WHEN vlw.ParameterReferenceId='STOREPLASMA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as STOREPLASMA,
-CASE WHEN vlw.ParameterReferenceId='HCT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HCT,
-CASE WHEN vlw.ParameterReferenceId='HB' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HB,
-CASE WHEN vlw.ParameterReferenceId='WBC' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBC,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_NEUT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_NEUT,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_NEUT%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_NEUT_PERCENT,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_LYMPH' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_LYMPH,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_LYMPH%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_LYMPH_PERCENT,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_MONO' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_MONO,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_MONO%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_MONO_PERCENT,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_EOSIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_EOSIN,
-CASE WHEN vlw.ParameterReferenceId='WBCDIFF_EOSIN%' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as WBCDIFF_EOSIN_PERCENT,
-CASE WHEN vlw.ParameterReferenceId='PLATELETS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PLATELETS,
-CASE WHEN vlw.ParameterReferenceId='AST_SGOT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as AST_SGOT,
-CASE WHEN vlw.ParameterReferenceId='ALT_SGPT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as ALT_SGPT,
-CASE WHEN vlw.ParameterReferenceId='CREATININE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CREATININE,
-CASE WHEN vlw.ParameterReferenceId='CREATININEMM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CREATININEMM,
-CASE WHEN vlw.ParameterReferenceId='AMYLASE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as AMYLASE,
-CASE WHEN vlw.ParameterReferenceId='PREGNANCY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PREGNANCY,
-CASE WHEN vlw.ParameterReferenceId='MALARIA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as MALARIA,
-CASE WHEN vlw.ParameterReferenceId='SERUMCRYPTO' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SERUMCRYPTO,
-CASE WHEN vlw.ParameterReferenceId='SPUTUMAFB1' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMAFB1,
-CASE WHEN vlw.ParameterReferenceId='SPUTUMAFB2' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMAFB2,
-CASE WHEN vlw.ParameterReferenceId='SPUTUMAFB3' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMAFB3,
-CASE WHEN vlw.ParameterReferenceId='SPUTUMGRAMSTAIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPUTUMGRAMSTAIN,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS,
-CASE WHEN vlw.ParameterReferenceId='STOOLSTATUS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as STOOLSTATUS,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_SPECGRAV' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_SPECGRAV,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_GLUCOSE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_GLUCOSE,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_KETONE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_KETONE,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_PROTEIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_PROTEIN,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_LEUKEST' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_LEUKEST,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_NITRATE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_NITRATE,
-CASE WHEN vlw.ParameterReferenceId='URINALYSIS_BLOOD' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSIS_BLOOD,
-CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICBLOOD' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICBLOOD,
-CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICWBC' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICWBC,
-CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICBACTERIA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICBACTERIA,
-CASE WHEN vlw.ParameterReferenceId='URINALYSISMICROSCOPICCASTS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINALYSISMICROSCOPICCASTS,
-CASE WHEN vlw.ParameterReferenceId='CULTURESENSITIVITY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CULTURESENSITIVITY,
-CASE WHEN vlw.ParameterReferenceId='STOOL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as STOOL,
-CASE WHEN vlw.ParameterReferenceId='URINECULTURE_SENSIVITY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as URINECULTURE_SENSIVITY,
-CASE WHEN vlw.ParameterReferenceId='CSFCRYPTO' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFCRYPTO,
-CASE WHEN vlw.ParameterReferenceId='CSFINDIAINK' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFINDIAINK,
-CASE WHEN vlw.ParameterReferenceId='CSFGRAMSTAIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFGRAMSTAIN,
-CASE WHEN vlw.ParameterReferenceId='CSFCULTURE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFCULTURE,
-CASE WHEN vlw.ParameterReferenceId='CSFBIOCHEMISTRY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFBIOCHEMISTRY,
-CASE WHEN vlw.ParameterReferenceId='GLUCOSEMG' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GLUCOSEMG,
-CASE WHEN vlw.ParameterReferenceId='GLUCOSEMM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GLUCOSEMM,
-CASE WHEN vlw.ParameterReferenceId='ESR' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as ESR,
-CASE WHEN vlw.ParameterReferenceId='CELLCOUNTNEUTROPHILS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTNEUTROPHILS,
-CASE WHEN vlw.ParameterReferenceId='CELLCOUNTLYMPHOCYTES' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTLYMPHOCYTES,
-CASE WHEN vlw.ParameterReferenceId='PROTEIN' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PROTEIN,
-CASE WHEN vlw.ParameterReferenceId='PROTEINMG' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PROTEINMG,
-CASE WHEN vlw.ParameterReferenceId='PROTEINMM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PROTEINMM,
-CASE WHEN vlw.ParameterReferenceId='HIVRAPIDTEST' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HIVRAPIDTEST,
-CASE WHEN vlw.ParameterReferenceId='CSFBIOCHEMISTRY_GLUCOSE' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CSFBIOCHEMISTRY_GLUCOSE,
-CASE WHEN vlw.ParameterReferenceId='CELLCOUNTRBCS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTRBCS,
-CASE WHEN vlw.ParameterReferenceId='RBC' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as RBC,
-CASE WHEN vlw.ParameterReferenceId='CELLCOUNTWBCS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CELLCOUNTWBCS,
-CASE WHEN vlw.ParameterReferenceId='ALBUMIN_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as ALBUMIN_MG_DL_,
-CASE WHEN vlw.ParameterReferenceId='COLPOSCOPY_CERVICALCA_FEMALEONLY_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as COLPOSCOPY_CERVICALCA_FEMALEONLY_,
-CASE WHEN vlw.ParameterReferenceId='CYTOMEGALOVIRUS_CMV_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CYTOMEGALOVIRUS_CMV_,
-CASE WHEN vlw.ParameterReferenceId='EPSTEINBARRVIRUS_EBV_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as EPSTEINBARRVIRUS_EBV_,
-CASE WHEN vlw.ParameterReferenceId='HDL_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HDL_MG_DL_,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISAAB_TOTAL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISAAB_TOTAL,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISAAB_IGM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISAAB_IGM,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISBCORE_ANTIBODYIGM_HBSAB_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBCORE_ANTIBODYIGM_HBSAB_,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISBCORE_ANTIBODY_TOTAL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBCORE_ANTIBODY_TOTAL,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISBSURFACE_ANTIBODY_HBSAB_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBSURFACE_ANTIBODY_HBSAB_,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISBSURFACE_ANTIGEN_HBSAG_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISBSURFACE_ANTIGEN_HBSAG_,
-CASE WHEN vlw.ParameterReferenceId='LDL_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as LDL_MG_DL_,
-CASE WHEN vlw.ParameterReferenceId='PAPSMEAR_CERVICALCA_FEMALEONLY_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PAPSMEAR_CERVICALCA_FEMALEONLY_,
-CASE WHEN vlw.ParameterReferenceId='GONORRHEA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GONORRHEA,
-CASE WHEN vlw.ParameterReferenceId='CHLAMYDIA' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CHLAMYDIA,
-CASE WHEN vlw.ParameterReferenceId='RECTALPAPSMEAR' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as RECTALPAPSMEAR,
-CASE WHEN vlw.ParameterReferenceId='SYPHILIS_FTA_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SYPHILIS_FTA_,
-CASE WHEN vlw.ParameterReferenceId='SYPHILIS_RPR_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SYPHILIS_RPR_,
-CASE WHEN vlw.ParameterReferenceId='TOTALCHOLESTEROL_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as TOTALCHOLESTEROL_MG_DL_,
-CASE WHEN vlw.ParameterReferenceId='TOXOPLASMAIGGANTIBODY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as TOXOPLASMAIGGANTIBODY,
-CASE WHEN vlw.ParameterReferenceId='TRIGLYCERIDES_MG_DL_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as TRIGLYCERIDES_MG_DL_,
-CASE WHEN vlw.ParameterReferenceId='VAGINALINSPECTIONWITHACETICACID_VIA_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VAGINALINSPECTIONWITHACETICACID_VIA_,
-CASE WHEN vlw.ParameterReferenceId='HEPATITISCANTIBODY' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HEPATITISCANTIBODY,
-CASE WHEN vlw.ParameterReferenceId='HIVCONFIRM' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as HIVCONFIRM,
-CASE WHEN vlw.ParameterReferenceId='VARICELLA_CHICKENPOX_' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as VARICELLA_CHICKENPOX_,
-CASE WHEN vlw.ParameterReferenceId='PCR' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as PCR,
-CASE WHEN vlw.ParameterReferenceId='RDT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as RDT,
-CASE WHEN vlw.ParameterReferenceId='MPS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as MPS,
-CASE WHEN vlw.ParameterReferenceId='SPECIES_REPORT' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SPECIES_REPORT,
-CASE WHEN vlw.ParameterReferenceId='CAS' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as CAS,
-CASE WHEN vlw.ParameterReferenceId='SAFB' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as SAFB,
-CASE WHEN vlw.ParameterReferenceId='QBL' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as QBL,
-CASE WHEN vlw.ParameterReferenceId='GeneXpert' then COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) end  as GeneXpert,
-
+vlw.LabTestName as Lab_Test,
+PT.Reasons AS Lab_Reason,
 NULL as Urgency, 
-COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText) as  Test_Result,
+CASE WHEN COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText,r.ResultOption) IS NOT NULL 
+		  THEN COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText,r.ResultOption)
+	 WHEN COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText,r.ResultOption) IS NULL AND Undetectable=1 AND HasResult=1 THEN 'LDL' END AS Test_Result,
 plo.OrderDate as Date_test_Requested,
 OT.ResultDate as Date_test_result_received,
 u.UserFirstName + ' ' + u.UserLastName as Test_Requested_By,
@@ -872,30 +777,31 @@ plo.OrderStatus,
 (select  usr.UserFirstName + ' ' + usr.UserLastName  from mst_User usr where usr.UserID=plo.DeletedBy) as DeletedBy ,
 plo.DeleteDate,
 plo.DeleteReason,
+ plo.DeleteFlag as Voided,
  OT.ResultStatus,
  OT.StatusDate,
- COALESCE(cast(r.ResultValue as varchar(max)),r.ResultText) as LabResult,
+CASE WHEN COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText,r.ResultOption) IS NOT NULL 
+		  THEN COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText,r.ResultOption)
+	 WHEN COALESCE(CAST(r.ResultValue as VARCHAR(20)), r.ResultText,r.ResultOption) IS NULL AND Undetectable=1 AND HasResult=1 THEN 'LDL' END AS LabResult,
  r.ResultValue,
  r.ResultText,
  r.ResultOption,
- r.Undetectable,
+r.Undetectable,
  r.DetectionLimit,
  r.ResultUnit,
  r.HasResult,
  vlw.LabTestName,
- vlw.ParameterName,
- vlw.LabDepartmentName,
-  plo.DeleteFlag as Voided
+vlw.ParameterName,
+ vlw.LabDepartmentName
 
 from ord_LabOrder	 plo
 inner join dtl_LabOrderTest OT on OT.LabOrderId=plo.Id
 inner join dtl_LabOrderTestResult r on r.LabOrderTestId=OT.Id
+LEFT JOIN PatientLabTracker PT on PT.LabOrderId=plo.Id
 inner join Patient  p on p.ptn_pk=plo.Ptn_Pk
 inner join ord_Visit v on v.Visit_Id=plo.VisitId
 left join mst_User u on u.UserID=plo.OrderedBy
-left join (Select	P.Id	ParameterId
-			,P.ParameterName
-			,P.ReferenceId ParameterReferenceId
+left join (Select	P.Id	ParameterId	,P.ParameterName,P.ReferenceId ParameterReferenceId
 			,T.Id	LabTestId
 			,T.Name	LabTestName
 			,T.ReferenceId TestReferenceId
@@ -909,7 +815,8 @@ left join (Select	P.Id	ParameterId
 	Inner Join Mst_LabTestParameter P On T.Id = P.LabTestId
 	Left Outer Join mst_LabDepartment D On T.DepartmentId = D.LabDepartmentID)
 	vlw on vlw.ParameterId=r.ParameterId
-
+	where  plo.DeleteFlag=0
+)B
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -931,7 +838,7 @@ left join (Select	P.Id	ParameterId
     </GUI>
   </step>
   <step>
-    <name>load_st__tb_screening</name>
+    <name>load_st_laboratory</name>
     <type>TableOutput</type>
     <description/>
     <distribute>Y</distribute>

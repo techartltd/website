@@ -600,8 +600,8 @@ set First_Name=replace(First_Name,"\\",""),
       </output>
     </remotesteps>
     <GUI>
-      <xloc>676</xloc>
-      <yloc>99</yloc>
+      <xloc>208</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

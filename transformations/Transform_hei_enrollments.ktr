@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 23. Create hei enrollments transformed table
+    <sql>-- 24. Create hei enrollments transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_hei_enrollment;
 CREATE TABLE migration_tr.tr_hei_enrollment as
@@ -553,19 +553,27 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
     (case TB_contact_history_in_household
      when "No" then 1066
      when "Yes" then 1065
-     when "Unknown" then 1067  else NULL end)as  TB_contact_history_in_household,
-    Mother_alive,
+     when "Unknown" then 1067  else NULL end) as  TB_contact_history_in_household,
+   (case Mother_alive
+     when "Dead" then 2
+     when "Alive" then 1 else NULL end) as  Mother_alive,
+    Health_facility_name,
     (case Mother_breastfeeding
      when "No" then 1066
      when "Yes" then 1065
-     when "Unknown" then 1067  else NULL end)as  Mother_breastfeeding,
+     when "Unknown" then 1067  else NULL end) as  Mother_breastfeeding,
     Referral_source,
     Transfer_in,
     Transfer_in_date,
     Facility_transferred_from,
     District_transferred_from,
-    Mother_on_NVP_during_breastfeeding,
+    Child_arv_prophylaxis,
+   (case Mother_on_NVP_during_breastfeeding
+     when "No" then 1066
+     when "Yes" then 1065
+     when "Unknown" then 1067  else NULL end)as  Mother_on_NVP_during_breastfeeding,
     Infant_mother_link,
+
    (case Mother_on_pmtct_drugs
      when "HAART" then 1065
      when "None" then 1066
@@ -609,7 +617,9 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
     Infant_prophylaxis_other,
     Mother_ccc_number,
     Voided
-  FROM migration_st.st_hei_enrollment;</sql>
+  FROM migration_st.st_hei_enrollment WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -626,8 +636,8 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>804</xloc>
-      <yloc>81</yloc>
+      <xloc>144</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

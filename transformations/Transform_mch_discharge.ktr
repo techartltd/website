@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 23. Create mch discharge transformed table
+    <sql>-- 22. Create mch discharge transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_mch_discharge;
 CREATE TABLE migration_tr.tr_mch_discharge as
@@ -531,12 +531,23 @@ CREATE TABLE migration_tr.tr_mch_discharge as
      when "Unknown" then 1067  else NULL end)as  Baby_Status_On_Discharge,
   Mother_Status_On_Discharge,
   Birth_Notification_Number,
-  Referred_From,
-  Referred_To,
+ (case Referred_From
+     when "Another Health Facility" then 164407
+     when "Current Health Facility" then 163266
+     when "Community Unit" then 160543
+     when "Unknown" then 1067  else NULL end)as  Referred_From,
+ (case Referred_To
+     when "Another Health Facility" then 164407
+     when "Current Health Facility" then 163266
+     when "Community Unit" then 160543
+     when "Unknown" then 1067  else NULL end)as  Referred_To,
   Clinical_notes,
   Next_Appointment_Date,
   Voided
-  FROM migration_st.st_mch_delivery_discharge;</sql>
+  FROM migration_st.st_mch_delivery_discharge WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -553,8 +564,8 @@ CREATE TABLE migration_tr.tr_mch_discharge as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1007</xloc>
-      <yloc>144</yloc>
+      <xloc>144</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

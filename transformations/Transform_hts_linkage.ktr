@@ -530,7 +530,10 @@ CREATE TABLE migration_tr.tr_hts_linkage as
     ART_Start_Date,
     Remarks,
     Voided
-  FROM migration_st.st_hts_linkage ;</sql>
+  FROM migration_st.st_hts_linkage WHERE
+    (Encounter_Date != "" OR Encounter_Date != NULL)
+  GROUP BY Person_Id, Encounter_Date;
+;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -547,8 +550,8 @@ CREATE TABLE migration_tr.tr_hts_linkage as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>515</xloc>
-      <yloc>89</yloc>
+      <xloc>208</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

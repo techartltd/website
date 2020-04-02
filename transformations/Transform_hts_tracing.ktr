@@ -532,7 +532,9 @@ CREATE TABLE migration_tr.tr_hts_tracing as
      when "Mteja, calls not going through, not picking calls" then 1567 else NULL end) as Reason_uncontacted,
   Remarks,
   Voided
-FROM migration_st.st_hts_tracing ;</sql>
+FROM migration_st.st_hts_tracing WHERE
+ (Encounter_Date != "" OR Encounter_Date != NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -549,8 +551,8 @@ FROM migration_st.st_hts_tracing ;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>176</yloc>
+      <xloc>240</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

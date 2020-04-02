@@ -573,7 +573,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 20.  MCH Enrollment and ANC Visit
+    <sql>-- 19_20.  MCH Enrollment and ANC Visit
 DROP TABLE IF EXISTS migration_st.st_mch_enrollment_visit;
 CREATE TABLE migration_st.st_mch_enrollment_visit
 (
@@ -651,8 +651,9 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
   Syphilis_test_status             VARCHAR(50),
   Syphilis_treated_status          VARCHAR(50),
   Bs_for_mps                       VARCHAR(100),
+  Blood_group                      VARCHAR(100),
   Anc_exercises                    VARCHAR(50),
-  Tb_screening                     VARCHAR(50),
+  TB_screening_results             VARCHAR(50),
   Cacx_screening                   VARCHAR(50),
   Cacx_screening_method            VARCHAR(50),
   Prophylaxis_given                VARCHAR(50),
@@ -669,8 +670,8 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
   Duration_units                   VARCHAR(50),
   Anc_counselled                   VARCHAR(50),
   Counselled_subject               VARCHAR(100),
-  Referred_from                    VARCHAR(100),
-  Referred_to                      VARCHAR(100),
+  Referred_From                    VARCHAR(100),
+  Referred_To                      VARCHAR(100),
   Next_appointment_date            DATE,
   Clinical_notes                   VARCHAR(100),
   Voided                           INT(11)
@@ -709,13 +710,16 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 20.  MCH Enrollment and ANC Visit
-exec pr_OpenDecryptedSession;
+    <sql>
+ ---20_21  st_mch_antenatal_visit Validated by DNG
+  
+ exec  pr_OpenDecryptedSession;
 
 select  pe.Id as Person_Id,d.VisitDate as Encounter_Date,
 NULL as Encounter_ID,h.VisitNumber as Anc_visit_number,
-h.IdentifierValue as ANC_number,k.Temperature,k.HeartRate as Pulse_rate,
-k.BPSystolic as Systolic_bp,k.BPDiastolic as Diastolic_bp,
+h.IdentifierValue as ANC_number,k.Temperature,k.HeartRate as Pulse_rate ,
+k.BPSystolic as Systolic_bp,
+k.BPDiastolic as Diastolic_bp,
 k.RespiratoryRate as Respiratory_rate,
 k.SpO2 as Oxygen_saturation,
 k.[Weight],
@@ -731,7 +735,7 @@ NULL Fetal_presentation,
 NULL Lie,
 NULL Fetal_Heart_Rate,
 NULL Fetal_Movement,
-WHO.[WHOStage] as  Who_stage,
+WHO.[WHOStage] as Who_stage,
 NULL as Cd4,
 pscvs.[Value]  as Viral_load_sample_taken,
 NULL as Viral_load,
@@ -747,7 +751,7 @@ HIVTest.twoexpirydate as Test_2_kit_expiry,
 HIVTest.FinalTestTwoResult as Test_2_result,
 z.FinalResult as Final_test_result, 
  NULL as Patient_given_result,
- NULL Urine_microscopy,
+ NULL Urine_microscopy ,
  NULL Glucose_measurement,
  NULL Urine_ph,
  NULL Urine_nitrite_test,
@@ -761,7 +765,7 @@ z.FinalResult as Final_test_result,
  BAC.SyphilisResults Syphilis_treated_status,
  NULL Bs_for_mps,
  NULL Anc_exercises,
- TBScreen.TBScreening as Tb_Screening,
+ TBScreen.TBScreening as TB_screening_results,
  CaCX.CaCxScreening as Cacx_screening,
  CaCX.CacxScreeningMethod as Cacx_screening_method,
  CTX.CTX as Prophylaxis_given,
@@ -786,18 +790,18 @@ pri.Parity2 as Parity_abortion,
 pri.Parity,
 CAST(pri.LMP as date)LMP,
 CAST(pri.EDD as Date)EDD,
-pri.AgeAtMenarche as  Age_at_menarche,
+pri.AgeAtMenarche as Age_at_menarche,
 pri.Gravidae as Gravida,
 CACX.Comment as CervicalCancerComment,
 j.[On ARV Before 1st ANC Visit] as On_ART_Before_First_ANC,
-HAARTANC.[Started HAART in ANC] as Started_ART_ANC,
+HAARTANC.[Started HAART in ANC] as  Started_ART_ANC,
 [Deworming],
 IPT as IPT_1_3,
- TTDose as  TT_Dose, 
+ TTDose as TT_Dose, 
  Supplementation, 
- TreatedNets AS  Received_ITN ,
- partnerTesting.PartnerTested as Partner_tested,
-partnerTesting.PartnerHIVResult as Partner_hiv_status,
+ TreatedNets AS Received_ITN ,
+ partnerTesting.PartnerTested as Partner_tested ,
+partnerTesting.PartnerHIVResult,
 d.DeleteFlag as Voided 
 
 from Patient p 
@@ -954,6 +958,7 @@ LEFT JOIN	(SELECT     distinct   a.PatientId, a.PatientMasterVisitId,d.itemname 
 							 dbo.LookupItemView d ON d.ItemId = a.[PartnerTested] LEFT OUTER JOIN
 							 dbo.LookupItemView e ON e.ItemId = a.[PartnerHIVResult]
 	WHERE        (c.ItemName = 'ANC-Encounter'))partnerTesting on partnerTesting.PatientId=p.Id and partnerTesting.PatientMasterVisitId=d.id
+ 
  
  </sql>
     <limit>0</limit>

@@ -540,8 +540,8 @@ CREATE TABLE migration_tr.tr_ipt_outcome
       </output>
     </remotesteps>
     <GUI>
-      <xloc>345</xloc>
-      <yloc>167</yloc>
+      <xloc>176</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

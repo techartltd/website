@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Demographis_without_merge</name>
+    <name>Migrate_ovc_outcome</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mssql</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,31 +427,27 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/03 13:16:11.363</created_date>
+    <created_date>2020/04/01 12:32:12.163</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/03 13:16:11.363</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/04/01 12:32:12.163</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mssql_conn</name>
-    <server>DESKTOP-O2MBCFP</server>
-    <type>MSSQLNATIVE</type>
-    <access>Native</access>
-    <database>IQCare_Machakos</database>
-    <port>1433</port>
-    <username>sa</username>
-    <password>Encrypted 2be98afc86aa7f287fb17bd64db9ea3db</password>
+    <name>migration_st</name>
+    <server/>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mysql_st</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
-      <attribute>
-        <code>EXTRA_OPTION_MSSQLNATIVE.instance</code>
-        <attribute> SQLEXPRESS</attribute>
-      </attribute>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
         <attribute>N</attribute>
@@ -471,8 +461,59 @@
         <attribute>N</attribute>
       </attribute>
       <attribute>
-        <code>MSSQLUseIntegratedSecurity</code>
-        <attribute>false</attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mssql</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
       </attribute>
       <attribute>
         <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
@@ -480,7 +521,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>1433</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -489,116 +530,6 @@
       <attribute>
         <code>QUOTE_ALL_FIELDS</code>
         <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
-  <connection>
-    <name>mysql_migration_st</name>
-    <server>localhost</server>
-    <type>MYSQL</type>
-    <access>Native</access>
-    <database>migration_st</database>
-    <port>3306</port>
-    <username>root</username>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>STREAM_RESULTS</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
-  <connection>
-    <name>mysql_migration_tr</name>
-    <server>localhost</server>
-    <type>MYSQL</type>
-    <access>Native</access>
-    <database>migration_tr</database>
-    <port>3306</port>
-    <username>root</username>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>STREAM_RESULTS</code>
-        <attribute>Y</attribute>
       </attribute>
       <attribute>
         <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
@@ -616,18 +547,70 @@
   </connection>
   <order>
     <hop>
-      <from>mssql_source</from>
-      <to>mysql_migration_st</to>
+      <from>Create_st_ovc_outcome</from>
+      <to>iqcare_source_ovc_outcome</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>mysql_migration_st</from>
-      <to>mysql_migration_tr</to>
+      <from>iqcare_source_ovc_outcome</from>
+      <to>load_st_ovc_outcome</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>mssql_source</name>
+    <name>Create_st_ovc_outcome</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>migration_st</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>-- 37. Creating OVC Outcome table
+DROP TABLE IF EXISTS migration_st.st_ovc_outcome;
+CREATE TABLE migration_st.st_ovc_outcome (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  ExitDate                         DATE,
+  Exit_Reason                      VARCHAR(255),
+  Transfer_Facility                VARCHAR(255),
+  Transfer_Date                    DATE,
+  created_by                       VARCHAR(255),
+  created_at                       DATE,  
+  Voided                           int(11)
+);
+</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>274</xloc>
+      <yloc>143</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_ovc_outcome</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -637,107 +620,30 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mssql_conn</connection>
-    <sql>
-exec pr_OpenDecryptedSession;
-SELECT distinct
-  P.Id as Person_Id,
-  CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50)) AS First_Name,
-  CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50)) AS Middle_Name,
-  CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50)) AS Last_Name,
-  CAST(DECRYPTBYKEY(P.NickName) AS VARCHAR(50)) AS Nickname,
-format(cast(ISNULL(P.DateOfBirth, PT.DateOfBirth) as date),'yyyy-MM-dd') AS DOB,
- NULL Exact_DOB,
-  Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else '' end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
-  UPN =(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
- format(cast(PT.RegistrationDate as date),'yyyy-MM-dd') AS Encounter_Date,
-  NULL Encounter_ID,
-  National_id_No =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name] from PersonIdentifier pid
-inner join (
-select id.Id,id.[Name] as [Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId ) pdd where pdd.PersonId = P.Id and pdd.[Name]='NationalID'),
- Patient_clinic_number=(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='CCCNumber' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
-  
-  Birth_certificate=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthCertificate' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
-Birth_notification=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='BirthNotification' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
-Hei_no=(select top 1 pdd.IdentifierValue from (select pid.PatientId,pid.IdentifierTypeId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PatientIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Patient')pdd on pdd.Id=pid.IdentifierTypeId  ) pdd where pdd.PatientId = PT.Id and pdd.[Code]='HEIRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc ),
-Passport=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='Passport' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
-Alien_Registration=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
-inner join (
-select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
-inner join  IdentifierType it on it.Id =id.IdentifierType
-where it.Name='Person')pdd on pdd.Id=pid.IdentifierId  ) pdd where pdd.PersonId = P.Id and pdd.[Name]='AlienRegistration' and pdd.DeleteFlag=0 order by pdd.CreateDate desc),
-pcv.MobileNumber as Phone_number,
-pcv.AlternativeNumber as Alternate_Phone_number,
-pcv.PhysicalAddress as Postal_Address,
-pcv.EmailAddress as EmailAddress,
- County = (SELECT TOP 1 CountyName FROM County WHERE CountyId = PL.County),
- Sub_county=(select TOP 1 Subcountyname from County where  SubcountyId=PL.SubCounty),
- Ward=(SELECT TOP 1 WardName from County where WardId=PL.Ward),
- PL.Village as Village,
- PL.LandMark as LandMark,
- PL.NearestHealthCentre as Nearest_Health_Centre,
- ts.Next_of_kin,
- ts.Next_of_kin_phone,
-  ts.Next_of_kin_relationship,
- ts.Next_of_kin_address,
+    <connection>mssql</connection>
+    <sql>--37.  Creating OVC Outcome table Validated by LO
 
- Marital_status = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PM.MaritalStatusId AND MasterName = 'MaritalStatus'),
- Occupation = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PO.Occupation AND MasterName = 'Occupation'),
-Education_level = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PED.EducationLevel AND MasterName = 'EducationalLevel'),
-pend.Dead,
-pend.DateOfDeath as Death_date,
-ts.Consent,
-ts.Consent_Decline_Reason,
-P.DeleteFlag as Voided 
- -- into PatientDemographics
-FROM Person P
-  left JOIN (select * from (select * ,ROW_NUMBER() OVER(partition by PersonId order by CreateDate desc)rownum from PersonLocation where (DeleteFlag =0 or DeleteFlag is null))PLL where PLL.rownum='1') PL ON PL.PersonId = P.Id
-  INNER JOIN Patient PT ON PT.PersonId = P.Id
-  LEFT JOin PersonContactView pcv on pcv.PersonId=P.Id
- LEFT JOIN( select t.PersonId,t.SupporterId,t.Next_of_kin,t.Next_of_kin_phone,t.Next_of_kin_relationship,t.Next_of_kin_address,t.Consent,t.Consent_Decline_Reason from (select  pts.PersonId ,pts.SupporterId,(pt.FirstName + ' ' + pt.MiddleName + ' '  + pt.LastName) as Next_of_kin,pts.ContactCategory,pts.ContactRelationship,lts.DisplayName as Next_of_kin_relationship 
- ,pts.MobileContact as Next_of_kin_phone,pcv.PhysicalAddress as [Next_of_kin_address],pcc.Consent,pcc.Consent_Decline_Reason
-,pts.CreateDate ,ROW_NUMBER() OVER(Partition by   pts.PersonId order by pts.CreateDate desc)rownum  from PatientTreatmentSupporter pts
-inner join PersonView p  on pts.PersonId=p.Id
-inner join PersonView pt on pt.Id=pts.SupporterId
-inner join PersonContactView pcv on pcv.PersonId=pts.SupporterId
-inner join LookupItemView lt on lt.ItemId=pts.ContactCategory and lt.MasterName='ContactCategory'
-inner join LookupItemView lts on lts.ItemId=pts.ContactRelationship and lts.MasterName='KinRelationship'
-left join(select pc.PatientId,pc.PersonId,pc.ConsentValue,lt.DisplayName as Consent,pc.[Comments] as [Consent_Decline_Reason] from PatientConsent pc
-inner join LookupItem lt on lt.Id=pc.ConsentValue) pcc on pcc.PersonId=pts.SupporterId
-where lt.ItemName  in ('NextofKin','EmergencyContact')) t where t.rownum='1')ts on ts.PersonId= P.Id
-LEFT JOIN PatientMaritalStatus PM ON PM.PersonId = P.Id
-LEFT JOIN PersonEducation PED ON PED.PersonId = P.Id
-LEFT JOIN PersonOccupation PO ON PO.PersonId = P.Id
-LEFT JOIN( select pend.PatientId,pend.DateOfDeath, CASE WHEN pend.ExitDate is not null then 'Yes' else 'No' end as Dead from (select pce.PatientId,CASE WHEN pce.DateOfDeath is null then pce.ExitDate else pce.DateOfDeath end as DateOfDeath,pce.ExitReason a,pce.ExitDate,lt.DisplayName,ROW_NUMBER() OVER(partition by pce.PatientId order by pce.CreateDate desc)rownum from PatientCareending  pce
-inner join  LookupItemView lt on lt.ItemId=pce.ExitReason and lt.MasterName='CareEnded'
-where lt.ItemName='Death'
-)pend where pend.rownum='1')pend on pend.PatientId=PT.Id</sql>
+select 
+p.PersonId as Person_Id
+,pmv.VisitDate as Encounter_Date,
+NULL as Encounter_ID
+,pce.ExitDate as ExitDate,
+(select top 1.[Name] from LookupItem li where li.Id=pce.ExitReason) as Exit_Reason,
+pce.TransferOutfacility as Transfer_Facility,
+CASE WHEN pce.ExitReason in (
+select itemId from LookupItemView where MasterName like 'OVC_CareEndedOptions'
+and  ItemName in ('TransferOutNonPepfarFacility','TransferOutPepfarFacility')) then 
+pce.ExitDate else NULL end  as  Transfer_Date,
+pce.DeleteFlag as Voided,
+pce.CreatedBy created_by,
+cast(pce.CreateDate as date) created_at
+  from PatientCareending  pce
+  inner join Patient p on pce.PatientId=p.Id
+  inner join PatientMasterVisit pmv on pmv.Id=pce.PatientMasterVisitId
+inner join PatientEnrollment pe on  pe.Id=pce.PatientEnrollmentId
+inner join ServiceArea sa on sa.Id=pe.ServiceAreaId 
+where sa.Code='OVC' 
+</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -752,13 +658,13 @@ where lt.ItemName='Death'
       </output>
     </remotesteps>
     <GUI>
-      <xloc>128</xloc>
-      <yloc>80</yloc>
+      <xloc>546</xloc>
+      <yloc>143</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>mysql_migration_st</name>
+    <name>load_st_ovc_outcome</name>
     <type>TableOutput</type>
     <description/>
     <distribute>Y</distribute>
@@ -768,58 +674,14 @@ where lt.ItemName='Death'
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_migration_st</connection>
+    <connection>migration_st</connection>
     <schema>migration_st</schema>
-    <table>st_demographics</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>464</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>mysql_migration_tr</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>mysql_migration_tr</connection>
-    <schema>migration_tr</schema>
-    <table>tr_demographics</table>
+    <table>st_ovc_outcome</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
     <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
+    <specify_fields>N</specify_fields>
     <partitioning_enabled>N</partitioning_enabled>
     <partitioning_field/>
     <partitioning_daily>N</partitioning_daily>
@@ -840,8 +702,8 @@ where lt.ItemName='Death'
       </output>
     </remotesteps>
     <GUI>
-      <xloc>800</xloc>
-      <yloc>80</yloc>
+      <xloc>898</xloc>
+      <yloc>143</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

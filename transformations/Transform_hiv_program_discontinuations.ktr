@@ -538,7 +538,8 @@ CREATE TABLE migration_tr.tr_hiv_program_discontinuation as
      when "Unknown" then 1067 else NULL end) as Care_Ending_Reason,
     Facility_Transfered_To,
     Death_Date
-  FROM migration_st.st_program_discontinuation where Program = "CCC" ;
+  FROM migration_st.st_program_discontinuation WHERE Program = "CCC" 
+  AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)   ;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -556,8 +557,8 @@ CREATE TABLE migration_tr.tr_hiv_program_discontinuation as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>661</xloc>
-      <yloc>165</yloc>
+      <xloc>192</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

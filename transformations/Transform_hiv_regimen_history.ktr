@@ -543,30 +543,61 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "Change" then 1259 else NULL end)as Drug_Event,
       (case Regimen_Name
        when "PM 8 SD Nevirapine (NVP)" then 80586
-       when "PM1 AZT from 14Wks" then 86663
+	   when "NVP" then 80586
+       when "D4T" then 84309
+	   when "EFV" then 75523
+	   when "3TC" then 78643 
+	   when "LOPr" then 79040    
+	   when "3TC+NVP" then 164501   
+	   when "3TC+ABC" then 103166 
+	   when "ABC+3TC" then 103166 
+	   when "3TC+FTC+NVP+TDF" then 164854 
+	   when "PM1 AZT from 14Wks" then 86663
        when "TDF + 3TC + NVP"  then 162565
+	   when "3TC+NVP+TDF"  then 162565
        when "PM 6 TDF + 3TC + NVP"  then 162565
        when "TDF + 3TC + NVP (children > 35kg)"  then 162565
-       when "TDF + 3TC + EFV"  then 164505
-       when "PM 9 TDF + 3TC + EFV"  then 164505
-       when "AZT + 3TC + NVP"  then 1652
-       when "PM2 NVP stat + AZT stat"  then 1652
-       when "PM3 AZT + 3TC + NVP"  then 1652
+       when "TDF + 3TC + EFV"  then 164505  
+	   when "3TC+EFV+TDF"  then 164505
+	   when "TDF+3TC+EFV"  then 164505
+	   when "EFV+3TC+TDF"  then 1652 
+       when "PM 9 TDF + 3TC + EFV"  then 164505    
+       when "AZT + 3TC + NVP"  then 1652	   
+       when "PM2 NVP stat + AZT stat"  then 1652  
+	   when "AZT+NVP"  then 1652
+       when "3TC+AZT+NVP"  then 1652
+	   when "3TC+NVP+AZT"  then 1652
+	   when "PM3 AZT + 3TC + NVP"  then 1652    
        when "AZT + 3TC + EFV"  then 160124
+	   when "3TC+AZT+EFV"  then 160124
        when "PM4 AZT + 3TC + EFV"  then 160124
        when "D4T + 3TC + NVP"  then 792
+	   when "3TC+D4T+NVP"  then 792
        when "D4T + 3TC + EFV"  then 160104
-       when "TDF + 3TC + AZT"  then 164971
+	   when "3TC+D4T+EFV"  then 160104
+       when "TDF + 3TC + AZT"  then 164971  
        when "AZT + 3TC + DTG"  then 164968
        when "TDF + 3TC + DTG"  then 164969
+	   when "3TC+TDF+DTG"  then 164969  
+	   when "TDF+3TC+DTG"  then 164969 
+       when "TDF+3TC+DT"  then 164969   	   
+	   when "3TC+DTG+TDF"  then 164969  
        when "ABC + 3TC + DTG"  then 164970
        when "AZT + 3TC + LPV/r"  then 162561
-       when "AZT + 3TC + ATV/r"  then 164511
+	   when "3TC+AZT+LPV+r"  then 162561   
+       when "LPV+r+3TC+AZT"  then 162561 	   
+       when "AZT + 3TC + ATV/r"  then 164511  
+	   when "3TC+ATV+AZT+r"  then 164511
+	   when "3TC+AZT+ATV+r"  then 164511  
        when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
        when "PM 10 AZT + 3TC + ATV/r"  then 164511
-       when "TDF + 3TC + LPV/r"  then 162201
+       when "TDF + 3TC + LPV/r"  then 162201 
+	   when "3TC+TDF+LPV+r"  then 162201
        when "PM 7 TDF + 3TC + LPV/r"  then 162201
+	   when "3TC+LPV+r+TDF"  then 162201
        when "TDF + 3TC + ATV/r"  then 164512
+	   when "3TC+ATV+r+TDF"  then 164512 
+	   when "3TC+ATV+TDF"  then 164512
        when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
        when "PM 11 TDF + 3TC + ATV/r"  then 164512
        when "D4T + 3TC + LPV/r"  then 162560
@@ -575,17 +606,26 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "ETR + TDF + 3TC + LPV/r"  then 164974
        when "ABC + 3TC + ATV/r"  then 165357
        when "ABC + 3TC + LPV/r"  then 162200
+	   when "3TC+ABC+LPV+r"  then 162200 
+	   when "ABC+3TC+LPV+r"  then 162200
        when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
        when "ABC + 3TC + NVP"  then 162199
-       when "ABC + 3TC + EFV"  then 162563
+	   when "3TC+ABC+NVP"  then 162199
+       when "ABC + 3TC + EFV"  then 162563  
+	   when "ABC+3TC+EFV"  then 162563 
+	   when "3TC+ABC+EFV"  then 162563 
+	   when "EFV+ABC+3TC"  then 162563
        when "AZT + 3TC + ABC"  then 817
+	   when "3TC+ABC+AZT"  then 817
        when "D4T + 3TC + ABC"  then 164975
        when "TDF + ABC + LPV/r"  then 162562
        when "ABC + DDI + LPV/r"  then 162559
        when "ABC + TDF + 3TC + LPV/r"  then 164976
        when "TDF+3TC" then 161364
+	   when "3TC+TDF" then 161364
        when "TDF + 3TC (PrEP)" then 161364
        when "TDF+FTC" then 104567
+	   when "FTC+TDF" then 104567
        when "TDF + FTC (PrEP)" then 104567
        when "DTG + DRV + RTV" then 164973
        when "DTG + DRV + RTV + ETV" then 164973
@@ -613,48 +653,64 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "RHE"  then 159851
        when "3RHZE|5RHE"  then 159851
        when "EH"  then 1108  else NULL end ) as Regimen_Name,
-#       (case Regimen_Line
-#        when "AdultARTFirstLine"   then 164506
-#        when "PMTCTHEIMotherRegimen"   then 164506
-#        when "PaedsARTFirstLine"   then 164507
-#        when "AdultARTSecondLine"  then 164513
-#        when "AdultThirdlineRegimen"  then 164513
-#        when "PaedsARTSecondLine"  then  164514
-#        when "PaedsThirdlineRegimen"  then  164514
-#        when "PaedsThirdlineRegimen"  then  164514
-#        when "PePRegimen"  then  164506
-#        when "PrEPRegimen"  then  164506
-#        when "OtherPREPRegimen"  then  164506
-#        when "PreferredPREPRegimen"  then  164506
-#        when "TBRegimen"  then  1111 else NULL end ) as Regimen_Line,
       Date_Started,
-      # Date_Stopped,
-      (case Regimen_Discontinued
+      (case Regimen_Discontinued      
        when "PM 8 SD Nevirapine (NVP)" then 80586
-       when "PM1 AZT from 14Wks" then 86663
+	   when "NVP" then 80586
+       when "D4T" then 84309
+	   when "EFV" then 75523
+	   when "3TC" then 78643 
+	   when "LOPr" then 79040    
+	   when "3TC+NVP" then 164501   
+	   when "3TC+ABC" then 103166 
+	   when "ABC+3TC" then 103166 
+	   when "3TC+FTC+NVP+TDF" then 164854 
+	   when "PM1 AZT from 14Wks" then 86663
        when "TDF + 3TC + NVP"  then 162565
+	   when "3TC+NVP+TDF"  then 162565
        when "PM 6 TDF + 3TC + NVP"  then 162565
        when "TDF + 3TC + NVP (children > 35kg)"  then 162565
-       when "TDF + 3TC + EFV"  then 164505
-       when "PM 9 TDF + 3TC + EFV"  then 164505
-       when "AZT + 3TC + NVP"  then 1652
-       when "PM2 NVP stat + AZT stat"  then 1652
-       when "PM3 AZT + 3TC + NVP"  then 1652
+       when "TDF + 3TC + EFV"  then 164505  
+	   when "3TC+EFV+TDF"  then 164505
+	   when "TDF+3TC+EFV"  then 164505
+	   when "EFV+3TC+TDF"  then 1652 
+       when "PM 9 TDF + 3TC + EFV"  then 164505    
+       when "AZT + 3TC + NVP"  then 1652	   
+       when "PM2 NVP stat + AZT stat"  then 1652  
+	   when "AZT+NVP"  then 1652
+       when "3TC+AZT+NVP"  then 1652
+	   when "3TC+NVP+AZT"  then 1652
+	   when "PM3 AZT + 3TC + NVP"  then 1652    
        when "AZT + 3TC + EFV"  then 160124
+	   when "3TC+AZT+EFV"  then 160124
        when "PM4 AZT + 3TC + EFV"  then 160124
        when "D4T + 3TC + NVP"  then 792
+	   when "3TC+D4T+NVP"  then 792
        when "D4T + 3TC + EFV"  then 160104
-       when "TDF + 3TC + AZT"  then 164971
+	   when "3TC+D4T+EFV"  then 160104
+       when "TDF + 3TC + AZT"  then 164971  
        when "AZT + 3TC + DTG"  then 164968
        when "TDF + 3TC + DTG"  then 164969
+	   when "3TC+TDF+DTG"  then 164969  
+	   when "TDF+3TC+DTG"  then 164969 
+       when "TDF+3TC+DT"  then 164969   	   
+	   when "3TC+DTG+TDF"  then 164969  
        when "ABC + 3TC + DTG"  then 164970
        when "AZT + 3TC + LPV/r"  then 162561
-       when "AZT + 3TC + ATV/r"  then 164511
+	   when "3TC+AZT+LPV+r"  then 162561   
+       when "LPV+r+3TC+AZT"  then 162561 	   
+       when "AZT + 3TC + ATV/r"  then 164511  
+	   when "3TC+ATV+AZT+r"  then 164511
+	   when "3TC+AZT+ATV+r"  then 164511  
        when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
        when "PM 10 AZT + 3TC + ATV/r"  then 164511
-       when "TDF + 3TC + LPV/r"  then 162201
+       when "TDF + 3TC + LPV/r"  then 162201 
+	   when "3TC+TDF+LPV+r"  then 162201
        when "PM 7 TDF + 3TC + LPV/r"  then 162201
+	   when "3TC+LPV+r+TDF"  then 162201
        when "TDF + 3TC + ATV/r"  then 164512
+	   when "3TC+ATV+r+TDF"  then 164512 
+	   when "3TC+ATV+TDF"  then 164512
        when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
        when "PM 11 TDF + 3TC + ATV/r"  then 164512
        when "D4T + 3TC + LPV/r"  then 162560
@@ -663,17 +719,26 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "ETR + TDF + 3TC + LPV/r"  then 164974
        when "ABC + 3TC + ATV/r"  then 165357
        when "ABC + 3TC + LPV/r"  then 162200
+	   when "3TC+ABC+LPV+r"  then 162200 
+	   when "ABC+3TC+LPV+r"  then 162200
        when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
        when "ABC + 3TC + NVP"  then 162199
-       when "ABC + 3TC + EFV"  then 162563
+	   when "3TC+ABC+NVP"  then 162199
+       when "ABC + 3TC + EFV"  then 162563  
+	   when "ABC+3TC+EFV"  then 162563 
+	   when "3TC+ABC+EFV"  then 162563 
+	   when "EFV+ABC+3TC"  then 162563
        when "AZT + 3TC + ABC"  then 817
+	   when "3TC+ABC+AZT"  then 817
        when "D4T + 3TC + ABC"  then 164975
        when "TDF + ABC + LPV/r"  then 162562
        when "ABC + DDI + LPV/r"  then 162559
        when "ABC + TDF + 3TC + LPV/r"  then 164976
        when "TDF+3TC" then 161364
+	   when "3TC+TDF" then 161364
        when "TDF + 3TC (PrEP)" then 161364
        when "TDF+FTC" then 104567
+	   when "FTC+TDF" then 104567
        when "TDF + FTC (PrEP)" then 104567
        when "DTG + DRV + RTV" then 164973
        when "DTG + DRV + RTV + ETV" then 164973
@@ -700,35 +765,66 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "2RHZE|4RH" then 1194
        when "RHE"  then 159851
        when "3RHZE|5RHE"  then 159851
-       when "EH"  then 1108  else NULL end ) as Regimen_Discontinued,
+       when "EH"  then 1108  else NULL end) as Regimen_Discontinued,
       Date_Discontinued,
       Reason_Discontinued,
       (case RegimenSwitchTo
        when "PM 8 SD Nevirapine (NVP)" then 80586
-       when "PM1 AZT from 14Wks" then 86663
+	   when "NVP" then 80586
+       when "D4T" then 84309
+	   when "EFV" then 75523
+	   when "3TC" then 78643 
+	   when "LOPr" then 79040    
+	   when "3TC+NVP" then 164501   
+	   when "3TC+ABC" then 103166 
+	   when "ABC+3TC" then 103166 
+	   when "3TC+FTC+NVP+TDF" then 164854 
+	   when "PM1 AZT from 14Wks" then 86663
        when "TDF + 3TC + NVP"  then 162565
+	   when "3TC+NVP+TDF"  then 162565
        when "PM 6 TDF + 3TC + NVP"  then 162565
        when "TDF + 3TC + NVP (children > 35kg)"  then 162565
-       when "TDF + 3TC + EFV"  then 164505
-       when "PM 9 TDF + 3TC + EFV"  then 164505
-       when "AZT + 3TC + NVP"  then 1652
-       when "PM2 NVP stat + AZT stat"  then 1652
-       when "PM3 AZT + 3TC + NVP"  then 1652
+       when "TDF + 3TC + EFV"  then 164505  
+	   when "3TC+EFV+TDF"  then 164505
+	   when "TDF+3TC+EFV"  then 164505
+	   when "EFV+3TC+TDF"  then 1652 
+       when "PM 9 TDF + 3TC + EFV"  then 164505    
+       when "AZT + 3TC + NVP"  then 1652	   
+       when "PM2 NVP stat + AZT stat"  then 1652  
+	   when "AZT+NVP"  then 1652
+       when "3TC+AZT+NVP"  then 1652
+	   when "3TC+NVP+AZT"  then 1652
+	   when "PM3 AZT + 3TC + NVP"  then 1652    
        when "AZT + 3TC + EFV"  then 160124
+	   when "3TC+AZT+EFV"  then 160124
        when "PM4 AZT + 3TC + EFV"  then 160124
        when "D4T + 3TC + NVP"  then 792
+	   when "3TC+D4T+NVP"  then 792
        when "D4T + 3TC + EFV"  then 160104
-       when "TDF + 3TC + AZT"  then 164971
+	   when "3TC+D4T+EFV"  then 160104
+       when "TDF + 3TC + AZT"  then 164971  
        when "AZT + 3TC + DTG"  then 164968
        when "TDF + 3TC + DTG"  then 164969
+	   when "3TC+TDF+DTG"  then 164969  
+	   when "TDF+3TC+DTG"  then 164969 
+       when "TDF+3TC+DT"  then 164969   	   
+	   when "3TC+DTG+TDF"  then 164969  
        when "ABC + 3TC + DTG"  then 164970
        when "AZT + 3TC + LPV/r"  then 162561
-       when "AZT + 3TC + ATV/r"  then 164511
+	   when "3TC+AZT+LPV+r"  then 162561   
+       when "LPV+r+3TC+AZT"  then 162561 	   
+       when "AZT + 3TC + ATV/r"  then 164511  
+	   when "3TC+ATV+AZT+r"  then 164511
+	   when "3TC+AZT+ATV+r"  then 164511  
        when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
        when "PM 10 AZT + 3TC + ATV/r"  then 164511
-       when "TDF + 3TC + LPV/r"  then 162201
+       when "TDF + 3TC + LPV/r"  then 162201 
+	   when "3TC+TDF+LPV+r"  then 162201
        when "PM 7 TDF + 3TC + LPV/r"  then 162201
+	   when "3TC+LPV+r+TDF"  then 162201
        when "TDF + 3TC + ATV/r"  then 164512
+	   when "3TC+ATV+r+TDF"  then 164512 
+	   when "3TC+ATV+TDF"  then 164512
        when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
        when "PM 11 TDF + 3TC + ATV/r"  then 164512
        when "D4T + 3TC + LPV/r"  then 162560
@@ -737,17 +833,26 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "ETR + TDF + 3TC + LPV/r"  then 164974
        when "ABC + 3TC + ATV/r"  then 165357
        when "ABC + 3TC + LPV/r"  then 162200
+	   when "3TC+ABC+LPV+r"  then 162200 
+	   when "ABC+3TC+LPV+r"  then 162200
        when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
        when "ABC + 3TC + NVP"  then 162199
-       when "ABC + 3TC + EFV"  then 162563
+	   when "3TC+ABC+NVP"  then 162199
+       when "ABC + 3TC + EFV"  then 162563  
+	   when "ABC+3TC+EFV"  then 162563 
+	   when "3TC+ABC+EFV"  then 162563 
+	   when "EFV+ABC+3TC"  then 162563
        when "AZT + 3TC + ABC"  then 817
+	   when "3TC+ABC+AZT"  then 817
        when "D4T + 3TC + ABC"  then 164975
        when "TDF + ABC + LPV/r"  then 162562
        when "ABC + DDI + LPV/r"  then 162559
        when "ABC + TDF + 3TC + LPV/r"  then 164976
        when "TDF+3TC" then 161364
+	   when "3TC+TDF" then 161364
        when "TDF + 3TC (PrEP)" then 161364
        when "TDF+FTC" then 104567
+	   when "FTC+TDF" then 104567
        when "TDF + FTC (PrEP)" then 104567
        when "DTG + DRV + RTV" then 164973
        when "DTG + DRV + RTV + ETV" then 164973
@@ -777,30 +882,61 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "EH"  then 1108  else NULL end ) as RegimenSwitchTo,
       (case CurrentRegimen
        when "PM 8 SD Nevirapine (NVP)" then 80586
-       when "PM1 AZT from 14Wks" then 86663
+	   when "NVP" then 80586
+       when "D4T" then 84309
+	   when "EFV" then 75523
+	   when "3TC" then 78643 
+	   when "LOPr" then 79040    
+	   when "3TC+NVP" then 164501   
+	   when "3TC+ABC" then 103166 
+	   when "ABC+3TC" then 103166 
+	   when "3TC+FTC+NVP+TDF" then 164854 
+	   when "PM1 AZT from 14Wks" then 86663
        when "TDF + 3TC + NVP"  then 162565
+	   when "3TC+NVP+TDF"  then 162565
        when "PM 6 TDF + 3TC + NVP"  then 162565
        when "TDF + 3TC + NVP (children > 35kg)"  then 162565
-       when "TDF + 3TC + EFV"  then 164505
-       when "PM 9 TDF + 3TC + EFV"  then 164505
-       when "AZT + 3TC + NVP"  then 1652
-       when "PM2 NVP stat + AZT stat"  then 1652
-       when "PM3 AZT + 3TC + NVP"  then 1652
+       when "TDF + 3TC + EFV"  then 164505  
+	   when "3TC+EFV+TDF"  then 164505
+	   when "TDF+3TC+EFV"  then 164505
+	   when "EFV+3TC+TDF"  then 1652 
+       when "PM 9 TDF + 3TC + EFV"  then 164505    
+       when "AZT + 3TC + NVP"  then 1652	   
+       when "PM2 NVP stat + AZT stat"  then 1652  
+	   when "AZT+NVP"  then 1652
+       when "3TC+AZT+NVP"  then 1652
+	   when "3TC+NVP+AZT"  then 1652
+	   when "PM3 AZT + 3TC + NVP"  then 1652    
        when "AZT + 3TC + EFV"  then 160124
+	   when "3TC+AZT+EFV"  then 160124
        when "PM4 AZT + 3TC + EFV"  then 160124
        when "D4T + 3TC + NVP"  then 792
+	   when "3TC+D4T+NVP"  then 792
        when "D4T + 3TC + EFV"  then 160104
-       when "TDF + 3TC + AZT"  then 164971
+	   when "3TC+D4T+EFV"  then 160104
+       when "TDF + 3TC + AZT"  then 164971  
        when "AZT + 3TC + DTG"  then 164968
        when "TDF + 3TC + DTG"  then 164969
+	   when "3TC+TDF+DTG"  then 164969  
+	   when "TDF+3TC+DTG"  then 164969 
+       when "TDF+3TC+DT"  then 164969   	   
+	   when "3TC+DTG+TDF"  then 164969  
        when "ABC + 3TC + DTG"  then 164970
        when "AZT + 3TC + LPV/r"  then 162561
-       when "AZT + 3TC + ATV/r"  then 164511
+	   when "3TC+AZT+LPV+r"  then 162561   
+       when "LPV+r+3TC+AZT"  then 162561 	   
+       when "AZT + 3TC + ATV/r"  then 164511  
+	   when "3TC+ATV+AZT+r"  then 164511
+	   when "3TC+AZT+ATV+r"  then 164511  
        when "AZT + 3TC + ATV/r (Adult PEP)"  then 164511
        when "PM 10 AZT + 3TC + ATV/r"  then 164511
-       when "TDF + 3TC + LPV/r"  then 162201
+       when "TDF + 3TC + LPV/r"  then 162201 
+	   when "3TC+TDF+LPV+r"  then 162201
        when "PM 7 TDF + 3TC + LPV/r"  then 162201
+	   when "3TC+LPV+r+TDF"  then 162201
        when "TDF + 3TC + ATV/r"  then 164512
+	   when "3TC+ATV+r+TDF"  then 164512 
+	   when "3TC+ATV+TDF"  then 164512
        when "TDF + 3TC + ATV/r (Adult PEP)"  then 164512
        when "PM 11 TDF + 3TC + ATV/r"  then 164512
        when "D4T + 3TC + LPV/r"  then 162560
@@ -809,17 +945,26 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "ETR + TDF + 3TC + LPV/r"  then 164974
        when "ABC + 3TC + ATV/r"  then 165357
        when "ABC + 3TC + LPV/r"  then 162200
+	   when "3TC+ABC+LPV+r"  then 162200 
+	   when "ABC+3TC+LPV+r"  then 162200
        when "ABC + 3TC + LPV/r (Paed PEP)"  then 162200
        when "ABC + 3TC + NVP"  then 162199
-       when "ABC + 3TC + EFV"  then 162563
+	   when "3TC+ABC+NVP"  then 162199
+       when "ABC + 3TC + EFV"  then 162563  
+	   when "ABC+3TC+EFV"  then 162563 
+	   when "3TC+ABC+EFV"  then 162563 
+	   when "EFV+ABC+3TC"  then 162563
        when "AZT + 3TC + ABC"  then 817
+	   when "3TC+ABC+AZT"  then 817
        when "D4T + 3TC + ABC"  then 164975
        when "TDF + ABC + LPV/r"  then 162562
        when "ABC + DDI + LPV/r"  then 162559
        when "ABC + TDF + 3TC + LPV/r"  then 164976
        when "TDF+3TC" then 161364
+	   when "3TC+TDF" then 161364
        when "TDF + 3TC (PrEP)" then 161364
        when "TDF+FTC" then 104567
+	   when "FTC+TDF" then 104567
        when "TDF + FTC (PrEP)" then 104567
        when "DTG + DRV + RTV" then 164973
        when "DTG + DRV + RTV + ETV" then 164973
@@ -846,10 +991,10 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "2RHZE|4RH" then 1194
        when "RHE"  then 159851
        when "3RHZE|5RHE"  then 159851
-       when "EH"  then 1108  else NULL end ) as CurrentRegimen
+       when "EH"  then 1108  else NULL end) as CurrentRegimen
     FROM migration_st.st_regimen_history where (Date_Started != "" OR Date_Started IS NOT NULL) AND
    (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;;</sql>
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -866,8 +1011,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
       </output>
     </remotesteps>
     <GUI>
-      <xloc>621</xloc>
-      <yloc>131</yloc>
+      <xloc>224</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

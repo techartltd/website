@@ -563,11 +563,11 @@
   <order>
     <hop>
       <from>Create_st_ipt_program</from>
-      <to>iqcare_source_ipt_program</to>
+      <to>iqcare_source_ipt_program_and_enrollmenr</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>iqcare_source_ipt_program</from>
+      <from>iqcare_source_ipt_program_and_enrollmenr</from>
       <to>load_st_ipt_program</to>
       <enabled>Y</enabled>
     </hop>
@@ -588,9 +588,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
+    <sql>
 -- 13. IPT Program Enrollment
 DROP TABLE IF EXISTS migration_st.st_ipt_program;
 CREATE TABLE migration_st.st_ipt_program
@@ -601,7 +599,9 @@ CREATE TABLE migration_st.st_ipt_program
   IPT_Start_Date                   DATE,
   Indication_for_IPT               VARCHAR(100),
   IPT_Outcome                      VARCHAR(100),
-  Outcome_Date                     DATE
+  Outcome_Date                     DATE,
+  created_at                       DATETIME,
+  created_by                       INT(11)
 );
 </sql>
     <set_params>N</set_params>
@@ -620,13 +620,13 @@ CREATE TABLE migration_st.st_ipt_program
       </output>
     </remotesteps>
     <GUI>
-      <xloc>112</xloc>
-      <yloc>176</yloc>
+      <xloc>96</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>iqcare_source_ipt_program</name>
+    <name>iqcare_source_ipt_program_and_enrollmenr</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -637,24 +637,24 @@ CREATE TABLE migration_st.st_ipt_program
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 9. IPT Program Enrollment
+    <sql>-- 13. IPT Program Enrollment Validated by LO
 exec pr_OpenDecryptedSession;
-
-select p.PersonId as Person_ID,
-pmv.VisitDate as Encounter_Date
-,NULL as Encounter_ID
-,pipt.IptStartDate as IPT_Start_Date,
-NULL as Indication_for_IPT,
-ltv.ItemDisplayName as IPT_Outcome
-,pio.IPTOutComeDate as Outcome_Date
-
+select Distinct p.PersonId as Person_Id
+	,pmv.VisitDate as Encounter_Date
+	,NULL as Encounter_ID
+	,pipt.IptStartDate as IPT_Start_Date
+	,NULL as Indication_for_IPT
+	,ltv.ItemDisplayName as IPT_Outcome
+	,pio.IPTOutComeDate as Outcome_Date
+	,pipt.CreateDate created_at
+	,pipt.CreatedBy created_by
 from PatientIptWorkup pipt
 inner join PatientMasterVisit pmv on pmv.Id=pipt.PatientMasterVisitId
 inner join Patient p on p.Id=pipt.PatientId
 left join PatientIptOutcome pio on pio.PatientId=pipt.PatientId
-and pio.PatientMasterVisitId=pipt.PatientMasterVisitId
 left join LookupItemView ltv on ltv.itemId=pio.IptEvent 
-and ltv.MasterName='IptOutcome'</sql>
+and ltv.MasterName='IptOutcome'
+</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -669,8 +669,8 @@ and ltv.MasterName='IptOutcome'</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>176</yloc>
+      <xloc>352</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -713,8 +713,8 @@ and ltv.MasterName='IptOutcome'</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>640</xloc>
-      <yloc>176</yloc>
+      <xloc>624</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
