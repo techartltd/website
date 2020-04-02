@@ -430,7 +430,7 @@
     <created_date>2020/01/28 11:37:12.599</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/01/28 11:37:12.599</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -578,6 +578,7 @@ DROP TABLE IF EXISTS migration_st.st_hts_contact_listing;
 CREATE TABLE migration_st.st_hts_contact_listing
 (
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Contact_Person_Id                INT(11),  
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -624,8 +625,8 @@ CREATE TABLE migration_st.st_hts_contact_listing
       </output>
     </remotesteps>
     <GUI>
-      <xloc>363</xloc>
-      <yloc>154</yloc>
+      <xloc>128</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -641,113 +642,47 @@ CREATE TABLE migration_st.st_hts_contact_listing
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>--9 HTC Contact Listing
-exec pr_OpenDecryptedSession
-select distinct p.PersonId as Person_Id,
-patr.Encounter_Date,
-NULL as Encounter_ID,
-patr.PersonId as Contact_Person_Id,
-CASE WHEN patr.PersonId is not null then 'YES' end as Consent,
-patr.FirstName as First_Name,patr.MidName as Middle_Name,patr.LastName as Last_Name,
-patr.Gender as Sex,
-patr.DateOfBirth as DoB
-,patr.MaritalStatus as Marital_Status
-,patr.PhysicalAddress as Physical_Address
-,patr.PhoneNumber as Phone_Number
-,patr.RelationshipType as RelationShip_To_Index,
-PNS.ScreeningDate as PNSScreeningDate,
-PNS.LivingWithClient as Currently_Living_With_Index,
-PNS.PnsPhysicallyHurt as IPV_Physically_Hurt,
-PNS.ThreatenedHurt as IPV_Threatened_Hurt,
-PNS.PnsForcedSexual as IPV_Sexual_Hurt,
-PNS.IPVOutcome as IPV_Outcome,
-PNS.HIVStatus as HIV_Status,
-PNS.PNSApproach as PNS_Approach,
-TC.Encounter_Date as DateTracingDone,
-TC.Contact_Type,
-TC.Contact_Outcome,
-TC.Reason_uncontacted,
-TC.Booking_Date as Booking_Date,
-TC.Consent_For_Testing,
-TC.Date_Reminded,
-0 as Voided
-from ( select distinct pe.PatientId from PatientEnrollment pe
-inner join ServiceArea sa on sa.Id=pe.ServiceAreaId
-where sa.Code='HTS'
-union
-select distinct pt.Id
-from HtsEncounter e
-inner join Patient pt on pt.PersonId=e.PersonId
-) hts
-left join Patient p on p.Id=hts.PatientId
-left join Person per on per.Id=p.PersonId
-left join (SELECT
-ISNULL(ROW_NUMBER() OVER(ORDER BY PR.Id ASC), -1) AS RowID,
-PR.PersonId,
-PR.PatientId,
-CAST(DECRYPTBYKEY(P.[FirstName]) AS VARCHAR(50)) AS [FirstName],
-CAST(DECRYPTBYKEY(P.[MidName]) AS VARCHAR(50)) AS [MidName],
-CAST(DECRYPTBYKEY(P.[LastName]) AS VARCHAR(50)) AS [LastName],
-CAST(DECRYPTBYKEY(pc.MobileNumber) AS VARCHAR(50)) as PhoneNumber,
-P.DateOfBirth,
-P.Sex,
-CAST(DECRYPTBYKEY(pc.[PhysicalAddress]) AS VARCHAR(50)) AS [PhysicalAddress],
-Gender = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = P.Sex AND MasterName = 'Gender'),
-PR.RelationshipTypeId,
-MaritalStatus=(Select top 1 itemName from LookupItemView where itemId= pms.MaritalStatusId AND MasterName='MaritalStatus'),
-RelationshipType = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = PR.RelationshipTypeId AND MasterName = 'Relationship'),
-PR.CreateDate as Encounter_Date
+    <sql>-- 8. HTS Contact Listing Validated by FG
+
+EXEC pr_OpenDecryptedSession;
+select 
+PT.PersonId Person_Id,
+PT.ID AS Patient_Id,
+PR.PersonId Contact_Person_Id,
+format(cast(PR.CreateDate AS DATE), 'yyyy-MM-dd') Encounter_Date,
+NULL  Encounter_ID,
+NULL  Consent,
+CAST(DECRYPTBYKEY(P.FirstName) AS VARCHAR(50))  First_Name,
+CAST(DECRYPTBYKEY(P.MidName) AS VARCHAR(50))  Middle_Name,
+CAST(DECRYPTBYKEY(P.LastName) AS VARCHAR(50))  Last_Name,
+Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+format(cast(P.DateOfBirth AS DATE), 'yyyy-MM-dd')  DoB,
+Marital_Status = (SELECT TOP 1 ItemName FROM PatientMaritalStatus PM INNER JOIN LookupItemView LK ON LK.ItemId = PM.MaritalStatusId WHERE PM.PersonId = P.Id AND PM.DeleteFlag = 0 AND LK.MasterName = 'MaritalStatus'),
+Physical_Address = (SELECT TOP 1 CAST(DECRYPTBYKEY(PC.PhysicalAddress) AS VARCHAR(50)) FROM PersonContact PC WHERE PC.PersonId = P.Id AND PC.DeleteFlag = 0 ORDER BY ID DESC),
+Phone_Number = (SELECT TOP 1 CAST(DECRYPTBYKEY(PC.MobileNumber) AS VARCHAR(50)) FROM PersonContact PC WHERE PC.PersonId = P.Id AND PC.DeleteFlag = 0 ORDER BY ID DESC),
+Relationship_To_Index = (SELECT TOP 1 ItemName FROM LookupItemView WHERE MasterName = 'Relationship' AND ItemId = PR.RelationshipTypeId),
+PNSScreeningDate = (SELECT TOP 1 format(cast(ScreeningDate AS DATE), 'yyyy-MM-dd') FROM HtsScreeningOptions WHERE PersonId = PR.PersonId),
+Currently_Living_With_Index = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName ='YesNo' AND ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'LivingWithClient') ORDER BY Id DESC)),
+IPV_Physically_Hurt = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName ='YesNo' AND ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'PnsPhysicallyHurt') ORDER BY Id DESC)),
+IPV_Threatened_Hurt = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName ='YesNo' AND ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'PnsThreatenedHurt') ORDER BY Id DESC)),
+IPV_Sexual_Hurt = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName ='YesNo' AND ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'PnsForcedSexual') ORDER BY Id DESC)),
+IPV_Outcome = (SELECT  Top 1 ItemName FROM LookupItemView WHERE ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'IPVOutcome') ORDER BY Id DESC)),
+HIV_Status = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'HIVStatus') ORDER BY Id DESC)),
+PNS_Approach = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = (SELECT TOP 1 ScreeningValueId FROM PatientScreening WHERE PatientId = PT.Id AND ScreeningTypeId = (SELECT TOP 1 MasterId FROM LookupItemView WHERE MasterName = 'PnsScreening') AND ScreeningCategoryId=(SELECT TOP 1 ItemId FROM LookupItemView WHERE MasterName = 'PnsScreening' AND ItemName = 'PNSApproach') ORDER BY Id DESC)),
+DateTracingDone = (select top 1 DateTracingDone from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner')),
+Contact_Type = (SELECT ItemName FROM LookupItemView WHERE MasterName = 'TracingMode' AND ItemId = (select top 1 Mode from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner'))),
+Contact_Outcome = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName = 'PnsTracingOutcome' AND ItemId = (select top 1 Outcome from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner'))),
+Reason_uncontacted = NULL,
+Booking_Date = (select top 1 DateBookedTesting from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner')),
+Consent_For_Testing = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName = 'YesNo' AND ItemId = (select top 1 Consent from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner'))),
+Date_Reminded = NULL,
+NULL Voided
 
 FROM [dbo].[PersonRelationship] PR
-inner JOIN dbo.Patient AS PT ON PT.Id = PR.PatientId
-left join PatientMaritalStatus pms on pms.PersonId=pr.PersonId
-left JOIN [dbo].[Person] P ON P.Id = PR.PersonId
-left join PersonContact pc on pc.PersonId=PR.PersonId
-)patr on patr.PatientId=hts.PatientId
-left join (select T.PersonId as PersonId,T.PatientId as PatientId
-,T.PatientMasterVisitId as PatientMasterVisitId,
-T.BookingDate as BookingDate
-,T.Comment as Comment ,T.EligibleTesting as EligibleTesting ,T.HIVStatus as HIVStatus,
-T.IPVOutcome as IPVOutcome,T.LivingWithClient as LivingWithClient
-,T.Occupation as Occupation
-,T.PNSApproach as PNSApproach
-,T.PnsForcedSexual as PnsForcedSexual ,T.PnsPhysicallyHurt as PnsPhysicallyHurt
-,T.PnsRelationship as PnsRelationship
-,T.PnsThreatenedHurt as ThreatenedHurt
-,T.ScreeningDate as ScreeningDate
-, T.ScreeningHivStatus as ScreeningHivStatus
-,T.VisitDate as VisitDate
-
-from (SELECT distinct a.[PersonId],b.[PatientId],pmv.VisitDate,[PatientMasterVisitId],b.[ScreeningDate],ScreeningCategory=
-(SELECT TOP 1 ItemName
-FROM [dbo].[LookupItemView]
-WHERE ItemId = b.[ScreeningCategoryId]),ScreeningValue=
-(SELECT TOP 1 ItemName
-FROM [dbo].[LookupItemView]
-WHERE ItemId = b.ScreeningValueId),[Occupation],[BookingDate] ,[Comment]
-FROM [dbo].[HtsScreening]a
-inner join [dbo].[PatientScreening] b on b.Id=a.PatientScreeningId
-left join PatientMasterVisit pmv on pmv.Id=b.PatientMasterVisitId
-left join [dbo].[HtsScreeningOptions] c on c.id=a.HtsScreeningOptionsId and a.personid=c.personid)y
-PIVOT (max(y.ScreeningValue) FOR ScreeningCategory IN (PnsRelationship ,PnsPhysicallyHurt,PnsThreatenedHurt,PnsForcedSexual,
-IPVOutcome,LivingWithClient,HIVStatus,PNSApproach,EligibleTesting,ScreeningHivStatus))T)PNS on PNS.PatientId=hts.PatientId and patr.PersonId=PNS.PersonId
-left join (SELECT
-PersonID,
-Encounter_Date = T.DateTracingDone,
-Encounter_ID = T.Id,
-Contact_Type = (SELECT ItemName FROM LookupItemView WHERE ItemId=T.Mode AND MasterName = 'TracingMode'),
-Contact_Outcome = (SELECT ItemName FROM LookupItemView WHERE ItemId=T.Outcome AND MasterName = 'TracingOutcome'),
-Reason_uncontacted = (SELECT ItemId FROM LookupItemView WHERE ItemId= T.ReasonNotContacted AND MasterName in ('TracingReasonNotContactedPhone','TracingReasonNotContactedPhysical')),
-Consent_For_Testing=(SELECT [Name] from LookupItem where Id= T.Consent),
-T.OtherReasonSpecify,
-T.DateBookedTesting as Booking_Date,
-T.ReminderDate as Date_Reminded,
-T.Remarks,
-T.DeleteFlag Voided
-
-FROM Tracing T
-
-) TC on TC.PersonID=patr.PersonId and TC.Encounter_Date=PNS.ScreeningDate</sql>
+LEFT JOIN dbo.Patient AS PT ON PT.Id = PR.PatientId
+INNER JOIN HtsEncounter HE ON HE.PersonId = PT.PersonId
+LEFT JOIN [dbo].[Person] P ON P.Id = PR.PersonId
+ORDER BY PT.Id ASC</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -762,8 +697,8 @@ FROM Tracing T
       </output>
     </remotesteps>
     <GUI>
-      <xloc>635</xloc>
-      <yloc>154</yloc>
+      <xloc>448</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -806,8 +741,8 @@ FROM Tracing T
       </output>
     </remotesteps>
     <GUI>
-      <xloc>987</xloc>
-      <yloc>154</yloc>
+      <xloc>800</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

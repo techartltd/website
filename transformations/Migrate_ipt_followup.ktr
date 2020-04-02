@@ -588,10 +588,9 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
+    <sql>
 -- 14. IPT Program Followup
+
 DROP TABLE IF EXISTS migration_st.st_ipt_followup;
 CREATE TABLE migration_st.st_ipt_followup
 (
@@ -602,15 +601,17 @@ CREATE TABLE migration_st.st_ipt_followup
   Date_collected_ipt               DATE DEFAULT NULL,
   Weight                           DOUBLE,
   Hepatotoxity                     VARCHAR(100) DEFAULT NULL,
-  Hepatotoxity_Action			         VARCHAR(400) DEFAULT NULL,
+  Hepatotoxity_Action			   VARCHAR(400) DEFAULT NULL,
   Peripheral_neuropathy            VARCHAR(100) DEFAULT NULL ,
-  Peripheralneuropathy_Action		   VARCHAR(400) DEFAULT NULL,
+  Peripheralneuropathy_Action	   VARCHAR(400) DEFAULT NULL,
   Rash                             VARCHAR(100),
-  Rash_Action						           VARCHAR(100) DEFAULT NULL,
+  Rash_Action					   VARCHAR(100) DEFAULT NULL,
   Adherence                        VARCHAR(100),
-  AdheranceMeasurement_Action		   VARCHAR(500),
+  AdheranceMeasurement_Action	   VARCHAR(500),
   IPT_Outcome                      VARCHAR(100),
-  Outcome_Date                     DATE
+  Outcome_Date                     DATE,
+  created_at                       DATETIME,
+  created_by                       INT(11)
 );
 </sql>
     <set_params>N</set_params>
@@ -629,8 +630,8 @@ CREATE TABLE migration_st.st_ipt_followup
       </output>
     </remotesteps>
     <GUI>
-      <xloc>289</xloc>
-      <yloc>224</yloc>
+      <xloc>144</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -646,39 +647,53 @@ CREATE TABLE migration_st.st_ipt_followup
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 10. IPT Program Followup
-exec pr_OpenDecryptedSession;
+    <sql>-- 14. IPT Program Followup Validated by LO
+EXEC pr_OpenDecryptedSession;
 
-  select p.PersonId as Person_Id
-,pmv.VisitDate as Encounter_Date
-,NULL as Encounter_ID
-,pipt.IptDueDate as Ipt_due_date
-,pipt.IptDateCollected as Date_collected_ipt
-,pipt.[Weight] as [Weight]
-,CASE WHEN pipt.Hepatotoxicity =0 then 'No' when pipt.Hepatotoxicity=1 then 'Yes'
-else NULL
- end as Hepatotoxity,
- HepatotoxicityAction as Hepatotoxity_Action,
- CASE WHEN pipt.Peripheralneoropathy =0 then 'No' when pipt.Peripheralneoropathy=1 then 'Yes'
-else NULL
-end as Peripheral_neuropathy
-,pipt.PeripheralneoropathyAction as Peripheralneuropathy_Action
- ,CASE WHEN pipt.Rash =0 then 'No' when pipt.Rash=1 then 'Yes'
-else NULL
- end as Rash,
- pipt.RashAction as Rash_Action,
- ltv.DisplayName as Adherence,
- pipt.AdheranceMeasurementAction as AdheranceMeasurement_Action,
- lto.ItemDisplayName as IPT_Outcome,
- pio.IPTOutComeDate as Outcome_Date
-from  PatientIpt pipt
-inner join PatientMasterVisit pmv on pmv.Id=pipt.PatientMasterVisitId
-inner join Patient p on p.Id=pipt.PatientId
-left join LookupItemView ltv on ltv.ItemId=pipt.AdheranceMeasurement
-left join PatientIptOutcome pio on pio.PatientId = pipt.PatientId and pio.PatientMasterVisitId=pipt.PatientMasterVisitId
-and ltv.MasterName='AdheranceMeasurement'
-left join LookupItemView lto on lto.itemId=pio.IptEvent 
-and ltv.MasterName='IptOutcome'</sql>
+SELECT p.PersonId as Person_Id
+	,pmv.VisitDate AS Encounter_Date
+	,NULL AS Encounter_ID
+	,pipt.IptDueDate AS Ipt_due_date
+	,pipt.IptDateCollected AS Date_collected_ipt
+	,pipt.[Weight] AS [Weight]
+	,CASE 
+		WHEN pipt.Hepatotoxicity = 0
+			THEN 'No'
+		WHEN pipt.Hepatotoxicity = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Hepatotoxity
+	,HepatotoxicityAction AS Hepatotoxity_Action
+	,CASE 
+		WHEN pipt.Peripheralneoropathy = 0
+			THEN 'No'
+		WHEN pipt.Peripheralneoropathy = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Peripheral_neuropathy
+	,pipt.PeripheralneoropathyAction AS Peripheralneuropathy_Action
+	,CASE 
+		WHEN pipt.Rash = 0
+			THEN 'No'
+		WHEN pipt.Rash = 1
+			THEN 'Yes'
+		ELSE NULL
+		END AS Rash
+	,pipt.RashAction AS Rash_Action
+	,ltv.DisplayName AS Adherence
+	,pipt.AdheranceMeasurementAction AS AdheranceMeasurement_Action
+	,lto.ItemDisplayName AS IPT_Outcome
+	,pio.IPTOutComeDate AS Outcome_Date
+	,pipt.CreateDate created_at
+	,pipt.CreatedBy created_by
+FROM PatientIpt pipt
+INNER JOIN PatientMasterVisit pmv ON pmv.Id = pipt.PatientMasterVisitId
+INNER JOIN Patient p ON p.Id = pipt.PatientId
+LEFT JOIN LookupItemView ltv ON ltv.ItemId = pipt.AdheranceMeasurement
+LEFT JOIN PatientIptOutcome pio ON pio.PatientId = pipt.PatientId 
+	AND ltv.MasterName = 'AdheranceMeasurement'
+LEFT JOIN LookupItemView lto ON lto.itemId = pio.IptEvent
+	AND ltv.MasterName = 'IptOutcome'</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -693,8 +708,8 @@ and ltv.MasterName='IptOutcome'</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>561</xloc>
-      <yloc>224</yloc>
+      <xloc>464</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -737,8 +752,8 @@ and ltv.MasterName='IptOutcome'</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>903</xloc>
-      <yloc>222</yloc>
+      <xloc>784</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

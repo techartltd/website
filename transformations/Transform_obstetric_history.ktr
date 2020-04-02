@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_hiv_enrollemnts</name>
+    <name>Transform_obstetric_history</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/10 16:18:40.753</created_date>
+    <created_date>2020/04/02 15:06:02.204</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/10 16:18:40.753</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/04/02 15:06:02.204</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>migration_tr</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
     <database>mysql_tr</database>
-    <port>3306</port>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -499,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_hiv_enrollments</name>
+    <name>load_tr_obstetric_history</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,79 +503,37 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>migration_tr</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 2. Create HIV Enrollment transformed table
-DROP TABLE IF EXISTS migration_tr.tr_hiv_enrollment;
-CREATE TABLE migration_tr.tr_hiv_enrollment as
-  select
-    Person_Id,   
-    UPN,
-    Encounter_Date,
-    Encounter_ID,
-    (case Patient_Type when 'New' then 164144
-     when 'Transfer-In' then 160563
-     when 'Transit' then 164931 else NULL end) as Patient_Type,
-    (case Entry_point when 'VCT' then 160539
-     when 'Volunatry Counselling Centre' then 160539
-     when 'Comprehensive Care Clinic' then 162050
-     when 'Medical out patient' then 160542
-     when 'Outpatient Department' then 160542
-     when 'Inpatient Adult' then 160536
-     when 'Inpatient Child' then 160537
-     when 'PMTCT' then 160536
-     when 'Mother Child Health' then 159937
-     when 'TB Clinic' then 160541
-     when 'Unknown' then 162050
-     when 'Other' then 5622 else NULL end) as Entry_point,
-    TI_Facility,
-    Date_first_enrolled_in_care,
-    Transfer_in_date,
-    Date_started_art_at_transferring_facility,
-    Date_confirmed_hiv_positive,
-    Facility_confirmed_hiv_positive,
-    Baseline_arv_use,
-    (case Purpose_of_baseline_arv_use when 'PMTCT' then 1148
-     when 'PEP' then 1691
-     when 'ART' then 1181 else NULL end) as Purpose_of_baseline_arv_use,
-    (case Baseline_arv_regimen when 'AF2D (TDF + 3TC + ATV/r)' then 164512
-     when 'AF2A (TDF + 3TC + NVP)' then 162565
-     when 'AF2B (TDF + 3TC + EFV)' then 164505
-     when 'AF1A (AZT + 3TC + NVP' then 1652
-     when 'AF1B (AZT + 3TC + EFV)' then 160124
-     when 'AF4B (ABC + 3TC + EFV)' then 162563
-     when 'AF4A (ABC + 3TC + NVP)' then 162199
-     when 'CF2A (ABC + 3TC + NVP)' then 162199
-     when 'CF2D (ABC + 3TC + LPV/r)' then 162200
-     when 'CF2B (ABC + 3TC + EFV)' then 162563 else NULL end) as Baseline_arv_regimen,
-    Baseline_arv_regimen_line,
-    Baseline_arv_date_last_used,
-    (case Baseline_who_stage when 'Stage1' then 1204
-     when 'Stage2' then 1205
-     when 'Stage3' then 1206
-     when 'Stage4' then 1207
-     when 'Unknown' then 1067 else NULL end) as Baseline_who_stage,
-    Baseline_cd4_results,
-    Baseline_cd4_date,
-    Baseline_vl_results,
-    Baseline_vl_date,
-    Baseline_vl_ldl_results,
-    Baseline_vl_ldl_date,
-    Baseline_HBV_Infected,
-    Baseline_TB_Infected,
-    Baseline_Pregnant,
-    Baseline_Breastfeeding,
-    Baseline_Weight,
-    Baseline_Height,
-    Baseline_BMI,
-    Name_of_treatment_supporter,
-    Relationship_of_treatment_supporter,
-    Treatment_supporter_telephone,
-    Treatment_supporter_address
-  FROM migration_st.st_hiv_enrollment;
+    <sql>				-- 52. Creating Obstetric History table
+DROP TABLE IF EXISTS migration_tr.tr_obstetric_history;
+CREATE TABLE migration_tr.tr_obstetric_history as
+    select
+   Person_Id,
+   Encounter_Date,
+   Encounter_ID,
+   Pregnancy_order,
+   Number_ANC_Visits_Attended,
+   Place_of_delivery,
+   Maturity_in_weeks,
+   Duration_of_labour,
+   (case Type_of_delivery
+    when "SVD" then 1170
+    when "Caesarean section" then 1171
+    when "Breech" then 1172
+    when "Assisted Vaginal Delivery" then 118159
+    when "Other" then 5622 else NULL end) as Type_of_delivery,
+   Birth_weight,
+ (case Sex when "Female" then 1535 when "Male" then 1534 else NULL end) as Sex,
+  Outcome,
+  Puerperium_events,
+  Voided
+    FROM migration_st.st_obstetric_history WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -599,8 +551,8 @@ CREATE TABLE migration_tr.tr_hiv_enrollment as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>426</xloc>
-      <yloc>217</yloc>
+      <xloc>256</xloc>
+      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

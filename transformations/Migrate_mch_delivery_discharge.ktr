@@ -430,7 +430,7 @@
     <created_date>2020/01/21 14:14:28.716</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/01/21 14:14:28.716</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -573,7 +573,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 22.  MCH Delivery and Discharge
+    <sql>-- 21_22.  MCH Delivery and Discharge
 DROP TABLE IF EXISTS migration_st.st_mch_delivery_discharge;
 CREATE TABLE migration_st.st_mch_delivery_discharge
 (
@@ -584,11 +584,16 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
   Gestation_Weeks		        			  INT(50),
   Duration_Labour			                  INT(50),
   Delivery_Mode				                  VARCHAR(200),
-  Delivery_Date_TIme                          DATE,
+  Delivery_Date_Time                          DATE,
+  DeliveryTime                                VARCHAR(200),
   Placenta_Complete	   				          VARCHAR(100),
+  Blood_Loss_Coded							  VARCHAR(100),
   Blood_Loss							      VARCHAR(100),
+  Diagnosis							          VARCHAR(100),
+  ManagementPlan							  VARCHAR(100),
   Mother_Condition                            VARCHAR(100),
   Death_Audited				                  VARCHAR(100),
+  Death_Audit_Date                            DATE,
   Resuscitation_Done					      VARCHAR(100),
   Delivery_Complications				      VARCHAR(100),
   Delivery_Complications_Type		          VARCHAR(200),
@@ -621,12 +626,12 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
   Partner_hiv_tested                          VARCHAR(50),
   Partner_hiv_status                          VARCHAR(50),
   Next_HIV_Date                               DATE,
+  Syphilis_Tested                             VARCHAR(50),
   Syphilis_Treated                            VARCHAR(50),
   Prophylaxis_given                           VARCHAR(50),
   Baby_azt_dispensed                          VARCHAR(50),
   Baby_nvp_dispensed                          VARCHAR(50),
-  Clinical_notes                              VARCHAR(200),
-
+  Clinical_notes                              TEXT,
   Discharge_Date                              DATE,
   Vitamin_A_Supplimentation                   VARCHAR(50),
   Started_ART_In_ANC                          VARCHAR(50),
@@ -636,9 +641,9 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
   Mother_Status_On_Discharge                  VARCHAR(200),
   Birth_Notification_Number                   VARCHAR(200),
   Referred_From                               VARCHAR(200),
-  Referred_To                                 VARCHAR(200),
-
+  Referred_To                                 VARCHAR(200),  
   Next_Appointment_Date                       DATE,
+  Appointment_Reason                          VARCHAR(200),
   Voided                                     INT(11)
 );
 </sql>
@@ -675,46 +680,37 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 20.  MCH Delivery Discharge
+    <sql>-- 21_22.  MCH Delivery Discharge Validated by DNG
+
 EXEC Pr_opendecryptedsession;
-
-
 SELECT p.id AS Person_Id,
        d.visitdate AS Encounter_Date,
        NULL AS Encounter_ID,
        h.identifiervalue AS Admission_Number,
-       I.lmp,
-       I.edd,
-       I.ageatmenarche AS AgeAtMenarche,
-       I.parity AS Parity,
-       I.parity2 AS Plus,
-       I.gravidae,
        I.gestation AS Gestation_Weeks,
-       pd.diagnosis AS Diagnosis,
-       pd.managementplan AS ManagementPlan,
        delivery.durationoflabour AS Duration_Labour,
        delivery.modeofdelivery AS Delivery_Mode,
        delivery.dateofdelivery AS Delivery_Date_Time,
        delivery.timeofdelivery AS DeliveryTime,
-       delivery.bloodlossclassification AS Blood_Loss,
-       delivery.bloodlosscapacity AS [Blood_LossValue(mls)],
+       delivery.bloodlossclassification AS Blood_Loss_Coded,
+       delivery.bloodlosscapacity AS Blood_Loss,
        delivery.mothercondition AS Mother_Condition,
-       delivery.placentacomplete,
+       delivery.placentacomplete as Placenta_Complete,
        delivery.maternaldeathaudited AS Death_Audited,
-       delivery.maternaldeathauditdate,
+       delivery.maternaldeathauditdate as Death_Audit_Date,
        CASE
            WHEN dbbi.resuscitationdone = 1 THEN 'Yes'
            WHEN dbbi.resuscitationdone = 0 THEN 'No'
            ELSE NULL
-       END AS ResuscitationDone,
+       END AS Resuscitation_Done,
        delivery.deliverycomplicationsexperienced AS Delivery_Complications,
        NULL AS delivery_Complications_Type,
-       delivery.deliverycomplicationnotes AS Deilvery_Complications_Other ,
+       delivery.deliverycomplicationnotes AS Delivery_Complications_Other ,
        NULL Delivery_Place,
             delivery.deliveryconductedby AS Delivery_Conducted_By,
             NULL AS Delivery_Cadre,
             NULL AS Delivery_Outcome,
-            PatOutcome.datedischarged AS Delivery_DischargeDate,
+            PatOutcome.datedischarged AS Discharge_Date ,
             NULL Baby_Name,
                  Baby_Sex=
   (SELECT TOP 1 itemname
@@ -740,8 +736,8 @@ SELECT p.id AS Person_Id,
                  apgar.apgar1min AS Apgar_1,
                  apgar.apgar5min AS Apgar_5,
                  apgar.apgar10min AS Apgar_10,
-                 dbbi.birthnotificationnumber,
-                 dbbi.birthcomments,
+                 dbbi.birthnotificationnumber as  Birth_Notification_Number,
+                 dbbi.birthcomments as ManagementPlan,
                  HIVTest.onekitid AS Test_1_kit_name,
                  HIVTest.onelotnumber AS Test_1_kit_lot_no,
                  HIVTest.oneexpirydate AS Test_1_kit_expiry,
@@ -756,14 +752,14 @@ SELECT p.id AS Person_Id,
                  partnerTesting.partnertested AS Partner_hiv_tested,
                  partnerTesting.partnerhivresult AS Partner_hiv_status,
                  NULL AS Next_HIV_Date,
-                 tst.finding AS TestedForSyphillis,
-                 tss.finding AS Syphillis_Treated,
+                 tst.finding AS Syphilis_Tested,
+                 tss.finding AS Syphilis_Treated, 
                  CTX.ctx AS Prophylaxis_given,
                  [azt for baby] AS Baby_azt_dispensed,
                  [nvp for baby] AS Baby_nvp_dispensed,
-                 HAARTMAT.[started haart mat],
-                 HAARTANC.[started haart in anc],
-                 VITS.[vitaminasupplementation],
+                 HAARTMAT.[started haart mat] as Started_ART_In_Mat,
+                 HAARTANC.[started haart in anc] as Started_ART_In_ANC ,
+                 VITS.[vitaminasupplementation] as Vitamin_A_Supplimentation,
                  TCAs.[description] AS Clinical_notes,
                  TCAs.appointmentdate AS Next_Appointment_Date,
                  d.deleteflag AS Voided 
@@ -1066,7 +1062,8 @@ LEFT JOIN
    INNER JOIN [dbo].[lookupitemview]a ON b.drugadministered = a.itemid
    INNER JOIN [dbo].[lookupitemview]c ON c.itemid = b.value
    WHERE b.[description] = 'Vitamin A Supplementation')VITS ON VITS.patientid = b.id
-AND VITS.patientmastervisitid = d.id</sql>
+AND VITS.patientmastervisitid = d.id
+</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -1081,8 +1078,8 @@ AND VITS.patientmastervisitid = d.id</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>533</xloc>
-      <yloc>124</yloc>
+      <xloc>528</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1099,7 +1096,7 @@ AND VITS.patientmastervisitid = d.id</sql>
     </partitioning>
     <connection>mysql_st</connection>
     <schema>migration_st</schema>
-    <table>st_mch_enrollment_visit</table>
+    <table>st_mch_delivery_discharge</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
@@ -1125,8 +1122,8 @@ AND VITS.patientmastervisitid = d.id</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>901</xloc>
-      <yloc>124</yloc>
+      <xloc>896</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

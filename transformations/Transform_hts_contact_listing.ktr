@@ -513,6 +513,8 @@ DROP TABLE IF EXISTS migration_tr.tr_hts_contact_listing;
 CREATE TABLE migration_tr.tr_hts_contact_listing as
   select
     Person_Id,
+    Patient_Id,
+    Contact_Person_Id,
     Encounter_Date,
     Encounter_ID,
   (case Consent
@@ -601,7 +603,11 @@ CREATE TABLE migration_tr.tr_hts_contact_listing as
     Booking_Date,
     Date_Reminded,
     Voided
-  FROM migration_st.st_hts_contact_listing ;</sql>
+  FROM migration_st.st_hts_contact_listing WHERE
+    (Encounter_Date != "" OR Encounter_Date != NULL)
+  GROUP BY Person_Id, Encounter_Date;
+
+;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

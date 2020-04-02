@@ -593,14 +593,13 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
+    <sql>
 -- 3. Triage
 DROP TABLE IF EXISTS migration_st.st_triage;
 CREATE TABLE migration_st.st_triage
 (
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Visit_reason                     VARCHAR(255),
@@ -640,8 +639,8 @@ CREATE TABLE migration_st.st_triage
       </output>
     </remotesteps>
     <GUI>
-      <xloc>256</xloc>
-      <yloc>96</yloc>
+      <xloc>128</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -689,8 +688,8 @@ END
       </output>
     </remotesteps>
     <GUI>
-      <xloc>512</xloc>
-      <yloc>96</yloc>
+      <xloc>384</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -706,14 +705,11 @@ END
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 3. Triage Encounter 
-
-exec pr_OpenDecryptedSession;
-
-SELECT 
-P.PersonId as Person_Id,
+    <sql>SELECT 
+P.PersonId Person_Id,
+P.Id Patient_Id,
 Encounter_Date = format(cast(PM.VisitDate as date),'yyyy-MM-dd'),
-Encounter_ID = NULL,
+NULL as Encounter_ID,
 Visit_reason = NULL,
 Systolic_pressure = CAST(PV.BPSystolic AS decimal),
 Diastolic_pressure = CAST(PV.BPDiastolic AS decimal),
@@ -741,6 +737,7 @@ LEFT JOIN PregnancyIndicator PIR ON PIR.PatientMasterVisitId = PM.Id
 UNION
 SELECT
 Person_Id = P.PersonId,
+P.Id Patient_Id,
 Encounter_Date = format(cast(OV.VisitDate as date),'yyyy-MM-dd'),
 Encounter_ID = NULL,
 Visit_reason = NULL,
@@ -764,9 +761,9 @@ NULL as Nurse_Comments,
 0 as Voided
 
 FROM dtl_PatientVitals DPV
-inner join Patient P on p.ptn_pk = DPV.Ptn_pk
-inner join ord_Visit OV ON OV.Visit_Id = DPV.Visit_pk
-inner join dtl_PatientClinicalStatus PCS ON PCS.Visit_pk = OV.Visit_Id;</sql>
+left join Patient P on p.ptn_pk = DPV.Ptn_pk
+left join ord_Visit OV ON OV.Visit_Id = DPV.Visit_pk
+left join dtl_PatientClinicalStatus PCS ON PCS.Visit_pk = OV.Visit_Id;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -781,8 +778,8 @@ inner join dtl_PatientClinicalStatus PCS ON PCS.Visit_pk = OV.Visit_Id;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>800</xloc>
-      <yloc>96</yloc>
+      <xloc>656</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -825,8 +822,8 @@ inner join dtl_PatientClinicalStatus PCS ON PCS.Visit_pk = OV.Visit_Id;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1184</xloc>
-      <yloc>96</yloc>
+      <xloc>928</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

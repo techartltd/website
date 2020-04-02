@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 27. Create hei outcome transformed table
+    <sql>-- 26. Create hei outcome transformed table
 DROP TABLE IF EXISTS migration_tr.tr_hei_outcome;
 CREATE TABLE migration_tr.tr_hei_outcome as
   select
@@ -526,7 +526,9 @@ CREATE TABLE migration_tr.tr_hei_outcome as
      when "Infected not Breastfed (IBFn)" then 138571
      when "Infected Breastfed (IBF)" then 138571
      when "Unknown" then 1067 else NULL end) as Child_hei_outcomes_HIV_status
-  FROM migration_st.st_hei_outcome;</sql>
+  FROM migration_st.st_hei_outcome WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -543,8 +545,8 @@ CREATE TABLE migration_tr.tr_hei_outcome as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>624</xloc>
-      <yloc>160</yloc>
+      <xloc>112</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

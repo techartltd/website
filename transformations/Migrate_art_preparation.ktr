@@ -430,7 +430,7 @@
     <created_date>2020/02/12 16:05:01.621</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/02/12 16:05:01.621</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -573,7 +573,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 29. ART Treatment preparation
+    <sql>-- 28. ART Treatment preparation
 DROP TABLE IF EXISTS migration_st.st_art_preparation;
 CREATE TABLE migration_st.st_art_preparation (
   Person_Id                           INT(11),
@@ -594,7 +594,8 @@ CREATE TABLE migration_st.st_art_preparation (
   Support_grp_meeting_awareness        varchar(10),
   Enrolled_in_reminder_system          varchar(10),
   Other_support_systems                varchar(10),
-  Voided                              INT(11)
+  created_at                           DATETIME,
+  created_by                           INT(11)
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -629,9 +630,12 @@ CREATE TABLE migration_st.st_art_preparation (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>exec pr_OpenDecryptedSession;
- select p.PersonId as Person_Id,pmv.VisitDate as Encounter_Date,NULL
-   as Encounter_ID,
+    <sql>-- 28 . Art Preparation Validated by LO
+
+select distinct 
+   p.PersonId as Person_Id,
+   pmv.VisitDate as Encounter_Date,
+  NULL as Encounter_ID,
    psc.Understands_hiv_art_benefits,
    psc.Screened_negative_substance_abuse,
    psc.Screened_negative_psychiatric_illness,
@@ -647,12 +651,15 @@ CREATE TABLE migration_st.st_art_preparation (
    pssc.Support_grp_meeting_awareness,
    pssc.Enrolled_in_reminder_system,
    pssc.Other_support_systems,
-   part.DeleteFlag as Voided
+   cast(created_at as date)created_at,
+   created_by
   from (
-  select  psc.PatientId,psc.PatientMasterVisitId,psc.DeleteFlag from PatientSupportSystemCriteria 
+  select  psc.PatientId,psc.PatientMasterVisitId,psc.DeleteFlag,psc.[CreateDate] created_at
+				,psc.[CreatedBy] created_by from PatientSupportSystemCriteria 
   psc
   union 
-  select  pscr.PatientId,pscr.PatientMasterVisitId,pscr.DeleteFlag from PatientPsychosocialCriteria pscr
+  select  pscr.PatientId,pscr.PatientMasterVisitId,pscr.DeleteFlag,pscr.[CreateDate] created_at
+				,pscr.[CreatedBy] created_by from PatientPsychosocialCriteria pscr
   )part   inner join Patient p on p.Id=part.PatientId
   inner join PatientMasterVisit pmv on pmv.Id=part.PatientMasterVisitId
  left join(select  psc.PatientId,psc.PatientMasterVisitId,
@@ -693,7 +700,9 @@ select psc.PatientId,psc.PatientMasterVisitId,
   CASE when psc.OtherSupportSystems='1' then 'Yes' when 
   psc.OtherSupportSystems='0' then 'No' end as Other_support_systems
    from PatientSupportSystemCriteria psc)
-   pssc on pssc.PatientId=part.PatientId and pssc.PatientMasterVisitId=part.PatientMasterVisitId</sql>
+   pssc on pssc.PatientId=part.PatientId and pssc.PatientMasterVisitId=part.PatientMasterVisitId
+   
+   </sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

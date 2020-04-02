@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Migrate_hts_retest</name>
+    <name>Transform_vital_labs</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mssql</name>
-        <default_value/>
-        <description/>
-      </parameter>
-      <parameter>
-        <name>mysql_st</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -438,80 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/16 11:16:53.794</created_date>
+    <created_date>2020/03/11 15:45:32.922</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/16 11:16:53.794</modified_date>
+    <modified_date>2020/03/11 15:45:32.922</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mssql</name>
-    <server> DESKTOP-O2MBCFP</server>
-    <type>MSSQLNATIVE</type>
-    <access>JNDI</access>
-    <database>mssql</database>
-    <port>1433</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>EXTRA_OPTION_MSSQLNATIVE.instance</code>
-        <attribute>SQLEXPRESS</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1433</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
-  <connection>
-    <name>mysql_st</name>
-    <server>localhost</server>
+    <name>mysql_tr</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
-    <database>mysql_st</database>
-    <port>3306</port>
+    <database>mysql_tr</database>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -532,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -561,19 +491,9 @@
     </attributes>
   </connection>
   <order>
-    <hop>
-      <from>Create_Staging_Table</from>
-      <to>iqcare_source_hts_retest</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>iqcare_source_hts_retest</from>
-      <to>load_st_hts_retest</to>
-      <enabled>Y</enabled>
-    </hop>
   </order>
   <step>
-    <name>Create_Staging_Table</name>
+    <name>load_tr_vital_labs</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -583,48 +503,38 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_st</connection>
+    <connection>mysql_tr</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
--- 5. HTS Retest Encounter
-DROP TABLE IF EXISTS migration_st.st_hts_retest;
-CREATE TABLE migration_st.st_hts_retest
-(
-  Person_Id                        INT(11),
-  Encounter_Date                   DATE,
-  Encounter_ID                     VARCHAR(50),
-  Pop_Type                         VARCHAR(50),
-  Key_Pop_Type                     VARCHAR(50),
-  Priority_Pop_Type                VARCHAR(50),
-  Patient_disabled                 VARCHAR(50),
-  Disability                       VARCHAR(100),
-  Ever_Tested                      VARCHAR(50),
-  Self_Tested                      VARCHAR(50),
-  HTS_Strategy                     VARCHAR(100),
-  HTS_Entry_Point                  VARCHAR(100),
-  Consented                        VARCHAR(50),
-  Tested_As                        VARCHAR(100),
-  TestType                         VARCHAR(50),
-  Test_1_Kit_Name                  VARCHAR(100),
-  Test_1_Lot_Number                VARCHAR(100),
-  Test_1_Expiry_Date               DATE,
-  Test_1_Final_Result              VARCHAR(100),
-  Test_2_Kit_Name                  VARCHAR(100),
-  Test_2_Lot_Number                VARCHAR(100),
-  Test_2_Expiry_Date               DATE,
-  Test_2_Final_Result              VARCHAR(100),
-  Final_Result                     VARCHAR(100),
-  Result_given                     VARCHAR(50),
-  Couple_Discordant                VARCHAR(50),
-  Tb_Screening_Results             VARCHAR(100),
-  Remarks                          VARCHAR(255),
-  Voided                           INT(11)
-);</sql>
+    <sql>-- 18D. Laboratory Extract Vital transformed table
+DROP TABLE IF EXISTS migration_tr.tr_vital_labs;
+CREATE TABLE migration_tr.tr_vital_labs
+    select
+      Person_Id,
+      Encounter_Date,
+      Encounter_ID,
+      LabTestName,      
+      Test_result,    
+      Date_test_requested ,
+      Date_test_result_received ,
+      OrderNumber,
+      Lab_Reason,
+      Urgency,
+      (case Lab_test
+        when "VIRALLOAD" then 856
+		    when "CD4" then 5497
+		    when "CD4PERCENT" then 730
+            else NULL end)as Lab_test
+    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+    AND Lab_test in ("VIRALLOAD","Viral Load","CD4","CD4PERCENT","CD4 Percent")
+  GROUP BY Person_Id, Encounter_Date;
+
+UPDATE tr_vital_labs
+SET Test_result = "LDL"
+WHERE Test_result like "%LDL%";
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -641,144 +551,8 @@ CREATE TABLE migration_st.st_hts_retest
       </output>
     </remotesteps>
     <GUI>
-      <xloc>674</xloc>
-      <yloc>145</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>iqcare_source_hts_retest</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>mssql</connection>
-    <sql>
-exec pr_OpenDecryptedSession;
-
-select P.Id as Person_Id, 
-  hr.VisitDate as Encounter_Date,
-  NULL Encounter_ID,
-  PopType.PopulationType as Pop_Type,
-  kpop.Population_Type as Key_Pop_Type ,
-  prio.Population_Type as Priority_Pop_Type,
-  Patient_disabled = (SELECT (case when hr.Disability != '' then 'Yes' else 'No' end)),
-  hr.Disability,
-  hr.TestedBefore as Ever_Tested,
-  hr.clientSelfTestesd as Self_Tested,
-  hr.StrategyHTS as HTS_Strategy,
-  hr.[TestEntryPoint] as HTS_Entry_Point,
-  hr.Consent as Consented,
-  hr.ClientTestedAs as Tested_As,
-  hr.TestType,
-  hr.TestKitName1 as Test_1_Kit_Name,
-  hr.TestKitLotNumber1 as Test_1_Lot_Number,
-  hr.TestKitExpiryDate1 as Test_1_Expiry_Date,
-  hr.FinalTestOneResult as Test_1_Final_Result,
-  hr.TestKitName_2 as Test_2_Kit_Name,
-  hr.TestKitLotNumber_2 as Test_2_Lot_Number,
-  hr.TestKitExpiryDate_2 as Test_2_Expiry_Date,
-  hr.FinalResultTestTwo as Test_2_Final_Result,
-  hr.finalResultHTS as Final_Result,
-  hr.FinalResultsGiven as Result_given,
-  hr.CoupleDiscordant as Couple_Discordant,
-  hr.TBScreeningHTS as TB_SCreening_Results,
-  hr.Remarks as Remarks, 
-  0 as Voided
- from HTS_LAB_Register hr
-inner join Patient pat on pat.Id=hr.PatientID
-inner join Person P on P.Id=pat.PersonId
- INNER JOIN PatientIdentifier PI ON PI.PatientId = hr.PatientID
-left join(
-select t.PersonId,t.PopulationType,t.Population_Type,t.CreateDate from (
-select pp.Id,pp.PersonId,pp.PopulationType,pp.PopulationCategory,lt.DisplayName as Population_Type,pp.CreateDate,ROW_NUMBER() OVER(partition
-by pp.PersonId order by pp.CreateDate desc) rownum
- from PatientPopulation pp
-left join LookupItemView lt on lt.ItemId=pp.PopulationCategory
-where (DeleteFlag=0 or DeleteFlag is null)
-and pp.PopulationType ='Key Population'
-)t where rownum='1')kpop on kpop.PersonId=P.Id
-left join(select pr.PersonId,pr.PopulationType,pr.Population_Type,pr.CreateDate from (select pr.Id,pr.PersonId,pr.PriorityId as PopulationCategory,
-(select DisplayName from  LookupMaster where Name = 'PriorityPopulation') as PopulationType ,
-(select l.DisplayName from LookupItem l where l.Id=pr.PriorityId) as Population_Type,pr.CreateDate,
-ROW_NUMBER() OVER(partition
-by pr.PersonId order by pr.CreateDate desc) rownum
-from PersonPriority pr
-)pr where rownum='1'
-)prio on prio.PersonId=P.Id
-left Join(select t.PersonId,t.PopulationType,t.Population_Type,t.CreateDate from (
-select pp.Id,pp.PersonId,pp.PopulationType,pp.PopulationCategory,lt.DisplayName as Population_Type,pp.CreateDate,ROW_NUMBER() OVER(partition
-by pp.PersonId order by pp.CreateDate desc) rownum
- from PatientPopulation pp
-left join LookupItemView lt on lt.ItemId=pp.PopulationCategory
-where (DeleteFlag=0 or DeleteFlag is null)
-
-)t where rownum='1')PopType on PopType.PersonId=P.Id</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>976</xloc>
-      <yloc>144</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>load_st_hts_retest</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>mysql_st</connection>
-    <schema>migration_st</schema>
-    <table>st_hts_initial</table>
-    <commit>1000</commit>
-    <truncate>Y</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>N</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1298</xloc>
-      <yloc>145</yloc>
+      <xloc>288</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

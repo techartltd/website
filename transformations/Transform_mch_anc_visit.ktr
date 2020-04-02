@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 21. Create mch visit transformed table
+    <sql>-- 20. Create mch visit transformed table
 DROP TABLE IF EXISTS migration_tr.tr_mch_anc_visit;
 CREATE TABLE migration_tr.tr_mch_anc_visit as
   select
@@ -525,7 +525,6 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
     Oxygen_saturation,
     Weight,
     Height,
-    BMI,
     Muac,
     Hemoglobin,
     (case Breast_exam_done
@@ -542,18 +541,9 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Stage2" then 1205
      when "Stage3" then 1206
      when "Stage4" then 1207 else NULL end )as Who_stage,
-    Cd4,
     (case Viral_load_sample_taken
      when "yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as Viral_load_sample_taken,
-    Viral_load,
-    Ldl,
-    (case Hiv_status
-     when "U" then 1067
-     when "Negative" then 664
-     when "Positive" then 703
-     when "KP" then 703  when "N/A" then 1175 else NULL end) as Hiv_status,
-    -- Hiv_test_date,
     (case Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
@@ -581,9 +571,9 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
     (case Patient_given_result
      when "Yes" then 1065
      when "No" then 1066  else '' end)as Patient_given_result,
-    (case Partner_tested
+    (case Partner_hiv_tested
      when "Yes" then 1065
-     when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_tested,
+     when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_hiv_tested,
     (case Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
@@ -614,11 +604,11 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Anc_exercises,
-    (case Tb_screening
+    (case TB_screening_results
      when "No TB" then 1660
      when "PrTB" then 142177
      when "TBRx" then 1662
-     when "Not Done" then 1118  else NULL end)as Tb_screening,
+     when "Not Done" then 1118  else NULL end)as Tb_screening_results,
     (case Cacx_screening
      when "No" then 1066
      when "yes" then 1066
@@ -670,12 +660,22 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Supplimental feeding" then 159854
      when "Breast Care" then 159856
      when "Unknown" then 1067  else NULL end)as  Counselled_subject,
-    Referred_from,
-    Referred_to,
+ (case Referred_From
+     when "Another Health Facility" then 164407
+     when "Current Health Facility" then 163266
+     when "Community Unit" then 160543
+     when "Unknown" then 1067  else NULL end)as  Referred_From,
+ (case Referred_To
+     when "Another Health Facility" then 164407
+     when "Current Health Facility" then 163266
+     when "Community Unit" then 160543
+     when "Unknown" then 1067  else NULL end)as  Referred_To,
     Next_appointment_date,
     Clinical_notes,
     Voided
-  FROM migration_st.st_mch_enrollment_visit;
+  FROM migration_st.st_mch_enrollment_visit WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -693,8 +693,8 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>653</xloc>
-      <yloc>97</yloc>
+      <xloc>144</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

@@ -574,10 +574,11 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 25. HEI Enrollment
+    <sql>-- 24. HEI Enrollment
 DROP TABLE IF EXISTS migration_st.st_hei_enrollment;
 CREATE TABLE migration_st.st_hei_enrollment (
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Gestation_at_birth 			   DOUBLE,
@@ -608,13 +609,14 @@ CREATE TABLE migration_st.st_hei_enrollment (
   TB_contact_history_in_household 	VARCHAR(100),
   Mother_alive 					    VARCHAR(100),
   Mother_breastfeeding 	    	    VARCHAR(100),
+  Mother_breastfeeding_mode          VARCHAR(100),
   Referral_source 		      	    VARCHAR(100),
   Transfer_in 			        	VARCHAR(100),
   Transfer_in_date 			      	DATE,
   Facility_transferred_from 		VARCHAR(50),
   District_transferred_from 		VARCHAR(50),
   Child_arv_prophylaxis 			VARCHAR(100),
-  Mother_on_NVP_during_breastfeeding 	VARCHAR(100),
+  Mother_on_NVP_during_breastfeeding VARCHAR(100),
   Infant_mother_link 				VARCHAR(100),
   Mother_on_pmtct_drugs 		  	VARCHAR(100),
   Mother_on_pmtct_drugs_regimen		VARCHAR(100),
@@ -625,7 +627,7 @@ CREATE TABLE migration_st.st_hei_enrollment (
   Infant_prophylaxis_other 	  		VARCHAR(200),
   Mother_linked_to_care             VARCHAR(100),
   Mother_ccc_number 			    VARCHAR(100),
-  Voided                           INT(11)
+  Voided                            INT(50)
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -643,8 +645,8 @@ CREATE TABLE migration_st.st_hei_enrollment (
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
-      <yloc>176</yloc>
+      <xloc>160</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -660,12 +662,14 @@ CREATE TABLE migration_st.st_hei_enrollment (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>---21. Hei Enrollment 
+    <sql>
+--24. -Hei Enrollment  Validated by DNG
 
 exec pr_OpenDecryptedSession;
 select distinct p.PersonId as Person_Id,
-v.VisitDate as Encounter_Date,
-   NULL as Encounter_ID,   
+v.Id as Patient_Id, 
+  v.VisitDate as Encounter_Date,
+  NULL as Encounter_ID,
   NULL as Gestation_at_birth,
   he.BirthWeight as Birth_weight,
   NULL as Child_exposed,
@@ -673,7 +677,7 @@ v.VisitDate as Encounter_Date,
   NULL Spd_number,
   NULL Birth_length,
   NULL Birth_order,
-  NULL Birth_type,
+ NULL Birth_type,
 (select lt.[Name] from LookupItem lt where lt.Id=he.PlaceOfDeliveryId) as Place_of_delivery,
 (select lt.[Name] from LookupItem lt where lt.Id=he.ModeOfDeliveryId) as Mode_of_delivery,
 Birth_notification_number =(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
@@ -699,34 +703,32 @@ he.MotherName AS Mothers_name,
 NULL as Fathers_name,
 NULL as Guardians_name,
 NULL as Community_HealthWorkers_name,
-NULL as Alternative_Contact_name,
+NULL as Alternative_Contact_name ,
 NULL as Contacts_For_Alternative_Contact,
 NULL as Need_for_special_care,
 NULL as Reason_for_special_care,
--- NULL as Hiv_status_at_exit,
 CASE WHEN pif.ContactWithTb='1' then 'Yes' when pif.ContactWithTB='0' then 'No'
 else NULL end as TB_contact_history_in_household, 
 (select  lt.[Name] from LookupItem lt where lt.Id=he.MotherStatusId) as Mother_alive,
 hf.Feeding as Mother_breastfeeding,
--- hf.InfantFeeding as mother_breastfeedingmode,
+hf.InfantFeeding as Mother_breastfeeding_mode,
 NULL Referral_source,
-NULL Transfer_in,
-NULL Transfer_in_date,
+null as Transfer_in,
+null as Transfer_in_date,
 NULL as Facility_transferred_from,
 NULL as District_transferred_from,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.ArvProphylaxisId) as Child_arv_prophylaxis,
-NULL as Mother_on_NVP_during_breastfeeding,
-NULL as Infant_mother_link,
+case when hf.InfantFeeding in ('Exclusive Breast Feeding (EBF)','Breastfeeding','Mixed Feeding (MF)') and (he.ArvProphylaxisId in (    select ItemId from LookupItemView
+  where MasterName='ARVProphylaxis' and ItemName like '%NVP%') or (he.ArvProphylaxisOther like '%NVP%') ) then 'Yes' else  'No' end as  Mother_on_NVP_during_breastfeeding,
+NULL as infant_mother_link,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.MotherPMTCTDrugsId) as Mother_on_pmtct_drugs,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.MotherPMTCTRegimenId) as Mother_on_pmtct_drugs_regimen,
-he.MotherPMTCTRegimenOther as Mother_on_pmtct_other_regimen ,
-(select lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolId) as Mother_on_art_at_infant_enrollment,
+he.MotherPMTCTRegimenOther as Mother_on_pmtct_other_regimen,
+(select lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolId) as Mother_On_art_at_infant_enrollment,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolRegimenId) as Mother_drug_regimen,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.ArvProphylaxisId) as Infant_prophylaxis,
 he.ArvProphylaxisOther as Infant_prophylaxis_other,
-NULL as Mother_linked_to_care,
-he.MotherCCCNumber as Mother_ccc_number,
-NULL as Voided
+he.MotherCCCNumber as Mother_ccc_number
 
 from   dbo.PatientMasterVisit AS v INNER JOIN
                          dbo.Patient AS p ON v.PatientId = p.Id INNER JOIN
@@ -858,6 +860,7 @@ left join (	Select	O.Id				LabId
 	Inner Join ord_Visit V On v.Visit_Id = O.VisitId
 	Where    (o.DeleteFlag is null or o.DeleteFlag=0) and ParameterName='HIV Rapid Test')hrt
 	on hrt.PatientId=p.id and hrt.PatientMasterVisitId=he.PatientMasterVisitId
+	
 	</sql>
     <limit>0</limit>
     <lookup/>
@@ -873,8 +876,8 @@ left join (	Select	O.Id				LabId
       </output>
     </remotesteps>
     <GUI>
-      <xloc>880</xloc>
-      <yloc>176</yloc>
+      <xloc>432</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -917,8 +920,8 @@ left join (	Select	O.Id				LabId
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1248</xloc>
-      <yloc>176</yloc>
+      <xloc>672</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

@@ -584,10 +584,8 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
--- . TB Screening
+    <sql>
+-- 11. TB Screening
 DROP TABLE IF EXISTS migration_st.st_tb_screening;
 CREATE TABLE migration_st.st_tb_screening
 (
@@ -608,7 +606,9 @@ CREATE TABLE migration_st.st_tb_screening
   Clinical_diagnosis               VARCHAR(100),
   Invitation_contacts              VARCHAR(100),
   Evaluated_for_IPT                VARCHAR(100),
-  TB_results                       VARCHAR(100)
+  TB_results                       VARCHAR(100),
+  created_at                       DATETIME,
+  created_by                       INT(11)
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -626,8 +626,8 @@ CREATE TABLE migration_st.st_tb_screening
       </output>
     </remotesteps>
     <GUI>
-      <xloc>499</xloc>
-      <yloc>171</yloc>
+      <xloc>112</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -643,61 +643,54 @@ CREATE TABLE migration_st.st_tb_screening
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- . TB Screening 
-exec pr_OpenDecryptedSession;
+    <sql>-- 11. TB Screening Validated by LO
 
-select pe.Id as Person_Id,
-pmv.VisitDate as Encounter_Date,
-NULL as Encounter_ID,
-CASE WHEN picf.Cough = 0 then 'NO' when picf.Cough='1' then 'YES' end as Cough,
-CASE WHEN picf.Fever=0 then 'NO' when picf.Fever='1' then 'YES' end as Fever,
-CASE when picf.WeightLoss=0 then 'NO' when picf.WeightLoss='1' then 'YES' end as Weight_loss,
-CASE when picf.NightSweats=0 then 'NO' when picf.NightSweats ='1' then 'Yes' end as Night_sweats,
-CASE when pica.SputumSmear = 2 then 'Yes'
-when (select [Name] from LookupItem where Id=pica.SputumSmear and [Name] = 'Ordered') = 'Ordered' then 'Yes'
-when pica.ChestXray = 2 then 'Yes'
-when (select [Name] from LookupItem where Id=pica.ChestXray and [Name] = 'Ordered') = 'Ordered' then 'Yes'
-when pica.GeneXpert = 2 then 'Yes'
-when (select [Name] from LookupItem where Id=pica.GeneXpert and [Name] = 'Ordered') = 'Ordered' then 'Yes'
-else NULL end as Tests_Ordered,
-CASE WHEN pica.SputumSmear =3 then 'Not Done' when pica.SputumSmear=1 then 'Positive'
-when pica.SputumSmear=2 then 'Ordered'
-when pica.SputumSmear=0 then 'Negative' when pica.SputumSmear > 4 then (select [Name] from LookupItem where Id=pica.SputumSmear) end
-as Sputum_Smear,
-case when pica.ChestXray =2 then 'Ordered' when pica.ChestXray =1 then 'Suggestive'
-when pica.ChestXray=0 then 'Normal'
-when pica.ChestXray =3 then 'Not Done'
-when pica.ChestXray > 3 then
-(select [Name] from LookupItem where Id=pica.ChestXray) end as X_ray,
-case when pica.GeneXpert =2 then 'Ordered' when
-pica.GeneXpert=1 then 'Positive'
-when pica.GeneXpert=0 then 'Negative'
-when pica.GeneXpert =3 then 'Not Done'
-when pica.GeneXpert > 3 then
-(select [Name] from LookupItem where Id=pica.GeneXpert) end as Gene_xpert,
-NULL as Contact_tb_case,
-NULL as Lethergy,
-NULL as clinical_diagnosis,
-CASE when pica.InvitationOfContacts=0 then 'NO' when pica.InvitationOfContacts ='1' then 'Yes' end as Invitation_contacts,
-CASE when pica.EvaluatedForIpt=0 then 'NO' when pica.EvaluatedForIpt='1' then 'Yes' end as Evaluated_for_IPT,
-ptb.TBScreening as Tb_Results
-
-from Patient p
-inner join Person pe on p.PersonId=pe.Id
-inner join(select pe.PatientId,pe.PatientMasterVisitId,pe.EncounterTypeId,lt.DisplayName from PatientEncounter pe
-inner join LookupItem lt on lt.Id=pe.EncounterTypeId
-and lt.[Name] ='ccc-encounter')ccc on ccc.PatientId=p.Id
-inner join PatientMasterVisit pmv on pmv.PatientId=p.Id and ccc.PatientMasterVisitId=pmv.Id
-left join PatientICF picf on picf.PatientId=p.Id and picf.PatientMasterVisitId=pmv.Id
-left join PatientIcfAction pica on pica.PatientId=p.Id and pica.PatientMasterVisitId=pmv.Id
-left join PatientIcfAction picfa on picfa.PatientId=p.Id and picfa.PatientMasterVisitId=pmv.Id
-left join(select * from (SELECT ps.PatientId,ps.PatientMasterVisitId, lk.DisplayName AS TBScreening,lv.MasterName,ROW_NUMBER() OVER(
-partition by ps.PatientId,ps.PatientMasterVisitId order by ps.CreateDate desc)rownum
-FROM dbo.PatientScreening ps left JOIN
-dbo.LookupItemView AS lv ON ps.ScreeningTypeId = lv.masterid left join
-dbo.LookupItemView AS lk ON ps.ScreeningValueId = lk.itemid
-WHERE lv.MasterName = 'TBStatus' and (ps.DeleteFlag is null or ps.DeleteFlag=0))ptb where ptb.rownum='1')
-ptb on ptb.PatientId=p.id and ptb.PatientMasterVisitId=pmv.Id;
+SELECT PersonID AS Person_Id
+	  ,V.VisitDate Encounter_Date
+	  ,NULL AS Encounter_ID
+      ,CASE WHEN [Cough]=0 THEN 'No' 
+			WHEN [Cough]=1 THEN 'Yes'
+	   END AS [Cough]
+      ,CASE WHEN Fever=0 THEN 'No' 
+			WHEN Fever=1 THEN 'Yes'
+	   END AS Fever
+      ,CASE WHEN WeightLoss=0 THEN 'No' 
+			WHEN WeightLoss=1 THEN 'Yes'
+	   END AS Weight_loss
+      ,CASE WHEN NightSweats=0 THEN 'No' 
+			WHEN NightSweats=1 THEN 'Yes'
+	   END AS Night_sweats
+	  ,CASE WHEN ([SputumSmear]&gt;3 and D.ItemName&lt;&gt;'NotDone' and D.ItemName&lt;&gt;'Not Done' )or 
+			([ChestXray]&gt;3 and E.ItemName&lt;&gt;'NotDone' and E.ItemName&lt;&gt;'Not Done')
+			or ([GeneXpert]&gt;3 and F.ItemName&lt;&gt;'NotDone' ) THEN 'Yes'
+			ELSE 'No' END AS Tests_Ordered
+	  ,D.ItemName Sputum_Smear
+	  ,E.ItemName X_ray
+	  ,F.ItemName Gene_xpert
+	  ,[ContactWithTb] Contact_tb_case
+	  ,NULL AS Lethergy
+	  ,NULL AS Referral
+	  ,NULL AS Clinical_diagnosis
+	  ,CASE WHEN [InvitationOfContacts]=0 THEN 'No' 
+			WHEN [InvitationOfContacts]=1 THEN 'Yes'
+	   END AS Invitation_contacts
+	  ,CASE WHEN [EvaluatedForIpt]=0 THEN 'No' 
+			WHEN [EvaluatedForIpt]=1 THEN 'Yes'
+	   END AS Evaluated_for_IPT
+	  ,CASE WHEN (D.ItemName='Negative' OR D.ItemName='Positive' )THEN D.ItemName
+			WHEN (E.ItemName='Suggestive' OR E.ItemName='Normal' )THEN E.ItemName
+			WHEN (F.ItemName='Negative' OR F.ItemName='Positive' )THEN F.ItemName
+			ELSE NULL END AS  TB_results
+      ,A.[CreateDate]created_at
+	  ,A.[CreatedBy]created_by
+FROM [dbo].[PatientIcf]A
+INNER JOIN PATIENT P ON P.ID=A.[PatientId]
+INNER JOIN PatientMasterVisit V on V.ID=A.[PatientMasterVisitId] and A.[PatientId]=V.PatientId
+LEFT JOIN [dbo].[PatientIcfAction] B ON B.PatientId=A.[PatientId] and B.[PatientMasterVisitId]=A.[PatientMasterVisitId]
+LEFT JOIN LookupItemView D on D.ItemID=B.[SputumSmear]and  D.MasterName ='SputumSmear'
+LEFT JOIN LookupItemView E on E.ItemID=B.[ChestXray]and  E.MasterName ='ChestXray'
+LEFT JOIN LookupItemView F on F.ItemID=B.[GeneXpert]and  F.MasterName ='GeneExpert'
+WHERE A.DELETEFLAG=0
 
 </sql>
     <limit>0</limit>
@@ -714,8 +707,8 @@ ptb on ptb.PatientId=p.id and ptb.PatientMasterVisitId=pmv.Id;
       </output>
     </remotesteps>
     <GUI>
-      <xloc>803</xloc>
-      <yloc>171</yloc>
+      <xloc>384</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -758,8 +751,8 @@ ptb on ptb.PatientId=p.id and ptb.PatientMasterVisitId=pmv.Id;
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1171</xloc>
-      <yloc>171</yloc>
+      <xloc>672</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

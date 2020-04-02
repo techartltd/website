@@ -508,7 +508,9 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>DROP TABLE IF EXISTS migration_tr.tr_hei_followup;
+    <sql>  -- 25. Create HEI followup transformed table
+
+DROP TABLE IF EXISTS migration_tr.tr_hei_followup;
 CREATE TABLE migration_tr.tr_hei_followup as
   select
     Person_Id,
@@ -626,7 +628,9 @@ CREATE TABLE migration_tr.tr_hei_followup as
     Date_of_next_appointment,
     Comments,
     Voided
-  FROM migration_st.st_hei_followup;
+  FROM migration_st.st_hei_followup WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -644,8 +648,8 @@ CREATE TABLE migration_tr.tr_hei_followup as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>592</xloc>
-      <yloc>112</yloc>
+      <xloc>240</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

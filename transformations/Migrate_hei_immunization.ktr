@@ -573,7 +573,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql> -- 28. HEI Immunization
+    <sql> -- 27. HEI Immunization
   DROP TABLE IF EXISTS migration_st.st_hei_immunization;
 CREATE TABLE migration_st.st_hei_immunization (
   Person_Id				  INT(11),
@@ -663,8 +663,8 @@ CREATE TABLE migration_st.st_hei_immunization (
       </output>
     </remotesteps>
     <GUI>
-      <xloc>239</xloc>
-      <yloc>140</yloc>
+      <xloc>144</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -680,16 +680,13 @@ CREATE TABLE migration_st.st_hei_immunization (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql> -- 28. HEI Immunization
+    <sql> -- 27. HEI Immunization Validated by DNG
 	
-	
-select  
-p.PersonId as Person_Id,
+select  p.PersonId as Person_Id,
 v.VisitDate as Encounter_Date,
-NULL Encounter_ID,
+NULL as Encounter_ID,
 imm.BCG,
-imm.BCG_Date,
-imm.BCG_Period,
+imm.BCG_Date,imm.BCG_Period,
 imm.OPV_Birth,imm.OPV_Birth_Date,imm.OPV_Birth_Period,
 imm.[OPV_1],imm.[OPV_1_Date],imm.[OPV_1_Period],
 imm.[OPV_2],imm.[OPV_2_Date],imm.[OPV_2_Period],
@@ -728,7 +725,7 @@ inner join PatientMasterVisit v on v.Id=he.PatientMasterVisitId
 inner join Patient p on he.PatientId=p.Id
 inner join  PatientEnrollment pe on p.Id =pe.PatientId
 inner join Person per on per.Id=p.PersonId 
-left join  (
+inner join  (
 select r.PatientId,r.PatientMasterVisitId,r.BCG,cast(r.BCG_Date as datetime) as BCG_Date,r.BCG_Period,r.[OPV 0] as OPV_Birth,CAST(r.[OPV 0_Date] as datetime) as [OPV_Birth_Date],r.[OPV 0_Period] as [OPV_Birth_Period],
 r.[OPV 1] as OPV_1,CAST(r.[OPV 1_Date] as datetime) as [OPV_1_Date]  ,r.[OPV 1_Period] as OPV_1_Period,r.[OPV 2] as OPV_2,cast(r.[OPV 2_Date] as datetime) as [OPV_2_Date]  ,r.[OPV 2_Period] as OPV_2_Period
 ,r.[OPV 3] as OPV_3 ,cast (r.[OPV 3_Date] as datetime) as [OPV_3_Date] ,r.[OPV 3_Period] as OPV_3_Period 
@@ -791,7 +788,7 @@ select (v.Immunization + '_Date' )
 ,BCG,BCG_Period,BCG_Date
 ,Other,Other_Period,Other_Date )
 )r)imm on imm.PatientId=he.PatientId and imm.PatientMasterVisitId=v.Id
-</sql>
+order by p.PersonId</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -806,8 +803,8 @@ select (v.Immunization + '_Date' )
       </output>
     </remotesteps>
     <GUI>
-      <xloc>543</xloc>
-      <yloc>140</yloc>
+      <xloc>480</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -850,8 +847,8 @@ select (v.Immunization + '_Date' )
       </output>
     </remotesteps>
     <GUI>
-      <xloc>911</xloc>
-      <yloc>140</yloc>
+      <xloc>832</xloc>
+      <yloc>96</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

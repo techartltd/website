@@ -508,7 +508,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 18. Laboratory Extract transformed table
+    <sql>-- 17. Laboratory Extract transformed table
 DROP TABLE IF EXISTS migration_tr.tr_laboratory;
 CREATE TABLE migration_tr.tr_laboratory
     select
@@ -706,7 +706,9 @@ CREATE TABLE migration_tr.tr_laboratory
       QBL,
       GeneXpert,
       Voided
-    FROM migration_st.st_laboratory  ;</sql>
+    FROM migration_st.st_laboratory WHERE 
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date; </sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -723,8 +725,8 @@ CREATE TABLE migration_tr.tr_laboratory
       </output>
     </remotesteps>
     <GUI>
-      <xloc>673</xloc>
-      <yloc>167</yloc>
+      <xloc>192</xloc>
+      <yloc>176</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

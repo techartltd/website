@@ -518,8 +518,8 @@ CREATE TABLE migration_tr.tr_hiv_program_enrollment as
     Program,
     Date_Enrolled,
     Date_Completed
-  FROM migration_st.st_hiv_program_enrollment WHERE 
-  (Encounter_Date != "" OR Encounter_Date IS NOT NULL);
+  FROM migration_st.st_program_enrollment WHERE Program = "CCC" 
+  AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL) ;
     </sql>
     <set_params>N</set_params>
     <insert_field/>

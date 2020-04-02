@@ -588,9 +588,7 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- Migration Scripts : Staging to be run First before loading MSSQL Data
--- Description : Creates tables for RAW Data from IQCARE
--- Run First
+    <sql>
 -- 11. Program Discontinuation
 DROP TABLE IF EXISTS migration_st.st_program_discontinuation;
 CREATE TABLE migration_st.st_program_discontinuation
@@ -638,44 +636,39 @@ CREATE TABLE migration_st.st_program_discontinuation
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 7. Patient discontinuation
-exec pr_OpenDecryptedSession;
+    <sql>-- 10. Program Discontinuation Validated by PG
 
-select 
-P.Id as Person_Id,
-pe.Enrollment as Encounter_Date,
-NULL as Encounter_ID,
-sa.Code as Program,
-pe.Enrollment as Date_Enrolled,
-pe.ExitDate as Date_Completed,
-pe.ExitReasonValue as Care_Ending_Reason,
-pe.TransferOutfacility as Facility_Transfered_To,
-pe.DateOfDeath as Death_Date
-from Person P
-
-INNER JOIN Patient PT ON PT.PersonId = P.Id
-INNER JOIN 
-(select pce.PatientId,pce.ServiceAreaId,pce.Enrollment,pce.ExitDate,pce.ExitReasonValue,pce.TransferOutfacility,pce.DateOfDeath from(select pce.PatientId,pce.ReenrollmentDate as Enrollment,pce.ServiceAreaId,CASE WHEN 
-pce.ExitDate > pce.ReenrollmentDate then pce.ExitDate else NULL end as ExitDate,pce.ExitReasonValue,pce.TransferOutfacility,pce.DateOfDeath from(
-select pe.PatientId,pe.Id,pe.CareEnded,pce.Active,pce.DeleteFlag,pe.EnrollmentDate,pe.ServiceAreaId
-,pce.ExitDate,pce.ExitReason,lti.DisplayName as ExitReasonValue,pce.TransferOutfacility,pre.ReenrollmentDate,pce.DateOfDeath from PatientEnrollment pe
-inner join PatientCareending pce on pce.PatientId=pe.PatientId
-inner join PatientReenrollment pre on pre.PatientId=pce.PatientId
-left join LookupItem lti on lti.Id=pce.ExitReason
-and pce.PatientEnrollmentId=pe.Id
-where pce.DeleteFlag='1'
-)pce
-union 
-select pce.PatientId,pce.EnrollmentDate as Enrollment,pce.ServiceAreaId,pce.ExitDate,pce.ExitReasonValue,pce.TransferOutfacility,pce.DateOfDeath from(
-select pe.PatientId,pe.CareEnded,pe.ServiceAreaId,pe.EnrollmentDate,pce.ExitDate,lti.DisplayName as ExitReasonValue,pce.TransferOutfacility,pce.DeleteFlag,pce.DateOfDeath
-from PatientEnrollment pe 
-left join PatientCareending pce on pce.PatientId = pe.PatientId
-left join LookupItem lti on lti.Id=pce.ExitReason
-and pce.PatientEnrollmentId=pe.Id
-)pce)pce )pe on pe.PatientId=PT.Id
-INNER JOIN ServiceArea sa on sa.Id=pe.ServiceAreaId
-INNER JOIN PatientIdentifier PI ON PI.PatientId = PT.Id 
-WHERE pe.ExitDate is not null</sql>
+SELECT p.PersonId AS Person_Id
+	,(
+		SELECT [Start]
+		FROM PatientMasterVisit PMV
+		WHERE PMV.Id = PC.PatientMasterVisitId
+		) AS Encounter_Date
+	,NULL AS Encounter_ID
+	,(
+		SELECT Code
+		FROM ServiceArea
+		WHERE ID = (
+				SELECT TOP 1 ServiceAreaId
+				FROM PatientEnrollment
+				WHERE PatientId = PC.PatientId
+				)
+		) AS Program
+	,(
+		SELECT TOP 1 EnrollmentDate
+		FROM PatientEnrollment
+		WHERE PatientId = PC.PatientId
+		) AS Date_Enrolled
+	,PC.ExitDate Date_Completed
+	,(
+		SELECT DisplayName
+		FROM LookupItem
+		WHERE Id = PC.ExitReason
+		) AS Care_Ending_Reason
+	,PC.TransferOutfacility AS Facility_Transfered_To
+	,PC.DateOfDeath AS Death_Date
+FROM PatientCareending PC
+JOIN Patient P ON PC.PatientId = P.Id</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
