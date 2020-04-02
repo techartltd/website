@@ -17,7 +17,10 @@ CREATE TABLE [dbo].[DWAPI_Migration_Metrics](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[Dataset] [nvarchar](50) NOT NULL,
 	[Metric] [nvarchar](50) NOT NULL,
-	[MetricValue] [nvarchar](50) NOT NULL
+	[MetricValue] [nvarchar](50) NOT NULL,
+	[SiteCode] [int] NULL,
+        [Emr] [nvarchar](50) NULL,
+	[CreateDate] [datetime] NULL DEFAULT GETDATE(),       
 ) ON [PRIMARY]
 GO
 -- check IQCare version
