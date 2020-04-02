@@ -19,6 +19,7 @@ CREATE TABLE [dbo].[DWAPI_Migration_Metrics](
 	[Metric] [nvarchar](50) NOT NULL,
 	[MetricValue] [nvarchar](50) NOT NULL,
 	[SiteCode] [int] NULL,
+        [FacilityName] [nvarchar](180) NULL,
         [Emr] [nvarchar](50) NULL,
 	[CreateDate] [datetime] NULL DEFAULT GETDATE(),       
 ) ON [PRIMARY]
