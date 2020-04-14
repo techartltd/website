@@ -578,9 +578,8 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
     when "Yes" then 1065
     when "No" then 1066  else NULL end)as Home_visit_benefit,
   Adherence_plan,
-  Next_appointment_date,
-  -- str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
-  -- date_format(str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
+  -- Next_appointment_date,
+  date_format(str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
   Voided
 FROM migration_st.st_enhanced_adherence WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
