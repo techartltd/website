@@ -520,12 +520,23 @@ CREATE TABLE migration_tr.tr_vital_labs
       Date_test_requested ,
       Date_test_result_received ,
       OrderNumber,
-      Lab_Reason,
+      (case Lab_Reason
+            when "Routine" then 161236
+            when "Routine VL" then 161236
+		    when "Other" then 5622
+		    when "Single Drug Substitution" then 1259
+		    when "Confirmation of Treatment Failure (Repeat VL)" then 843
+		    when "Suspected Drug Ressistance" then 163523
+		    when "Baseline" then 162080
+		    when "Clinical Failure" then 163523
+            else NULL end)as Lab_Reason,
       Urgency,
       (case Lab_test
-        when "VIRALLOAD" then 856
+            when "VIRALLOAD" then 856
+			when "Viral Load" then 856
 		    when "CD4" then 5497
 		    when "CD4PERCENT" then 730
+			when "CD4 Percent" then 730
             else NULL end)as Lab_test
     FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
     AND Lab_test in ("VIRALLOAD","Viral Load","CD4","CD4PERCENT","CD4 Percent")
