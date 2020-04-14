@@ -574,8 +574,8 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>-- 35. Creating OVC enrollment table
-DROP TABLE IF EXISTS migration_st.st_ovc_enrollment;
-CREATE TABLE migration_st.st_ovc_enrollment (
+DROP TABLE IF EXISTS migration_st.st_ovc_enrolment;
+CREATE TABLE migration_st.st_ovc_enrolment (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -702,7 +702,7 @@ where PR.DeleteFlag=0 or PR.DeleteFlag is null
     </partitioning>
     <connection>mysql_st</connection>
     <schema>migration_st</schema>
-    <table>st_ovc_enrollment</table>
+    <table>st_ovc_enrolment</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>

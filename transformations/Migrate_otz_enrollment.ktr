@@ -574,8 +574,8 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>-- 33. Creating OTZ enrollment table
-DROP TABLE IF EXISTS migration_st.st_otz_enrollment;
-CREATE TABLE migration_st.st_otz_enrollment (
+DROP TABLE IF EXISTS migration_st.st_otz_enrolment;
+CREATE TABLE migration_st.st_otz_enrolment (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -588,7 +588,7 @@ CREATE TABLE migration_st.st_otz_enrollment (
   Srh                              VARCHAR(100),
   Beyond_third_ninety              VARCHAR(100),
   Transfer_in                      VARCHAR(100),
-  Initial_Enrollment_Date           DATE,
+  Initial_Enrolment_Date           DATE,
   voided                           INT(11)
 );
 </sql>
@@ -639,7 +639,7 @@ CASE WHEN otz7.Topic is not null then 'Yes' else NULL end as Srh,
 CASE WHEN otz8.Topic is not null then 'Yes' else NULL end as Beyond_third_ninety,
 CASE WHEN pe.TransferIn=1 then 'Yes'   when pe.TransferIn =1
 then 'No' else NULL end as   Transfer_In,
-pe.EnrollmentDate as Initial_Enrollment_Date,
+pe.EnrollmentDate as Initial_Enrolment_Date,
 pe.DeleteFlag as Voided
   from PatientEnrollment pe
   inner join Patient pt on pt.Id=pe.PatientId
@@ -758,7 +758,7 @@ where sa.Code='OTZ'
     </partitioning>
     <connection>mysql_otz_enroll</connection>
     <schema>migration_st</schema>
-    <table>st_otz_enrollment</table>
+    <table>st_otz_enrolment</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>

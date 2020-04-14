@@ -509,8 +509,8 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>-- 33. OTZ Enrolment
-DROP TABLE IF EXISTS migration_tr.tr_otz_enrollment;
-CREATE TABLE migration_tr.tr_otz_enrollment as
+DROP TABLE IF EXISTS migration_tr.tr_otz_enrolment;
+CREATE TABLE migration_tr.tr_otz_enrolment as
    select
     Person_Id,
     Encounter_Date,
@@ -524,9 +524,9 @@ CREATE TABLE migration_tr.tr_otz_enrollment as
     (case Srh when "Yes" then 1065 when NULL then 1066 else NULL end) as Srh,
     (case Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
     (case Transfer_in when "Yes" then 1065 when NULL then 1066 else NULL end) as Transfer_in,
-    Initial_Enrollment_Date,
+    Initial_Enrolment_Date,
     voided
-    FROM migration_st.st_otz_enrollment WHERE
+    FROM migration_st.st_otz_enrolment WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>

@@ -509,8 +509,8 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>-- 37. OVC Enrolment
-DROP TABLE IF EXISTS migration_tr.tr_ovc_enrollment;
-CREATE TABLE migration_tr.tr_ovc_enrollment as
+DROP TABLE IF EXISTS migration_tr.tr_ovc_enrolment;
+CREATE TABLE migration_tr.tr_ovc_enrolment as
     select
     Person_Id,
     Encounter_Date,
@@ -523,7 +523,7 @@ CREATE TABLE migration_tr.tr_ovc_enrollment as
     (case Client_Enrolled_cpims when "Yes" then 1065 when "No" then 1066 else NULL end) as Client_Enrolled_cpims,
     Partner_Offering_OVC,
     voided
-    FROM migration_st.st_ovc_enrollment WHERE
+    FROM migration_st.st_ovc_enrolment WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 </sql>
