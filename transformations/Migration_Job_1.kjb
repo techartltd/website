@@ -2520,7 +2520,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>C:\Users\patrick\Desktop\PDI\Validations\Validate_users.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}\Validations\Validate_users.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -3204,7 +3204,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>C:\Users\patrick\Desktop\PDI\Validations\Validate_hts_linkage.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}\Validations\Validate_hts_linkage.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -3242,7 +3242,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>C:\Users\patrick\Desktop\PDI\Validations\Validate_enhanced_adherence.ktr</filename>
+      <filename>${Internal.Entry.Current.Directory}\Validations\Validate_enhanced_adherence.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
