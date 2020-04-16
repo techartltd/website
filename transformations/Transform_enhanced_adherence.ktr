@@ -509,81 +509,82 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>-- 29. Enhanced Adherence Screening
+SET SESSION SQL_MODE='ALLOW_INVALID_DATES';
 DROP TABLE IF EXISTS migration_tr.tr_enhanced_adherence;
 CREATE TABLE migration_tr.tr_enhanced_adherence as
   select
-  Person_Id,
-  Encounter_Date,
-  Encounter_ID,
-  Session_number,
-  First_session_date,
-  Pill_count,
-  (case Arv_adherence
-       when "Good" then 159405
-       when "Inadequate" then 163794
-       when "Poor" then 159407
-       else NULL end)as Arv_adherence,
-  (case Has_vl_results
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    Session_number,
+    First_session_date,
+    Pill_count,
+    (case Arv_adherence
+     when "Good" then 159405
+     when "Inadequate" then 163794
+     when "Poor" then 159407
+     else NULL end)as Arv_adherence,
+    (case Has_vl_results
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Has_vl_results,
-  (case Vl_results_suppressed
-    when "Suppressed" then 1302
-    when "Unsuppresed" then 1066  else NULL end)as Vl_results_suppressed,
-  Vl_results_feeling,
-  Cause_of_high_vl,
-  Way_forward,
-  Patient_hiv_knowledge,
-  Patient_drugs_uptake,
-  Patient_drugs_reminder_tools,
-  Patient_drugs_uptake_during_travels,
-  Patient_drugs_side_effects_response,
-  Patient_drugs_uptake_most_difficult_times,
-  Patient_drugs_daily_uptake_feeling,
-  Patient_ambitions,
-  (case Patient_has_people_to_talk
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as  Patient_has_people_to_talk,
-  Patient_enlisting_social_support,
-  Patient_income_sources,
-  (case Patient_challenges_reaching_clinic
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Patient_challenges_reaching_clinic,
-  (case Patient_worried_of_accidental_disclosure
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Patient_worried_of_accidental_disclosure,
-  (case Patient_treated_differently
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Patient_treated_differently,
-  (case Stigma_hinders_adherence
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Stigma_hinders_adherence,
-  (case Patient_tried_faith_healing
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Patient_tried_faith_healing,
-  (case Patient_adherence_improved
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Patient_adherence_improved,
-  (case Patient_doses_missed
-    when "Yes" then 1
-    when "No" then 0  else NULL end)as Patient_doses_missed,
-  Review_and_barriers_to_adherence,
-  (case Other_referrals
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Other_referrals,
-  (case Appointments_honoured
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Appointments_honoured,
-  Referral_experience,
-  (case Home_visit_benefit
-    when "Yes" then 1065
-    when "No" then 1066  else NULL end)as Home_visit_benefit,
-  Adherence_plan,
-  -- Next_appointment_date,
-  date_format(str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
-  Voided
-FROM migration_st.st_enhanced_adherence WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    (case Vl_results_suppressed
+     when "Suppressed" then 1302
+     when "Unsuppresed" then 1066  else NULL end)as Vl_results_suppressed,
+    Vl_results_feeling,
+    Cause_of_high_vl,
+    Way_forward,
+    Patient_hiv_knowledge,
+    Patient_drugs_uptake,
+    Patient_drugs_reminder_tools,
+    Patient_drugs_uptake_during_travels,
+    Patient_drugs_side_effects_response,
+    Patient_drugs_uptake_most_difficult_times,
+    Patient_drugs_daily_uptake_feeling,
+    Patient_ambitions,
+    (case Patient_has_people_to_talk
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as  Patient_has_people_to_talk,
+    Patient_enlisting_social_support,
+    Patient_income_sources,
+    (case Patient_challenges_reaching_clinic
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Patient_challenges_reaching_clinic,
+    (case Patient_worried_of_accidental_disclosure
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Patient_worried_of_accidental_disclosure,
+    (case Patient_treated_differently
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Patient_treated_differently,
+    (case Stigma_hinders_adherence
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Stigma_hinders_adherence,
+    (case Patient_tried_faith_healing
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Patient_tried_faith_healing,
+    (case Patient_adherence_improved
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Patient_adherence_improved,
+    (case Patient_doses_missed
+     when "Yes" then 1
+     when "No" then 0  else NULL end)as Patient_doses_missed,
+    Review_and_barriers_to_adherence,
+    (case Other_referrals
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Other_referrals,
+    (case Appointments_honoured
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Appointments_honoured,
+    Referral_experience,
+    (case Home_visit_benefit
+     when "Yes" then 1065
+     when "No" then 1066  else NULL end)as Home_visit_benefit,
+    Adherence_plan,
+    date_format(str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
+    Voided
+  FROM migration_st.st_enhanced_adherence WHERE
+  STR_TO_DATE(Next_appointment_date, '%d-%M-%Y') IS NOT NULL
+    AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+   GROUP BY Person_Id, Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
