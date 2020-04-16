@@ -583,9 +583,9 @@ CREATE TABLE migration_st.st_hts_tracing
   Encounter_ID                     VARCHAR(50),
   Contact_Type                     VARCHAR(100),
   Contact_Outcome                  VARCHAR(100),
-  Reason_uncontacted               VARCHAR(255),
+  Reason_uncontacted               TEXT,
   OtherReasonSpecify               VARCHAR(255),
-  Remarks                          VARCHAR(255),
+  Remarks                          TEXT,
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
