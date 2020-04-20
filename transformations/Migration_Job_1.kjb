@@ -3732,7 +3732,7 @@
       <to>load_st_hts_tests</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
@@ -4389,7 +4389,7 @@
       <to>load_st_family_history</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
