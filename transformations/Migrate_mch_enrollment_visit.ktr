@@ -673,7 +673,7 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
   Referred_From                    VARCHAR(100),
   Referred_To                      VARCHAR(100),
   Next_appointment_date            DATE,
-  Clinical_notes                   VARCHAR(100),
+  Clinical_notes                   TEXT,
   Voided                           INT(11)
 );
 </sql>
