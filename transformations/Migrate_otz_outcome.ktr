@@ -430,7 +430,7 @@
     <created_date>2020/04/01 11:55:45.012</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/04/01 11:55:45.012</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -581,6 +581,7 @@ CREATE TABLE migration_st.st_otz_outcome (
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Discontinuation_Reason           VARCHAR(255),
+  ExitDate                         DAte,
   Death_Date                       DATE,
   Transfer_Facility                VARCHAR(255),
   Transfer_Date                    DATE,
@@ -632,7 +633,7 @@ SELECT p.PersonId AS Person_Id
 		WHERE li.Id = pce.ExitReason
 		) AS Discontinuation_Reason
 	,pce.ExitDate AS ExitDate
-	,pce.DateOfDeath
+	,pce.DateOfDeath AS Death_Date 
 	,pce.TransferOutfacility AS Transfer_Facility
 	,NULL AS Transfer_Date
 	,pce.DeleteFlag AS Voided
