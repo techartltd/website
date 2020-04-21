@@ -525,7 +525,11 @@ CREATE TABLE migration_tr.tr_demographics as
     Last_Name,
     DOB,
     Exact_DOB,
-    Sex,
+    (case Sex
+     when "F" then "F"
+     when "M" then "M"
+     when "U" then "U"
+     else "U" end) as Sex,
     UPN,
     Encounter_Date,
     Encounter_ID,

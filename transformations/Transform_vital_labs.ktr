@@ -540,6 +540,7 @@ CREATE TABLE migration_tr.tr_vital_labs
             else NULL end)as Lab_test
     FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
     AND Lab_test in ("VIRALLOAD","Viral Load","CD4","CD4PERCENT","CD4 Percent")
+    AND (Test_result != "" OR Test_result IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
 UPDATE tr_vital_labs

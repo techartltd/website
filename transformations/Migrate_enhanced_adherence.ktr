@@ -582,7 +582,7 @@ CREATE TABLE migration_st.st_enhanced_adherence (
   Encounter_ID                     VARCHAR(50),
   Session_number                   INT(50),
   First_session_date               DATE,
-  Pill_count                       varchar(100),
+  Pill_count                       varchar(255),
   Arv_adherence                    varchar(100),
   MMAS4AdherenceRating             varchar(255),
   MMAS4Score                       varchar(255),
