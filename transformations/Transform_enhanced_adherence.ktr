@@ -582,7 +582,7 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
     date_format(str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
     Voided
   FROM migration_st.st_enhanced_adherence WHERE
-  STR_TO_DATE(Next_appointment_date, '%d-%M-%Y') IS NOT NULL
+  (STR_TO_DATE(Next_appointment_date, '%d-%M-%Y') IS NOT NULL OR Next_appointment_date IS NULL)
     AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
    GROUP BY Person_Id, Encounter_Date;
 </sql>
