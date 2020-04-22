@@ -760,9 +760,13 @@ CONVERT(Datetime,NULL) as  fully_immunized,
 r.DeleteFlag  as Voided
  from(
  select  v.PatientId,v.PatientMasterVisitId,v.DeleteFlag,ColumnName,ValueVaccine from(
-select PatientId,PatientMasterVisitId,Vaccine,lti.[Name] as Immunization,VaccineStage,lt.[Name] as Stage,v.VaccineDate,v.DeleteFlag from Vaccination v
-left join LookupItem lti on lti.Id=v.Vaccine
-left join LookupItem lt on lt.Id=v.VaccineStage
+select PatientId,PatientMasterVisitId,Vaccine,
+ (select top 1 lti.[Name] from LookupItem lti where lti.Id=v.Vaccine)  as Immunization,VaccineStage,
+  CASE WHEN isNumeric(v.VaccineStage)=1  then 
+ (select  top 1 lt.[Name] from LookupItem lt where lt.Id=v.VaccineStage)
+ else CAST(v.VaccineStage as varchar(max)) end 
+ as Stage,v.VaccineDate,v.DeleteFlag from Vaccination v
+
 where (v.DeleteFlag is null or v.DeleteFlag =0)
 )v
 cross apply( 
