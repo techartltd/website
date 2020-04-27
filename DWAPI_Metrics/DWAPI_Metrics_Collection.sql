@@ -1,9 +1,9 @@
 --stores DWAPI metrics to be shipping by DWAPI before migration
-USE [IQCare]
+USE [IQCare_Siaya]
 GO
 
 /****** Object:  Table [dbo].[DWAPI_Migration_Metrics]    Script Date: 3/20/2020 4:43:06 AM ******/
-DROP TABLE [dbo].[DWAPI_Migration_Metrics]
+DROP TABLE if exists [dbo].[DWAPI_Migration_Metrics]
 GO
 
 /****** Object:  Table [dbo].[DWAPI_Migration_Metrics]    Script Date: 3/20/2020 4:43:06 AM ******/
@@ -83,8 +83,7 @@ join Identifiers i ON i.Id = p.IdentifierTypeId WHERE i.DeleteFlag = 0 group by 
 INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue) SELECT 'Care Termination',  l.ItemDisplayName, COUNT(*) FROM PatientCareending p
 join LookupItemView l ON p.ExitReasON = l.ItemId WHERE p.ExitDate is not null group by l.ItemDisplayName
 
-<<<<<<< HEAD
-=======
+
 
 -- Selects Patients who have been screen for TB
 INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)  

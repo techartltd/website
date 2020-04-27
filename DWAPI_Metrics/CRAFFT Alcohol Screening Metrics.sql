@@ -1,4 +1,4 @@
---INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)
 SELECT 'Alcohol Screening','Number of Patients', COUNT(*) 
 from  (
 select DISTINCT pt.PersonId,pe.VisitDate,pdr.Answer as DrinkAlcoholMorethanSips,

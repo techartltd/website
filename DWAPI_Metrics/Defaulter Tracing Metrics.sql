@@ -1,4 +1,4 @@
---INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue)
 SELECT 'Defaulter Tracing', 'Number of LTFU', Count(*)Total FROM (
 select (select top 1. [Name] from Lookupitem where id= pce.ExitReason) as ExitReason,
 pce.DeleteFlag

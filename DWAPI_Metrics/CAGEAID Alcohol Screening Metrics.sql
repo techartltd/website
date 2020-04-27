@@ -57,8 +57,6 @@ left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.
   trss on trss.PatientId=pe.PatientId and trss.PatientMasterVisitId=pe.PatientMasterVisitId
 
 
-
-
   left join(select psc.PatientId,psc.PatientMasterVisitId,psc.ScreeningTypeId,psc.DeleteFlag,
   lti.[Name] as Answer from PatientScreening psc
    inner join(
