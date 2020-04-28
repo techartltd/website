@@ -658,7 +658,8 @@ CREATE TABLE migration_st.st_hts_test
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 4. HTS TEST Encounter For Both Initial and Repeat Validated by FG
+    <sql>
+-- 4. HTS TEST Encounter For Both Initial and Repeat Validated by FG
 
 SELECT 
 HE.PersonId Person_Id,
@@ -699,7 +700,10 @@ INNER JOIN PatientEncounter PE ON PE.Id = HE.PatientEncounterID
 INNER JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
 INNER JOIN Person P ON P.Id = HE.PersonId
 INNER JOIN Patient PT ON PT.PersonId = P.Id
-LEFT JOIN (SELECT Main.Person_Id, LEFT(Main.Disability,Len(Main.Disability)-1) As "Disability"
+LEFT JOIN (SELECT Main.Person_Id, CASE WHEN Len(Main.Disability) -1 &lt; 0
+then LEFT(Main.Disability,Len(Main.Disability))
+else LEFT(Main.Disability,Len(Main.Disability)-1)
+end  as "Disability"
 FROM
     (
         SELECT DISTINCT P.Id Person_Id, 
