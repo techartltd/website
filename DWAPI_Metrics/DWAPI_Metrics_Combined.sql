@@ -571,3 +571,67 @@ where (pc.DeleteFlag is null or pc.DeleteFlag=0)
 )pc where pc.rownum='1'
 )sh on sh.PatientId=pe.PatientId and sh.PatientMasterVisitId=pe.PatientMasterVisitID
 )BB
+
+
+
+--PatientEnrolled in each year based on servicearea
+
+
+
+INSERT INTO DWAPI_Migration_Metrics (Dataset, Metric, MetricValue) 
+select  'ServiceArea: ' + ptt.Code  ,
+'Number of Patients Enrolled Based on the ServiceArea:' + ptt.Code + ' and Year:'  + CAST(Year(ptt.Enrollment) as varchar(max))  ,Count (ptt.PatientId) as  Total  from (SELECT distinct pce.PatientId,pce.Code,pce.Enrollment,pce.ExitDate
+	FROM (SELECT pce.PatientId,pce.ReenrollmentDate AS Enrollment
+			,pce.Code,CASE WHEN pce.ExitDate > pce.ReenrollmentDate THEN pce.ExitDate
+				ELSE NULL END AS ExitDate
+		FROM (SELECT pe.PatientId,pe.EnrollmentDate,sa.Code,pce.ExitDate,pre.ReenrollmentDate
+			FROM PatientEnrollment pe
+			INNER JOIN PatientCareending pce ON pce.PatientId = pe.PatientId
+			INNER JOIN PatientReenrollment pre ON pre.PatientId = pce.PatientId
+			INNER JOIN ServiceArea sa ON sa.Id = pe.ServiceAreaId
+			WHERE pce.DeleteFlag = '1') pce
+		UNION
+		SELECT pce.PatientId,pce.EnrollmentDate AS Enrollment,pce.Code,pce.ExitDate
+		FROM (SELECT pe.PatientId,sa.Code,pe.EnrollmentDate,pce.ExitDate
+			FROM PatientEnrollment pe
+			INNER JOIN ServiceArea sa ON sa.Id = pe.ServiceAreaId
+			LEFT JOIN PatientCareending pce ON pce.PatientId = pe.PatientId) pce 
+		UNION 
+		SELECT pce.PatientId,pce.ReenrollmentDate AS Enrollment,pce.Code
+			,CASE WHEN pce.ExitDate > pce.ReenrollmentDate THEN pce.ExitDate
+				ELSE NULL END AS ExitDate
+		FROM (SELECT Distinct p.ID PatientId,pe.[StartDate] EnrollmentDate
+				,CASE WHEN ModuleName in ('CCC Patient Card MoH 257','HIV Care/ART Card (UG)','HIVCARE-STATICFORM','SMART ART FORM') THEN 'CCC' 
+						WHEN ModuleName in ('TB Module','TB') THEN 'TB' 
+						WHEN ModuleName in ('PM/SCM With Same point dispense','PM/SCM') THEN 'PM/SCM'
+						WHEN ModuleName in ('ANC Maternity and Postnatal') THEN 'PMTCT'  
+						ELSE UPPER(ModuleName) END as Code
+				,pce.CareEndedDate ExitDate
+				,pre.ReEnrollDate ReenrollmentDate
+			FROM [dbo].[Lnk_PatientProgramStart] pe
+			INNER JOIN Patient p on p.ptn_pk=pe.ptn_pk
+			INNER JOIN mst_module sa ON sa.ModuleID = pe.[ModuleId]
+			INNER JOIN dtl_PatientCareEnded pce ON pce.Ptn_Pk = pe.Ptn_Pk
+			INNER JOIN [dbo].[Lnk_PatientReEnrollment] pre ON pre.Ptn_Pk = pce.Ptn_Pk and pre.Ptn_Pk = pe.Ptn_Pk
+			LEFT JOIN mst_Decode lti ON lti.[ID] = pce.[PatientExitReason] and pce.Ptn_Pk = pe.Ptn_Pk
+			WHERE pce.CareEnded=0 and  pe.ptn_pk  not in (SELECT Distinct p.ptn_pk FROM PatientEnrollment pe INNER JOIN Patient p on p.Id=pe.PatientId)
+			) pce
+		UNION	
+		SELECT pce.PatientId,pce.EnrollmentDate AS Enrollment,pce.Code,pce.ExitDate
+		FROM (SELECT Distinct p.ID PatientId,pe.[StartDate] EnrollmentDate
+				,CASE WHEN ModuleName in ('CCC Patient Card MoH 257','HIV Care/ART Card (UG)','HIVCARE-STATICFORM','SMART ART FORM') THEN 'CCC' 
+						WHEN ModuleName in ('TB Module','TB') THEN 'TB' 
+						WHEN ModuleName in ('PM/SCM With Same point dispense','PM/SCM') THEN 'PM/SCM'
+						WHEN ModuleName in ('ANC Maternity and Postnatal') THEN 'PMTCT'  
+						ELSE UPPER(ModuleName) END as Code,pce.CareEndedDate ExitDate
+			FROM [dbo].[Lnk_PatientProgramStart] pe
+			INNER JOIN Patient p on p.ptn_pk=pe.ptn_pk
+			INNER JOIN mst_module sa ON sa.ModuleID = pe.[ModuleId]
+			LEFT JOIN dtl_PatientCareEnded pce ON pce.Ptn_Pk = pe.Ptn_Pk
+			where   pe.ptn_pk  not in (SELECT Distinct p.ptn_pk FROM PatientEnrollment pe 
+			INNER JOIN Patient p on p.Id=pe.PatientId)) pce 
+		) pce 
+)ptt
+
+ group by Year(ptt.Enrollment),ptt.Code
+order by ptt.Code  desc ,Year(ptt.Enrollment)  desc
