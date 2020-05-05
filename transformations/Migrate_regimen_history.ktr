@@ -593,11 +593,13 @@
 DROP TABLE IF EXISTS migration_st.st_regimen_history;
 CREATE TABLE migration_st.st_regimen_history
 (
+  Ptn_pk                           INT(11),
   Person_Id                        INT(11),
+  Patient_Id                       INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Program                          VARCHAR(100),
-  Drug_Event                       VARCHAR(100),
+  Drug_Event                       VARCHAR(255),
   Regimen                          VARCHAR(200),
   Regimen_Name                     VARCHAR(200),
   Regimen_Line                     VARCHAR(200),
@@ -644,90 +646,117 @@ CREATE TABLE migration_st.st_regimen_history
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 15. Regimen History Validated by DNG
+    <sql>/******************************
+** File: Regimen Migration   
+** Name: Regimen Migration
+** Desc: This script gets the regimen history from IQCare sites
+** Auth: Kennedy Wambua
+** Date: 28/04/2020
+**************************
+** Change History
+**************************
+** PR   Date        Author  Description 
+** --   --------   -------   ------------------------------------
+1       28/04/2020  Ken      Fixed switchedto 
+2       28/04/2020  Ken      Added ptn_pk,personid and patientid
+*******************************/
 
-WITH a_CTE (PatientId, Ptn_Pk, RegimenType , DispensedByDate,  VisitDate, TreatmentProgram, RegimenLine, RowNum, PrevNum)  
-AS  
--- Define the CTE query.  
-(  
-    SELECT PatientId, Ptn_Pk, RegimenType, DispensedByDate,  VisitDate, TreatmentProgram, replace(RegimenLine,'ART','') as RegimenLine, 
-ROW_NUMBER() OVER(partition by ptn_pk ORDER BY DispensedByDate ASC)  as RowNum,  
-ROW_NUMBER() OVER(partition by ptn_pk ORDER BY DispensedByDate ASC) -1 as PrevNum
-FROM (SELECT distinct p.id  as PatientId, a.Ptn_Pk, a.RegimenType, b.DispensedByDate, ov.VisitDate,dc.Name as TreatmentProgram, lt.Name as RegimenLine,
-ROW_NUMBER() OVER (PARTITION BY a.Ptn_Pk,regimentype ORDER BY DispensedByDate asc) AS rn
-From dtl_regimenmap a
-inner join patient p on a.Ptn_Pk=p.ptn_pk
-Inner Join ord_PatientPharmacyOrder b On a.OrderID = b.ptn_pharmacy_pk 
- left join ord_Visit ov on b.VisitID = ov.Visit_Id
- left join mst_Decode dc on dc.ID =b.ProgID 
- left join LookupItem lt on lt.Id=b.RegimenLine 
-And b.ProgID In (222,223)) b
-WHERE rn = 1
-) 
+select
+ptn_pk as Ptn_pk,
+personid as Person_Id,
+patient_id as Patient_Id,
+date_started as Encounter_Date,NULL as Encounter_ID,NULL as Program,
+case when regimen_history.reg_order=1 then 'start'
+when curr_regimenline&lt;&gt;prev_regimen_line then 'switch'
+when curr_RegimenLine=prev_regimen_line then 'substitution' else '' end as Drug_Event,
+regimen_history.regimentype as Regimen,
+regimen_history.regimentype as Regimen_Name,
+curr_RegimenLine as Regimen_Line,
+-- prev_regimen_line,
+-- regimen_date.regimenline,
+Date_Started ,discontinued_date as Date_Stopped,discontinued_date as Date_Discontinued,null as Reason_Discontinued,
+--prev_regimen as regimenswitchto,
+regimen_date.regimentype as RegimenSwitchTo,
+regimen_history.RegimenType as CurrentRegimen,
+--regimen_history.reg_order,
+--regimen_history.RowID
+NULL as Voided,
+NULL as Date_voided
+from (select *,
+CAST(Row_Number() OVER (PARTITION BY curr_ptn_pk ORDER
+      BY date_started DESC) AS Varchar) AS RowID,
+	  CAST(Row_Number() OVER (PARTITION BY curr_ptn_pk ORDER
+      BY date_started asc) AS Varchar) AS reg_order
+from (select 
+ curr.regimenmap_pk as curr_regimenmap_pk,
+ b.ptn_pk as curr_ptn_pk,
+ curr.RegimenType,
+  lead( curr.RegimenType,1) over(partition by b.ptn_pk  order by b.OrderedByDate desc) as prev_regimen,
+  lead( b.RegimenLine,1) over(partition by b.ptn_pk  order by b.OrderedByDate desc) as prev_regimen_line,
+ b.OrderedByDate as date_started,
+ b.OrderType as curr_OrderType,
+ b.Drug_Pk as curr_Drug_Pk,
+ b.RegimenLine as curr_RegimenLine,
+ identifier.ptn_pk,identifier.personid,identifier.patient_id
+ from dtl_regimenmap curr
+ left Join 
+ (
+   select ord.ptn_pharmacy_pk,ord.Ptn_pk,ord.OrderedByDate,ord.ordertype,dtl_ord.Drug_Pk,case when ord.regimenline in ('1','2','3') then ord.RegimenLine when
+    lr.name in('AdultARTThirdLine','PaedsARTThirdLine') then 3
+	when
+    lr.name in('AdultARTSecondLine','PaedsARTSecondLine') then 2
+	when
+    lr.name in('AdultARTFirstLine','PaedsARTFirstLine') then 1
+	
+	 else '' end as regimenline
 
- select p.Id  as Person_Id,part.DispensedByDate as Encounter_Date
-, 'NULL' as Encounter_ID,
- pstart.TreatmentProgram as Program,
- NULL as Regimen,
- pstart.Regimen as Regimen_Name,
- pstart.RegimenLine as Regimen_Line,
- pstart.DispensedByDate as Date_Started, 
-  pr.VisitDate as Date_Stopped
- ,pr.Prev_Reg  as Regimen_Discontinued
- ,pr.VisitDate as [Date_Discontinued],
- --pr.TreatmentReason  as Reason_Discontinued
- ''  as Reason_Discontinued
-,pr.Regimen as RegimenSwitchTo
- ,part.Regimen as CurrentRegimen
- ,0 as Voided
- ,NULL as Date_Voided
-  from (select distinct Ptn_Pk from dtl_RegimenMap pt)ptr 
-  inner join Patient pt on pt.ptn_pk=ptr.Ptn_Pk
-left join Person p on p.Id =pt.PersonId
+   from ord_PatientPharmacyOrder ord 
+   inner join dtl_PatientPharmacyOrder dtl_ord on dtl_ord.ptn_pharmacy_pk=ord.ptn_pharmacy_pk
+   left join (select id,name from LookupItem) lr on lr.id=ord.RegimenLine
+ ) b On curr.OrderID = b.ptn_pharmacy_pk
+ left join(select ptn_pk,personid,id as patient_id from patient) identifier on identifier.ptn_pk=curr.Ptn_Pk
+ 
+ )reg
+ where reg.curr_Drug_Pk not in (973,235) and ((reg.RegimenType&lt;&gt;reg.prev_regimen or reg.prev_regimen is null) ) 
+) regimen_history
+ left join (
+ select curr_ptn_pk,RowID,RegimenType,curr_OrderedByDate as discontinued_date,regimenline from (select *,
+CAST(Row_Number() OVER (PARTITION BY curr_ptn_pk ORDER
+      BY curr_OrderedByDate DESC) AS Varchar) AS RowID
+from (select 
+ b.ptn_pk as curr_ptn_pk,
+ curr.RegimenType,
+  lead( curr.RegimenType,1) over(partition by b.ptn_pk  order by b.OrderedByDate desc) as prev_regimen,
+ b.OrderedByDate as curr_OrderedByDate,
+ b.regimenline,
+ b.Drug_Pk as curr_Drug_Pk
+ from dtl_regimenmap curr
+ left Join 
+ (
+   select ord.ptn_pharmacy_pk,ord.Ptn_pk,ord.OrderedByDate,ord.ordertype,dtl_ord.Drug_Pk,case when ord.regimenline in ('1','2','3','4') then ord.RegimenLine when
+    lr.name in('AdultARTThirdLine','PaedsARTThirdLine') then 3
+	when
+    lr.name in('AdultARTSecondLine','PaedsARTSecondLine') then 2
+	when
+    lr.name in('AdultARTFirstLine','PaedsARTFirstLine') then 1
+	
+	 else '' end as regimenline
+   from ord_PatientPharmacyOrder ord 
+   inner join dtl_PatientPharmacyOrder dtl_ord on dtl_ord.ptn_pharmacy_pk=ord.ptn_pharmacy_pk
+      left join (select id,name from LookupItem) lr on lr.id=ord.RegimenLine
+ ) b On curr.OrderID = b.ptn_pharmacy_pk
+ 
+ )reg
+ where reg.curr_Drug_Pk not in (973,235)  and ((reg.RegimenType&lt;&gt;reg.prev_regimen) or reg.prev_regimen is null )) regimen
+ ) regimen_date on regimen_date.curr_ptn_pk = regimen_history.curr_ptn_pk and regimen_history.RowID=regimen_date.RowID+1
+ order by regimen_history.curr_ptn_pk,regimen_history.date_started
 
--- current regimen
-left join (
-SELECT PatientId,replace(regimentype,'/','+') as Regimen, DispensedByDate, VisitDate, TreatmentProgram, replace(RegimenLine,'ART','') as RegimenLine
-FROM (SELECT distinct p.id  as PatientId, a.Ptn_Pk, a.regimentype, b.DispensedByDate, ov.VisitDate,dc.Name as TreatmentProgram, lt.Name as RegimenLine , 
-ROW_NUMBER() OVER (PARTITION BY a.ptn_pk ORDER BY DispensedByDate desc) AS rn
-From dtl_regimenmap a
-inner join patient p on a.Ptn_Pk=p.ptn_pk
-Inner Join ord_PatientPharmacyOrder b On a.OrderID = b.ptn_pharmacy_pk And b.ProgID In (222,223)
- left join ord_Visit ov on b.VisitID = ov.Visit_Id
- left join mst_Decode dc on dc.ID =b.ProgID 
- left join LookupItem lt on lt.Id=b.RegimenLine
-) a
-WHERE rn = 1 and DispensedByDate is not null 
- )part on part.PatientId=pt.Id
-
- -- start regimen
-left join(SELECT PatientId,replace(regimentype,'/','+') as Regimen, DispensedByDate, VisitDate, TreatmentProgram, replace(RegimenLine,'ART','') as RegimenLine
-FROM (SELECT distinct p.id  as PatientId, a.Ptn_Pk, a.regimentype, b.DispensedByDate, ov.VisitDate,dc.Name as TreatmentProgram, lt.Name as RegimenLine , 
-ROW_NUMBER() OVER (PARTITION BY a.ptn_pk ORDER BY DispensedByDate asc) AS rn
-From dtl_regimenmap a
-inner join patient p on a.Ptn_Pk=p.ptn_pk
-Inner Join ord_PatientPharmacyOrder b On a.OrderID = b.ptn_pharmacy_pk And b.ProgID In (222,223)
- left join ord_Visit ov on b.VisitID = ov.Visit_Id
- left join mst_Decode dc on dc.ID =b.ProgID 
- left join LookupItem lt on lt.Id=b.RegimenLine
-) a
-WHERE rn = 1 and DispensedByDate is not null 
-)pstart  on pstart.PatientId=pt.Id
-
--- switches
-left join(
-Select  PatientId, Ptn_Pk, replace(RegimenType,'/','+') as Regimen, DispensedByDate,  VisitDate, TreatmentProgram, 
-replace(RegimenLine,'ART','') as RegimenLine, RowNum   
-,case when RowNum>1 then LAG(replace(RegimenType,'/','+')) OVER (ORDER BY ptn_pk,RowNum) else null end as 'Prev_Reg' 
-from a_CTE b
-where RowNum>1
-)pr on pr.PatientId=pt.Id
---where pt.Ptn_Pk=101</sql>
+ </sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
+    <lazy_conversion_active>Y</lazy_conversion_active>
     <attributes/>
     <cluster_schema/>
     <remotesteps>

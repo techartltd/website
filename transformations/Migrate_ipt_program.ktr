@@ -639,21 +639,56 @@ CREATE TABLE migration_st.st_ipt_program
     <connection>mssql</connection>
     <sql>-- 13. IPT Program Enrollment Validated by LO
 exec pr_OpenDecryptedSession;
-select Distinct p.PersonId as Person_Id
-	,pmv.VisitDate as Encounter_Date
-	,NULL as Encounter_ID
-	,pipt.IptStartDate as IPT_Start_Date
-	,NULL as Indication_for_IPT
-	,ltv.ItemDisplayName as IPT_Outcome
-	,pio.IPTOutComeDate as Outcome_Date
-	,pipt.CreateDate created_at
-	,pipt.CreatedBy created_by
-from PatientIptWorkup pipt
-inner join PatientMasterVisit pmv on pmv.Id=pipt.PatientMasterVisitId
-inner join Patient p on p.Id=pipt.PatientId
-left join PatientIptOutcome pio on pio.PatientId=pipt.PatientId
+
+Select Person_Id,Encounter_Date,Encounter_ID,IPT_Start_Date,Indication_for_IPT,IPT_Outcome
+,Outcome_Date,created_at,created_by
+from (
+select 
+p.PersonId as Person_Id,
+case when pmv.VisitDate is null then inh.StartDate
+when pmv.VisitDate>inh.StartDate then inh.StartDate
+else pmv.VisitDate end as Encounter_Date
+--  ,pmv.VisitDate as Encounter_Date
+  ,NULL as Encounter_ID
+--  ,pipt.IptStartDate as IPT_Start_Date
+  ,case when pipt.IptStartDate is null then inh.StartDate
+when pipt.IptStartDate>inh.StartDate then inh.StartDate
+else pipt.IptStartDate end as IPT_Start_Date
+  ,NULL as Indication_for_IPT
+--  ,ltv.ItemDisplayName as IPT_Outcome
+,case when ltv.ItemDisplayName is not null then ltv.ItemDisplayName
+when inh.Complete is not null and inh.CompletionDate is not null then 'completed' 
+else null end as IPT_Outcome
+,case when pio.IPTOutComeDate is null then inh.CompletionDate
+when pio.IPTOutComeDate>inh.CompletionDate then inh.completiondate
+else pio.IPTOutComeDate end as Outcome_Date
+--,pio.IPTOutComeDate as Outcome_Date
+--,pipt.CreateDate created_at
+,case when pipt.CreateDate is null then inh.createdate else pipt.CreateDate end as created_at
+,case when pipt.CreatedBy is null then inh.CreatedBy else pipt.CreatedBy end as created_by
+--  ,pipt.CreatedBy created_by
+  from patient p
+  left join PatientIptWorkup pipt on pipt.patientid=p.id
+  left join PatientMasterVisit pmv on pmv.Id=pipt.PatientMasterVisitId
+  left join PatientIptOutcome pio on pio.PatientId=pipt.PatientId
 left join LookupItemView ltv on ltv.itemId=pio.IptEvent 
 and ltv.MasterName='IptOutcome'
+
+left join(
+SELECT dbo.INHProphylaxis.Id AS did,
+      dbo.INHProphylaxis.PatientId,
+      dbo.INHProphylaxis.StartDate,
+      dbo.INHProphylaxis.Complete,
+      dbo.INHProphylaxis.CompletionDate,
+    dbo.INHProphylaxis.CreateDate,
+    dbo.INHProphylaxis.CreatedBy
+    FROM dbo.INHProphylaxis 
+) inh on inh.patientid=p.Id) ipt
+
+where ipt.Encounter_Date is not null
+
+
+
 </sql>
     <limit>0</limit>
     <lookup/>
