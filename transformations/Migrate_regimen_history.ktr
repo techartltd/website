@@ -629,8 +629,8 @@ CREATE TABLE migration_st.st_regimen_history
       </output>
     </remotesteps>
     <GUI>
-      <xloc>144</xloc>
-      <yloc>96</yloc>
+      <xloc>96</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -646,8 +646,7 @@ CREATE TABLE migration_st.st_regimen_history
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- VALIDATED BY FG on 05/05/2020 
-select
+    <sql>select
 ds.Person_Id as Person_Id,
 ds.ptn_pk,
 ds.DispensedByDate as Encounter_Date,
@@ -794,8 +793,8 @@ order by ds.Ptn_Pk, ds.DispensedByDate</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>96</yloc>
+      <xloc>352</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -838,8 +837,8 @@ order by ds.Ptn_Pk, ds.DispensedByDate</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>848</xloc>
-      <yloc>96</yloc>
+      <xloc>704</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
