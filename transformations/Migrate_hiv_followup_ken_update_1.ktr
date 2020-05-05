@@ -1,0 +1,1659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>Migrate_hiv_followup</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <trans_status>0</trans_status>
+    <directory>/</directory>
+    <parameters>
+      <parameter>
+        <name>mssql</name>
+        <default_value/>
+        <description/>
+      </parameter>
+      <parameter>
+        <name>mysql_st</name>
+        <default_value/>
+        <description/>
+      </parameter>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2019/12/16 16:03:07.671</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2019/12/16 16:03:07.671</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>mssql</name>
+    <server> DESKTOP-O2MBCFP</server>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1433</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>EXTRA_OPTION_MSSQLNATIVE.instance</code>
+        <attribute>SQLEXPRESS</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1433</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>mysql_st</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>JNDI</access>
+    <database>mysql_st</database>
+    <port>3306</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>Create_st_hiv_followup</from>
+      <to>iqcare_source_hiv_followup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_hiv_followup</from>
+      <to>load_st_hiv_followup</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>Create_st_hiv_followup</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>-- 16. HIV Followup
+DROP TABLE IF EXISTS migration_st.st_hiv_followup;
+CREATE TABLE migration_st.st_hiv_followup
+(
+  Person_Id                          INT(100),
+  Ptn_PK                             INT(11),
+  Encounter_Date                     DATE,
+  Encounter_ID                  	 VARCHAR(100),
+  Visit_scheduled            	    	VARCHAR(100),
+  Visit_by                  	      VARCHAR(100),
+  Visit_by_other           		      VARCHAR(100),
+  Nutritional_status                VARCHAR(200),
+  Population_type                   VARCHAR(200),
+  Key_population_type               VARCHAR(200),
+  Who_stage            		          VARCHAR(200),
+  Presenting_complaints 	          VARCHAR(200),
+  Complaint                         VARCHAR(255),
+  Duration                          VARCHAR(100),
+  Onset_Date                        DATE,
+  Clinical_notes                    VARCHAR(1600),
+  Has_known_allergies               VARCHAR(200),
+  Allergies_causative_agents        VARCHAR(200),
+  Allergies_reactions               VARCHAR(200),
+  Allergies_severity                VARCHAR(200),
+  Has_Chronic_illnesses_cormobidities VARCHAR(200),
+  Chronic_illnesses_name            VARCHAR(200),
+  Chronic_illnesses_onset_date      DATE,
+  Has_adverse_drug_reaction         VARCHAR(200),
+  Medicine_causing_drug_reaction    VARCHAR(200),
+  Drug_reaction                    VARCHAR(200),
+  Drug_reaction_severity            VARCHAR(200),
+  Drug_reaction_onset_date          DATE,
+  Drug_reaction_action_taken        VARCHAR(200),
+  Vaccinations_today                VARCHAR(200),
+  Vaccine_Stage			              	VARCHAR(200),
+  Vaccination_Date 		            	DATE,
+  Last_menstrual_period             DATE,
+  Pregnancy_status                  VARCHAR(200),
+  Wants_pregnancy                   VARCHAR(200),
+  Pregnancy_outcome                 VARCHAR(200),
+  Anc_number                        VARCHAR(100),
+  Anc_profile                       VARCHAR(100),
+  Expected_delivery_date            DATE,
+  Gravida                           INT(11),
+  Parity_term                       INT(11),
+  Parity_abortion                   INT(11),
+  Family_planning_status            VARCHAR(100),
+  Family_planning_method            VARCHAR(255),
+  Reason_not_using_family_planning  VARCHAR(255),
+  General_examinations_findings     VARCHAR(100),
+  System_review_finding             VARCHAR(200),
+  Skin                              VARCHAR(200),
+  Skin_finding_notes                VARCHAR(200),
+  Eyes                              VARCHAR(200),
+  Eyes_finding_notes                VARCHAR(200),
+  ENT                               VARCHAR(200),
+  ENT_finding_notes                 VARCHAR(200),
+  Chest                             VARCHAR(200),
+  Chest_finding_notes               VARCHAR(200),
+  CVS                               VARCHAR(200),
+  CVS_finding_notes                 VARCHAR(200),
+  Abdomen                           VARCHAR(200),
+  Abdomen_finding_notes             VARCHAR(200),
+  CNS                               VARCHAR(200),
+  CNS_finding_notes                 VARCHAR(200),
+  Genitourinary                     VARCHAR(200),
+  Genitourinary_finding_notes       VARCHAR(200),
+  Diagnosis                         VARCHAR(200),
+  Treatment_plan                    TEXT,
+  Ctx_adherence                     VARCHAR(200),
+  Ctx_dispensed                     VARCHAR(100),
+  Dapsone_adherence                 VARCHAR(200),
+  Dapsone_dispensed                 VARCHAR(200),
+  Morisky_forget_taking_drugs       VARCHAR(200),
+  Morisky_careless_taking_drugs     VARCHAR(200),
+  Morisky_stop_taking_drugs_feeling_worse   VARCHAR(200),
+  Morisky_stop_taking_drugs_feeling_better  VARCHAR(200),
+  Morisky_took_drugs_yesterday      VARCHAR(200),
+  Morisky_stop_taking_drugs_symptoms_under_control  VARCHAR(200),
+  Morisky_feel_under_pressure_on_treatment_plan     VARCHAR(200),
+  Morisky_how_often_difficulty_remembering    VARCHAR(200),
+  Arv_adherence                     VARCHAR(200),
+  Condom_provided                   VARCHAR(100),
+  Screened_for_substance_abuse      VARCHAR(100),
+  Pwp_disclosure                    VARCHAR(100),
+  Pwp_partner_tested                VARCHAR(100),
+  Cacx_screening                    VARCHAR(100),
+  Screened_for_sti                  VARCHAR(100),
+  Sti_partner_notification          VARCHAR(100),
+  Stability                         VARCHAR(200),
+  Next_appointment_date             DATE,
+  Next_appointment_reason           VARCHAR(255),
+  Appointment_type                  VARCHAR(200),
+  Differentiated_care               VARCHAR(200),
+  Voided                            INT(11)
+);
+</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>112</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_hiv_followup</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <sql>
+
+SELECT P.PersonId Person_Id,
+		P.ptn_pk
+	,format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date
+	,NULL Encounter_ID
+	,CASE
+		WHEN PM.VisitScheduled = '0'
+			THEN 'No'
+		WHEN PM.VisitScheduled = '1'
+			THEN 'Yes'
+		ELSE 'Yes'
+		END AS Visit_scheduled
+	,Visit_by = (
+		SELECT TOP 1 ItemName
+		FROM LookupItemView
+		WHERE MasterName = 'VisitBy'
+			AND ItemId = PM.VisitBy
+		)
+	,NULL Visit_by_other
+	,Nutritional_status = (
+		SELECT TOP 1 ItemDisplayName
+		FROM LookupItemView
+		WHERE ItemId = (
+				SELECT TOP 1 ScreeningValueId
+				FROM PatientScreening
+				WHERE PatientMasterVisitId = PM.Id
+					AND ScreeningTypeId = (
+						SELECT TOP 1 MasterId
+						FROM LookupItemView
+						WHERE MasterName = 'NutritionStatus'
+						)
+				)
+		)
+	,Who_stage = (
+		SELECT TOP 1 ItemName
+		FROM LookupItemView
+		WHERE MasterName = 'WHOStage'
+			AND ItemId = (
+				SELECT TOP 1 WHOStage
+				FROM PatientWHOStage
+				WHERE PatientMasterVisitId = PM.Id
+				ORDER BY Id DESC
+				)
+		)
+	,Clinical_notes = (
+		SELECT TOP 1 ClinicalNotes
+		FROM PatientClinicalNotes
+		WHERE PatientMasterVisitId = PM.Id
+		ORDER BY Id DESC
+		)
+	,Last_menstrual_period = format(cast((
+				SELECT TOP 1 LMP
+				FROM PregnancyIndicator
+				WHERE PatientMasterVisitId = PM.Id
+				ORDER BY Id DESC
+				) AS DATE), 'yyyy-MM-dd')
+	,Pregnancy_status = (
+		SELECT TOP 1 DisplayName
+		FROM LookupItemView
+		WHERE itemid = (
+				SELECT TOP 1 PregnancyStatusId
+				FROM PregnancyIndicator
+				WHERE PatientMasterVisitId = PM.Id
+				ORDER BY Id DESC
+				)
+		)
+	,NULL Wants_pregnancy
+	,Pregnancy_outcome = (
+		SELECT TOP 1 ItemName
+		FROM LookupItemView
+		WHERE itemid = (
+				SELECT TOP 1 Outcome
+				FROM Pregnancy
+				WHERE PatientMasterVisitId = PM.Id
+				ORDER BY ID DESC
+				)
+		)
+	,NULL Anc_number
+	,Anc_profile = CASE
+		WHEN (
+				SELECT TOP 1 ANCProfile
+				FROM PregnancyIndicator
+				WHERE PatientMasterVisitId = PM.Id
+				ORDER BY Id DESC
+				) = '0'
+			THEN 'No'
+		ELSE 'Yes'
+		END
+	,Expected_delivery_date = format(cast((
+				SELECT TOP 1 EDD
+				FROM PregnancyIndicator
+				WHERE PatientMasterVisitId = PM.Id
+				ORDER BY Id DESC
+				) AS DATE), 'yyyy-MM-dd')
+	,Gravida = (
+		SELECT TOP 1 Gravidae
+		FROM Pregnancy
+		WHERE PatientMasterVisitId = PM.Id
+		)
+	,Parity_term = (
+		SELECT TOP 1 Parity
+		FROM Pregnancy
+		WHERE PatientMasterVisitId = PM.Id
+		)
+	,Parity_abortion = (
+		SELECT TOP 1 Parity2
+		FROM Pregnancy
+		WHERE PatientMasterVisitId = PM.Id
+		)
+	,Family_planning_status = (SELECT DisplayName FROM LookupItem WHERE Id =(select top 1 FamilyPlanningStatusId from PatientFamilyPlanning P where P.PatientMasterVisitId = PM.Id))
+	,Reason_not_using_family_planning = (SELECT DisplayName FROM LookupItem WHERE Id =(select TOP 1 ReasonNotOnFPId FROM PatientFamilyPlanning P where P.PatientMasterVisitId = PM.Id))
+	,NULL General_examinations_findings
+	,CASE WHEN ((select COUNT(Id) from PhysicalExamination where PatientMasterVisitId = PM.Id AND ExaminationTypeId=(SELECT top 1 MasterId FROM LookupItemView WHERE MasterName = 'ReviewOfSystems'))) > 0 THEN 'Yes' ELSE 'No' END System_review_finding
+	,sk.Findings AS Skin
+	,sk.FindingsNotes AS Skin_finding_notes
+	,ey.Findings AS Eyes
+	,ey.FindingsNotes AS Eyes_Finding_notes
+	,ent.Findings AS ENT
+	,ent.FindingsNotes AS ENT_finding_notes
+	,ch.Findings AS Chest
+	,ch.FindingsNotes AS Chest_finding_notes
+	,cvs.Findings AS CVS
+	,cvs.FindingsNotes AS CVS_finding_notes
+	,ab.Findings AS Abdomen
+	,ab.FindingsNotes AS Abdomen_finding_notes
+	,cns.Findings AS CNS
+	,cns.FindingsNotes AS CNS_finding_notes
+	,gn.Findings AS Genitourinary
+	,gn.FindingsNotes AS Genitourinary_finding_notes
+	,NULL Treatment_plan
+	,ctx.ScoreName AS Ctx_adherence
+	,CASE
+		WHEN ctx.VisitDate IS NOT NULL
+			THEN 'Yes'
+		ELSE ' No'
+		END AS Ctx_dispensed
+	,NULL AS Dapsone_adherence
+	,NULL AS Dapsone_dispensed
+	,adass.Morisky_forget_taking_drugs
+	,adass.Morisky_careless_taking_drugs
+	,adass.Morisky_stop_taking_drugs_feeling_worse
+	,adass.Morisky_stop_taking_drugs_feeling_better
+	,adass.Morisky_took_drugs_yesterday
+	,adass.Morisky_stop_taking_drugs_symptoms_under_control
+	,adass.Morisky_feel_under_pressure_on_treatment_plan
+	,adass.Morisky_how_often_difficulty_remembering
+	,adv.ScoreName AS Arv_adherence
+	,Condom_Provided = CASE WHEN (select top 1 ItemName from LookupItemView where MasterName = 'PHDP' and ItemName = 'CD' AND ItemId = (select top 1 Phdp from PatientPHDP where PatientMasterVisitId = PM.Id AND PatientId = P.Id order by Id desc)) = 'CD' THEN 'Yes' ELSE 'No' END
+	,Screened_for_substance_abuse = CASE WHEN (select top 1 ItemName from LookupItemView where MasterName = 'PHDP' and ItemName = 'SA' AND ItemId = (select top 1 Phdp from PatientPHDP where PatientMasterVisitId = PM.Id AND PatientId = P.Id order by Id desc)) = 'SA' THEN 'Yes' ELSE 'No' END
+	,Pwp_Disclosure = CASE WHEN (select top 1 ItemName from LookupItemView where MasterName = 'PHDP' and ItemName = 'Disc' AND ItemId = (select top 1 Phdp from PatientPHDP where PatientMasterVisitId = PM.Id AND PatientId = P.Id order by Id desc)) = 'Disc' THEN 'Yes' ELSE 'No' END
+	,Pwp_partner_tested = CASE WHEN (select top 1 ItemName from LookupItemView where MasterName = 'PHDP' and ItemName = 'PT' AND ItemId = (select top 1 Phdp from PatientPHDP where PatientMasterVisitId = PM.Id AND PatientId = P.Id order by Id desc)) = 'PT' THEN 'Yes' ELSE 'No' END
+	,cacx.ScreeningValue AS Cacx_Screening
+	,Screened_for_sti = CASE WHEN (select top 1 ItemName from LookupItemView where MasterName = 'PHDP' and ItemName = 'STI' AND ItemId = (select top 1 Phdp from PatientPHDP where PatientMasterVisitId = PM.Id AND PatientId = P.Id order by Id desc)) = 'STI' THEN 'Yes' ELSE 'No' END
+	,scp.PartnerNotification AS Sti_partner_notification
+	,pcc.Stability AS Stability
+	,case when papp.Next_appointment_date is not null then format(cast(papp.Next_appointment_date AS DATE), 'yyyy-MM-dd')
+	      when papp.Next_appointment_date is  null then tca.tca else '' end as Next_appointment_date
+	--format(cast(papp.Next_appointment_date AS DATE), 'yyyy-MM-dd') AS Next_appointment_date
+	,papp.Next_appointment_reason
+	,papp.Appointment_type
+	,pdd.DifferentiatedCare AS Differentiated_care
+	,NULL AS Voided
+
+FROM PatientEncounter PE
+LEFT JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
+LEFT JOIN Patient P ON P.Id = PM.PatientId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'Skin'
+		) ex
+	) sk ON sk.PatientId = PE.PatientId
+	AND sk.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'Eyes'
+		) ex
+	WHERE ex.rownum = '1'
+	) ey ON ey.PatientId = PE.PatientId
+	AND ey.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'ENT'
+		) ex
+	WHERE ex.rownum = '1'
+	) ent ON ent.PatientId = PE.PatientId
+	AND ent.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT a.PatientId
+			,a.PatientMasterVisitId
+			,CASE
+				WHEN a.ForgetMedicine = 0
+					THEN 'No'
+				WHEN a.ForgetMedicine = '1'
+					THEN 'Yes'
+				END AS Morisky_forget_taking_drugs
+			,CASE
+				WHEN a.CarelessAboutMedicine = 0
+					THEN 'No'
+				WHEN a.CarelessAboutMedicine = '1'
+					THEN 'Yes'
+				END AS Morisky_careless_taking_drugs
+			,CASE
+				WHEN a.FeelWorse = 0
+					THEN 'No'
+				WHEN a.FeelWorse = '1'
+					THEN 'Yes'
+				END AS Morisky_stop_taking_drugs_feeling_worse
+			,CASE
+				WHEN a.FeelBetter = 0
+					THEN 'No'
+				WHEN a.FeelBetter = '1'
+					THEN 'Yes'
+				END AS Morisky_stop_taking_drugs_feeling_better
+			,CASE
+				WHEN a.TakeMedicine = 0
+					THEN 'No'
+				WHEN a.TakeMedicine = '1'
+					THEN 'Yes'
+				END AS Morisky_took_drugs_yesterday
+			,CASE
+				WHEN a.StopMedicine = 0
+					THEN 'No'
+				WHEN a.StopMedicine = '1'
+					THEN 'Yes'
+				END AS Morisky_stop_taking_drugs_symptoms_under_control
+			,CASE
+				WHEN a.UnderPressure = 0
+					THEN 'No'
+				WHEN a.UnderPressure = '1'
+					THEN 'Yes'
+				END AS Morisky_feel_under_pressure_on_treatment_plan
+			,CASE
+				WHEN a.DifficultyRemembering = 0
+					THEN 'Never/Rarely'
+				WHEN a.DifficultyRemembering = 0.25
+					THEN 'Once in a while'
+				WHEN a.DifficultyRemembering = 0.5
+					THEN 'Sometimes'
+				WHEN a.DifficultyRemembering = 0.75
+					THEN 'Usually'
+				WHEN a.DifficultyRemembering = 1
+					THEN 'All the Time'
+				END AS Morisky_how_often_difficulty_remembering
+			,ROW_NUMBER() OVER (
+				PARTITION BY a.PatientId
+				,a.PatientMasterVisitId ORDER BY a.Id DESC
+				) rownum
+		FROM AdherenceAssessment a
+		WHERE Deleteflag = 0
+		) ad
+	WHERE ad.rownum = '1'
+	) adass ON adass.PatientId = PE.PatientId
+	AND adass.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'Chest'
+		) ex
+	WHERE ex.rownum = '1'
+	) ch ON ch.PatientId = PE.PatientId
+	AND ch.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'CVS'
+		) ex
+	WHERE ex.rownum = '1'
+	) cvs ON cvs.PatientId = PE.PatientId
+	AND cvs.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'Abdomen'
+		) ex
+	WHERE ex.rownum = '1'
+	) ab ON ab.PatientId = PE.PatientId
+	AND ab.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam = 'CNS'
+		) ex
+	WHERE ex.rownum = '1'
+	) cns ON cns.PatientId = PE.PatientId
+	AND cns.PatientMasterVisitId = PE.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ex.PatientMasterVisitId
+				,ex.PatientId ORDER BY ex.CreateDate DESC
+				) rownum
+		FROM (
+			SELECT Id
+				,PatientMasterVisitId
+				,PatientId
+				,ExaminationTypeId
+				,(
+					SELECT TOP 1 l.Name
+					FROM LookupMaster l
+					WHERE l.Id = e.ExaminationTypeId
+					) ExaminationType
+				,ExamId
+				,(
+					SELECT TOP 1 l.DisplayName
+					FROM LookupItem l
+					WHERE l.Id = e.ExamId
+					) Exam
+				,DeleteFlag
+				,CreateBy
+				,CreateDate
+				,FindingId
+				,(
+					SELECT TOP 1 l.ItemName
+					FROM LookupItemView l
+					WHERE l.ItemId = e.FindingId
+					) Findings
+				,FindingsNotes
+			FROM dbo.PhysicalExamination e
+			) ex
+		WHERE ex.ExaminationType = 'ReviewOfSystems'
+			AND Ex.Exam LIKE 'Genito-urinary'
+		) ex
+	WHERE ex.rownum = '1'
+	) gn ON gn.PatientId = pe.PatientId
+	AND gn.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT pa.PatientId
+		,pa.PatientMasterVisitId
+		,pa.AppointmentReason AS Next_appointment_reason
+		,pa.Appointment_type
+		,pa.AppointmentDate AS Next_appointment_date
+	FROM (
+		SELECT pa.PatientId
+			,pa.PatientMasterVisitId
+			,pa.AppointmentDate
+			,pa.DifferentiatedCareId
+			,pa.ReasonId
+			,li.DisplayName AS AppointmentReason
+			,ROW_NUMBER() OVER (
+				PARTITION BY pa.PatientId
+				,pa.PatientMasterVisitId ORDER BY pa.CreateDate DESC
+				) rownum
+			,lt.DisplayName AS Appointment_type
+			,pa.DeleteFlag
+			,pa.ServiceAreaId
+			,pa.CreateDate
+		FROM PatientAppointment pa
+		INNER JOIN LookupItem li ON li.Id = pa.ReasonId
+		INNER JOIN LookupItem lt ON lt.Id = pa.DifferentiatedCareId
+		WHERE pa.DeleteFlag IS NULL
+			OR pa.DeleteFlag = 0
+		) pa
+	WHERE pa.rownum = 1
+	) papp ON papp.PatientId = pe.PatientId
+	AND papp.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT pad.PatientId
+		,pad.PatientMasterVisitId
+		,'Yes' AS DifferentiatedCare
+	FROM PatientArtDistribution pad
+	WHERE DeleteFlag = 0
+		OR DeleteFlag IS NULL
+	) pdd ON pdd.PatientId = pe.PatientId
+	AND pdd.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT pc.PatientId
+			,pc.PatientMasterVisitId
+			,CASE
+				WHEN pc.Categorization = 2
+					THEN 'Unstable'
+				WHEN pc.Categorization = 1
+					THEN 'Stable'
+				END AS Stability
+			,ROW_NUMBER() OVER (
+				PARTITION BY pc.PatientId
+				,pc.PatientMasterVisitId ORDER BY pc.id DESC
+				) rownum
+		FROM PatientCategorization pc
+		) pc
+	WHERE pc.rownum = 1
+	) pcc ON pcc.PatientId = pe.PatientId
+	AND pcc.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT scp.PatientId
+		,scp.PatientMasterVisitId
+		,scp.Name AS PartnerNotification
+	FROM (
+		SELECT sc.PatientId
+			,sc.PatientMasterVisitId
+			,sc.ScreeningTypeId
+			,sc.ScreeningValueId
+			,li.Name
+			,ROW_NUMBER() OVER (
+				PARTITION BY sc.PatientId
+				,sc.PatientMasterVisitid ORDER BY sc.Id DESC
+				) rownum
+		FROM PatientScreening sc
+		INNER JOIN LookupMaster lm ON lm.Id = sc.ScreeningTypeId
+			AND lm.Name = 'STIPartnerNotification'
+		INNER JOIN LookupItem li ON li.Id = sc.ScreeningValueId
+		WHERE sc.DeleteFlag IS NULL
+			OR sc.DeleteFlag = 0
+		) scp
+	WHERE scp.rownum = '1'
+	) scp ON scp.PatientId = pe.PatientId
+	AND scp.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT psc.PatientId
+			,psc.PatientMasterVisitId
+			,lm.[DisplayName] AS ScreeningType
+			,psc.DeleteFlag
+			,psc.VisitDate
+			,psc.ScreeningDate
+			,psc.CreateDate
+			,lt.DisplayName AS ScreeningValue
+			,ROW_NUMBER() OVER (
+				PARTITION BY psc.PatientId
+				,psc.PatientMasterVisitId ORDER BY psc.CreateDate DESC
+				) rownum
+		FROM PatientScreening psc
+		INNER JOIN LookupMaster lm ON lm.[Id] = psc.ScreeningTypeId
+		INNER JOIN LookupItem lt ON lt.Id = psc.ScreeningValueId
+		WHERE lm.[Name] = 'CacxScreening'
+			AND (
+				psc.DeleteFlag IS NULL
+				OR psc.DeleteFlag = 0
+				)
+		) psc
+	WHERE psc.rownum = '1'
+	) cacx ON cacx.PatientId = pe.PatientId
+	AND cacx.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT ao.Id
+			,ao.PatientId
+			,ao.PatientMasterVisitId
+			,ao.Score
+			,ROW_NUMBER() OVER (
+				PARTITION BY ao.PatientId
+				,ao.PatientMasterVisitId ORDER BY ao.CreateDate DESC
+				) rownum
+			,ao.AdherenceType
+			,lm.[Name] AS AdherenceTypeName
+			,lti.DisplayName AS ScoreName
+			,ao.DeleteFlag
+			,pmv.VisitDate
+		FROM AdherenceOutcome ao
+		INNER JOIN LookupMaster lm ON lm.Id = ao.AdherenceType
+		INNER JOIN LookupItem lti ON lti.Id = ao.Score
+		INNER JOIN PatientMasterVisit pmv ON pmv.Id = ao.PatientMasterVisitId
+		WHERE lm.[Name] = 'CTXAdherence'
+			AND (
+				ao.DeleteFlag IS NULL
+				OR ao.DeleteFlag = 0
+				)
+		) adv
+	WHERE adv.rownum = '1'
+	) ctx ON ctx.PatientId = pe.PatientId
+	AND ctx.PatientMasterVisitId = pe.PatientMasterVisitId
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT ao.Id
+			,ao.PatientId
+			,ao.PatientMasterVisitId
+			,ao.Score
+			,ROW_NUMBER() OVER (
+				PARTITION BY ao.PatientId
+				,ao.PatientMasterVisitId ORDER BY ao.CreateDate DESC
+				) rownum
+			,ao.AdherenceType
+			,lm.[Name] AS AdherenceTypeName
+			,lti.DisplayName AS ScoreName
+			,ao.DeleteFlag
+			,pmv.VisitDate
+		FROM AdherenceOutcome ao
+		INNER JOIN LookupMaster lm ON lm.Id = ao.AdherenceType
+		INNER JOIN LookupItem lti ON lti.Id = ao.Score
+		INNER JOIN PatientMasterVisit pmv ON pmv.Id = ao.PatientMasterVisitId
+		WHERE lm.[Name] = 'ARVAdherence'
+			AND (
+				ao.DeleteFlag IS NULL
+				OR ao.DeleteFlag = 0
+				)
+		) adv
+	WHERE adv.rownum = '1'
+	) adv ON adv.PatientId = pe.PatientId
+	AND adv.PatientMasterVisitId = pe.PatientMasterVisitId
+	left join(
+	select ord.ptn_pharmacy_pk,
+ord.Ptn_pk,
+ord.OrderedByDate,
+dtl_ord.Duration,pt.Id as patient_id,
+dateadd(day,dtl_ord.Duration,ord.OrderedByDate) as tca
+   from ord_PatientPharmacyOrder ord 
+   inner join (
+   SELECT CAST(Row_Number() OVER (PARTITION BY dtl_ord.ptn_pharmacy_pk ORDER
+      BY dtl_ord.duration DESC) AS Varchar) AS RowID,
+      dtl_ord.ptn_pharmacy_pk,
+      dtl_ord.Duration
+    FROM dtl_PatientPharmacyOrder dtl_ord
+   ) dtl_ord on dtl_ord.ptn_pharmacy_pk=ord.ptn_pharmacy_pk and dtl_ord.RowID=1
+   left join (select id,name from LookupItem) lr on lr.id=ord.RegimenLine
+   left join patient pt on pt.ptn_pk=ord.Ptn_pk
+	) tca on tca.patient_id=pe.PatientId and cast(pe.EncounterStartTime AS date)=cast(tca.OrderedByDate as date)
+WHERE PE.EncounterTypeId = (
+		SELECT ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'EncounterType'
+			AND ItemName = 'ccc-encounter'
+		)
+
+UNION
+
+SELECT
+P.PersonId Person_Id,
+MP.Ptn_Pk,
+format(cast(OV.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
+NULL AS Encounter_ID,
+CASE WHEN ISNULL(PAE.Scheduled, '0') = '0' THEN 'No' WHEN PAE.Scheduled = '1' THEN 'Yes' END AS Visit_scheduled,
+CASE (select Name from mst_bluedecode where codeid=8 and (DeleteFlag = 0 or DeleteFlag IS NULL) and ID = OV.TypeofVisit)
+WHEN 'SF - Self' THEN 'S' WHEN 'TS - Treatment Supporter' THEN 'TS' ELSE 'S' END AS Visit_by,
+NULL Visit_by_other,
+NULL AS Nutritional_status,
+CASE(select Name from mst_Decode where CodeID = 22  and (DeleteFlag = 0 or DeleteFlag IS NULL) AND ID = PS.WHOStage)
+WHEN '1' THEN 'Stage1' WHEN '2' THEN 'Stage2' WHEN '3' THEN 'Stage3' WHEN '4' THEN 'Stage4' WHEN 'N/A' THEN NULL WHEN 'T1' THEN 'Stage1' WHEN 'T2' THEN 'Stage2' WHEN 'T3' THEN 'Stage3' WHEN 'T4' THEN 'Stage4' ELSE NULL END AS Who_stage,
+NULL AS Clinical_notes,
+NULL as Last_menstrual_period,
+NULL as Pregnancy_status,
+CASE WHEN (select Name from mst_bluedeCode where CodeID = 15 and (DeleteFlag = 0 or DeleteFlag IS NULL) AND ID = PC.FamilyPlanningStatus) = 'Wants Family Planning' THEN 'Yes' ELSE 'No' END as Wants_pregnancy,
+NULL as Pregnancy_outcome,
+NULL as Anc_number,
+NULL AS Anc_profile,
+NULL  as Expected_delivery_date,
+NULL as Gravida,
+NULL as Parity_term,
+NULL as Parity_abortion,
+(select Name from mst_bluedeCode where CodeID = 15 and (DeleteFlag = 0 or DeleteFlag IS NULL) AND ID = PC.FamilyPlanningStatus) as Family_planning_status,
+NULL Reason_not_using_family_planning,
+NULL as General_examinations_findings,
+NULL as System_review_finding,
+NULL as Skin,
+NULL as Skin_finding_notes,
+NULL as Eyes,
+NULL as Eyes_Finding_notes,
+NULL as ENT,
+NULL as ENT_finding_notes,
+NULL as Chest,
+NULL as Chest_finding_notes,
+NULL as CVS,
+NULL as CVS_finding_notes,
+NULL as Abdomen,
+NULL as Abdomen_finding_notes,
+NULL as CNS,
+NULL as CNS_finding_notes,
+NULL as Genitourinary,
+NULL as Genitourinary_finding_notes,
+NULL as Treatment_plan,
+NULL as Ctx_adherence,
+NULL as Ctx_dispensed,
+NULL as Dapsone_adherence,
+NULL as Dapsone_dispensed,
+NULL Morisky_forget_taking_drugs,
+NULL Morisky_careless_taking_drugs,
+NULL Morisky_stop_taking_drugs_feeling_worse,
+NULL Morisky_stop_taking_drugs_feeling_better,
+NULL Morisky_took_drugs_yesterday,
+NULL Morisky_stop_taking_drugs_symptoms_under_control,
+NULL Morisky_feel_under_pressure_on_treatment_plan,
+NULL Morisky_how_often_difficulty_remembering,
+NULL as Arv_adherence,
+NULL Condom_Provided,
+NULL Screened_for_substance_abuse,
+NULL Pwp_Disclosure,
+NULL Pwp_partner_tested,
+NULL as Cacx_Screening,
+NULL Screened_for_sti,
+NULL as Sti_partner_notification,
+NULL as Stability,
+case when tca.tca is not null then tca.tca else null end as Next_appointment_date,
+--NULL AS Next_appointment_date,
+NULL Next_appointment_reason,
+NULL Appointment_type,
+NULL as Differentiated_care,
+NULL as Voided
+
+
+
+FROM ord_Visit OV
+LEFT JOIN mst_Patient MP ON MP.Ptn_Pk = OV.Ptn_Pk
+LEFT JOIN Patient P ON P.ptn_pk = MP.Ptn_Pk
+LEFT JOIN dtl_PatientARTEncounter PAE ON PAE.Visit_Id = OV.Visit_Id
+LEFT JOIN dtl_PatientStage PS ON PS.Visit_Pk = OV.Visit_Id
+LEFT JOIN dtl_PatientDisease PDS ON PDS.Visit_Pk = OV.Visit_Id AND MP.Ptn_Pk = PDS.Ptn_Pk
+LEFT JOIN dtl_patientCounseling PC ON PC.Visit_pk = OV.Visit_Id AND PC.Ptn_pk = MP.Ptn_Pk
+
+	left join(
+	select ord.ptn_pharmacy_pk,
+ord.Ptn_pk,
+ord.OrderedByDate,
+dtl_ord.Duration,pt.Id as patient_id,
+dateadd(day,dtl_ord.Duration,ord.OrderedByDate) as tca
+   from ord_PatientPharmacyOrder ord 
+   inner join (
+   SELECT CAST(Row_Number() OVER (PARTITION BY dtl_ord.ptn_pharmacy_pk ORDER
+      BY dtl_ord.duration DESC) AS Varchar) AS RowID,
+      dtl_ord.ptn_pharmacy_pk,
+      dtl_ord.Duration
+    FROM dtl_PatientPharmacyOrder dtl_ord
+   ) dtl_ord on dtl_ord.ptn_pharmacy_pk=ord.ptn_pharmacy_pk and dtl_ord.RowID=1
+   left join (select id,name from LookupItem) lr on lr.id=ord.RegimenLine
+   left join patient pt on pt.ptn_pk=ord.Ptn_pk
+	) tca on tca.Ptn_pk=ov.Ptn_Pk and cast(OV.VisitDate AS date)=cast(tca.OrderedByDate as date)
+
+WHERE OV.VisitType=17;
+
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>400</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_hiv_followup</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mysql_st</connection>
+    <schema>migration_st</schema>
+    <table>st_hiv_followup</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>704</xloc>
+      <yloc>96</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>
