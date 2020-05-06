@@ -1,841 +1,723 @@
+INSERT INTO dwapi_migration_metrics 
+            (dataset, 
+             metric, 
+             metricvalue) 
+SELECT 'HTSClientTracing', 
+       'NumberofHTSClientTraced', 
+       Count(*) Total 
+FROM  (SELECT T.personid   AS Person_Id, 
+              Encounter_Date = T.datetracingdone, 
+              Encounter_ID = NULL, 
+              Contact_Type = (SELECT TOP 1 itemname 
+                              FROM   lookupitemview 
+                              WHERE  itemid = T.mode 
+                                     AND mastername = 'TracingMode'), 
+              Contact_Outcome = (SELECT TOP 1 itemname 
+                                 FROM   lookupitemview 
+                                 WHERE  itemid = T.outcome 
+                                        AND mastername = 'TracingOutcome'), 
+              Reason_uncontacted = 
+              (SELECT TOP 1 itemname 
+               FROM   lookupitemview 
+               WHERE  itemid = T.reasonnotcontacted 
+                      AND mastername IN ( 
+                          'TracingReasonNotContactedPhone', 
+                          'TracingReasonNotContactedPhysical' )), 
+              T.otherreasonspecify, 
+              T.remarks, 
+              T.deleteflag Voided 
+       FROM   (SELECT re.personid, 
+                      re.patientid, 
+                      re.finalresult 
+               FROM   (SELECT pe.patientencounterid, 
+                              pe.patientmastervisitid, 
+                              pe.patientid, 
+                              pe.personid, 
+                              pe.finalresult, 
+                              Row_number() 
+                                OVER( 
+                                  partition BY pe.patientid 
+                                  ORDER BY pe.patientmastervisitid DESC)rownum 
+                       FROM  (SELECT DISTINCT PE.id        PatientEncounterId, 
+                                              PE.patientmastervisitid, 
+                                              PE.patientid PatientId, 
+                                              HE.personid, 
+                                              ResultOne = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 roundonetestresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              ResultTwo = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 roundtwotestresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              FinalResult = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 finalresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              FinalResultGiven = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE 
+                             itemid = HE.finalresultgiven) 
+                              FROM   [dbo].[patientencounter] PE 
+                                     INNER JOIN [dbo].[patientmastervisit] PM 
+                                             ON PM.id = PE.patientmastervisitid 
+                                     INNER JOIN [dbo].[htsencounter] HE 
+                                             ON PE.id = HE.patientencounterid)pe 
+                       WHERE  pe.finalresult = 'Positive') re 
+               WHERE  re.rownum = 1)pep 
+              INNER JOIN tracing T 
+                      ON pep.personid = T.personid)t 
 
+--- 
+INSERT INTO dwapi_migration_metrics 
+            (dataset, 
+             metric, 
+             metricvalue) 
+SELECT 'HTSClientTracing', 
+       'NumberofHTSClientTraced where Contact_Outcome is Contacted', 
+       Count(*) Total 
+FROM  (SELECT T.personid   AS Person_Id, 
+              Encounter_Date = T.datetracingdone, 
+              Encounter_ID = NULL, 
+              Contact_Type = (SELECT TOP 1 itemname 
+                              FROM   lookupitemview 
+                              WHERE  itemid = T.mode 
+                                     AND mastername = 'TracingMode'), 
+              Contact_Outcome = (SELECT TOP 1 itemname 
+                                 FROM   lookupitemview 
+                                 WHERE  itemid = T.outcome 
+                                        AND mastername = 'TracingOutcome'), 
+              Reason_uncontacted = 
+              (SELECT TOP 1 itemname 
+               FROM   lookupitemview 
+               WHERE  itemid = T.reasonnotcontacted 
+                      AND mastername IN ( 
+                          'TracingReasonNotContactedPhone', 
+                          'TracingReasonNotContactedPhysical' )), 
+              T.otherreasonspecify, 
+              T.remarks, 
+              T.deleteflag Voided 
+       FROM   (SELECT re.personid, 
+                      re.patientid, 
+                      re.finalresult 
+               FROM   (SELECT pe.patientencounterid, 
+                              pe.patientmastervisitid, 
+                              pe.patientid, 
+                              pe.personid, 
+                              pe.finalresult, 
+                              Row_number() 
+                                OVER( 
+                                  partition BY pe.patientid 
+                                  ORDER BY pe.patientmastervisitid DESC)rownum 
+                       FROM  (SELECT DISTINCT PE.id        PatientEncounterId, 
+                                              PE.patientmastervisitid, 
+                                              PE.patientid PatientId, 
+                                              HE.personid, 
+                                              ResultOne = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 roundonetestresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              ResultTwo = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 roundtwotestresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              FinalResult = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 finalresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              FinalResultGiven = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE 
+                             itemid = HE.finalresultgiven) 
+                              FROM   [dbo].[patientencounter] PE 
+                                     INNER JOIN [dbo].[patientmastervisit] PM 
+                                             ON PM.id = PE.patientmastervisitid 
+                                     INNER JOIN [dbo].[htsencounter] HE 
+                                             ON PE.id = HE.patientencounterid)pe 
+                       WHERE  pe.finalresult = 'Positive') re 
+               WHERE  re.rownum = 1)pep 
+              INNER JOIN tracing T 
+                      ON pep.personid = T.personid)t 
+WHERE  t.contact_outcome = 'Contacted' 
 
-INSERT INTO DWAPI_Migration_Metrics (
-	Dataset
-	,Metric
-	,MetricValue
-	)
-SELECT 'HTSClientTracing'
-	,'NumberofHTSClientTraced'
-	,count(*) Total
-FROM (
-	SELECT T.PersonID AS Person_Id
-		,Encounter_Date = T.DateTracingDone
-		,Encounter_ID = NULL
-		,Contact_Type = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.Mode
-				AND MasterName = 'TracingMode'
-			)
-		,Contact_Outcome = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.Outcome
-				AND MasterName = 'TracingOutcome'
-			)
-		,Reason_uncontacted = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.ReasonNotContacted
-				AND MasterName IN (
-					'TracingReasonNotContactedPhone'
-					,'TracingReasonNotContactedPhysical'
-					)
-			)
-		,T.OtherReasonSpecify
-		,T.Remarks
-		,T.DeleteFlag Voided
-	FROM (
-		SELECT re.PersonId
-			,re.PatientId
-			,re.FinalResult
-		FROM (
-			SELECT pe.PatientEncounterId
-				,pe.PatientMasterVisitId
-				,pe.PatientId
-				,pe.PersonId
-				,pe.FinalResult
-				,ROW_NUMBER() OVER (
-					PARTITION BY pe.PatientId ORDER BY pe.PatientMasterVisitId DESC
-					) rownum
-			FROM (
-				SELECT DISTINCT PE.Id PatientEncounterId
-					,PE.PatientMasterVisitId
-					,PE.PatientId PatientId
-					,HE.PersonId
-					,ResultOne = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 RoundOneTestResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,ResultTwo = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 RoundTwoTestResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,FinalResult = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 FinalResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,FinalResultGiven = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = HE.FinalResultGiven
-						)
-				FROM [dbo].[PatientEncounter] PE
-				INNER JOIN [dbo].[PatientMasterVisit] PM ON PM.Id = PE.PatientMasterVisitId
-				INNER JOIN [dbo].[HtsEncounter] HE ON PE.Id = HE.PatientEncounterID
-				) pe
-			WHERE pe.FinalResult = 'Positive'
-			) re
-		WHERE re.rownum = 1
-		) pep
-	INNER JOIN Tracing T ON pep.PersonId = T.PersonID
-	) t
+INSERT INTO dwapi_migration_metrics 
+            (dataset, 
+             metric, 
+             metricvalue) 
+SELECT 'HTSClientTracing', 
+       'NumberofHTSClientTraced where Contact_Outcome is Contacted and Linked', 
+       Count(*) Total 
+FROM  (SELECT T.personid   AS Person_Id, 
+              Encounter_Date = T.datetracingdone, 
+              Encounter_ID = NULL, 
+              Contact_Type = (SELECT TOP 1 itemname 
+                              FROM   lookupitemview 
+                              WHERE  itemid = T.mode 
+                                     AND mastername = 'TracingMode'), 
+              Contact_Outcome = (SELECT TOP 1 itemname 
+                                 FROM   lookupitemview 
+                                 WHERE  itemid = T.outcome 
+                                        AND mastername = 'TracingOutcome'), 
+              Reason_uncontacted = 
+              (SELECT TOP 1 itemname 
+               FROM   lookupitemview 
+               WHERE  itemid = T.reasonnotcontacted 
+                      AND mastername IN ( 
+                          'TracingReasonNotContactedPhone', 
+                          'TracingReasonNotContactedPhysical' )), 
+              T.otherreasonspecify, 
+              T.remarks, 
+              T.deleteflag Voided 
+       FROM   (SELECT re.personid, 
+                      re.patientid, 
+                      re.finalresult 
+               FROM   (SELECT pe.patientencounterid, 
+                              pe.patientmastervisitid, 
+                              pe.patientid, 
+                              pe.personid, 
+                              pe.finalresult, 
+                              Row_number() 
+                                OVER( 
+                                  partition BY pe.patientid 
+                                  ORDER BY pe.patientmastervisitid DESC)rownum 
+                       FROM  (SELECT DISTINCT PE.id        PatientEncounterId, 
+                                              PE.patientmastervisitid, 
+                                              PE.patientid PatientId, 
+                                              HE.personid, 
+                                              ResultOne = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 roundonetestresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              ResultTwo = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 roundtwotestresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              FinalResult = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE  itemid = 
+                                              (SELECT TOP 1 finalresult 
+                                               FROM   [dbo].[htsencounterresult] 
+                                               WHERE  htsencounterid = HE.id 
+                                               ORDER  BY id DESC)), 
+                                              FinalResultGiven = 
+                                              (SELECT TOP 1 itemname 
+                                               FROM   [dbo].[lookupitemview] 
+                                               WHERE 
+                             itemid = HE.finalresultgiven) 
+                              FROM   [dbo].[patientencounter] PE 
+                                     INNER JOIN [dbo].[patientmastervisit] PM 
+                                             ON PM.id = PE.patientmastervisitid 
+                                     INNER JOIN [dbo].[htsencounter] HE 
+                                             ON PE.id = HE.patientencounterid)pe 
+                       WHERE  pe.finalresult = 'Positive') re 
+               WHERE  re.rownum = 1)pep 
+              INNER JOIN tracing T 
+                      ON pep.personid = T.personid)t 
+WHERE  t.contact_outcome = 'Contacted and Linked' 
 
----
-INSERT INTO DWAPI_Migration_Metrics (
-	Dataset
-	,Metric
-	,MetricValue
-	)
-SELECT 'HTS Client Tracing'
-	,'# of Contacted'
-	,count(*) Total
-FROM (
-	SELECT T.PersonID AS Person_Id
-		,Encounter_Date = T.DateTracingDone
-		,Encounter_ID = NULL
-		,Contact_Type = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.Mode
-				AND MasterName = 'TracingMode'
-			)
-		,Contact_Outcome = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.Outcome
-				AND MasterName = 'TracingOutcome'
-			)
-		,Reason_uncontacted = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.ReasonNotContacted
-				AND MasterName IN (
-					'TracingReasonNotContactedPhone'
-					,'TracingReasonNotContactedPhysical'
-					)
-			)
-		,T.OtherReasonSpecify
-		,T.Remarks
-		,T.DeleteFlag Voided
-	FROM (
-		SELECT re.PersonId
-			,re.PatientId
-			,re.FinalResult
-		FROM (
-			SELECT pe.PatientEncounterId
-				,pe.PatientMasterVisitId
-				,pe.PatientId
-				,pe.PersonId
-				,pe.FinalResult
-				,ROW_NUMBER() OVER (
-					PARTITION BY pe.PatientId ORDER BY pe.PatientMasterVisitId DESC
-					) rownum
-			FROM (
-				SELECT DISTINCT PE.Id PatientEncounterId
-					,PE.PatientMasterVisitId
-					,PE.PatientId PatientId
-					,HE.PersonId
-					,ResultOne = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 RoundOneTestResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,ResultTwo = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 RoundTwoTestResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,FinalResult = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 FinalResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,FinalResultGiven = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = HE.FinalResultGiven
-						)
-				FROM [dbo].[PatientEncounter] PE
-				INNER JOIN [dbo].[PatientMasterVisit] PM ON PM.Id = PE.PatientMasterVisitId
-				INNER JOIN [dbo].[HtsEncounter] HE ON PE.Id = HE.PatientEncounterID
-				) pe
-			WHERE pe.FinalResult = 'Positive'
-			) re
-		WHERE re.rownum = 1
-		) pep
-	INNER JOIN Tracing T ON pep.PersonId = T.PersonID
-	) t
-WHERE t.Contact_Outcome = 'Contacted'
+INSERT INTO dwapi_migration_metrics 
+            (dataset, 
+             metric, 
+             metricvalue) 
+SELECT 'HTS_Initial_&_Retest', 
+       'Number of HTS Test that FinalResult was Negative', 
+       Count(*) Total 
+FROM  (SELECT * 
+       FROM  (SELECT HE.personid                               Person_Id, 
+                     PT.id                                     Patient_Id, 
+                     Encounter_Date = Format(Cast(PE.encounterstarttime AS DATE) 
+                                      , 
+                                      'yyyy-MM-dd'), 
+                     Encounter_ID = HE.id, 
+                     Pop_Type = PPL2.populationtype, 
+                     Key_Pop_Type = PPL2.keypop, 
+                     Priority_Pop_Type = PPR2.priopop, 
+                     Patient_disabled = ( CASE Isnull(PI.disability, '') 
+                                            WHEN '' THEN 'No' 
+                                            ELSE 'Yes' 
+                                          END ), 
+                     PI.disability, 
+                     Ever_Tested = (SELECT itemname 
+                                    FROM   lookupitemview 
+                                    WHERE  itemid = HE.evertested 
+                                           AND mastername = 'YesNo'), 
+                     Self_Tested = (SELECT itemname 
+                                    FROM   lookupitemview 
+                                    WHERE  itemid = HE.everselftested 
+                                           AND mastername = 'YesNo'), 
+                     HE.monthsinceselftest,--added 
+                     HE.monthssincelasttest,--added 
+                     HTS_Strategy = (SELECT itemname 
+                                     FROM   lookupitemview 
+                                     WHERE  mastername = 'Strategy' 
+                                            AND itemid = HE.testingstrategy), 
+                     HTS_Entry_Point = (SELECT itemname 
+                                        FROM   lookupitemview 
+                                        WHERE  mastername = 'HTSEntryPoints' 
+                                               AND itemid = HE.testentrypoint), 
+                     (SELECT TOP 1 itemname 
+                      FROM   lookupitemview 
+                      WHERE  itemid = (SELECT TOP 1 consentvalue 
+                                       FROM   patientconsent 
+                                       WHERE  patientmastervisitid = PM.id 
+                                              AND serviceareaid = 2 
+                                              AND consenttype = (SELECT itemid 
+                                                                 FROM 
+                                                  lookupitemview 
+                                                                 WHERE 
+                                                  mastername = 'ConsentType' 
+                                                  AND 
+                                                  itemname = 'ConsentToBeTested' 
+                                                                ) 
+                                       ORDER  BY id DESC))     AS Consented, 
+                     TestedAs = (SELECT itemname 
+                                 FROM   lookupitemview 
+                                 WHERE  itemid = HE.testedas 
+                                        AND mastername = 'TestedAs'), 
+                     TestType = CASE HE.encountertype 
+                                  WHEN 1 THEN 'Initial Test' 
+                                  WHEN 2 THEN 'Repeat Test' 
+                                END, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVTestKits' 
+                             AND itemid = (SELECT TOP 1 kitid 
+                                           FROM   testing 
+                                           WHERE  htsencounterid = HE.id 
+                                                  AND testround = 1 
+                                           ORDER  BY id DESC)) AS 
+                     Test_1_Kit_Name, 
+                     (SELECT TOP 1 kitlotnumber 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 1 
+                      ORDER  BY id DESC)                       AS 
+                     Test_1_Lot_Number, 
+                     (SELECT TOP 1 expirydate 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 1 
+                      ORDER  BY id DESC)                       AS 
+                     Test_1_Expiry_Date, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVFinalResults' 
+                             AND itemid = (SELECT TOP 1 roundonetestresult 
+                                           FROM   htsencounterresult 
+                                           WHERE  htsencounterid = HE.id 
+                                           ORDER  BY id DESC)) AS 
+                     Test_1_Final_Result, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVTestKits' 
+                             AND itemid = (SELECT TOP 1 kitid 
+                                           FROM   testing 
+                                           WHERE  htsencounterid = HE.id 
+                                                  AND testround = 2 
+                                           ORDER  BY id DESC)) AS 
+                     Test_2_Kit_Name, 
+                     (SELECT TOP 1 kitlotnumber 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 2 
+                      ORDER  BY id DESC)                       AS 
+                     Test_2_Lot_Number, 
+                     (SELECT TOP 1 expirydate 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 2 
+                      ORDER  BY id DESC)                       AS 
+                     Test_2_Expiry_Date, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVFinalResults' 
+                             AND itemid = (SELECT TOP 1 roundtwotestresult 
+                                           FROM   htsencounterresult 
+                                           WHERE  htsencounterid = HE.id 
+                                           ORDER  BY id DESC)) AS 
+                     Test_2_Final_Result, 
+                     Final_Result = (SELECT itemname 
+                                     FROM   lookupitemview 
+                                     WHERE  itemid = HER.finalresult 
+                                            AND mastername = 'HIVFinalResults'), 
+                     Result_given = (SELECT itemname 
+                                     FROM   lookupitemview 
+                                     WHERE  itemid = HE.finalresultgiven 
+                                            AND mastername = 'YesNo'), 
+                     Couple_Discordant = (SELECT itemname 
+                                          FROM   lookupitemview 
+                                          WHERE  itemid = HE.couplediscordant 
+                                                 AND mastername = 'YesNoNA'), 
+                     TB_SCreening_Results = (SELECT TOP 1 itemname 
+                                             FROM   lookupitemview 
+                                             WHERE 
+                     mastername = 'TbScreening' 
+                     AND itemid = (SELECT TOP 1 
+                                  screeningvalueid 
+                                   FROM 
+                         patientscreening 
+                                   WHERE 
+                         patientmastervisitid 
+                         = PM.id 
+                         AND patientid = 
+                             PT.id 
+                         AND screeningtypeid 
+                             = 
+                     ( 
+                                 SELECT 
+                     TOP 1 
+                     masterid 
+                                 FROM 
+                     lookupitemview 
+                                 WHERE 
+                                 mastername = 
+                                 'TbScreening'))) 
+                            , 
+                     HE.encounterremarks                       AS Remarks, 
+                     0                                         AS Voided 
+              FROM   htsencounter HE 
+                     LEFT JOIN htsencounterresult HER 
+                            ON HER.htsencounterid = HE.id 
+                     INNER JOIN patientencounter PE 
+                             ON PE.id = HE.patientencounterid 
+                     INNER JOIN patientmastervisit PM 
+                             ON PM.id = PE.patientmastervisitid 
+                     INNER JOIN person P 
+                             ON P.id = HE.personid 
+                     INNER JOIN patient PT 
+                             ON PT.personid = P.id 
+                     LEFT JOIN (SELECT Main.person_id, 
+LEFT(Main.disability, Len(Main.disability) - 1) 
+AS 
+                              "Disability" 
+FROM   (SELECT DISTINCT P.id                Person_Id, 
+                 (SELECT (SELECT itemname 
+                          FROM   lookupitemview 
+                          WHERE 
+                 mastername = 'Disabilities' 
+                 AND itemid = CD.disabilityid) 
+                         + ' , ' AS [text()] 
+                  FROM   clientdisability CD 
+INNER JOIN patientencounter 
+           PE 
+        ON 
+PE.id = CD.patientencounterid 
+                  WHERE  CD.personid = P.id 
+                  ORDER  BY CD.personid 
+                  FOR xml path ('')) 
+                 [Disability] 
+ FROM   person P) [Main]) PI 
+ON PI.person_id = P.id 
+LEFT JOIN (SELECT PPL.person_id, 
+PPL.populationtype, 
+PPL.keypop 
+FROM   (SELECT DISTINCT P.id                Person_Id, 
+                 PPT.populationtype, 
+                 (SELECT (SELECT itemname 
+                          FROM 
+                 lookupitemview LK 
+                          WHERE 
+LK.itemid = PP.populationcategory 
+AND mastername = 'HTSKeyPopulation') 
+        + ' , ' AS [text()] 
+ FROM   patientpopulation PP 
+ WHERE  PP.personid = P.id 
+ ORDER  BY PP.personid 
+ FOR xml path ('')) [KeyPop] 
+ FROM   person P 
+        LEFT JOIN patientpopulation PPT 
+               ON PPT.personid = P.id) PPL) 
+PPL2 
+ON PPL2.person_id = P.id 
+LEFT JOIN (SELECT PPR.person_id, 
+PPR.priopop 
+FROM   (SELECT DISTINCT P.id                Person_Id, 
+                 (SELECT (SELECT itemname 
+                          FROM 
+                 lookupitemview LK 
+                          WHERE 
+                 LK.itemid = PP.priorityid 
+                 AND mastername = 
+                     'PriorityPopulation') 
+                         + ' , ' AS [text()] 
+                  FROM   personpriority PP 
+                  WHERE  PP.personid = P.id 
+                  ORDER  BY PP.personid 
+                  FOR xml path ('')) [PrioPop] 
+ FROM   person P 
+        LEFT JOIN personpriority PPY 
+               ON PPY.personid = P.id) PPR) 
+PPR2 
+ON PPR2.person_id = P.id)hts 
+WHERE  hts.final_result = 'Negative')hts 
 
-INSERT INTO DWAPI_Migration_Metrics (
-	Dataset
-	,Metric
-	,MetricValue
-	)
-SELECT 'HTS Client Tracing'
-	,'# of Contacted and Linked'
-	,count(*) Total
-FROM (
-	SELECT T.PersonID AS Person_Id
-		,Encounter_Date = T.DateTracingDone
-		,Encounter_ID = NULL
-		,Contact_Type = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.Mode
-				AND MasterName = 'TracingMode'
-			)
-		,Contact_Outcome = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.Outcome
-				AND MasterName = 'TracingOutcome'
-			)
-		,Reason_uncontacted = (
-			SELECT TOP 1 ItemName
-			FROM LookupItemView
-			WHERE ItemId = T.ReasonNotContacted
-				AND MasterName IN (
-					'TracingReasonNotContactedPhone'
-					,'TracingReasonNotContactedPhysical'
-					)
-			)
-		,T.OtherReasonSpecify
-		,T.Remarks
-		,T.DeleteFlag Voided
-	FROM (
-		SELECT re.PersonId
-			,re.PatientId
-			,re.FinalResult
-		FROM (
-			SELECT pe.PatientEncounterId
-				,pe.PatientMasterVisitId
-				,pe.PatientId
-				,pe.PersonId
-				,pe.FinalResult
-				,ROW_NUMBER() OVER (
-					PARTITION BY pe.PatientId ORDER BY pe.PatientMasterVisitId DESC
-					) rownum
-			FROM (
-				SELECT DISTINCT PE.Id PatientEncounterId
-					,PE.PatientMasterVisitId
-					,PE.PatientId PatientId
-					,HE.PersonId
-					,ResultOne = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 RoundOneTestResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,ResultTwo = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 RoundTwoTestResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,FinalResult = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = (
-								SELECT TOP 1 FinalResult
-								FROM [dbo].[HtsEncounterResult]
-								WHERE HtsEncounterId = HE.Id
-								ORDER BY Id DESC
-								)
-						)
-					,FinalResultGiven = (
-						SELECT TOP 1 ItemName
-						FROM [dbo].[LookupItemView]
-						WHERE ItemId = HE.FinalResultGiven
-						)
-				FROM [dbo].[PatientEncounter] PE
-				INNER JOIN [dbo].[PatientMasterVisit] PM ON PM.Id = PE.PatientMasterVisitId
-				INNER JOIN [dbo].[HtsEncounter] HE ON PE.Id = HE.PatientEncounterID
-				) pe
-			WHERE pe.FinalResult = 'Positive'
-			) re
-		WHERE re.rownum = 1
-		) pep
-	INNER JOIN Tracing T ON pep.PersonId = T.PersonID
-	) t
-WHERE t.Contact_Outcome = 'Contacted and Linked'
-
-INSERT INTO DWAPI_Migration_Metrics (
-	Dataset
-	,Metric
-	,MetricValue
-	)
-SELECT 'HTS_Initial_&_Retest'
-	,'Number of HTS Test that FinalResult was Negative'
-	,count(*) Total
-FROM (
-	SELECT *
-	FROM (
-		SELECT HE.PersonId Person_Id
-			,PT.Id Patient_Id
-			,Encounter_Date = format(cast(PE.EncounterStartTime AS DATE), 'yyyy-MM-dd')
-			,Encounter_ID = HE.Id
-			,Pop_Type = PPL2.PopulationType
-			,Key_Pop_Type = PPL2.KeyPop
-			,Priority_Pop_Type = PPR2.PrioPop
-			,Patient_disabled = (
-				CASE ISNULL(PI.Disability, '')
-					WHEN ''
-						THEN 'No'
-					ELSE 'Yes'
-					END
-				)
-			,PI.Disability
-			,Ever_Tested = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.EverTested
-					AND MasterName = 'YesNo'
-				)
-			,Self_Tested = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.EverSelfTested
-					AND MasterName = 'YesNo'
-				)
-			,HE.MonthSinceSelfTest
-			,--added
-			HE.MonthsSinceLastTest
-			,--added
-			HTS_Strategy = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'Strategy'
-					AND ItemId = HE.TestingStrategy
-				)
-			,HTS_Entry_Point = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HTSEntryPoints'
-					AND ItemId = HE.TestEntryPoint
-				)
-			,(
-				SELECT TOP 1 ItemName
-				FROM LookupItemView
-				WHERE ItemId = (
-						SELECT TOP 1 ConsentValue
-						FROM PatientConsent
-						WHERE PatientMasterVisitId = PM.Id
-							AND ServiceAreaId = 2
-							AND ConsentType = (
-								SELECT ItemId
-								FROM LookupItemView
-								WHERE MasterName = 'ConsentType'
-									AND ItemName = 'ConsentToBeTested'
-								)
-						ORDER BY Id DESC
-						)
-				) AS Consented
-			,TestedAs = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.TestedAs
-					AND MasterName = 'TestedAs'
-				)
-			,TestType = CASE HE.EncounterType
-				WHEN 1
-					THEN 'Initial Test'
-				WHEN 2
-					THEN 'Repeat Test'
-				END
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVTestKits'
-					AND ItemId = (
-						SELECT TOP 1 KitId
-						FROM Testing
-						WHERE HtsEncounterId = HE.Id
-							AND TestRound = 1
-						ORDER BY Id DESC
-						)
-				) AS Test_1_Kit_Name
-			,(
-				SELECT TOP 1 KitLotNumber
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 1
-				ORDER BY Id DESC
-				) AS Test_1_Lot_Number
-			,(
-				SELECT TOP 1 ExpiryDate
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 1
-				ORDER BY Id DESC
-				) AS Test_1_Expiry_Date
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVFinalResults'
-					AND ItemId = (
-						SELECT TOP 1 RoundOneTestResult
-						FROM HtsEncounterResult
-						WHERE HtsEncounterId = HE.Id
-						ORDER BY Id DESC
-						)
-				) AS Test_1_Final_Result
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVTestKits'
-					AND ItemId = (
-						SELECT TOP 1 KitId
-						FROM Testing
-						WHERE HtsEncounterId = HE.Id
-							AND TestRound = 2
-						ORDER BY Id DESC
-						)
-				) AS Test_2_Kit_Name
-			,(
-				SELECT TOP 1 KitLotNumber
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 2
-				ORDER BY Id DESC
-				) AS Test_2_Lot_Number
-			,(
-				SELECT TOP 1 ExpiryDate
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 2
-				ORDER BY Id DESC
-				) AS Test_2_Expiry_Date
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVFinalResults'
-					AND ItemId = (
-						SELECT TOP 1 RoundTwoTestResult
-						FROM HtsEncounterResult
-						WHERE HtsEncounterId = HE.Id
-						ORDER BY Id DESC
-						)
-				) AS Test_2_Final_Result
-			,Final_Result = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HER.FinalResult
-					AND MasterName = 'HIVFinalResults'
-				)
-			,Result_given = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.FinalResultGiven
-					AND MasterName = 'YesNo'
-				)
-			,Couple_Discordant = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.CoupleDiscordant
-					AND MasterName = 'YesNoNA'
-				)
-			,TB_SCreening_Results = (
-				SELECT TOP 1 ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'TbScreening'
-					AND ItemId = (
-						SELECT TOP 1 ScreeningValueId
-						FROM PatientScreening
-						WHERE PatientMasterVisitId = PM.Id
-							AND PatientId = PT.Id
-							AND ScreeningTypeId = (
-								SELECT TOP 1 MasterId
-								FROM LookupItemView
-								WHERE MasterName = 'TbScreening'
-								)
-						)
-				)
-			,HE.EncounterRemarks AS Remarks
-			,0 AS Voided
-		FROM HtsEncounter HE
-		LEFT JOIN HtsEncounterResult HER ON HER.HtsEncounterId = HE.Id
-		INNER JOIN PatientEncounter PE ON PE.Id = HE.PatientEncounterID
-		INNER JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
-		INNER JOIN Person P ON P.Id = HE.PersonId
-		INNER JOIN Patient PT ON PT.PersonId = P.Id
-		LEFT JOIN (
-			SELECT Main.Person_Id
-				,LEFT(Main.Disability, Len(Main.Disability) - 1) AS "Disability"
-			FROM (
-				SELECT DISTINCT P.Id Person_Id
-					,(
-						SELECT (
-								SELECT ItemName
-								FROM LookupItemView
-								WHERE MasterName = 'Disabilities'
-									AND ItemId = CD.DisabilityId
-								) + ' , ' AS [text()]
-						FROM ClientDisability CD
-						INNER JOIN PatientEncounter PE ON PE.Id = CD.PatientEncounterID
-						WHERE CD.PersonId = P.Id
-						ORDER BY CD.PersonId
-						FOR XML PATH('')
-						) [Disability]
-				FROM Person P
-				) [Main]
-			) PI ON PI.Person_Id = P.Id
-		LEFT JOIN (
-			SELECT PPL.Person_Id
-				,PPL.PopulationType
-				,PPL.KeyPop
-			FROM (
-				SELECT DISTINCT P.Id Person_Id
-					,PPT.PopulationType
-					,(
-						SELECT (
-								SELECT ItemName
-								FROM LookupItemView LK
-								WHERE LK.ItemId = PP.PopulationCategory
-									AND MasterName = 'HTSKeyPopulation'
-								) + ' , ' AS [text()]
-						FROM PatientPopulation PP
-						WHERE PP.PersonId = P.Id
-						ORDER BY PP.PersonId
-						FOR XML PATH('')
-						) [KeyPop]
-				FROM Person P
-				LEFT JOIN PatientPopulation PPT ON PPT.PersonId = P.Id
-				) PPL
-			) PPL2 ON PPL2.Person_Id = P.Id
-		LEFT JOIN (
-			SELECT PPR.Person_Id
-				,PPR.PrioPop
-			FROM (
-				SELECT DISTINCT P.Id Person_Id
-					,(
-						SELECT (
-								SELECT ItemName
-								FROM LookupItemView LK
-								WHERE LK.ItemId = PP.PriorityId
-									AND MasterName = 'PriorityPopulation'
-								) + ' , ' AS [text()]
-						FROM PersonPriority PP
-						WHERE PP.PersonId = P.Id
-						ORDER BY PP.PersonId
-						FOR XML PATH('')
-						) [PrioPop]
-				FROM Person P
-				LEFT JOIN PersonPriority PPY ON PPY.PersonId = P.Id
-				) PPR
-			) PPR2 ON PPR2.Person_Id = P.Id
-		) hts
-	WHERE hts.Final_Result = 'Negative'
-	) hts
-
-INSERT INTO DWAPI_Migration_Metrics (
-	Dataset
-	,Metric
-	,MetricValue
-	)
-SELECT 'HTS_Initial_&_Retest'
-	,'Number of HTS Test that FinalResult was Positive'
-	,count(*) Total
-FROM (
-	SELECT *
-	FROM (
-		SELECT HE.PersonId Person_Id
-			,PT.Id Patient_Id
-			,Encounter_Date = format(cast(PE.EncounterStartTime AS DATE), 'yyyy-MM-dd')
-			,Encounter_ID = HE.Id
-			,Pop_Type = PPL2.PopulationType
-			,Key_Pop_Type = PPL2.KeyPop
-			,Priority_Pop_Type = PPR2.PrioPop
-			,Patient_disabled = (
-				CASE ISNULL(PI.Disability, '')
-					WHEN ''
-						THEN 'No'
-					ELSE 'Yes'
-					END
-				)
-			,PI.Disability
-			,Ever_Tested = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.EverTested
-					AND MasterName = 'YesNo'
-				)
-			,Self_Tested = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.EverSelfTested
-					AND MasterName = 'YesNo'
-				)
-			,HE.MonthSinceSelfTest
-			,--added
-			HE.MonthsSinceLastTest
-			,--added
-			HTS_Strategy = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'Strategy'
-					AND ItemId = HE.TestingStrategy
-				)
-			,HTS_Entry_Point = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HTSEntryPoints'
-					AND ItemId = HE.TestEntryPoint
-				)
-			,(
-				SELECT TOP 1 ItemName
-				FROM LookupItemView
-				WHERE ItemId = (
-						SELECT TOP 1 ConsentValue
-						FROM PatientConsent
-						WHERE PatientMasterVisitId = PM.Id
-							AND ServiceAreaId = 2
-							AND ConsentType = (
-								SELECT ItemId
-								FROM LookupItemView
-								WHERE MasterName = 'ConsentType'
-									AND ItemName = 'ConsentToBeTested'
-								)
-						ORDER BY Id DESC
-						)
-				) AS Consented
-			,TestedAs = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.TestedAs
-					AND MasterName = 'TestedAs'
-				)
-			,TestType = CASE HE.EncounterType
-				WHEN 1
-					THEN 'Initial Test'
-				WHEN 2
-					THEN 'Repeat Test'
-				END
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVTestKits'
-					AND ItemId = (
-						SELECT TOP 1 KitId
-						FROM Testing
-						WHERE HtsEncounterId = HE.Id
-							AND TestRound = 1
-						ORDER BY Id DESC
-						)
-				) AS Test_1_Kit_Name
-			,(
-				SELECT TOP 1 KitLotNumber
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 1
-				ORDER BY Id DESC
-				) AS Test_1_Lot_Number
-			,(
-				SELECT TOP 1 ExpiryDate
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 1
-				ORDER BY Id DESC
-				) AS Test_1_Expiry_Date
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVFinalResults'
-					AND ItemId = (
-						SELECT TOP 1 RoundOneTestResult
-						FROM HtsEncounterResult
-						WHERE HtsEncounterId = HE.Id
-						ORDER BY Id DESC
-						)
-				) AS Test_1_Final_Result
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVTestKits'
-					AND ItemId = (
-						SELECT TOP 1 KitId
-						FROM Testing
-						WHERE HtsEncounterId = HE.Id
-							AND TestRound = 2
-						ORDER BY Id DESC
-						)
-				) AS Test_2_Kit_Name
-			,(
-				SELECT TOP 1 KitLotNumber
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 2
-				ORDER BY Id DESC
-				) AS Test_2_Lot_Number
-			,(
-				SELECT TOP 1 ExpiryDate
-				FROM Testing
-				WHERE HtsEncounterId = HE.Id
-					AND TestRound = 2
-				ORDER BY Id DESC
-				) AS Test_2_Expiry_Date
-			,(
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'HIVFinalResults'
-					AND ItemId = (
-						SELECT TOP 1 RoundTwoTestResult
-						FROM HtsEncounterResult
-						WHERE HtsEncounterId = HE.Id
-						ORDER BY Id DESC
-						)
-				) AS Test_2_Final_Result
-			,Final_Result = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HER.FinalResult
-					AND MasterName = 'HIVFinalResults'
-				)
-			,Result_given = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.FinalResultGiven
-					AND MasterName = 'YesNo'
-				)
-			,Couple_Discordant = (
-				SELECT ItemName
-				FROM LookupItemView
-				WHERE ItemId = HE.CoupleDiscordant
-					AND MasterName = 'YesNoNA'
-				)
-			,TB_SCreening_Results = (
-				SELECT TOP 1 ItemName
-				FROM LookupItemView
-				WHERE MasterName = 'TbScreening'
-					AND ItemId = (
-						SELECT TOP 1 ScreeningValueId
-						FROM PatientScreening
-						WHERE PatientMasterVisitId = PM.Id
-							AND PatientId = PT.Id
-							AND ScreeningTypeId = (
-								SELECT TOP 1 MasterId
-								FROM LookupItemView
-								WHERE MasterName = 'TbScreening'
-								)
-						)
-				)
-			,HE.EncounterRemarks AS Remarks
-			,0 AS Voided
-		FROM HtsEncounter HE
-		LEFT JOIN HtsEncounterResult HER ON HER.HtsEncounterId = HE.Id
-		INNER JOIN PatientEncounter PE ON PE.Id = HE.PatientEncounterID
-		INNER JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
-		INNER JOIN Person P ON P.Id = HE.PersonId
-		INNER JOIN Patient PT ON PT.PersonId = P.Id
-		LEFT JOIN (
-			SELECT Main.Person_Id
-				,LEFT(Main.Disability, Len(Main.Disability) - 1) AS "Disability"
-			FROM (
-				SELECT DISTINCT P.Id Person_Id
-					,(
-						SELECT (
-								SELECT ItemName
-								FROM LookupItemView
-								WHERE MasterName = 'Disabilities'
-									AND ItemId = CD.DisabilityId
-								) + ' , ' AS [text()]
-						FROM ClientDisability CD
-						INNER JOIN PatientEncounter PE ON PE.Id = CD.PatientEncounterID
-						WHERE CD.PersonId = P.Id
-						ORDER BY CD.PersonId
-						FOR XML PATH('')
-						) [Disability]
-				FROM Person P
-				) [Main]
-			) PI ON PI.Person_Id = P.Id
-		LEFT JOIN (
-			SELECT PPL.Person_Id
-				,PPL.PopulationType
-				,PPL.KeyPop
-			FROM (
-				SELECT DISTINCT P.Id Person_Id
-					,PPT.PopulationType
-					,(
-						SELECT (
-								SELECT ItemName
-								FROM LookupItemView LK
-								WHERE LK.ItemId = PP.PopulationCategory
-									AND MasterName = 'HTSKeyPopulation'
-								) + ' , ' AS [text()]
-						FROM PatientPopulation PP
-						WHERE PP.PersonId = P.Id
-						ORDER BY PP.PersonId
-						FOR XML PATH('')
-						) [KeyPop]
-				FROM Person P
-				LEFT JOIN PatientPopulation PPT ON PPT.PersonId = P.Id
-				) PPL
-			) PPL2 ON PPL2.Person_Id = P.Id
-		LEFT JOIN (
-			SELECT PPR.Person_Id
-				,PPR.PrioPop
-			FROM (
-				SELECT DISTINCT P.Id Person_Id
-					,(
-						SELECT (
-								SELECT ItemName
-								FROM LookupItemView LK
-								WHERE LK.ItemId = PP.PriorityId
-									AND MasterName = 'PriorityPopulation'
-								) + ' , ' AS [text()]
-						FROM PersonPriority PP
-						WHERE PP.PersonId = P.Id
-						ORDER BY PP.PersonId
-						FOR XML PATH('')
-						) [PrioPop]
-				FROM Person P
-				LEFT JOIN PersonPriority PPY ON PPY.PersonId = P.Id
-				) PPR
-			) PPR2 ON PPR2.Person_Id = P.Id
-		) hts
-	WHERE hts.Final_Result = 'Positive'
-	) hts
-
+INSERT INTO dwapi_migration_metrics 
+            (dataset, 
+             metric, 
+             metricvalue) 
+SELECT 'HTS_Initial_&_Retest', 
+       'Number of HTS Test that FinalResult was Positive', 
+       Count(*) Total 
+FROM  (SELECT * 
+       FROM  (SELECT HE.personid                               Person_Id, 
+                     PT.id                                     Patient_Id, 
+                     Encounter_Date = Format(Cast(PE.encounterstarttime AS DATE) 
+                                      , 
+                                      'yyyy-MM-dd'), 
+                     Encounter_ID = HE.id, 
+                     Pop_Type = PPL2.populationtype, 
+                     Key_Pop_Type = PPL2.keypop, 
+                     Priority_Pop_Type = PPR2.priopop, 
+                     Patient_disabled = ( CASE Isnull(PI.disability, '') 
+                                            WHEN '' THEN 'No' 
+                                            ELSE 'Yes' 
+                                          END ), 
+                     PI.disability, 
+                     Ever_Tested = (SELECT itemname 
+                                    FROM   lookupitemview 
+                                    WHERE  itemid = HE.evertested 
+                                           AND mastername = 'YesNo'), 
+                     Self_Tested = (SELECT itemname 
+                                    FROM   lookupitemview 
+                                    WHERE  itemid = HE.everselftested 
+                                           AND mastername = 'YesNo'), 
+                     HE.monthsinceselftest,--added 
+                     HE.monthssincelasttest,--added 
+                     HTS_Strategy = (SELECT itemname 
+                                     FROM   lookupitemview 
+                                     WHERE  mastername = 'Strategy' 
+                                            AND itemid = HE.testingstrategy), 
+                     HTS_Entry_Point = (SELECT itemname 
+                                        FROM   lookupitemview 
+                                        WHERE  mastername = 'HTSEntryPoints' 
+                                               AND itemid = HE.testentrypoint), 
+                     (SELECT TOP 1 itemname 
+                      FROM   lookupitemview 
+                      WHERE  itemid = (SELECT TOP 1 consentvalue 
+                                       FROM   patientconsent 
+                                       WHERE  patientmastervisitid = PM.id 
+                                              AND serviceareaid = 2 
+                                              AND consenttype = (SELECT itemid 
+                                                                 FROM 
+                                                  lookupitemview 
+                                                                 WHERE 
+                                                  mastername = 'ConsentType' 
+                                                  AND 
+                                                  itemname = 'ConsentToBeTested' 
+                                                                ) 
+                                       ORDER  BY id DESC))     AS Consented, 
+                     TestedAs = (SELECT itemname 
+                                 FROM   lookupitemview 
+                                 WHERE  itemid = HE.testedas 
+                                        AND mastername = 'TestedAs'), 
+                     TestType = CASE HE.encountertype 
+                                  WHEN 1 THEN 'Initial Test' 
+                                  WHEN 2 THEN 'Repeat Test' 
+                                END, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVTestKits' 
+                             AND itemid = (SELECT TOP 1 kitid 
+                                           FROM   testing 
+                                           WHERE  htsencounterid = HE.id 
+                                                  AND testround = 1 
+                                           ORDER  BY id DESC)) AS 
+                     Test_1_Kit_Name, 
+                     (SELECT TOP 1 kitlotnumber 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 1 
+                      ORDER  BY id DESC)                       AS 
+                     Test_1_Lot_Number, 
+                     (SELECT TOP 1 expirydate 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 1 
+                      ORDER  BY id DESC)                       AS 
+                     Test_1_Expiry_Date, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVFinalResults' 
+                             AND itemid = (SELECT TOP 1 roundonetestresult 
+                                           FROM   htsencounterresult 
+                                           WHERE  htsencounterid = HE.id 
+                                           ORDER  BY id DESC)) AS 
+                     Test_1_Final_Result, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVTestKits' 
+                             AND itemid = (SELECT TOP 1 kitid 
+                                           FROM   testing 
+                                           WHERE  htsencounterid = HE.id 
+                                                  AND testround = 2 
+                                           ORDER  BY id DESC)) AS 
+                     Test_2_Kit_Name, 
+                     (SELECT TOP 1 kitlotnumber 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 2 
+                      ORDER  BY id DESC)                       AS 
+                     Test_2_Lot_Number, 
+                     (SELECT TOP 1 expirydate 
+                      FROM   testing 
+                      WHERE  htsencounterid = HE.id 
+                             AND testround = 2 
+                      ORDER  BY id DESC)                       AS 
+                     Test_2_Expiry_Date, 
+                     (SELECT itemname 
+                      FROM   lookupitemview 
+                      WHERE  mastername = 'HIVFinalResults' 
+                             AND itemid = (SELECT TOP 1 roundtwotestresult 
+                                           FROM   htsencounterresult 
+                                           WHERE  htsencounterid = HE.id 
+                                           ORDER  BY id DESC)) AS 
+                     Test_2_Final_Result, 
+                     Final_Result = (SELECT itemname 
+                                     FROM   lookupitemview 
+                                     WHERE  itemid = HER.finalresult 
+                                            AND mastername = 'HIVFinalResults'), 
+                     Result_given = (SELECT itemname 
+                                     FROM   lookupitemview 
+                                     WHERE  itemid = HE.finalresultgiven 
+                                            AND mastername = 'YesNo'), 
+                     Couple_Discordant = (SELECT itemname 
+                                          FROM   lookupitemview 
+                                          WHERE  itemid = HE.couplediscordant 
+                                                 AND mastername = 'YesNoNA'), 
+                     TB_SCreening_Results = (SELECT TOP 1 itemname 
+                                             FROM   lookupitemview 
+                                             WHERE 
+                     mastername = 'TbScreening' 
+                     AND itemid = (SELECT TOP 1 
+                                  screeningvalueid 
+                                   FROM 
+                         patientscreening 
+                                   WHERE 
+                         patientmastervisitid 
+                         = PM.id 
+                         AND patientid = 
+                             PT.id 
+                         AND screeningtypeid 
+                             = 
+                     ( 
+                                 SELECT 
+                     TOP 1 
+                     masterid 
+                                 FROM 
+                     lookupitemview 
+                                 WHERE 
+                                 mastername = 
+                                 'TbScreening'))) 
+                            , 
+                     HE.encounterremarks                       AS Remarks, 
+                     0                                         AS Voided 
+              FROM   htsencounter HE 
+                     LEFT JOIN htsencounterresult HER 
+                            ON HER.htsencounterid = HE.id 
+                     INNER JOIN patientencounter PE 
+                             ON PE.id = HE.patientencounterid 
+                     INNER JOIN patientmastervisit PM 
+                             ON PM.id = PE.patientmastervisitid 
+                     INNER JOIN person P 
+                             ON P.id = HE.personid 
+                     INNER JOIN patient PT 
+                             ON PT.personid = P.id 
+                     LEFT JOIN (SELECT Main.person_id, 
+LEFT(Main.disability, Len(Main.disability) - 1) 
+AS 
+                              "Disability" 
+FROM   (SELECT DISTINCT P.id                Person_Id, 
+                 (SELECT (SELECT itemname 
+                          FROM   lookupitemview 
+                          WHERE 
+                 mastername = 'Disabilities' 
+                 AND itemid = CD.disabilityid) 
+                         + ' , ' AS [text()] 
+                  FROM   clientdisability CD 
+INNER JOIN patientencounter 
+           PE 
+        ON 
+PE.id = CD.patientencounterid 
+                  WHERE  CD.personid = P.id 
+                  ORDER  BY CD.personid 
+                  FOR xml path ('')) 
+                 [Disability] 
+ FROM   person P) [Main]) PI 
+ON PI.person_id = P.id 
+LEFT JOIN (SELECT PPL.person_id, 
+PPL.populationtype, 
+PPL.keypop 
+FROM   (SELECT DISTINCT P.id                Person_Id, 
+                 PPT.populationtype, 
+                 (SELECT (SELECT itemname 
+                          FROM 
+                 lookupitemview LK 
+                          WHERE 
+LK.itemid = PP.populationcategory 
+AND mastername = 'HTSKeyPopulation') 
+        + ' , ' AS [text()] 
+ FROM   patientpopulation PP 
+ WHERE  PP.personid = P.id 
+ ORDER  BY PP.personid 
+ FOR xml path ('')) [KeyPop] 
+ FROM   person P 
+        LEFT JOIN patientpopulation PPT 
+               ON PPT.personid = P.id) PPL) 
+PPL2 
+ON PPL2.person_id = P.id 
+LEFT JOIN (SELECT PPR.person_id, 
+PPR.priopop 
+FROM   (SELECT DISTINCT P.id                Person_Id, 
+                 (SELECT (SELECT itemname 
+                          FROM 
+                 lookupitemview LK 
+                          WHERE 
+                 LK.itemid = PP.priorityid 
+                 AND mastername = 
+                     'PriorityPopulation') 
+                         + ' , ' AS [text()] 
+                  FROM   personpriority PP 
+                  WHERE  PP.personid = P.id 
+                  ORDER  BY PP.personid 
+                  FOR xml path ('')) [PrioPop] 
+ FROM   person P 
+        LEFT JOIN personpriority PPY 
+               ON PPY.personid = P.id) PPR) 
+PPR2 
+ON PPR2.person_id = P.id)hts 
+WHERE  hts.final_result = 'Positive')hts 
