@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Migrate_regimen_history</name>
+    <name>Migrate_hiv_enrollments</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -438,9 +438,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/16 15:35:09.891</created_date>
+    <created_date>2019/12/03 10:36:56.202</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/16 15:35:09.891</modified_date>
+    <modified_date>2019/12/03 10:36:56.202</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -448,7 +448,7 @@
   </notepads>
   <connection>
     <name>mssql</name>
-    <server> DESKTOP-O2MBCFP</server>
+    <server>DESKTOP-O2MBCFP</server>
     <type>MSSQLNATIVE</type>
     <access>JNDI</access>
     <database>mssql</database>
@@ -562,18 +562,18 @@
   </connection>
   <order>
     <hop>
-      <from>Create_st_regimen_history</from>
-      <to>iqcare_source_regimen_history</to>
+      <from>iqcare_source_hiv_enrollments</from>
+      <to>load_st_hiv_enrollments</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>iqcare_source_regimen_history</from>
-      <to>load_st_regimen_history</to>
+      <from>Create_Staging_DB</from>
+      <to>Create PatientBaselineView </to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Create_st_regimen_history</name>
+    <name>Create_Staging_DB</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -588,30 +588,46 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>
--- 15. Regimen History
-DROP TABLE IF EXISTS migration_st.st_regimen_history;
-CREATE TABLE migration_st.st_regimen_history
+    <sql>-- 2. HIV Enrollment
+DROP TABLE IF EXISTS migration_st.st_hiv_enrollment;
+CREATE TABLE migration_st.st_hiv_enrollment
 (
-  Ptn_pk                           INT(11),
   Person_Id                        INT(11),
-  Patient_Id                       INT(11),
+  UPN                              VARCHAR(20),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
-  Program                          VARCHAR(100),
-  Drug_Event                       VARCHAR(255),
-  Regimen                          VARCHAR(200),
-  Regimen_Name                     VARCHAR(200),
-  Regimen_Line                     VARCHAR(200),
-  Date_Started                     DATE,
-  Date_Stopped                     DATE,
-  Regimen_Discontinued             VARCHAR(200),
-  Date_Discontinued                DATE,
-  Reason_Discontinued              VARCHAR(255),
-  RegimenSwitchTo                  VARCHAR(255),
-  CurrentRegimen                   VARCHAR(255),
-  Voided                           INT(11),
-  Date_voided                      DATE
+  Patient_Type                     VARCHAR(100),
+  Entry_point                      VARCHAR(100),
+  TI_Facility                      VARCHAR(100),
+  Date_first_enrolled_in_care       DATE,
+  Transfer_in_date                  DATE,
+  Date_started_art_at_transferring_facility DATE,
+  Date_confirmed_hiv_positive       DATE,
+  Facility_confirmed_hiv_positive   VARCHAR(100),
+  Baseline_arv_use                  VARCHAR(100),
+  Purpose_of_baseline_arv_use       VARCHAR(100),
+  Baseline_arv_regimen              VARCHAR(100),
+  Baseline_arv_regimen_line         VARCHAR(100),
+  Baseline_arv_date_last_used       DATE,
+  Baseline_who_stage                VARCHAR(50),
+  Baseline_cd4_results              INT(11),
+  Baseline_cd4_date                 DATE,
+  Baseline_vl_results               INT(11),
+  Baseline_vl_date                  DATE,
+  Baseline_vl_ldl_results           INT(11),
+  Baseline_vl_ldl_date              DATE,
+  Baseline_HBV_Infected             VARCHAR(50),
+  Baseline_TB_Infected              VARCHAR(50),
+  Baseline_Pregnant                 VARCHAR(50),
+  Baseline_Breastfeeding            VARCHAR(50),
+  Baseline_Weight                   DOUBLE,
+  Baseline_Height                   DOUBLE,
+  Baseline_BMI                      DOUBLE,
+  Name_of_treatment_supporter       VARCHAR(255),
+  Relationship_of_treatment_supporter VARCHAR(100),
+  Treatment_supporter_telephone      VARCHAR(100),
+  Treatment_supporter_address        VARCHAR(100),
+  voided                             INT(11)
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -629,13 +645,13 @@ CREATE TABLE migration_st.st_regimen_history
       </output>
     </remotesteps>
     <GUI>
-      <xloc>96</xloc>
-      <yloc>80</yloc>
+      <xloc>144</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>iqcare_source_regimen_history</name>
+    <name>iqcare_source_hiv_enrollments</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
@@ -646,144 +662,250 @@ CREATE TABLE migration_st.st_regimen_history
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>select
-ds.Person_Id as Person_Id,
-ds.ptn_pk,
-ds.DispensedByDate as Encounter_Date,
-'NULL' as Encounter_ID,
-(SELECT Name FROM mst_Decode dc where dc.ID = ds.ProgID) as Program,
-REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as Regimen,
-CASE WHEN ds.RowNum =1 THEN 'STARTED' ELSE 'SWITCH' END as Drug_Event,
-REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as Regimen_Name,
-AT.RegimenLine as Regimen_Line,
-ds.DispensedByDate as Date_Started,
-LEAD(ds.DispensedByDate) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate ASC) as 'Date_Stopped',
-REPLACE(REPLACE(REPLACE (CASE WHEN (LEAD(ds.DispensedByDate) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate ASC)) IS NOT NULL THEN REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP') ELSE null end,'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as Regimen_Discontinued,
-LEAD(ds.DispensedByDate) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate ASC) as [Date_Discontinued],
-'' as Reason_Discontinued
-,REPLACE(REPLACE(REPLACE (LEAD(REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP')) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate ASC),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as RegimenSwitchTo
-,REPLACE(REPLACE(REPLACE (LAST_VALUE(REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP')) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate asc RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as CurrentRegimen
-,0 as Voided
-,NULL as Date_Voided
+    <sql>
 
-from (select 
-*,
-(
-		CASE 
-			WHEN DispensedByDate IS NOT NULL
-				THEN ROW_NUMBER() OVER (
-						PARTITION BY (
-							CASE 
-								WHEN DispensedByDate IS NOT NULL
-									THEN ptn_pk
-								ELSE 0
-								END
-							) ORDER BY DispensedByDate asc
+-- 2. HIV Enrollment DML Validated by PG
+EXEC pr_OpenDecryptedSession;
+SELECT DISTINCT P.Id AS Person_Id
+	,UPN = (
+		SELECT TOP 1 pdd.IdentifierValue
+		FROM (
+			SELECT pid.PatientId
+				,pid.IdentifierTypeId
+				,pid.IdentifierValue
+				,pdd.Code
+				,pdd.DisplayName
+				,pdd.[Name]
+				,pid.CreateDate
+				,pid.DeleteFlag
+			FROM PatientIdentifier pid
+			INNER JOIN (
+				SELECT id.Id
+					,id.[Name]
+					,id.[Code]
+					,id.[DisplayName]
+				FROM Identifiers id
+				INNER JOIN IdentifierType it ON it.Id = id.IdentifierType
+				WHERE it.Name = 'Patient'
+				) pdd ON pdd.Id = pid.IdentifierTypeId
+			) pdd
+		WHERE pdd.PatientId = PT.Id
+			AND pdd.[Code] = 'CCCNumber'
+			AND pdd.DeleteFlag = 0
+		ORDER BY pdd.CreateDate DESC
+		)
+	,format(cast(PE.EnrollmentDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date
+	,NULL Encounter_ID
+	,Patient_Type = (
+		SELECT itemName
+		FROM LookupItemView
+		WHERE MasterName = 'PatientType'
+			AND itemId = PT.PatientType
+		)
+	,ent.Entry_point
+	,pti.FacilityFrom AS TI_Facility
+	,PE.EnrollmentDate AS Date_First_enrolled_in_care
+	,bas.TransferInDate AS Transfer_In_Date
+	,bas.ARTInitiationDate AS Date_started_art_at_transferring_facility
+	,bas.HIVDiagnosisDate AS Date_Confirmed_hiv_positive
+	,bas.FacilityFrom AS Facility_confirmed_hiv_positive
+	,bas.HistoryARTUse AS Baseline_arv_use
+	,parv.Purpose AS Purpose_of_Baseline_arv_use
+	,bas.CurrentTreatmentName AS Baseline_arv_regimen
+	,bas.RegimenName AS Baseline_arv_regimen_line
+	,parv.DateLastUsed AS Baseline_arv_date_last_used
+	,bas.EnrollmentWHOStageName AS Baseline_who_stage
+	,bas.CD4Count AS Baseline_cd4_results
+	,bas.EnrollmentDate AS Baseline_cd4_date
+	,bas.BaselineViralload AS Baseline_vl_results
+	,bas.BaselineViralloadDate AS Baseline_vl_date
+	,NULL AS Baseline_vl_ldl_results
+	,NULL AS Baseline_vl_ldl_date
+	,bas.HBVInfected AS Baseline_HBV_Infected
+	,bas.TBinfected AS Baseline_TB_Infected
+	,bas.Pregnant AS Baseline_Pregnant
+	,bas.BreastFeeding AS Baseline_BreastFeeding
+	,bas.[Weight] AS Baseline_Weight
+	,bas.[Height] AS Baseline_Height
+	,bas.BMI AS Baseline_BMI
+	,treatmentl.Name_of_treatment_supporter
+	,treatmentl.Relationship_of_treatment_supporter
+	,treatmentl.Treatment_supporter_telephone
+	,treatmentl.Treatment_supporter_address
+	,0 AS Voided
+FROM Person P
+INNER JOIN Patient PT ON PT.PersonId = P.Id
+INNER JOIN PatientEnrollment PE ON PE.PatientId = PT.Id
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY PersonId ORDER BY CreateDate DESC
+				) rownum
+		FROM PersonLocation
+		WHERE (
+				DeleteFlag = 0
+				OR DeleteFlag IS NULL
+				)
+		) PLL
+	WHERE PLL.rownum = '1'
+	) PL ON PL.PersonId = P.Id
+LEFT JOIN (
+	SELECT ent.PatientId
+		,ent.Entry_point
+	FROM (
+		SELECT se.PatientId
+			,se.EntryPointId
+			,lt.DisplayName AS Entry_point
+			,ROW_NUMBER() OVER (
+				PARTITION BY se.PatientId ORDER BY CreateDate DESC
+				) rownum
+		FROM ServiceEntryPoint se
+		INNER JOIN LookupItem lt ON lt.Id = se.EntryPointId
+		WHERE se.DeleteFlag &lt;&gt; 1
+		) ent
+	WHERE ent.rownum = '1'
+	) ent ON ent.PatientId = PT.Id
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY ph.PatientId ORDER BY PatientMasterVisitId DESC
+				) rownum
+		FROM PatientARVHistory ph
+		) parv
+	WHERE parv.rownum = 1
+	) parv ON parv.PatientId = PT.Id
+LEFT JOIN mst_Patient mst ON mst.Ptn_Pk = PT.ptn_pk
+LEFT JOIN PatientTransferIn pti ON pti.PatientId = PT.Id
+LEFT JOIN (
+	SELECT pts.PersonId
+		,pts.SupporterId
+		,CAST(DECRYPTBYKEY(pts.MobileContact) AS VARCHAR(100)) AS Treatment_supporter_telephone
+		,pt.FirstName + ' ' + pt.MiddleName + ' ' + pt.LastName AS Name_of_treatment_supporter
+		,pcv.PhysicalAddress AS Treatment_supporter_address
+		,rel.[Name] AS Relationship_of_treatment_supporter
+	FROM PatientTreatmentSupporter pts
+	LEFT JOIN Patient pat ON pat.PersonId = pts.PersonId
+	LEFT JOIN PersonView pt ON pt.Id = pts.SupporterId
+	LEFT JOIN PersonContactView pcv ON pcv.PersonId = pts.SupporterId
+	LEFT JOIN LookupItem lt ON lt.Id = pts.ContactCategory
+	LEFT JOIN PersonRelationship prl ON prl.PersonId = pts.SupporterId
+		AND prl.PatientId = pat.Id
+	LEFT JOIN LookupItem rel ON rel.Id = prl.RelationshipTypeId
+	WHERE (
+			lt.Name = 'TreatmentSupporter'
+			OR pts.ContactCategory = 1
+			)
+	) treatmentl ON treatmentl.PersonId = P.Id
+LEFT JOIN (
+	SELECT *
+	FROM (
+		SELECT *
+			,ROW_NUMBER() OVER (
+				PARTITION BY PatientId ORDER BY PatientMasterVisitId
+				) rownum
+		FROM PatientBaselineView
+		) rte
+	WHERE rte.rownum = 1
+	) bas ON bas.PatientId = PT.Id
+LEFT OUTER JOIN (
+	SELECT PatientId
+		,ExitReason
+		,ExitDate
+	FROM dbo.PatientCareending
+	WHERE deleteflag = 0
+	
+	UNION
+	
+	SELECT dbo.Patient.Id AS PatientId
+		,CASE (
+				SELECT TOP 1 Name
+				FROM mst_Decode
+				WHERE CodeID = 23
+					AND ID = (
+						SELECT TOP 1 PatientExitReason
+						FROM dtl_PatientCareEnded
+						WHERE Ptn_Pk = dbo.Patient.ptn_pk
+							AND CareEnded = 1
 						)
-			END
-		) AS RowNum,
-		(
-		CASE 
-			WHEN DispensedByDate IS NOT NULL
-				THEN ROW_NUMBER() OVER (
-						PARTITION BY (
-							CASE 
-								WHEN DispensedByDate IS NOT NULL
-									THEN ptn_pk
-								ELSE 0
-								END
-							) ORDER BY DispensedByDate desc
+				)
+			WHEN 'Lost to follow-up'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'LostToFollowUp'
 						)
-			END
-		) AS RowNumDesc
+			WHEN 'HIV Negative'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'HIV Negative'
+						)
+			WHEN 'Death'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'Death'
+						)
+			WHEN 'Confirmed HIV Negative'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'Confirmed HIV Negative'
+						)
+			WHEN 'Transfer to ART'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'Transfer Out'
+						)
+			WHEN 'Transfer to another LPTF'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'Transfer Out'
+						)
+			WHEN 'Discharged at 18 months'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'Confirmed HIV Negative'
+						)
+			WHEN 'Transfered out'
+				THEN (
+						SELECT TOP 1 ItemId
+						FROM LookupItemView
+						WHERE MasterName = 'CareEnded'
+							AND ItemName = 'Transfer Out'
+						)
+			END AS ExitReason
+		,CareEndedDate
+	FROM dbo.dtl_PatientCareEnded
+	INNER JOIN dbo.Patient ON dbo.dtl_PatientCareEnded.Ptn_Pk = dbo.Patient.ptn_pk
+	WHERE dbo.Patient.Id NOT IN (
+			SELECT PatientId
+			FROM dbo.PatientCareending
+			WHERE deleteflag = 0
+			)
+	) AS ptC ON PT.Id = ptC.PatientId
+WHERE PE.ServiceAreaId = 1
 
-from (select 
-pt.PersonId as Person_Id,
-r.Ptn_Pk,
-r.RegimenType, 
-o.OrderedByDate, 
-o.DispensedByDate,
-o.ProgID,
-o.ptn_pharmacy_pk,
-ROW_NUMBER() OVER (PARTITION BY r.Ptn_pk, dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(r.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), rn1 - rn2 ORDER BY DispensedByDate) rn
-from dtl_RegimenMap r
-inner join ord_PatientPharmacyOrder o on o.ptn_pharmacy_pk = r.OrderID
-inner join Patient pt on pt.ptn_pk = r.Ptn_Pk
-left join ord_Visit ov on o.VisitID = ov.Visit_Id
-left join mst_Decode dc on dc.ID = o.ProgID
-inner join (SELECT d.ptn_pharmacy_pk,
-        ROW_NUMBER() OVER (PARTITION BY f.ptn_pk ORDER BY d.DispensedByDate) rn1,
-        ROW_NUMBER() OVER (PARTITION BY dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(f.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), f.ptn_pk ORDER BY d.DispensedByDate) rn2
-    FROM dtl_RegimenMap f
-	inner join ord_PatientPharmacyOrder d on d.ptn_pharmacy_pk = f.OrderID) w on w.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	where o.DispensedByDate IS NOT NULL AND o.ProgID = (SELECT ID FROM mst_Decode WHERE Name = 'ART')
-) ev 
-where ev.rn = 1 and ev.DispensedByDate is not null
-) ds
-left join (select 
-R.ptn_pk,
-O.ptn_pharmacy_pk,
-CASE WHEN B.DisplayName IS NOT NULL THEN B.DisplayName ELSE 
-ISNULL((SELECT  TOP 1 DisplayName FROM LookupItem WHERE Name IN (SELECT CASE MasterName WHEN 'AdultFirstLineRegimen' THEN 'AdultARTFirstLine' WHEN 'AdultSecondlineRegimen' THEN 'AdultARTSecondLine' WHEN 'AdultThirdlineRegimen' THEN 'AdultARTThirdLine' WHEN 'PaedsFirstLineRegimen' THEN 'PaedsARTFirstLine' WHEN 'PaedsSecondlineRegimen' THEN 'PaedsARTSecondLine' WHEN 'PaedsThirdlineRegimen' THEN 'PaedsARTThirdLine' END FROM LookupItemView WHERE ItemName IN 
-(CASE (isnull(ascii(SUBSTRING(R.regimentype, 1, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 2, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 3, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 4, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 5, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 6, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 7, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 8, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 9, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 10, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 11, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 12, 1)),0) +
-	   isnull(ascii(SUBSTRING(R.regimentype, 13, 1)),0)) 
-WHEN 779 /*'3TC/AZT/NVP'*/ THEN CASE WHEN R.age >= 15 THEN 'AF1A' ELSE 'CF1A' END /*'AZT + 3TC + NVP'*/ 
-WHEN 760 /*'3TC/AZT/EFV'*/ THEN CASE WHEN R.age >= 15 THEN 'AF1B' ELSE 'CF1B' END /*'AZT + 3TC + EFV '*/
-WHEN 758/*'3TC/AZT/DTG'*/ THEN CASE WHEN R.age >= 15 THEN 'AF1D' END /*'AZT + 3TC + DTG '*/
-WHEN 762 /*'3TC/NVP/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2A' ELSE 'CF4A' END /*TDF + 3TC + NVP*/
-WHEN 743 /*'3TC/EFV/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2B' ELSE 'CF4B' END /*'TDF + 3TC + EFV'*/ 
-  --WHEN 914 /*'3TC/ATV/r/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2D' ELSE 'CF4D' END /*'TDF + 3TC + ATV/r'*/
-  --WHEN 753 /*'3TC/ATV/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2D' ELSE 'CF4D' END /*'TDF + 3TC + ATV/r'*/
-  WHEN 741 /*'3TC/DTG/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2E' END /*'TDF + 3TC + DTG'*/
-  WHEN 867 /*'3TC/LOPr/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2F' ELSE 'CF4C' END /*'TDF + 3TC + LPV/r'*/ 
-  WHEN 921 /*'3TC/LPV/r/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2F' ELSE 'CF4C' END /*'TDF + 3TC + LPV/r'*/
-  --WHEN 741 /*'3TC/RAL/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2G' END /*'TDF + 3TC + RAL'*/
-WHEN 933 /*'FTC/ATV/r/TDF'*/ THEN CASE WHEN R.age >= 15 THEN 'AF2H' END /*'TDF + FTC + ATV/r'*/
-WHEN 738 /*'3TC/ABC/NVP'*/ THEN CASE WHEN R.age >= 15 THEN 'AF4A' ELSE 'CF2A' END /*'ABC + 3TC + NVP'*/
-WHEN 719 /*'3TC/ABC/EFV'*/ THEN CASE WHEN R.age >= 15 THEN 'AF4B' ELSE 'CF2B' END /*'ABC + 3TC + EFV'*/
-  WHEN 717 /*'3TC/ABC/DTG'*/ THEN CASE WHEN R.age >= 15 THEN 'AF4C' END /*'ABC + 3TC + DTG'*/
-WHEN 938 /*'3TC/AZT/LPV/r'*/ THEN CASE WHEN R.age >= 15 THEN 'AS1A' ELSE 'CS1A' END /*'AZT + 3TC + LPV/r'*/ 
-WHEN 884 /*'3TC/AZT/LOPr'*/ THEN CASE WHEN R.age >= 15 THEN 'AS1A' ELSE 'CS1A' END /*'AZT + 3TC + LPV/r'*/ 
-WHEN 770 /*'3TC/AZT/ATV'*/ THEN CASE WHEN R.age >= 15 THEN 'AS1B' ELSE 'CS1B' END /*'AZT + 3TC + ATV/r'*/ 
-WHEN 931 /*'3TC/AZT/ATV/r'*/ THEN CASE WHEN R.age >= 15 THEN 'AS1B' ELSE 'CS1B' END /*'AZT + 3TC + ATV/r'*/
-  WHEN 921 /*'3TC/TDF/LPV/r'*/ THEN CASE WHEN R.age >= 15 THEN 'AS2A' END /*'TDF + 3TC + LPV/r'*/
-  WHEN 867 /*'3TC/TDF/LOPr'*/ THEN CASE WHEN R.age >= 15 THEN 'AS2A' END /*'TDF + 3TC + LPV/r'*/
-  WHEN 753 /*'3TC/TDF/ATV'*/ THEN CASE WHEN R.age >= 15 THEN 'AS2C' END /*'TDF + 3TC + ATV/r'*/ 
-  WHEN 914 /*'3TC/TDF/ATV/r'*/ THEN CASE WHEN R.age >= 15 THEN 'AS2C' END /*'TDF + 3TC + ATV/r'*/
-WHEN 843 /*'3TC/ABC/LOPr'*/ THEN CASE WHEN R.age >= 15 THEN 'AS5A' ELSE 'CS2A' END /*'ABC + 3TC + LPV/r'*/ 
-WHEN 897 /*'3TC/ABC/LPV/r'*/ THEN CASE WHEN R.age >= 15 THEN 'AS5A' ELSE 'CS2A' END /*'ABC + 3TC + LPV/r'*/ 
-WHEN 890 /*'3TC/ABC/ATV/r'*/ THEN CASE WHEN R.age >= 15 THEN 'AS5B' ELSE 'CS2C' END /*'ABC + 3TC + ATV/r'*/
-WHEN 729 /*'3TC/ABC/ATV'*/ THEN CASE WHEN R.age >= 15 THEN 'AS5B' ELSE 'CS2C' END /*'ABC + 3TC + ATV/r'*/ 
-END))),
-(SELECT TOP 1 Name FROM lookupitem WHERE Name = 'Unknown'))
-
-END AS RegimenLine
-
-from RegimenMapView R 
-INNER JOIN ord_PatientPharmacyOrder O ON O.VisitID = R.Visit_Pk
-left join (select * from (select 
-Id, 
-Name, 
-DisplayName 
-from LookupItem where Name in ('AdultARTThirdLine','AdultARTSecondLine', 'AdultARTFirstLine', 'PaedsARTFirstLine', 'PaedsARTSecondLine', 'PaedsARTThirdLine')) T) B on B.Id = O.RegimenLine) AT ON AT.ptn_pharmacy_pk = ds.ptn_pharmacy_pk
---where ds.Ptn_Pk = 2000
-order by ds.Ptn_Pk, ds.DispensedByDate</sql>
+</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>N</variables_active>
-    <lazy_conversion_active>Y</lazy_conversion_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -793,13 +915,13 @@ order by ds.Ptn_Pk, ds.DispensedByDate</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
-      <yloc>80</yloc>
+      <xloc>496</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>load_st_regimen_history</name>
+    <name>load_st_hiv_enrollments</name>
     <type>TableOutput</type>
     <description/>
     <distribute>Y</distribute>
@@ -811,7 +933,7 @@ order by ds.Ptn_Pk, ds.DispensedByDate</sql>
     </partitioning>
     <connection>mysql_st</connection>
     <schema>migration_st</schema>
-    <table>st_regimen_history</table>
+    <table>st_hiv_enrollment</table>
     <commit>1000</commit>
     <truncate>Y</truncate>
     <ignore_errors>N</ignore_errors>
@@ -837,8 +959,147 @@ order by ds.Ptn_Pk, ds.DispensedByDate</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>704</xloc>
-      <yloc>80</yloc>
+      <xloc>864</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Create PatientBaselineView </name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>/****** Object:  View [dbo].[PatientBaselineView]    Script Date: 06/05/2020 11:18:48 ******/
+
+ALTER VIEW [dbo].[PatientBaselineView]
+AS
+SELECT DISTINCT dbo.PatientHivDiagnosis.PatientId
+	,dbo.PatientHivDiagnosis.Id
+	,dbo.PatientHivDiagnosis.PatientMasterVisitId
+	,dbo.PatientTransferIn.ServiceAreaId
+	,dbo.PatientTransferIn.TransferInDate
+	,dbo.PatientTransferIn.TreatmentStartDate
+	,ISNULL(dbo.PatientTransferIn.CurrentTreatment, 0) AS CurrentTreatment
+	,CASE WHEN (
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem
+		WHERE (Id = dbo.PatientTransferIn.CurrentTreatment)
+		) = 'Unknown' THEN (SELECT TOP 1 FirstLineReg
+					FROM dtl_patientARTCare
+					WHERE ptn_pk = P.ptn_pk
+						AND FirstLineRegStDate IS NOT NULL AND FirstLineRegStDate &lt;&gt; '1900-06-15 00:00:00.000') WHEN (
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem
+		WHERE (Id = dbo.PatientTransferIn.CurrentTreatment)
+		) IS NULL THEN (SELECT TOP 1 FirstLineReg
+					FROM dtl_patientARTCare
+					WHERE ptn_pk = P.ptn_pk
+						AND FirstLineRegStDate IS NOT NULL AND FirstLineRegStDate &lt;&gt; '1900-06-15 00:00:00.000') ELSE (
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem
+		WHERE (Id = dbo.PatientTransferIn.CurrentTreatment)
+		) END AS CurrentTreatmentName
+	,dbo.PatientTransferIn.FacilityFrom
+	,dbo.PatientTransferIn.MFLCode
+	,ISNULL(dbo.PatientTransferIn.CountyFrom, 0) AS CountyFrom
+	,dbo.PatientTransferIn.TransferInNotes
+	,dbo.PatientHivDiagnosis.HIVDiagnosisDate
+	,dbo.PatientHivDiagnosis.EnrollmentDate
+	,ISNULL(dbo.PatientHivDiagnosis.EnrollmentWHOStage, 0) AS EnrollmentWHOStage
+	,(
+		SELECT Name
+		FROM dbo.LookupItem AS LookupItem_3
+		WHERE (Id = dbo.PatientHivDiagnosis.EnrollmentWHOStage)
+		) AS EnrollmentWHOStageName
+	,CASE 
+		WHEN dbo.PatientHivDiagnosis.ARTInitiationDate IS NULL
+			THEN (
+					SELECT TOP 1 FirstLineRegStDate
+					FROM dtl_patientARTCare
+					WHERE ptn_pk = P.ptn_pk
+						AND FirstLineRegStDate IS NOT NULL AND FirstLineRegStDate &lt;&gt; '1900-06-15 00:00:00.000'
+					)
+		ELSE dbo.PatientHivDiagnosis.ARTInitiationDate
+		END AS ARTInitiationDate
+	,(
+		SELECT TOP (1) DispensedByDate
+		FROM dbo.ord_PatientPharmacyOrder
+		WHERE (PatientId = dbo.PatientHivDiagnosis.PatientId)
+			AND (
+				ptn_pharmacy_pk IN (
+					SELECT ptn_pharmacy_pk
+					FROM dbo.dtl_PatientPharmacyOrder
+					WHERE (Prophylaxis = 0)
+					)
+				)
+		ORDER BY ptn_pharmacy_pk
+		) AS ARTInitiationDateNew
+	,dbo.PatientTreatmentInitiation.DateStartedOnFirstLine
+	,dbo.PatientTreatmentInitiation.Cohort
+	,ISNULL(dbo.PatientTreatmentInitiation.Regimen, 0) AS Regimen
+	,(
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem AS LookupItem_2
+		WHERE (Id = dbo.PatientTreatmentInitiation.Regimen)
+		) AS RegimenName
+	,dbo.PatientTreatmentInitiation.BaselineViralload
+	,dbo.PatientTreatmentInitiation.BaselineViralloadDate
+	,dbo.PatientBaselineAssessment.HBVInfected
+	,dbo.PatientBaselineAssessment.Pregnant
+	,dbo.PatientBaselineAssessment.TBinfected
+	,dbo.PatientBaselineAssessment.WHOStage
+	,(
+		SELECT Name
+		FROM dbo.LookupItem AS LookupItem_1
+		WHERE (Id = dbo.PatientBaselineAssessment.WHOStage)
+		) AS WhoStageName
+	,dbo.PatientBaselineAssessment.BreastFeeding
+	,dbo.PatientBaselineAssessment.CD4Count
+	,dbo.PatientBaselineAssessment.MUAC
+	,dbo.PatientBaselineAssessment.Weight
+	,dbo.PatientBaselineAssessment.Height
+	,dbo.PatientBaselineAssessment.BMI
+	,dbo.PatientTreatmentInitiation.ldl
+	,dbo.PatientHivDiagnosis.HistoryARTUse
+FROM dbo.PatientHivDiagnosis
+INNER JOIN Patient P ON P.Id = dbo.PatientHivDiagnosis.PatientId
+LEFT OUTER JOIN dbo.PatientTransferIn ON dbo.PatientHivDiagnosis.PatientId = dbo.PatientTransferIn.PatientId
+LEFT OUTER JOIN dbo.PatientTreatmentInitiation ON dbo.PatientHivDiagnosis.PatientId = dbo.PatientTreatmentInitiation.PatientId
+LEFT OUTER JOIN dbo.PatientBaselineAssessment ON dbo.PatientHivDiagnosis.PatientId = dbo.PatientBaselineAssessment.PatientId
+
+
+
+
+</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
