@@ -1,8 +1,6 @@
 
 
 --stores DWAPI metrics to be shipping by DWAPI before migration
-USE [IQCare_Siaya]
-GO
 
 /****** Object:  Table [dbo].[DWAPI_Migration_Metrics]    Script Date: 3/20/2020 4:43:06 AM ******/
 DROP TABLE if exists [dbo].[DWAPI_Migration_Metrics]
