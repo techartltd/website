@@ -597,7 +597,7 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
   Partner_tested                   VARCHAR(100),
   PartnerHIVResult                 VARCHAR(100),
   Anc_visit_number                 VARCHAR(100),
-  Anc_number                       VARCHAR(50),
+  Anc_number                       VARCHAR(100),
   Temperature                      DOUBLE,
   Pulse_rate                       DOUBLE,
   Systolic_bp                      DOUBLE,

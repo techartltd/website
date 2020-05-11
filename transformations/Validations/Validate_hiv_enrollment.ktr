@@ -508,11 +508,34 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 1.  Validation: Remove  special characters from TI_Facility
-update tr_hiv_enrollment 
-	set TI_Facility=replace(TI_Facility,"'",""),
-        Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"'","");
-	    </sql>
+    <sql>-- 1.  Validation: Remove special characters
+
+update tr_hiv_enrollment
+  
+set TI_Facility=replace(TI_Facility,",",""),
+  TI_Facility=replace(TI_Facility,"-",""),
+  TI_Facility=replace(TI_Facility,"\\",""),
+  TI_Facility=replace(TI_Facility,"\/",""),
+  TI_Facility=replace(TI_Facility,"\)",""),
+  TI_Facility=replace(TI_Facility,"\(",""),
+  TI_Facility=replace(TI_Facility,"\"",""),
+  TI_Facility=replace(TI_Facility,"'",""),
+  TI_Facility=replace(TI_Facility,"\'",""),
+  TI_Facility=replace(TI_Facility,"\\",""),
+
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,",",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"-",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\\",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\/",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\)",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\(",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\"",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"'",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\'",""),
+  Facility_confirmed_hiv_positive=replace(Facility_confirmed_hiv_positive,"\\","");
+
+
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

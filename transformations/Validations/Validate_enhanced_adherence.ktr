@@ -534,7 +534,10 @@ set Pill_count=replace(Pill_count,",",""),
   Next_appointment_date=replace(Next_appointment_date,"Nov","11"),
   Next_appointment_date=replace(Next_appointment_date,"Dec","12");
 
- 
+  
+
+ update tr_enhanced_adherence
+set Pill_count = 0 where  Pill_count not regexp '^(-|\\+)?([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$';
   </sql>
     <set_params>N</set_params>
     <insert_field/>

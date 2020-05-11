@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Migrate_hts_test</name>
+    <name>Validate_mch_enrollment</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -9,16 +9,6 @@
     <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mssql</name>
-        <default_value/>
-        <description/>
-      </parameter>
-      <parameter>
-        <name>mysql_st</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -438,80 +428,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/16 10:02:28.539</created_date>
+    <created_date>2020/05/04 14:38:06.692</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/16 10:02:28.539</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/05/04 14:38:06.692</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mssql</name>
-    <server> DESKTOP-O2MBCFP</server>
-    <type>REDSHIFT</type>
-    <access>JNDI</access>
-    <database>mssql</database>
-    <port>1433</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>EXTRA_OPTION_REDSHIFT.loginTimeout</code>
-        <attribute>10</attribute>
-      </attribute>
-      <attribute>
-        <code>EXTRA_OPTION_REDSHIFT.tcpKeepAlive</code>
-        <attribute>true</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1433</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
-  <connection>
-    <name>mysql_st</name>
-    <server>localhost</server>
+    <name>mysql</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
-    <database>mysql_st</database>
-    <port>3306</port>
+    <database>mysql_tr</database>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -532,7 +463,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -561,19 +492,9 @@
     </attributes>
   </connection>
   <order>
-    <hop>
-      <from>Create_st_hts_test</from>
-      <to>iqcare_source_hts_test</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>iqcare_source_hts_test</from>
-      <to>load_st_hts_test</to>
-      <enabled>Y</enabled>
-    </hop>
   </order>
   <step>
-    <name>Create_st_hts_test</name>
+    <name>Remove_anc_number _special_characters</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -583,48 +504,29 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_st</connection>
+    <connection>mysql</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 4. HTS TEST Encounter
-DROP TABLE IF EXISTS migration_st.st_hts_test;
-CREATE TABLE migration_st.st_hts_test
-(
-  Person_Id                        INT(11),
-  Patient_Id                       INT(11),
-  Encounter_Date                   DATE,
-  Encounter_ID                     VARCHAR(50),
-  Pop_Type                         VARCHAR(255),
-  Key_Pop_Type                     TEXT,
-  Priority_Pop_Type                TEXT,
-  Patient_disabled                 VARCHAR(255),
-  Disability                       VARCHAR(255),
-  Ever_Tested                      VARCHAR(255),
-  Self_Tested                      VARCHAR(255),
-  MonthSinceSelfTest               VARCHAR(255),
-  MonthsSinceLastTest              VARCHAR(255),
-  HTS_Strategy                     VARCHAR(255),
-  HTS_Entry_Point                  VARCHAR(255),
-  Consented                        VARCHAR(255),
-  Tested_As                        VARCHAR(255),
-  TestType                         VARCHAR(255),
-  Test_1_Kit_Name                  VARCHAR(255),
-  Test_1_Lot_Number                VARCHAR(255),
-  Test_1_Expiry_Date               DATE,
-  Test_1_Final_Result              VARCHAR(255),
-  Test_2_Kit_Name                  VARCHAR(255),
-  Test_2_Lot_Number                VARCHAR(255),
-  Test_2_Expiry_Date               DATE,
-  Test_2_Final_Result              VARCHAR(255),
-  Final_Result                     VARCHAR(255),
-  Result_given                     VARCHAR(255),
-  Couple_Discordant                VARCHAR(255),
-  Tb_Screening_Results             VARCHAR(255),
-  Remarks                          TEXT,
-  Voided                           INT(11)
-);</sql>
+    <sql>-- 1.  Validation: Remove special characters
+
+update tr_mch_enrollment
+  
+set Anc_number=replace(Anc_number,",",""),
+  Anc_number=replace(Anc_number,"-",""),
+  Anc_number=replace(Anc_number,"\\",""),
+  Anc_number=replace(Anc_number,"\/",""),
+  Anc_number=replace(Anc_number,"\)",""),
+  Anc_number=replace(Anc_number,"\(",""),
+  Anc_number=replace(Anc_number,"\"",""),
+  Anc_number=replace(Anc_number,"'",""),
+  Anc_number=replace(Anc_number,"\'",""),
+  Anc_number=replace(Anc_number,"\\","");
+
+  
+
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -641,180 +543,8 @@ CREATE TABLE migration_st.st_hts_test
       </output>
     </remotesteps>
     <GUI>
-      <xloc>112</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>iqcare_source_hts_test</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>mssql</connection>
-    <sql>
--- 4. HTS TEST Encounter For Both Initial and Repeat Validated by FG
-
-SELECT 
-HE.PersonId Person_Id,
-Encounter_Date = format(cast(PE.EncounterStartTime as date),'yyyy-MM-dd'),
-NULL as Encounter_ID,
-Pop_Type = PPL2.PopulationType,
-Key_Pop_Type = PPL2.KeyPop,
-Priority_Pop_Type = PPR2.PrioPop,
-Patient_disabled = (CASE ISNULL(PI.Disability, '') WHEN '' THEN 'No' ELSE 'Yes' END),
-PI.Disability,
-Ever_Tested = (SELECT ItemName FROM LookupItemView WHERE ItemId = HE.EverTested AND MasterName = 'YesNo'),
-Self_Tested = (SELECT ItemName FROM LookupItemView WHERE ItemId = HE.EverSelfTested AND MasterName = 'YesNo'),
-HE.MonthSinceSelfTest,--added
-HE.MonthsSinceLastTest,--added
-HTS_Strategy = (SELECT ItemName FROM LookupItemView WHERE MasterName = 'Strategy' AND ItemId = HE.TestingStrategy),
-HTS_Entry_Point = (SELECT ItemName FROM LookupItemView WHERE MasterName = 'HTSEntryPoints' AND ItemId = HE.TestEntryPoint),
-(SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = (select top 1 ConsentValue from PatientConsent where PatientMasterVisitId = PM.Id AND ServiceAreaId = 2 AND ConsentType = (select ItemId from LookupItemView where MasterName='ConsentType' AND ItemName = 'ConsentToBeTested') ORDER BY Id DESC)) as Consented,
-Tested_As = (SELECT ItemName FROM LookupItemView WHERE ItemId = HE.TestedAs AND MasterName = 'TestedAs'),
-TestType = CASE HE.EncounterType WHEN 1 THEN 'Initial Test' WHEN 2 THEN 'Repeat Test' END,
-(SELECT ItemName FROM LookupItemView WHERE MasterName = 'HIVTestKits' AND ItemId = (select TOP 1 KitId from Testing where HtsEncounterId = HE.Id AND TestRound = 1 ORDER BY Id DESC)) as Test_1_Kit_Name,
-(select TOP 1 KitLotNumber from Testing where HtsEncounterId = HE.Id AND TestRound = 1 ORDER BY Id DESC) as Test_1_Lot_Number,
-(select TOP 1 ExpiryDate from Testing where HtsEncounterId = HE.Id AND TestRound = 1 ORDER BY Id DESC) as Test_1_Expiry_Date,
-(SELECT ItemName FROM LookupItemView WHERE MasterName = 'HIVFinalResults' AND ItemId = (select TOP 1 RoundOneTestResult from HtsEncounterResult where HtsEncounterId = HE.Id ORDER BY Id DESC)) as Test_1_Final_Result,
-(SELECT ItemName FROM LookupItemView WHERE MasterName = 'HIVTestKits' AND ItemId = (select TOP 1 KitId from Testing where HtsEncounterId = HE.Id AND TestRound = 2 ORDER BY Id DESC)) as Test_2_Kit_Name,
-(select TOP 1 KitLotNumber from Testing where HtsEncounterId = HE.Id AND TestRound = 2 ORDER BY Id DESC) as Test_2_Lot_Number,
-(select TOP 1 ExpiryDate from Testing where HtsEncounterId = HE.Id AND TestRound = 2 ORDER BY Id DESC) as Test_2_Expiry_Date,
-(SELECT ItemName FROM LookupItemView WHERE MasterName = 'HIVFinalResults' AND ItemId = (select TOP 1 RoundTwoTestResult from HtsEncounterResult where HtsEncounterId = HE.Id ORDER BY Id DESC)) as Test_2_Final_Result,
-Final_Result = (SELECT ItemName FROM LookupItemView WHERE ItemId = HER.FinalResult AND MasterName = 'HIVFinalResults'),
-Result_given = (SELECT ItemName FROM LookupItemView WHERE ItemId = HE.FinalResultGiven AND MasterName = 'YesNo'),
-Couple_Discordant = (SELECT ItemName FROM LookupItemView WHERE ItemId = HE.CoupleDiscordant AND MasterName = 'YesNoNA'),
-TB_SCreening_Results = (select top 1 ItemName from LookupItemView where MasterName = 'TbScreening' AND ItemId = (select top 1 ScreeningValueId from PatientScreening where PatientMasterVisitId = PM.Id AND PatientId = PT.Id and ScreeningTypeId = (select top 1 MasterId from LookupItemView where MasterName = 'TbScreening'))),
-HE.EncounterRemarks as Remarks, 
-0 as Voided
-
-FROM HtsEncounter HE 
-LEFT JOIN HtsEncounterResult HER ON HER.HtsEncounterId = HE.Id
-INNER JOIN PatientEncounter PE ON PE.Id = HE.PatientEncounterID
-INNER JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
-INNER JOIN Person P ON P.Id = HE.PersonId
-INNER JOIN Patient PT ON PT.PersonId = P.Id
-LEFT JOIN (SELECT Main.Person_Id, CASE WHEN Len(Main.Disability) -1 &lt; 0
-then LEFT(Main.Disability,Len(Main.Disability))
-else LEFT(Main.Disability,Len(Main.Disability)-1)
-end  as "Disability"
-FROM
-    (
-        SELECT DISTINCT P.Id Person_Id, 
-            (
-                SELECT 
-				(SELECT ItemName FROM LookupItemView WHERE MasterName = 'Disabilities' AND ItemId = CD.DisabilityId) + ' , ' AS [text()]
-                FROM ClientDisability CD
-				INNER JOIN PatientEncounter PE ON PE.Id = CD.PatientEncounterID
-                WHERE CD.PersonId = P.Id
-                ORDER BY CD.PersonId
-                FOR XML PATH ('')
-            ) [Disability]
-        FROM Person P
-    ) [Main]) PI ON PI.Person_Id = P.Id
-LEFT JOIN ( SELECT PPL.Person_Id, PPL.PopulationType, PPL.KeyPop
-FROM
-	(
-		SELECT DISTINCT  P.Id Person_Id, PPT.PopulationType,
-			(
-				SELECT 
-				(SELECT ItemName FROM LookupItemView LK WHERE LK.ItemId = PP.PopulationCategory AND MasterName = 'HTSKeyPopulation') + ' , ' AS [text()]
-				FROM PatientPopulation PP
-				WHERE PP.PersonId = P.Id
-				ORDER BY PP.PersonId
-				FOR XML PATH ('')
-			) [KeyPop]
-		FROM Person P
-		LEFT JOIN PatientPopulation PPT ON PPT.PersonId = P.Id
-	) PPL) PPL2 ON PPL2.Person_Id = P.Id
-LEFT JOIN (SELECT PPR.Person_Id, PPR.PrioPop
-
-FROM
-	(
-		SELECT DISTINCT  P.Id Person_Id, 
-		(
-			SELECT
-
-					(SELECT ItemName FROM LookupItemView LK WHERE LK.ItemId = PP.PriorityId AND MasterName = 'PriorityPopulation') + ' , ' AS [text()]
-
-					FROM PersonPriority PP
-					WHERE PP.PersonId = P.Id
-					ORDER BY PP.PersonId
-					FOR XML PATH ('')
-				) [PrioPop]
-			FROM Person P
-			LEFT JOIN PersonPriority PPY ON PPY.PersonId = P.Id
-		) PPR
-) PPR2 ON PPR2.Person_Id = P.Id;
- 
-  
-</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>384</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>load_st_hts_test</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>mysql_st</connection>
-    <schema>migration_st</schema>
-    <table>st_hts_test</table>
-    <commit>1000</commit>
-    <truncate>Y</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>N</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>640</xloc>
-      <yloc>80</yloc>
+      <xloc>243</xloc>
+      <yloc>62</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
