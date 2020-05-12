@@ -1,5 +1,4 @@
 
-select yy.ptn_pk, yy.Encounter_Date, yy.Next_appointment_date from (
 SELECT P.PersonId Person_Id,
 		P.ptn_pk
 	,format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date
@@ -1067,7 +1066,5 @@ WHERE PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName =
 ) PDR ON PDR.PatientId = PD.PatientId AND format(cast(PDR.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd')
 INNER JOIN Patient P ON P.Id = PD.PatientId
 WHERE PDR.VisitDate IS NULL
-) as yy
-where yy.ptn_pk = 3063
 
 
