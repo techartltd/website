@@ -1,5 +1,5 @@
 
-
+select yy.ptn_pk, yy.Encounter_Date, yy.Next_appointment_date from (
 SELECT P.PersonId Person_Id,
 		P.ptn_pk
 	,format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date
@@ -843,27 +843,27 @@ WHEN bapp.AppDate IS NULL
 	THEN	(select TOP 1 
 		dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 		from ord_PatientPharmacyOrder o
-		inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+		inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 		inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-		WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND ov.VisitDate = OV.VisitDate and ov.Ptn_pk = OV.Ptn_Pk) 
+		WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
 WHEN (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
-	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND ov.VisitDate = OV.VisitDate and ov.Ptn_pk = OV.Ptn_Pk)  > bapp.AppDate 
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk)  > bapp.AppDate 
 THEN (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
-	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND ov.VisitDate = OV.VisitDate and ov.Ptn_pk = OV.Ptn_Pk) 
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
 WHEN bapp.AppDate > (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
-	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND ov.VisitDate = OV.VisitDate and ov.Ptn_pk = OV.Ptn_Pk) 
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
 THEN bapp.AppDate 
 ELSE bapp.AppDate END AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
 NULL Next_appointment_reason,
@@ -1067,5 +1067,7 @@ WHERE PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName =
 ) PDR ON PDR.PatientId = PD.PatientId AND format(cast(PDR.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd')
 INNER JOIN Patient P ON P.Id = PD.PatientId
 WHERE PDR.VisitDate IS NULL
+) as yy
+where yy.ptn_pk = 3063
 
 
