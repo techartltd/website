@@ -1,4 +1,3 @@
-
 SELECT P.PersonId Person_Id,
 		P.ptn_pk
 	,format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date
@@ -844,25 +843,25 @@ WHEN bapp.AppDate IS NULL
 		from ord_PatientPharmacyOrder o
 		inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 		inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-		WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+		WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
 WHEN (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk)  > bapp.AppDate 
+	WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk)  > bapp.AppDate 
 THEN (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+	WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
 WHEN bapp.AppDate > (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+	WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
 THEN bapp.AppDate 
 ELSE bapp.AppDate END AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
 NULL Next_appointment_reason,
