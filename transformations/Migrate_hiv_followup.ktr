@@ -718,7 +718,7 @@ CREATE TABLE migration_st.st_hiv_followup
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>
+    <sql>-- 16. HIV Followup v3.0.0 by FG
 
 SELECT P.PersonId Person_Id,
 		P.ptn_pk
@@ -874,8 +874,36 @@ SELECT P.PersonId Person_Id,
 	,Screened_for_sti = CASE WHEN (select top 1 ItemName from LookupItemView where MasterName = 'PHDP' and ItemName = 'STI' AND ItemId = (select top 1 Phdp from PatientPHDP where PatientMasterVisitId = PM.Id AND PatientId = P.Id order by Id desc)) = 'STI' THEN 'Yes' ELSE 'No' END
 	,scp.PartnerNotification AS Sti_partner_notification
 	,pcc.Stability AS Stability
-	,case when papp.Next_appointment_date is not null then format(cast(papp.Next_appointment_date AS DATE), 'yyyy-MM-dd')
-	      when papp.Next_appointment_date is  null then tca.tca else '' end as Next_appointment_date
+	,format(cast(
+	CASE 
+	WHEN papp.Next_appointment_date  IS NULL
+	THEN (select TOP 1
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	WHEN papp.Next_appointment_date &lt; (select TOP 1
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	THEN (select TOP 1
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	WHEN papp.Next_appointment_date > (select TOP 1
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	THEN papp.Next_appointment_date
+	ELSE papp.Next_appointment_date end
+	AS DATE), 'yyyy-MM-dd') AS Next_appointment_date
 	,papp.Next_appointment_reason
 	,papp.Appointment_type
 	,pdd.DifferentiatedCare AS Differentiated_care
@@ -883,7 +911,7 @@ SELECT P.PersonId Person_Id,
 
 FROM PatientEncounter PE
 LEFT JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
-LEFT JOIN Patient P ON P.Id = PE.PatientId
+LEFT JOIN Patient P ON P.Id = PM.PatientId
 LEFT JOIN (
 	SELECT *
 	FROM (
@@ -1312,8 +1340,8 @@ LEFT JOIN (
 		FROM PatientAppointment pa
 		INNER JOIN LookupItem li ON li.Id = pa.ReasonId
 		INNER JOIN LookupItem lt ON lt.Id = pa.DifferentiatedCareId
-		WHERE (pa.DeleteFlag IS NULL
-			OR pa.DeleteFlag = 0) and pa.reasonid=235
+		WHERE pa.DeleteFlag IS NULL
+			OR pa.DeleteFlag = 0
 		) pa
 	WHERE pa.rownum = 1
 	) papp ON papp.PatientId = pe.PatientId
@@ -1456,23 +1484,6 @@ LEFT JOIN (
 	WHERE adv.rownum = '1'
 	) adv ON adv.PatientId = pe.PatientId
 	AND adv.PatientMasterVisitId = pe.PatientMasterVisitId
-	left join(
-	select ord.ptn_pharmacy_pk,
-ord.Ptn_pk,
-ord.OrderedByDate,
-dtl_ord.Duration,pt.Id as patient_id,
-dateadd(day,dtl_ord.Duration,ord.OrderedByDate) as tca
-   from ord_PatientPharmacyOrder ord 
-   inner join (
-   SELECT CAST(Row_Number() OVER (PARTITION BY dtl_ord.ptn_pharmacy_pk ORDER
-      BY dtl_ord.duration DESC) AS Varchar) AS RowID,
-      dtl_ord.ptn_pharmacy_pk,
-      dtl_ord.Duration
-    FROM dtl_PatientPharmacyOrder dtl_ord
-   ) dtl_ord on dtl_ord.ptn_pharmacy_pk=ord.ptn_pharmacy_pk and dtl_ord.RowID=1
-   left join (select id,name from LookupItem) lr on lr.id=ord.RegimenLine
-   left join patient pt on pt.ptn_pk=ord.Ptn_pk
-	) tca on tca.patient_id=pe.PatientId and cast(pm.visitdate AS date)=cast(tca.OrderedByDate as date)
 WHERE PE.EncounterTypeId = (
 		SELECT ItemId
 		FROM LookupItemView
@@ -1547,41 +1558,235 @@ NULL as Cacx_Screening,
 NULL Screened_for_sti,
 NULL as Sti_partner_notification,
 NULL as Stability,
-case when tca.tca is not null then tca.tca else null end as Next_appointment_date,
+format(cast(CASE 
+WHEN bapp.AppDate IS NULL 
+	THEN	(select TOP 1 
+		dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+		from ord_PatientPharmacyOrder o
+		inner join ord_Visit kth on kth.Visit_Id = o.VisitID
+		inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+		WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+WHEN (select TOP 1 
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk)  > bapp.AppDate 
+THEN (select TOP 1 
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+WHEN bapp.AppDate > (select TOP 1 
+	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
+	from ord_PatientPharmacyOrder o
+	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
+	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+THEN bapp.AppDate 
+ELSE bapp.AppDate END AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
 NULL Next_appointment_reason,
 NULL Appointment_type,
 NULL as Differentiated_care,
 NULL as Voided
 
-
-
 FROM ord_Visit OV
 LEFT JOIN mst_Patient MP ON MP.Ptn_Pk = OV.Ptn_Pk
-LEFT JOIN Patient P ON P.ptn_pk = OV.Ptn_Pk
+LEFT JOIN Patient P ON P.ptn_pk = MP.Ptn_Pk
 LEFT JOIN dtl_PatientARTEncounter PAE ON PAE.Visit_Id = OV.Visit_Id
 LEFT JOIN dtl_PatientStage PS ON PS.Visit_Pk = OV.Visit_Id
-LEFT JOIN dtl_PatientDisease PDS ON PDS.Visit_Pk = OV.Visit_Id AND OV.Ptn_Pk = PDS.Ptn_Pk
-LEFT JOIN dtl_patientCounseling PC ON PC.Visit_pk = OV.Visit_Id AND PC.Ptn_pk = OV.Ptn_Pk
+LEFT JOIN dtl_PatientDisease PDS ON PDS.Visit_Pk = OV.Visit_Id AND MP.Ptn_Pk = PDS.Ptn_Pk
+LEFT JOIN dtl_patientCounseling PC ON PC.Visit_pk = OV.Visit_Id AND PC.Ptn_pk = MP.Ptn_Pk
+LEFT JOIN (
+		SELECT a.appdate,
+		b.Name,
+		a.Ptn_pk,
+		a.Visit_pk
+		FROM dtl_patientappointment a
+		INNER JOIN mst_decode b ON a.appstatus = b.id
+		WHERE a.deleteflag = 0 AND a.ModuleId IN(SELECT m.ModuleID FROM mst_module m WHERE m.ModuleName='CCC Patient Card MoH 257')) bapp ON bapp.Visit_pk = OV.Visit_Id
+WHERE OV.VisitType=17
 
-	left join(
-	select ord.ptn_pharmacy_pk,
-ord.Ptn_pk,
-ord.OrderedByDate,
-dtl_ord.Duration,pt.Id as patient_id,
-dateadd(day,dtl_ord.Duration,ord.OrderedByDate) as tca
-   from ord_PatientPharmacyOrder ord 
-   inner join (
-   SELECT CAST(Row_Number() OVER (PARTITION BY dtl_ord.ptn_pharmacy_pk ORDER
-      BY dtl_ord.duration DESC) AS Varchar) AS RowID,
-      dtl_ord.ptn_pharmacy_pk,
-      dtl_ord.Duration
-    FROM dtl_PatientPharmacyOrder dtl_ord
-   ) dtl_ord on dtl_ord.ptn_pharmacy_pk=ord.ptn_pharmacy_pk and dtl_ord.RowID=1
-   left join (select id,name from LookupItem) lr on lr.id=ord.RegimenLine
-   left join patient pt on pt.ptn_pk=ord.Ptn_pk
-	) tca on tca.Ptn_pk=ov.Ptn_Pk and cast(OV.VisitDate AS date)=cast(tca.OrderedByDate as date)
+UNION
 
-WHERE OV.VisitType=17;
+select 
+
+P.PersonId Person_Id,
+P.Ptn_Pk,
+format(cast(t.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
+NULL AS Encounter_ID,
+NULL AS Visit_scheduled,
+NULL AS Visit_by,
+NULL Visit_by_other,
+NULL AS Nutritional_status,
+NULL AS Who_stage,
+NULL AS Clinical_notes,
+NULL as Last_menstrual_period,
+NULL as Pregnancy_status,
+NULL as Wants_pregnancy,
+NULL as Pregnancy_outcome,
+NULL as Anc_number,
+NULL AS Anc_profile,
+NULL  as Expected_delivery_date,
+NULL as Gravida,
+NULL as Parity_term,
+NULL as Parity_abortion,
+NULL as Family_planning_status,
+NULL Reason_not_using_family_planning,
+NULL as General_examinations_findings,
+NULL as System_review_finding,
+NULL as Skin,
+NULL as Skin_finding_notes,
+NULL as Eyes,
+NULL as Eyes_Finding_notes,
+NULL as ENT,
+NULL as ENT_finding_notes,
+NULL as Chest,
+NULL as Chest_finding_notes,
+NULL as CVS,
+NULL as CVS_finding_notes,
+NULL as Abdomen,
+NULL as Abdomen_finding_notes,
+NULL as CNS,
+NULL as CNS_finding_notes,
+NULL as Genitourinary,
+NULL as Genitourinary_finding_notes,
+NULL as Treatment_plan,
+NULL as Ctx_adherence,
+NULL as Ctx_dispensed,
+NULL as Dapsone_adherence,
+NULL as Dapsone_dispensed,
+NULL Morisky_forget_taking_drugs,
+NULL Morisky_careless_taking_drugs,
+NULL Morisky_stop_taking_drugs_feeling_worse,
+NULL Morisky_stop_taking_drugs_feeling_better,
+NULL Morisky_took_drugs_yesterday,
+NULL Morisky_stop_taking_drugs_symptoms_under_control,
+NULL Morisky_feel_under_pressure_on_treatment_plan,
+NULL Morisky_how_often_difficulty_remembering,
+NULL as Arv_adherence,
+NULL Condom_Provided,
+NULL Screened_for_substance_abuse,
+NULL Pwp_Disclosure,
+NULL Pwp_partner_tested,
+NULL as Cacx_Screening,
+NULL Screened_for_sti,
+NULL as Sti_partner_notification,
+NULL as Stability,
+format(cast(t.ExpectedReturn AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
+NULL Next_appointment_reason,
+NULL Appointment_type,
+NULL as Differentiated_care,
+NULL as Voided
+
+from(SELECT dateadd(day, d.Duration, o.DispensedByDate) AS ExpectedReturn, o.Ptn_pk, ov.VisitDate, ov.VisitType
+FROM ord_PatientPharmacyOrder o
+INNER JOIN ord_Visit ov ON ov.Visit_Id = o.VisitID
+INNER JOIN dtl_PatientPharmacyOrder d ON d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL) t
+INNER JOIN Patient P ON P.ptn_pk = t.Ptn_Pk
+left join( select 
+vo.Ptn_Pk,
+vo.VisitDate
+FROM ord_Visit vo
+WHERE vo.VisitType = 17) d on d.Ptn_Pk = t.Ptn_pk AND t.VisitDate = d.VisitDate
+WHERE d.VisitDate is null
+
+UNION
+
+SELECT 
+
+P.PersonId Person_Id,
+P.Ptn_Pk,
+format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
+NULL AS Encounter_ID,
+NULL AS Visit_scheduled,
+NULL AS Visit_by,
+NULL Visit_by_other,
+NULL AS Nutritional_status,
+NULL AS Who_stage,
+NULL AS Clinical_notes,
+NULL as Last_menstrual_period,
+NULL as Pregnancy_status,
+NULL as Wants_pregnancy,
+NULL as Pregnancy_outcome,
+NULL as Anc_number,
+NULL AS Anc_profile,
+NULL  as Expected_delivery_date,
+NULL as Gravida,
+NULL as Parity_term,
+NULL as Parity_abortion,
+NULL as Family_planning_status,
+NULL Reason_not_using_family_planning,
+NULL as General_examinations_findings,
+NULL as System_review_finding,
+NULL as Skin,
+NULL as Skin_finding_notes,
+NULL as Eyes,
+NULL as Eyes_Finding_notes,
+NULL as ENT,
+NULL as ENT_finding_notes,
+NULL as Chest,
+NULL as Chest_finding_notes,
+NULL as CVS,
+NULL as CVS_finding_notes,
+NULL as Abdomen,
+NULL as Abdomen_finding_notes,
+NULL as CNS,
+NULL as CNS_finding_notes,
+NULL as Genitourinary,
+NULL as Genitourinary_finding_notes,
+NULL as Treatment_plan,
+NULL as Ctx_adherence,
+NULL as Ctx_dispensed,
+NULL as Dapsone_adherence,
+NULL as Dapsone_dispensed,
+NULL Morisky_forget_taking_drugs,
+NULL Morisky_careless_taking_drugs,
+NULL Morisky_stop_taking_drugs_feeling_worse,
+NULL Morisky_stop_taking_drugs_feeling_better,
+NULL Morisky_took_drugs_yesterday,
+NULL Morisky_stop_taking_drugs_symptoms_under_control,
+NULL Morisky_feel_under_pressure_on_treatment_plan,
+NULL Morisky_how_often_difficulty_remembering,
+NULL as Arv_adherence,
+NULL Condom_Provided,
+NULL Screened_for_substance_abuse,
+NULL Pwp_Disclosure,
+NULL Pwp_partner_tested,
+NULL as Cacx_Screening,
+NULL Screened_for_sti,
+NULL as Sti_partner_notification,
+NULL as Stability,
+format(cast(PD.ExpectedReturn AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
+NULL Next_appointment_reason,
+NULL Appointment_type,
+NULL as Differentiated_care,
+NULL as Voided
+
+FROM(SELECT 
+dateadd(day, ro.Duration, o.DispensedByDate) AS ExpectedReturn, 
+PM.PatientId,
+PM.VisitDate
+
+FROM ord_PatientPharmacyOrder o
+INNER JOIN dtl_PatientPharmacyOrder ro on ro.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+LEFT JOIN PatientMasterVisit PM on PM.Id = o.PatientMasterVisitId
+LEFT JOIN PatientEncounter PE ON PE.PatientMasterVisitId = PM.Id
+WHERE o.DispensedByDate is not null AND PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'EncounterType' AND ItemName = 'Pharmacy-encounter')) PD
+LEFT JOIN (
+SELECT 
+PM.VisitDate,
+PM.PatientId
+
+FROM PatientEncounter PE
+LEFT JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
+LEFT JOIN Patient P ON P.Id = PM.PatientId
+WHERE PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'EncounterType' AND ItemName = 'ccc-encounter')
+) PDR ON PDR.PatientId = PD.PatientId AND format(cast(PDR.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd')
+INNER JOIN Patient P ON P.Id = PD.PatientId
+WHERE PDR.VisitDate IS NULL
 
 
 </sql>
