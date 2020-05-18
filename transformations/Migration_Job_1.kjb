@@ -3915,7 +3915,7 @@
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
-	 <hop>
+    <hop>
       <from>ART_Regime_Order_Drop</from>
       <to>ART_Regime_Order_Create</to>
       <from_nr>0</from_nr>
@@ -4634,7 +4634,7 @@
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
-    </hop>   
+    </hop>
   </hops>
   <notepads>
   </notepads>
