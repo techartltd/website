@@ -2,7 +2,7 @@ select
 ds.Person_Id as Person_Id,
 ds.ptn_pk,
 ds.DispensedByDate as Encounter_Date,
-'NULL' as Encounter_ID,
+NULL as Encounter_ID,
 (SELECT Name FROM mst_Decode dc where dc.ID = ds.ProgID) as Program,
 dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')) as Regimen,
 CASE WHEN ds.RowNum =1 THEN 'STARTED' ELSE 'SWITCH' END as Drug_Event,
