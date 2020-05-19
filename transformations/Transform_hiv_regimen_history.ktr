@@ -1314,7 +1314,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+ATR+RTV+TDF' then 164512
     when '3TC+ATV+RTV+TDF' then 164512
     when '3TC+ATV/r),+CF4D(TDF' then 164512
-    when '3TC+TDF+ATV/R' then 164512
     when '3TC+TDF+ATV/RTV' then 164512
     when '3TC+TDF+ATVr' then 164512
     when '3TC/ATV/R/TDF' then 164512
@@ -1351,7 +1350,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'AS1B - AZT + 3TC + ATV/R' then 164511
     when 'AS1B(AZT + 3TC + ATV/R)' then 164511
     when 'AS1B-AZT+3TC+ATV/r' then 164511
-    when 'ATV/R+3TC+AZT' then 164511
     when 'ATV/r+ATV/r+3TC+AZT' then 164511
     when 'ATV/r+AZT+3TC' then 164511
     when 'ATV/r/ATV/r/3TC/AZT' then 164511
@@ -1505,7 +1503,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+LPV/r),+PM7(PMTCTHAART:TDF' then 162201
     when '3TC+LPV/R+RTV+TDF' then 162201
     when '3TC+LPV/RTV+TDF' then 162201
-    when '3TC+TDF+LPV/R' then 162201
     when '3TC/ALUVIA/TDF' then 162201
     when '3TC/LPV/R/TDF' then 162201
     when 'AS2A - TDF + 3TC + LPV/R' then 162201
@@ -1641,6 +1638,38 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'D4T20+3TC+NVP' then 792
     when 'D4T30+3TC+NVP' then 792
     when 'D4T40+3TC+NVP' then 792
+
+    -- mbagathi
+    when 'ABC+3TC 600+300+DTG' then 164970
+    when 'ABC+3TC 600+300+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/r' then 165357
+    when 'ATV/rTV+3TC+TDF' then 164512
+    when 'ABC+3TC 600+300+EFV' then 162563
+    when '300mg+3TC 600mg+ABC+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/rTV' then 165357
+    when '300+3TC 600+ABC+DTG' then 164970
+    when '300+3TC 600+ABC+LPV/r' then 162200
+    when '300+3TC 600+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+EFV' then 162563
+    when 'DTG+ABC+3TC 600+300' then 164970
+    when '300mg+3TC 600mg+ABC+EFV' then 162563
+    when 'LPV/r+ABC+3TC 600+300' then 162200
+    when '300mg+3TC 600mg+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+ATV/rTV' then 165357
+    when 'ABC+3TC 600+300+NVP' then 162199
+    when '300mg+3TC 600mg+ABC+DTG' then 164970
+    when 'ATV/r+ABC+3TC 600+300' then 165357
+    when '300mg+3TC+3TC 600mg+ABC+LPV/r' then 162200
+    when '3TC+ABC+LOP+LOPr' then 162200
+    when '3TC+EFV+TDF+TLE 400' then 164505
+    when '3TC+TDF+TLE 400' then 164505
+    when 'ABC+3TC 600mg+300mg+NVP+3TC' then 162199
+    when 'ABC+3TC+LPV/r+3TC 600+300' then 162200
+    when 'ABC+EFV+3TC+ABC+3TC 600mg+300mg' then 162563
+    when 'ATV/rTV+ABC+3TC 600mg+300mg' then 165357
+    when 'DTG+ABC+3TC+3TC 600+300' then 164970
+    when 'TLE 400+EFV' then 164505
+    -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as Regimen_Name,
    Date_Started,
@@ -2414,7 +2443,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+ATR+RTV+TDF' then 164512
     when '3TC+ATV+RTV+TDF' then 164512
     when '3TC+ATV/r),+CF4D(TDF' then 164512
-    when '3TC+TDF+ATV/R' then 164512
     when '3TC+TDF+ATV/RTV' then 164512
     when '3TC+TDF+ATVr' then 164512
     when '3TC/ATV/R/TDF' then 164512
@@ -2451,7 +2479,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'AS1B - AZT + 3TC + ATV/R' then 164511
     when 'AS1B(AZT + 3TC + ATV/R)' then 164511
     when 'AS1B-AZT+3TC+ATV/r' then 164511
-    when 'ATV/R+3TC+AZT' then 164511
     when 'ATV/r+ATV/r+3TC+AZT' then 164511
     when 'ATV/r+AZT+3TC' then 164511
     when 'ATV/r/ATV/r/3TC/AZT' then 164511
@@ -2605,7 +2632,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+LPV/r),+PM7(PMTCTHAART:TDF' then 162201
     when '3TC+LPV/R+RTV+TDF' then 162201
     when '3TC+LPV/RTV+TDF' then 162201
-    when '3TC+TDF+LPV/R' then 162201
     when '3TC/ALUVIA/TDF' then 162201
     when '3TC/LPV/R/TDF' then 162201
     when 'AS2A - TDF + 3TC + LPV/R' then 162201
@@ -2741,6 +2767,38 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'D4T20+3TC+NVP' then 792
     when 'D4T30+3TC+NVP' then 792
     when 'D4T40+3TC+NVP' then 792
+
+    -- mbagathi
+    when 'ABC+3TC 600+300+DTG' then 164970
+    when 'ABC+3TC 600+300+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/r' then 165357
+    when 'ATV/rTV+3TC+TDF' then 164512
+    when 'ABC+3TC 600+300+EFV' then 162563
+    when '300mg+3TC 600mg+ABC+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/rTV' then 165357
+    when '300+3TC 600+ABC+DTG' then 164970
+    when '300+3TC 600+ABC+LPV/r' then 162200
+    when '300+3TC 600+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+EFV' then 162563
+    when 'DTG+ABC+3TC 600+300' then 164970
+    when '300mg+3TC 600mg+ABC+EFV' then 162563
+    when 'LPV/r+ABC+3TC 600+300' then 162200
+    when '300mg+3TC 600mg+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+ATV/rTV' then 165357
+    when 'ABC+3TC 600+300+NVP' then 162199
+    when '300mg+3TC 600mg+ABC+DTG' then 164970
+    when 'ATV/r+ABC+3TC 600+300' then 165357
+    when '300mg+3TC+3TC 600mg+ABC+LPV/r' then 162200
+    when '3TC+ABC+LOP+LOPr' then 162200
+    when '3TC+EFV+TDF+TLE 400' then 164505
+    when '3TC+TDF+TLE 400' then 164505
+    when 'ABC+3TC 600mg+300mg+NVP+3TC' then 162199
+    when 'ABC+3TC+LPV/r+3TC 600+300' then 162200
+    when 'ABC+EFV+3TC+ABC+3TC 600mg+300mg' then 162563
+    when 'ATV/rTV+ABC+3TC 600mg+300mg' then 165357
+    when 'DTG+ABC+3TC+3TC 600+300' then 164970
+    when 'TLE 400+EFV' then 164505
+    -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as Regimen_Discontinued,
    Date_Discontinued,
@@ -3515,7 +3573,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+ATR+RTV+TDF' then 164512
     when '3TC+ATV+RTV+TDF' then 164512
     when '3TC+ATV/r),+CF4D(TDF' then 164512
-    when '3TC+TDF+ATV/R' then 164512
     when '3TC+TDF+ATV/RTV' then 164512
     when '3TC+TDF+ATVr' then 164512
     when '3TC/ATV/R/TDF' then 164512
@@ -3552,7 +3609,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'AS1B - AZT + 3TC + ATV/R' then 164511
     when 'AS1B(AZT + 3TC + ATV/R)' then 164511
     when 'AS1B-AZT+3TC+ATV/r' then 164511
-    when 'ATV/R+3TC+AZT' then 164511
     when 'ATV/r+ATV/r+3TC+AZT' then 164511
     when 'ATV/r+AZT+3TC' then 164511
     when 'ATV/r/ATV/r/3TC/AZT' then 164511
@@ -3706,7 +3762,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+LPV/r),+PM7(PMTCTHAART:TDF' then 162201
     when '3TC+LPV/R+RTV+TDF' then 162201
     when '3TC+LPV/RTV+TDF' then 162201
-    when '3TC+TDF+LPV/R' then 162201
     when '3TC/ALUVIA/TDF' then 162201
     when '3TC/LPV/R/TDF' then 162201
     when 'AS2A - TDF + 3TC + LPV/R' then 162201
@@ -3842,6 +3897,38 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'D4T20+3TC+NVP' then 792
     when 'D4T30+3TC+NVP' then 792
     when 'D4T40+3TC+NVP' then 792
+
+    -- mbagathi
+    when 'ABC+3TC 600+300+DTG' then 164970
+    when 'ABC+3TC 600+300+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/r' then 165357
+    when 'ATV/rTV+3TC+TDF' then 164512
+    when 'ABC+3TC 600+300+EFV' then 162563
+    when '300mg+3TC 600mg+ABC+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/rTV' then 165357
+    when '300+3TC 600+ABC+DTG' then 164970
+    when '300+3TC 600+ABC+LPV/r' then 162200
+    when '300+3TC 600+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+EFV' then 162563
+    when 'DTG+ABC+3TC 600+300' then 164970
+    when '300mg+3TC 600mg+ABC+EFV' then 162563
+    when 'LPV/r+ABC+3TC 600+300' then 162200
+    when '300mg+3TC 600mg+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+ATV/rTV' then 165357
+    when 'ABC+3TC 600+300+NVP' then 162199
+    when '300mg+3TC 600mg+ABC+DTG' then 164970
+    when 'ATV/r+ABC+3TC 600+300' then 165357
+    when '300mg+3TC+3TC 600mg+ABC+LPV/r' then 162200
+    when '3TC+ABC+LOP+LOPr' then 162200
+    when '3TC+EFV+TDF+TLE 400' then 164505
+    when '3TC+TDF+TLE 400' then 164505
+    when 'ABC+3TC 600mg+300mg+NVP+3TC' then 162199
+    when 'ABC+3TC+LPV/r+3TC 600+300' then 162200
+    when 'ABC+EFV+3TC+ABC+3TC 600mg+300mg' then 162563
+    when 'ATV/rTV+ABC+3TC 600mg+300mg' then 165357
+    when 'DTG+ABC+3TC+3TC 600+300' then 164970
+    when 'TLE 400+EFV' then 164505
+    -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as RegimenSwitchTo,
    (case CurrentRegimen
@@ -4614,7 +4701,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+ATR+RTV+TDF' then 164512
     when '3TC+ATV+RTV+TDF' then 164512
     when '3TC+ATV/r),+CF4D(TDF' then 164512
-    when '3TC+TDF+ATV/R' then 164512
     when '3TC+TDF+ATV/RTV' then 164512
     when '3TC+TDF+ATVr' then 164512
     when '3TC/ATV/R/TDF' then 164512
@@ -4651,7 +4737,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'AS1B - AZT + 3TC + ATV/R' then 164511
     when 'AS1B(AZT + 3TC + ATV/R)' then 164511
     when 'AS1B-AZT+3TC+ATV/r' then 164511
-    when 'ATV/R+3TC+AZT' then 164511
     when 'ATV/r+ATV/r+3TC+AZT' then 164511
     when 'ATV/r+AZT+3TC' then 164511
     when 'ATV/r/ATV/r/3TC/AZT' then 164511
@@ -4805,7 +4890,6 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC+LPV/r),+PM7(PMTCTHAART:TDF' then 162201
     when '3TC+LPV/R+RTV+TDF' then 162201
     when '3TC+LPV/RTV+TDF' then 162201
-    when '3TC+TDF+LPV/R' then 162201
     when '3TC/ALUVIA/TDF' then 162201
     when '3TC/LPV/R/TDF' then 162201
     when 'AS2A - TDF + 3TC + LPV/R' then 162201
@@ -4941,6 +5025,39 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'D4T20+3TC+NVP' then 792
     when 'D4T30+3TC+NVP' then 792
     when 'D4T40+3TC+NVP' then 792
+
+    -- mbagathi
+    when 'ABC+3TC 600+300+DTG' then 164970
+    when 'ABC+3TC 600+300+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/r' then 165357
+    when 'ATV/rTV+3TC+TDF' then 164512
+    when 'ABC+3TC 600+300+EFV' then 162563
+    when '300mg+3TC 600mg+ABC+LPV/r' then 162200
+    when 'ABC+3TC 600+300+ATV/rTV' then 165357
+    when '300+3TC 600+ABC+DTG' then 164970
+    when '300+3TC 600+ABC+LPV/r' then 162200
+    when '300+3TC 600+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+EFV' then 162563
+    when 'DTG+ABC+3TC 600+300' then 164970
+    when '300mg+3TC 600mg+ABC+EFV' then 162563
+    when 'LPV/r+ABC+3TC 600+300' then 162200
+    when '300mg+3TC 600mg+ABC+NVP' then 162199
+    when '300+3TC 600+ABC+ATV/rTV' then 165357
+    when 'ABC+3TC 600+300+NVP' then 162199
+    when '300mg+3TC 600mg+ABC+DTG' then 164970
+    when 'ATV/r+ABC+3TC 600+300' then 165357
+    when '300mg+3TC+3TC 600mg+ABC+LPV/r' then 162200
+    when '3TC+ABC+LOP+LOPr' then 162200
+    when '3TC+EFV+TDF+TLE 400' then 164505
+    when '3TC+TDF+TLE 400' then 164505
+    when 'ABC+3TC 600mg+300mg+NVP+3TC' then 162199
+    when 'ABC+3TC+LPV/r+3TC 600+300' then 162200
+    when 'ABC+EFV+3TC+ABC+3TC 600mg+300mg' then 162563
+    when 'ATV/rTV+ABC+3TC 600mg+300mg' then 165357
+    when 'DTG+ABC+3TC+3TC 600+300' then 164970
+    when 'TLE 400+EFV' then 164505
+    -- when 'TLE 400+NVP' then 162565
+
     else "" end ) as CurrentRegimen
   FROM migration_st.st_regimen_history
   where
