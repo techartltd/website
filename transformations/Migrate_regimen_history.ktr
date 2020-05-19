@@ -646,16 +646,17 @@ CREATE TABLE migration_st.st_regimen_history
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>select
+    <sql>-- 15. Regimen History  v2.0 Validated by FG
+select
 ds.Person_Id as Person_Id,
 ds.ptn_pk,
 ds.DispensedByDate as Encounter_Date,
 NULL as Encounter_ID,
 (SELECT Name FROM mst_Decode dc where dc.ID = ds.ProgID) as Program,
-REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as Regimen,
+dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')) as Regimen,
 CASE WHEN ds.RowNum =1 THEN 'STARTED' ELSE 'SWITCH' END as Drug_Event,
-REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as Regimen_Name,
-AT.RegimenLine as Regimen_Line,
+dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')) as Regimen_Name,
+AT.RegimenLine as RegimenLine,
 ds.DispensedByDate as Date_Started,
 LEAD(ds.DispensedByDate) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate ASC) as 'Date_Stopped',
 REPLACE(REPLACE(REPLACE (CASE WHEN (LEAD(ds.DispensedByDate) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate ASC)) IS NOT NULL THEN REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP') ELSE null end,'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as Regimen_Discontinued,
@@ -716,7 +717,7 @@ inner join (SELECT d.ptn_pharmacy_pk,
         ROW_NUMBER() OVER (PARTITION BY dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(f.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), f.ptn_pk ORDER BY d.DispensedByDate) rn2
     FROM dtl_RegimenMap f
 	inner join ord_PatientPharmacyOrder d on d.ptn_pharmacy_pk = f.OrderID) w on w.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	where o.DispensedByDate IS NOT NULL AND o.ProgID = (SELECT ID FROM mst_Decode WHERE Name = 'ART')
+	where o.DispensedByDate IS NOT NULL AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT'))
 ) ev 
 where ev.rn = 1 and ev.DispensedByDate is not null
 ) ds
@@ -777,7 +778,6 @@ Id,
 Name, 
 DisplayName 
 from LookupItem where Name in ('AdultARTThirdLine','AdultARTSecondLine', 'AdultARTFirstLine', 'PaedsARTFirstLine', 'PaedsARTSecondLine', 'PaedsARTThirdLine')) T) B on B.Id = O.RegimenLine) AT ON AT.ptn_pharmacy_pk = ds.ptn_pharmacy_pk
---where ds.Ptn_Pk = 2000
 order by ds.Ptn_Pk, ds.DispensedByDate</sql>
     <limit>0</limit>
     <lookup/>

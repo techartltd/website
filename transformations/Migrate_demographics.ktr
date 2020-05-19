@@ -676,8 +676,7 @@ CREATE TABLE migration_st.st_demographics
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>
--- 1. Demographics/Registration   Validated by FG
+    <sql>-- 1. Demographics/Registration   v2.0  Validated by FG
 
 exec pr_OpenDecryptedSession;
 SELECT
@@ -693,18 +692,18 @@ CASE(ISNULL(P.DobPrecision, PT.DobPrecision))
 	WHEN 0 THEN 'EXACT'
 	WHEN 1 THEN 'ESTIMATED'
 	ELSE 'ESTIMATED' END AS Exact_DOB,
-Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' when ItemName = '' then 'U' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
+Sex = (SELECT (case when ItemName = 'Female' then 'F' when ItemName = 'Male' then 'M' else ItemName end) FROM LookupItemView WHERE MasterName = 'GENDER' AND ItemId = P.Sex),
 UPN = (SELECT top 1 IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id),
 format(cast(ISNULL(P.RegistrationDate, PT.RegistrationDate) as date),'yyyy-MM-dd') AS Encounter_Date,
 NULL Encounter_ID,
-(CASE(Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
+(CASE(Select TOP 1 t.IdentifierValue from (select TOP 1 PIR.IdentifierValue from PersonIdentifier PIR
 INNER JOIN Identifiers IDE ON IDE.Id = PIR.IdentifierId
 WHERE IDE.Name = 'NationalID' AND PIR.PersonId = P.Id) t)
 WHEN NULL THEN PT.NationalId
-ELSE (Select t.IdentifierValue from (select PIR.IdentifierValue from PersonIdentifier PIR
+ELSE (Select TOP 1 t.IdentifierValue from (select TOP 1 PIR.IdentifierValue from PersonIdentifier PIR
 INNER JOIN Identifiers IDE ON IDE.Id = PIR.IdentifierId
 WHERE IDE.Name = 'NationalID' AND PIR.PersonId = P.Id) t) END) AS National_id_No,
-(SELECT PatientClinicID FROM mst_Patient MSP WHERE MSP.Ptn_Pk = PT.ptn_pk) AS Patient_clinic_number,
+(SELECT TOP 1 PatientClinicID FROM mst_Patient MSP WHERE MSP.Ptn_Pk = PT.ptn_pk) AS Patient_clinic_number,
 Birth_certificate=(select top 1 pdd.IdentifierValue from (select pid.PersonId,pid.IdentifierId,pid.IdentifierValue,pdd.Code,pdd.DisplayName,pdd.[Name],pid.CreateDate,pid.DeleteFlag from PersonIdentifier pid
 inner join (
 select id.Id,id.[Name],id.[Code],id.[DisplayName]  from Identifiers id
