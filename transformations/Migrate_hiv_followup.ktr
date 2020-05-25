@@ -718,7 +718,7 @@ CREATE TABLE migration_st.st_hiv_followup
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 16. HIV Followup Validated by FG V3.1.0
+    <sql>-- 16. HIV Followup Validated by FG and PG V4.0.0
 
 SELECT P.PersonId Person_Id,
 		P.ptn_pk
@@ -1495,7 +1495,7 @@ UNION
 
 SELECT
 P.PersonId Person_Id,
-MP.Ptn_Pk,
+CASE WHEN MP.Ptn_Pk is null THEN P.ptn_pk else MP.Ptn_Pk end as Ptn_Pk,
 format(cast(OV.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
 NULL AS Encounter_ID,
 CASE WHEN ISNULL(PAE.Scheduled, '0') = '0' THEN 'No' WHEN PAE.Scheduled = '1' THEN 'Yes' END AS Visit_scheduled,

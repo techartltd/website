@@ -747,6 +747,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
 
     -- 3TC+AZT+ATV/r
     when '3TC+AZT+ATV'  then 164511
+    when 'AZT+ATV+3TC'  then 164511
+    when 'AZT/ATV/3TC'  then 164511
     when 'AZT+3TC+ATV/r'  then 164511
     when '3TC+AZT+ATV/r'  then 164511
     when '3TC+AZT+ATV+r'  then 164511
@@ -795,6 +797,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC/AZT/EFV'  then 160124
     when '3TC/EFV/AZT'  then 160124
     when 'AZT/3TC/EFV'  then 160124
+    when 'AZT/EFV/3TC'  then 160124
+    when 'AZT+EFV+3TC'  then 160124
     when 'PM4 AZT + 3TC + EFV'  then 160124
     when '3TC+AZT+EFV' then 160124
     when '##EFV##AZT' then 160124
@@ -1034,8 +1038,10 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC+TDF+DTG' then 164970
     when '3TC/TDF' then 164969
     when '3TC+TDF' then 164969
-    when 'EFV/TDF' then 164969
-    when 'EFV+TDF' then 164969
+    when 'EFV/TDF' then 164505
+    when 'EFV+TDF' then 164505
+    when 'TDF/EFV' then 164505
+    when 'TDF+EFV' then 164505
     when '3TC+EFV' then 164504
     when '3TC/ABC'  then 162199
     when '3TC+ABC'  then 162199
@@ -1043,24 +1049,24 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC'  then 162199
     when 'ABC/NVP'  then 162199
     when 'ABC+NVP'  then 162199
+    when 'NVP+ABC'  then 162199
     when 'ABC+TDF'  then 162199
     when 'ABC+DTG'  then 164970
     when 'ABC+EFV'  then 162199
-    when 'ATV/TDF' then 164969
     when '3TC+ATV' then 164969
     when '3TC+ATR' then 164969
-    when '3TC/AZT' then 164969
+    when '3TC/AZT' then 1652
     when 'AZT+3TC' then 164969
-    when '3TC+AZT' then 164969
+    when '3TC+AZT' then 1652
     when 'AZT/3TC' then 164969
-    when 'AZT/ATV/r' then 164969
-    when 'AZT+ATV/r' then 164969
-    when 'ATV/AZT' then 164969
-    when 'ATV+AZT' then 164969
+    when 'AZT/ATV/r' then 164511
+    when 'AZT+ATV/r' then 164511
+    when 'ATV/AZT' then 164511
+    when 'ATV+AZT' then 164511
     when 'AZT/NVP' then 1652
     when 'AZT+NVP' then 1652
-    when 'AZT/EFV' then 1652
-    when 'AZT+EFV' then 1652
+    when 'AZT/EFV' then 160124
+    when 'AZT+EFV' then 160124
     when 'NVP/TDF' then 162565
     when 'NVP+TDF' then 162565
     when 'TDF+NVP' then 162565
@@ -1068,6 +1074,7 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'TDF/ATV/r' then 164512
     when 'TDF+ATV/r' then 164969
     when 'ATV+TDF' then 164512
+    when 'ATV/TDF' then 164512
     when 'AZT/DDI/IDVr' then 162200
     when 'AZT+DDI+IDVr' then 162200
     when 'AZT/DDI/LOPr' then 162200
@@ -1876,6 +1883,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
 
     -- 3TC+AZT+ATV/r
     when '3TC+AZT+ATV'  then 164511
+    when 'AZT+ATV+3TC'  then 164511
+    when 'AZT/ATV/3TC'  then 164511
     when 'AZT+3TC+ATV/r'  then 164511
     when '3TC+AZT+ATV/r'  then 164511
     when '3TC+AZT+ATV+r'  then 164511
@@ -1924,6 +1933,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC/AZT/EFV'  then 160124
     when '3TC/EFV/AZT'  then 160124
     when 'AZT/3TC/EFV'  then 160124
+    when 'AZT/EFV/3TC'  then 160124
+    when 'AZT+EFV+3TC'  then 160124
     when 'PM4 AZT + 3TC + EFV'  then 160124
     when '3TC+AZT+EFV' then 160124
     when '##EFV##AZT' then 160124
@@ -2163,8 +2174,10 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC+TDF+DTG' then 164970
     when '3TC/TDF' then 164969
     when '3TC+TDF' then 164969
-    when 'EFV/TDF' then 164969
-    when 'EFV+TDF' then 164969
+    when 'EFV/TDF' then 164505
+    when 'EFV+TDF' then 164505
+    when 'TDF/EFV' then 164505
+    when 'TDF+EFV' then 164505
     when '3TC+EFV' then 164504
     when '3TC/ABC'  then 162199
     when '3TC+ABC'  then 162199
@@ -2172,24 +2185,24 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC'  then 162199
     when 'ABC/NVP'  then 162199
     when 'ABC+NVP'  then 162199
+    when 'NVP+ABC'  then 162199
     when 'ABC+TDF'  then 162199
     when 'ABC+DTG'  then 164970
     when 'ABC+EFV'  then 162199
-    when 'ATV/TDF' then 164969
     when '3TC+ATV' then 164969
     when '3TC+ATR' then 164969
-    when '3TC/AZT' then 164969
+    when '3TC/AZT' then 1652
     when 'AZT+3TC' then 164969
-    when '3TC+AZT' then 164969
+    when '3TC+AZT' then 1652
     when 'AZT/3TC' then 164969
-    when 'AZT/ATV/r' then 164969
-    when 'AZT+ATV/r' then 164969
-    when 'ATV/AZT' then 164969
-    when 'ATV+AZT' then 164969
+    when 'AZT/ATV/r' then 164511
+    when 'AZT+ATV/r' then 164511
+    when 'ATV/AZT' then 164511
+    when 'ATV+AZT' then 164511
     when 'AZT/NVP' then 1652
     when 'AZT+NVP' then 1652
-    when 'AZT/EFV' then 1652
-    when 'AZT+EFV' then 1652
+    when 'AZT/EFV' then 160124
+    when 'AZT+EFV' then 160124
     when 'NVP/TDF' then 162565
     when 'NVP+TDF' then 162565
     when 'TDF+NVP' then 162565
@@ -2197,6 +2210,7 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'TDF/ATV/r' then 164512
     when 'TDF+ATV/r' then 164969
     when 'ATV+TDF' then 164512
+    when 'ATV/TDF' then 164512
     when 'AZT/DDI/IDVr' then 162200
     when 'AZT+DDI+IDVr' then 162200
     when 'AZT/DDI/LOPr' then 162200
@@ -3006,6 +3020,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
 
     -- 3TC+AZT+ATV/r
     when '3TC+AZT+ATV'  then 164511
+    when 'AZT+ATV+3TC'  then 164511
+    when 'AZT/ATV/3TC'  then 164511
     when 'AZT+3TC+ATV/r'  then 164511
     when '3TC+AZT+ATV/r'  then 164511
     when '3TC+AZT+ATV+r'  then 164511
@@ -3054,6 +3070,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC/AZT/EFV'  then 160124
     when '3TC/EFV/AZT'  then 160124
     when 'AZT/3TC/EFV'  then 160124
+    when 'AZT/EFV/3TC'  then 160124
+    when 'AZT+EFV+3TC'  then 160124
     when 'PM4 AZT + 3TC + EFV'  then 160124
     when '3TC+AZT+EFV' then 160124
     when '##EFV##AZT' then 160124
@@ -3293,8 +3311,10 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC+TDF+DTG' then 164970
     when '3TC/TDF' then 164969
     when '3TC+TDF' then 164969
-    when 'EFV/TDF' then 164969
-    when 'EFV+TDF' then 164969
+    when 'EFV/TDF' then 164505
+    when 'EFV+TDF' then 164505
+    when 'TDF/EFV' then 164505
+    when 'TDF+EFV' then 164505
     when '3TC+EFV' then 164504
     when '3TC/ABC'  then 162199
     when '3TC+ABC'  then 162199
@@ -3302,24 +3322,24 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC'  then 162199
     when 'ABC/NVP'  then 162199
     when 'ABC+NVP'  then 162199
+    when 'NVP+ABC'  then 162199
     when 'ABC+TDF'  then 162199
     when 'ABC+DTG'  then 164970
     when 'ABC+EFV'  then 162199
-    when 'ATV/TDF' then 164969
     when '3TC+ATV' then 164969
     when '3TC+ATR' then 164969
-    when '3TC/AZT' then 164969
+    when '3TC/AZT' then 1652
     when 'AZT+3TC' then 164969
-    when '3TC+AZT' then 164969
+    when '3TC+AZT' then 1652
     when 'AZT/3TC' then 164969
-    when 'AZT/ATV/r' then 164969
-    when 'AZT+ATV/r' then 164969
-    when 'ATV/AZT' then 164969
-    when 'ATV+AZT' then 164969
+    when 'AZT/ATV/r' then 164511
+    when 'AZT+ATV/r' then 164511
+    when 'ATV/AZT' then 164511
+    when 'ATV+AZT' then 164511
     when 'AZT/NVP' then 1652
     when 'AZT+NVP' then 1652
-    when 'AZT/EFV' then 1652
-    when 'AZT+EFV' then 1652
+    when 'AZT/EFV' then 160124
+    when 'AZT+EFV' then 160124
     when 'NVP/TDF' then 162565
     when 'NVP+TDF' then 162565
     when 'TDF+NVP' then 162565
@@ -3327,6 +3347,7 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'TDF/ATV/r' then 164512
     when 'TDF+ATV/r' then 164969
     when 'ATV+TDF' then 164512
+    when 'ATV/TDF' then 164512
     when 'AZT/DDI/IDVr' then 162200
     when 'AZT+DDI+IDVr' then 162200
     when 'AZT/DDI/LOPr' then 162200
@@ -4134,6 +4155,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
 
     -- 3TC+AZT+ATV/r
     when '3TC+AZT+ATV'  then 164511
+    when 'AZT+ATV+3TC'  then 164511
+    when 'AZT/ATV/3TC'  then 164511
     when 'AZT+3TC+ATV/r'  then 164511
     when '3TC+AZT+ATV/r'  then 164511
     when '3TC+AZT+ATV+r'  then 164511
@@ -4182,6 +4205,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when '3TC/AZT/EFV'  then 160124
     when '3TC/EFV/AZT'  then 160124
     when 'AZT/3TC/EFV'  then 160124
+    when 'AZT/EFV/3TC'  then 160124
+    when 'AZT+EFV+3TC'  then 160124
     when 'PM4 AZT + 3TC + EFV'  then 160124
     when '3TC+AZT+EFV' then 160124
     when '##EFV##AZT' then 160124
@@ -4421,8 +4446,10 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC+TDF+DTG' then 164970
     when '3TC/TDF' then 164969
     when '3TC+TDF' then 164969
-    when 'EFV/TDF' then 164969
-    when 'EFV+TDF' then 164969
+    when 'EFV/TDF' then 164505
+    when 'EFV+TDF' then 164505
+    when 'TDF/EFV' then 164505
+    when 'TDF+EFV' then 164505
     when '3TC+EFV' then 164504
     when '3TC/ABC'  then 162199
     when '3TC+ABC'  then 162199
@@ -4430,24 +4457,24 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'ABC+3TC'  then 162199
     when 'ABC/NVP'  then 162199
     when 'ABC+NVP'  then 162199
+    when 'NVP+ABC'  then 162199
     when 'ABC+TDF'  then 162199
     when 'ABC+DTG'  then 164970
     when 'ABC+EFV'  then 162199
-    when 'ATV/TDF' then 164969
     when '3TC+ATV' then 164969
     when '3TC+ATR' then 164969
-    when '3TC/AZT' then 164969
+    when '3TC/AZT' then 1652
     when 'AZT+3TC' then 164969
-    when '3TC+AZT' then 164969
+    when '3TC+AZT' then 1652
     when 'AZT/3TC' then 164969
-    when 'AZT/ATV/r' then 164969
-    when 'AZT+ATV/r' then 164969
-    when 'ATV/AZT' then 164969
-    when 'ATV+AZT' then 164969
+    when 'AZT/ATV/r' then 164511
+    when 'AZT+ATV/r' then 164511
+    when 'ATV/AZT' then 164511
+    when 'ATV+AZT' then 164511
     when 'AZT/NVP' then 1652
     when 'AZT+NVP' then 1652
-    when 'AZT/EFV' then 1652
-    when 'AZT+EFV' then 1652
+    when 'AZT/EFV' then 160124
+    when 'AZT+EFV' then 160124
     when 'NVP/TDF' then 162565
     when 'NVP+TDF' then 162565
     when 'TDF+NVP' then 162565
@@ -4455,6 +4482,7 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when 'TDF/ATV/r' then 164512
     when 'TDF+ATV/r' then 164969
     when 'ATV+TDF' then 164512
+    when 'ATV/TDF' then 164512
     when 'AZT/DDI/IDVr' then 162200
     when 'AZT+DDI+IDVr' then 162200
     when 'AZT/DDI/LOPr' then 162200
