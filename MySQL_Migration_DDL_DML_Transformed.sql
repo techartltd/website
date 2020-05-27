@@ -3130,23 +3130,7 @@ CREATE TABLE migration_tr.tr_otz_activity as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
-    -- 36. OTZ Outcome
-DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
-CREATE TABLE migration_tr.tr_otz_outcome as
-    select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    (case Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
-    Death_Date,
-    Transfer_Facility,
-    Transfer_Date,
-    voided
-    FROM migration_st.st_otz_outcome WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
-
--- 37. OVC Enrolment
+  -- 36. OVC Enrolment
 DROP TABLE IF EXISTS migration_tr.tr_ovc_enrolment;
 CREATE TABLE migration_tr.tr_ovc_enrolment as
     select
@@ -3164,6 +3148,24 @@ CREATE TABLE migration_tr.tr_ovc_enrolment as
     FROM migration_st.st_ovc_enrolment WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
+  
+    -- 37. OTZ Outcome
+DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
+CREATE TABLE migration_tr.tr_otz_outcome as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
+    Death_Date,
+    Transfer_Facility,
+    Transfer_Date,
+    voided
+    FROM migration_st.st_otz_outcome WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+
+
 
 	    -- 38. OVC Outcome
 DROP TABLE IF EXISTS migration_tr.tr_ovc_outcome;
@@ -3180,9 +3182,336 @@ CREATE TABLE migration_tr.tr_ovc_outcome as
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 
+		    -- 39. Complaints table
+DROP TABLE IF EXISTS migration_tr.tr_complaints;
+CREATE TABLE migration_tr.tr_complaints as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+   (case Presenting_complaints
+       when "Yes" then 1065
+       when "No" then 1066  else NULL end)as Presenting_complaints,
+   (case Complaint
+        when "Weight loss" then 832
+        when "Vomiting" then 122983
+        when "Vertigo" then 111525
+        when "Urinary symptoms Pain/frequency/Urgency" then 160208
+        when "Tremors" then 112200
+        when "Swollen legs" then 125198
+        when "Sweating-excessive" then 140941
+        when "Sore Throat" then 158843
+        when "Sleep disturbance" then 141597
+        when "Shoulder pain" then 126535
+        when "Scrotal pain" then 131032
+        when "Runny/blocked nose" then 113224
+        when "Ringing/Buzzing ears" then 117698
+        when "Red eye" then 127777
+        when "Rash" then 512
+        when "Poor Vision" then 5953
+        when "Pelvic pain" then 131034
+        when "Pain when swallowing" then 125225
+        when "Numbness" then 132653
+        when "Night Sweats" then 133027
+        when "Neck pain" then 133469
+        when "Nausea" then 5978
+        when "Muscle pain" then 133632
+        when "Muscle cramps" then 133028
+        when "Mouth ulcers" then 111721
+        when "Mouth pain/burning" then 131015
+        when "Mental status, acute change (coma, lethargy)" then 144576
+        when "Memory loss" then 121657
+        when "Lymphadenopathy" then 135488
+        when "Loss of appetite" then 135595
+        when "Leg pain" then 114395
+        when "Joint Pain" then 116558
+        when "Itchiness/Pruritus" then 879
+        when "Hypotension/Shock" then 116214
+        when "Hearing loss" then 117698
+        when "Headache" then 139084
+        when "Genital skin lesion/Ulcer" then 135462
+        when "Genital Discharge" then 123396
+        when "Flank pain" then 140070
+        when "Fever" then 140238
+        when "Fatigue/weakness" then 162626
+        when "Facial pain" then 114399
+        when "Eye pain" then 131040
+        when "Epigastric Pain" then 141128
+        when "Ear pain" then 141585
+        when "Dizziness" then 141830
+        when "Difficulty in swallowing" then 118789
+        when "Difficult in breathing" then 122496
+        when "Diarrhoea" then 142412
+        when "Crying infant" then 143129
+        when "Cough" then 143264
+        when "Convulsions/Seizure" then 206
+        when "Confusion/Delirium" then 119574
+        when "Cold/Chills" then 871
+        when "Chest pain" then 120749
+        when "Breast pain" then 131021
+        when "Bloody Urine" then 840
+        when "Back pain" then 148035
+        when "Anxiety, depression" then 119537
+        when "Abnormal uterine bleeding" then 141631
+        when "Abdominal pain" then 151
+        when "Other" then 5622  else '' end)as Complaint,
+   Duration,
+   Onset_Date
+    FROM migration_st.st_complaints WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
+  
+     -- 40. Allergies table
+DROP TABLE IF EXISTS migration_tr.tr_allergies;
+CREATE TABLE migration_tr.tr_allergies as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+   (case Has_known_allergies
+      when "Yes" then 1065
+      when "No" then 1066  else NULL end)as Has_known_allergies,
+   (case Allergies_causative_agents
+        when "Ragweed" then 162541
+        when "Pollen" then 162540
+        when "Mold" then 162539
+        when "Latex" then 162538
+        when "Dust" then 162537
+        when "Bee stings" then 162536
+        when "Adhesive tape" then 162542
+        when "Wheat" then 162177
+        when "Strawberries" then 162548
+        when "Soy" then 162176
+        when "Shellfish" then 162175
+        when "Peanuts" then 162172
+        when "Milk protein" then 162547
+        when "Fish" then 162546
+        when "Eggs" then 162171
+        when "Dairy food" then 162545
+        when "Chocolate" then 162544
+        when "Caffeine" then 72609
+        when "Beef" then 162543
+        when "Zidovudine" then 86663
+        when "Tetracyline" then 84893
+        when "Tenofovir" then 84795
+        when "Sulfonamides" then 162170
+        when "Stavudine" then 84309
+        when "Statins" then 162307
+        when "Rifampin" then 767
+        when "Quinidine" then 83018
+        when "Pyrazinamide" then 82900
+        when "Procainamide" then 82559
+        when "Phenytoin" then 82023
+        when "Phenolphthaleins" then 81959
+        when "Penicillins" then 81724
+        when "Penicillamine" then 81723
+        when "Non-steroidal anti-inflammatory drugs" then 162306
+        when "Nitrofurans" then 158005
+        when "Nevirapine" then 80586
+        when "Morphine" then 80106
+        when "Lopinavir/ritonavir" then 794
+        when "Isoniazid" then 78280
+        when "Hydralazine" then 77675
+        when "Heparins" then 162305
+        when "Griseofulvin" then 77164
+        when "Ethambutol" then 75948
+        when "Erythromycins" then 162302
+        when "Efavirenz" then 75523
+        when "Didanosine" then 74807
+        when "Codeine" then 73667
+        when "Choloroquine" then 73300
+        when "Cephalosporins" then 162301
+        when "Carbamazepine" then 72822
+        when "Atazanavir" then 71647
+        when "Aspirin" then 155175
+        when "ARBs (angiotensin II receptor blockers)" then 162299
+        when "Aminoglycosides" then 155060
+        when "Allopurinol" then 70878
+        when "ACE inhibitors" then 162298
+        when "Abacavir" then 70056
+        when "Other" then 5622 else '' end)as Allergies_causative_agents,
+   (case Allergies_reactions
+        when "Unknown" then 1067
+        when "Anaemia" then 121629
+        when "Anaphylaxis" then 148888
+        when "Angioedema" then 148787
+        when "Arrhythmia" then 120148
+        when "Bronchospasm" then 108
+        when "Cough" then 143264
+        when "Diarrhea" then 142412
+        when "Dystonia" then 118773
+        when "Fever" then 140238
+        when "Flushing" then 140039
+        when "GI upset" then 139581
+        when "Headache" then 139084
+        when "Hepatotoxicity" then 159098
+        when "Hives" then 111061
+        when "Hypertension" then 117399
+        when "Itching" then 879
+        when "Mental status change" then 121677
+        when "Musculoskeletal pain" then 159347
+        when "Myalgia" then 121
+        when "Rash" then 512
+        when "Other" then 5622   else '' end)as Allergies_reactions,
+   (case Allergies_severity
+        when "Mild" then 160754
+        when "Moderate" then 160755
+        when "Severe" then 160756
+        when "Fatal" then 160758
+        when "Unknown" then 1067  else '' end)as Allergies_severity,
+    FROM migration_st.st_allergies WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;
 	
+     -- 41. Chronic Illness table
+DROP TABLE IF EXISTS migration_tr.tr_chronic_illness;
+CREATE TABLE migration_tr.tr_chronic_illness as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+   (case Has_Chronic_illnesses_cormobidities
+      when "Yes" then 1065
+      when "No" then 1066  else NULL end)as Has_Chronic_illnesses_cormobidities,
+   (case Chronic_illnesses_name
+        when "Alzheimer's Disease and other Dementias" then 149019
+        when "Arthritis" then 148432
+        when "Asthma" then 153754
+        when "Cancer" then 159351
+        when "Cardiovascular diseases" then 119270
+        when "Chronic hepatitis" then 120637
+        when "Chronic Kidney Disease" then 145438
+        when "Chronic Obstructive Pulmonary Disease (COPD)" then 1295
+        when "Chronic renal failure" then 120576
+        when "Cystic Fibrosis" then 119692
+        when "Deafness and hearing impairment" then 120291
+        when "Diabetes" then 119481
+        when "Endometriosis" then 118631
+        when "Epilepsy" then 117855
+        when "Glaucoma" then 117789
+        when "Heart Disease" then 139071
+        when "Hyperlipidaemia" then 115728
+        when "Hypertension" then 117399
+        when "Hypothyroidism" then 117321
+        when "Mental illness" then 151342
+        when "Multiple Sclerosis" then 133687
+        when "Obesity" then 115115
+        when "Osteoporosis" then 114662
+        when "Sickle Cell Anemia" then 117703
+        when "Thyroid disease" then 118976 else '' end)as Chronic_illnesses_name,
+   Chronic_illnesses_onset_date
+    FROM migration_st.st_chronic_illness WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;	
 	
-	
-	
-	
+	     -- 42. Adverse Drug Reactions table
+DROP TABLE IF EXISTS migration_tr.tr_drug_reactions;
+CREATE TABLE migration_tr.tr_drug_reactions as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+   (case Has_adverse_drug_reaction
+      when "Yes" then 1065
+      when "No" then 1066  else NULL end)as Has_adverse_drug_reaction,
+   (case Medicine_causing_drug_reaction
+        when "Ragweed" then 162541
+        when "Pollen" then 162540
+        when "Mold" then 162539
+        when "Latex" then 162538
+        when "Dust" then 162537
+        when "Bee stings" then 162536
+        when "Adhesive tape" then 162542
+        when "Wheat" then 162177
+        when "Strawberries" then 162548
+        when "Soy" then 162176
+        when "Shellfish" then 162175
+        when "Peanuts" then 162172
+        when "Milk protein" then 162547
+        when "Fish" then 162546
+        when "Eggs" then 162171
+        when "Dairy food" then 162545
+        when "Chocolate" then 162544
+        when "Caffeine" then 72609
+        when "Beef" then 162543
+        when "Zidovudine" then 86663
+        when "Tetracyline" then 84893
+        when "Tenofovir" then 84795
+        when "Sulfonamides" then 162170
+        when "Stavudine" then 84309
+        when "Statins" then 162307
+        when "Rifampin" then 767
+        when "Quinidine" then 83018
+        when "Pyrazinamide" then 82900
+        when "Procainamide" then 82559
+        when "Phenytoin" then 82023
+        when "Phenolphthaleins" then 81959
+        when "Penicillins" then 81724
+        when "Penicillamine" then 81723
+        when "Non-steroidal anti-inflammatory drugs" then 162306
+        when "Nitrofurans" then 158005
+        when "Nevirapine" then 80586
+        when "Morphine" then 80106
+        when "Lopinavir/ritonavir" then 794
+        when "Isoniazid" then 78280
+        when "Hydralazine" then 77675
+        when "Heparins" then 162305
+        when "Griseofulvin" then 77164
+        when "Ethambutol" then 75948
+        when "Erythromycins" then 162302
+        when "Efavirenz" then 75523
+        when "Didanosine" then 74807
+        when "Codeine" then 73667
+        when "Choloroquine" then 73300
+        when "Cephalosporins" then 162301
+        when "Carbamazepine" then 72822
+        when "Atazanavir" then 71647
+        when "Aspirin" then 155175
+        when "ARBs (angiotensin II receptor blockers)" then 162299
+        when "Aminoglycosides" then 155060
+        when "Allopurinol" then 70878
+        when "ACE inhibitors" then 162298
+        when "Abacavir" then 70056
+        when "Other" then 5622 else '' end)as Medicine_causing_drug_reaction,
+   (case Drug_reaction
+        when "Unknown" then 1067
+        when "Anaemia" then 121629
+        when "Anaphylaxis" then 148888
+        when "Angioedema" then 148787
+        when "Arrhythmia" then 120148
+        when "Bronchospasm" then 108
+        when "Cough" then 143264
+        when "Diarrhea" then 142412
+        when "Dystonia" then 118773
+        when "Fever" then 140238
+        when "Flushing" then 140039
+        when "GI upset" then 139581
+        when "Headache" then 139084
+        when "Hepatotoxicity" then 159098
+        when "Hives" then 111061
+        when "Hypertension" then 117399
+        when "Itching" then 879
+        when "Mental status change" then 121677
+        when "Musculoskeletal pain" then 159347
+        when "Myalgia" then 121
+        when "Rash" then 512
+        when "Other" then 5622   else '' end)as Drug_reaction,
+   (case Drug_reaction_severity
+        when "Mild" then 160754
+        when "Moderate" then 160755
+        when "Severe" then 160756
+        when "Fatal" then 160758
+        when "Unknown" then 1067  else '' end)as Drug_reaction_severity,
+   Drug_reaction_onset_date,
+  (case Drug_reaction_action_taken
+        when "CONTINUE REGIMEN" then 1257
+        when "SWITCHED REGIMEN" then 1259
+        when "CHANGED DOSE" then 981
+        when "SUBSTITUTED DRUG" then 1258
+        when "NONE" then 1107
+        when "STOP" then 1260
+        when "OTHER" then 5622  else '' end)as Drug_reaction_action_taken
+    FROM migration_st.st_drug_reactions WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;	
 	
