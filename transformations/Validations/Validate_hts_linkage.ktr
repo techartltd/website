@@ -525,9 +525,18 @@ set CCC_Number=replace(CCC_Number," ",""),
     CCC_Number=replace(CCC_Number,"\\",""),
     CCC_Number = REPLACE(CCC_Number, '\t', '' ),
     CCC_Number = REPLACE(CCC_Number, '\n', '' ),
-    CCC_Number= TRIM(CCC_Number);
+    CCC_Number= TRIM(CCC_Number),
 
- --  CCC_Number=TRIM(LEADING '0' FROM CCC_Number);
+    Remarks=replace(Remarks,",",""),
+    Remarks=replace(Remarks,"-",""),
+    Remarks=replace(Remarks,"\\",""),
+    Remarks=replace(Remarks,"\/",""),
+    Remarks=replace(Remarks,"\)",""),
+    Remarks=replace(Remarks,"\(",""),
+    Remarks=replace(Remarks,"\"",""),
+    Remarks=replace(Remarks,"'",""),
+    Remarks=replace(Remarks,"\'",""),
+    Remarks=replace(Remarks,"\\","");
 
   
 
