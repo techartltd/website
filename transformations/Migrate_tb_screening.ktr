@@ -643,8 +643,8 @@ CREATE TABLE migration_st.st_tb_screening
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 11. TB Screening Validated by LO
-
+    <sql>-- 11. TB Screening Validated by LO   v2.0 
+ 
 SELECT PersonID AS Person_Id
 	  ,V.VisitDate Encounter_Date
 	  ,NULL AS Encounter_ID
@@ -677,10 +677,10 @@ SELECT PersonID AS Person_Id
 	  ,CASE WHEN [EvaluatedForIpt]=0 THEN 'No' 
 			WHEN [EvaluatedForIpt]=1 THEN 'Yes'
 	   END AS Evaluated_for_IPT
-	  ,CASE WHEN (D.ItemName='Negative' OR D.ItemName='Positive' )THEN D.ItemName
-			WHEN (E.ItemName='Suggestive' OR E.ItemName='Normal' )THEN E.ItemName
-			WHEN (F.ItemName='Negative' OR F.ItemName='Positive' )THEN F.ItemName
-			ELSE NULL END AS  TB_results
+	 ,CASE WHEN Cough=1 or Fever=1 or WeightLoss=1 or NightSweats=1 THEN 'Presumed TB'
+		 WHEN Cough=0 and Fever=0 and WeightLoss=0 and NightSweats=0 THEN 'No Signs'
+		 WHEN Cough IS NULL or Fever IS NULL or WeightLoss IS NULL or NightSweats IS NULL THEN 'Not Done'
+		 END AS TB_results
       ,A.[CreateDate]created_at
 	  ,A.[CreatedBy]created_by
 FROM [dbo].[PatientIcf]A
@@ -690,9 +690,7 @@ LEFT JOIN [dbo].[PatientIcfAction] B ON B.PatientId=A.[PatientId] and B.[Patient
 LEFT JOIN LookupItemView D on D.ItemID=B.[SputumSmear]and  D.MasterName ='SputumSmear'
 LEFT JOIN LookupItemView E on E.ItemID=B.[ChestXray]and  E.MasterName ='ChestXray'
 LEFT JOIN LookupItemView F on F.ItemID=B.[GeneXpert]and  F.MasterName ='GeneExpert'
-WHERE A.DELETEFLAG=0
-
-</sql>
+WHERE A.DELETEFLAG=0</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
