@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_hts_initial</name>
+    <name>Validate_hts_referral</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/16 11:09:49.579</created_date>
+    <created_date>2020/05/26 13:36:40.929</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/16 11:09:49.579</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/05/26 13:36:40.929</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>hts_referral_con</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
     <database>mysql_tr</database>
-    <port>3306</port>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -499,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_hts_initial</name>
+    <name>Remove_special_characters</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,127 +503,29 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>hts_referral_con</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 4. Create hts initial transformed table
-DROP TABLE IF EXISTS migration_tr.tr_hts_initial;
-CREATE TABLE migration_tr.tr_hts_initial as
-  select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    (case Pop_Type
-     when "General Population" then 164928
-     when "Key Population" then 164929
-     when "Priority Population" then 138643  else "" end)as Pop_Type,
-    (case Key_Pop_Type
-     when "Male Sex Worker" then 165084
-     when "People who Inject with Drugs" then 105
-     when "Female Sex Worker" then 160579
-     when "Men having Sex with Men" then 160578
-     when "other" then 5622  else "" end) as Key_Pop_Type,
-    (case Priority_Pop_Type
-     when "Fisher folk" then 159674
-     when "Truck driver" then 162198
-     when "Adolescent and young girls" then 160549
-     when "Prisoner" then 162277
-     when "other" then 5622  else "" end) as Priority_Pop_Type,
-    (case Patient_disabled
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Patient_disabled,
-    (case Disability
-     when "D: Deaf/Hearing impaired" then 120291
-     when "B: Blind/Visually impaired" then 147215
-     when "M: Mentally Challenged" then 151342
-     when "P: Physically Challenged" then  164538
-     when "Other" then 5622 else "" end)as Disability,
-    (case Ever_Tested
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Ever_Tested,
-    (case Self_Tested
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Self_Tested,
-    MonthSinceSelfTest,
-    MonthsSinceLastTest,
-    (case HTS_Strategy
-     when "NP: Non-Patients" then 164953
-     when "HP: Health Facility Patients" then 164955
-     when "VI: Integrated VCT sites" then 164954     
-     when "HB: Home-based" then 159938
-     when "MO: Mobile and Outreach" then 159939
-     when "PNS" then 161557      
-     when "VS: Stand-alone VCT sites" then 164955     
-     else "" end )as HTS_Strategy,
-    (case HTS_Entry_Point
-     when "IPD-Adult" then 5485
-     when "Maternity" then 160538
-     when "MCH" then 160538
-     when "OPD" then 160542
-     when "Other" then 5622
-     when "PNS" then 160538
-     when "TB" then 160541
-     when "Mobile Outreach" then 159939
-     when "PeD" then 162181
-     when "ANC" then 160538
-     when "Outreach" then 159939
-     when "PITC" then 160538
-     when "PMTCT" then 160538
-     when "CCC" then 162050
-     when "IPD-Child" then 160538
-     when "VCT" then 159940
-     when "HBTC" then 159938
-     when "FP" then 160538 
-     when "PNC" then 160538 
-     else "" end)as HTS_Entry_Point,
-    (case Consented
-     when "Yes" then 1
-     when "No" then 2  else "" end)as Consented,
-    (case Tested_As
-     when "C: Couple (includes polygamous)" then 164958
-     when "I: Individual" then 164957  else "" end)as Tested_As,
-    (case Test_1_Kit_Name
-     when "First Response" then 164961
-     when "Determine" then 164960
-     when "Other" then 1175  else "" end) as Test_1_Kit_Name,
-    Test_1_Lot_Number,
-    Test_1_Expiry_Date,
-    (case Test_1_Final_Result
-     when "Positive" then 703
-     when "Negative" then 664
-     when "Inconclusive" then 1138  else "" end)as  Test_1_Final_Result,
-    (case Test_2_Kit_Name
-     when "First Response" then 164961
-     when "Determine" then 164960
-     when "Other" then 1175  else "" end)as  Test_2_Kit_Name,
-    Test_2_Lot_Number,
-    Test_2_Expiry_Date,
-    (case Test_2_Final_Result
-     when "Positive" then 703
-     when "Negative" then 664
-     when "Inconclusive" then 1138  else "" end)as  Test_2_Final_Result,
-    (case  Final_Result
-     when "Positive" then 703
-     when "Negative" then 664
-     when "Inconclusive" then 1138  else "" end)as  Final_Result,
-    (case Result_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Result_given,
-    (case Couple_Discordant
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Couple_Discordant,
-    (case Tb_Screening_Results
-     when "NS: No Signs" then 1660
-     when "PrTB: Presumed TB" then 142177
-     when "TB Confirmed" then 1662
-     when "ND: Not Done" then 160737
-     when "TBRx: On TB treatment" then 1111 else "" end)as Tb_Screening_Results,
-    Remarks
-  FROM migration_st.st_hts_test where TestType = "Initial Test" AND
-   (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    <sql>-- 1.  Validation: Remove special characters from Remarks
+
+update tr_hts_referral
+set Remarks=replace(Remarks,",",""),
+    Remarks=replace(Remarks,"-",""),
+    Remarks=replace(Remarks,"\\",""),
+    Remarks=replace(Remarks,"\/",""),
+    Remarks=replace(Remarks,"\)",""),
+    Remarks=replace(Remarks,"\(",""),
+    Remarks=replace(Remarks,"\"",""),
+    Remarks=replace(Remarks,"'",""),
+    Remarks=replace(Remarks,"\'",""),
+    Remarks=replace(Remarks,"\\","");
+
+  
+
+
+	    </sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -646,8 +542,8 @@ CREATE TABLE migration_tr.tr_hts_initial as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>160</xloc>
-      <yloc>144</yloc>
+      <xloc>322</xloc>
+      <yloc>85</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
