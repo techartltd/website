@@ -552,10 +552,17 @@ CREATE TABLE migration_tr.tr_hts_retest as
     (case Self_Tested
      when "Yes" then 1065
      when "No" then 1066  else "" end)as Self_Tested,
+    MonthSinceSelfTest,
+    MonthsSinceLastTest,
     (case HTS_Strategy
      when "NP: Non-Patients" then 164953
      when "HP: Health Facility Patients" then 164955
-     when "VI: Integrated VCT sites" then 164954 else "" end )as HTS_Strategy,
+     when "VI: Integrated VCT sites" then 164954     
+     when "HB: Home-based" then 159938
+     when "MO: Mobile and Outreach" then 159939
+     when "PNS" then 161557      
+     when "VS: Stand-alone VCT sites" then 164955     
+     else "" end )as HTS_Strategy,
     (case HTS_Entry_Point
      when "IPD-Adult" then 5485
      when "Maternity" then 160538
@@ -573,13 +580,16 @@ CREATE TABLE migration_tr.tr_hts_retest as
      when "CCC" then 162050
      when "IPD-Child" then 160538
      when "VCT" then 159940
-     when "HBTC" then 159938  else "" end)as HTS_Entry_Point,
+     when "HBTC" then 159938
+     when "FP" then 160538 
+     when "PNC" then 160538 
+     else "" end)as HTS_Entry_Point,
     (case Consented
      when "Yes" then 1
      when "No" then 2  else "" end)as Consented,
     (case Tested_As
-     when "C: Couple (includes polygamous)" then 164957
-     when "I: Individual" then 164958  else "" end)as Tested_As,
+     when "C: Couple (includes polygamous)" then 164958
+     when "I: Individual" then 164957  else "" end)as Tested_As,
     (case Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
@@ -616,6 +626,7 @@ CREATE TABLE migration_tr.tr_hts_retest as
      when "TB Confirmed" then 1662
      when "ND: Not Done" then 160737
      when "TBRx: On TB treatment" then 1111 else "" end)as Tb_Screening_Results,
+    Remarks
     Remarks
   FROM migration_st.st_hts_test where TestType = "Repeat Test" AND
   (Encounter_Date != "" OR Encounter_Date != NULL)

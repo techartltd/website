@@ -593,6 +593,7 @@ DROP TABLE IF EXISTS migration_st.st_hiv_enrollment;
 CREATE TABLE migration_st.st_hiv_enrollment
 (
   Person_Id                        INT(11),
+  Ptn_pk                           VARCHAR(20),
   UPN                              VARCHAR(20),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
@@ -662,12 +663,11 @@ CREATE TABLE migration_st.st_hiv_enrollment
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>
-
--- 2. HIV Enrollment DML Validated by PG
+    <sql>-- 2. HIV Enrollment DML Validated by LO v2.0.0 
 EXEC pr_OpenDecryptedSession;
 
-SELECT DISTINCT P.Id AS Person_Id
+SELECT DISTINCT P.Id AS Person_Id,
+     PT.ptn_pk AS Ptn_pk
 	,UPN = (
 		SELECT TOP 1 pdd.IdentifierValue
 		FROM (
@@ -706,8 +706,14 @@ SELECT DISTINCT P.Id AS Person_Id
 	,ent.Entry_point
 	,pti.FacilityFrom AS TI_Facility
 	,PE.EnrollmentDate AS Date_First_enrolled_in_care
-	,bas.TransferInDate AS Transfer_In_Date
-	,bas.ARTInitiationDate AS Date_started_art_at_transferring_facility
+	,bas.TransferInDate  AS Transfer_In_Date
+	,CASE WHEN (
+		SELECT itemName
+		FROM LookupItemView
+		WHERE MasterName = 'PatientType'
+			AND itemId = PT.PatientType
+		)='Transfer-In' and trans.ARTTransferInDate >'1900-01-01 00:00:00.000' then Tdate.StartARTDate 
+		ELSE bas.ARTInitiationDate END AS Date_started_art_at_transferring_facility
 	,bas.HIVDiagnosisDate AS Date_Confirmed_hiv_positive
 	,bas.FacilityFrom AS Facility_confirmed_hiv_positive
 	,bas.HistoryARTUse AS Baseline_arv_use
@@ -899,9 +905,40 @@ LEFT OUTER JOIN (
 			WHERE deleteflag = 0
 			)
 	) AS ptC ON PT.Id = ptC.PatientId
-WHERE PE.ServiceAreaId = 1
-
-</sql>
+LEFT JOIN (select  distinct a.Ptn_Pk, Max(ARTTransferInDate) ARTTransferInDate 
+from(Select distinct Ptn_Pk, Max(ARTTransferInDate) ARTTransferInDate From dtl_PatientHivPrevCareIE 
+where ARTTransferInDate is not null  and ARTTransferInDate>'1900-06-15 00:00:00.000'Group By Ptn_Pk
+union 
+Select distinct Ptn_Pk, Max(TransferInDate) ARTTransferInDate 
+From dbo.PatientTransferIn a inner join dbo.Patient b on b.Id=a.PatientId 
+where  TransferInDate>'1900-06-15 00:00:00.000'Group By Ptn_Pk)a Group By Ptn_Pk)trans on trans.Ptn_pk=pt.ptn_pk
+LEFT JOIN (SELECT A.Ptn_Pk,
+	MIN(A.prevARTStartDate) StartARTDate,
+	MAX(A.prevRegimen) StartRegimen
+	FROM
+	(SELECT ptn_pk,
+	MIN([Previous ART StartDate]) prevARTStartDate ,
+	MAX([Previous ART Regimen]) prevRegimen
+	FROM vw_patientdetail
+	WHERE [Previous ART StartDate] > CAST('' AS datetime)
+	GROUP BY ptn_pk
+	UNION 
+	SELECT a.ptn_pk,
+	MIN(a.ARTStartDate) prevARTStartDate,
+	MAX(b.regimen) prevRegimen
+	FROM dtl_patientHivPrevCareEnrollment a
+	LEFT JOIN dtl_patientBlueCardPriorART b ON a.visit_pk = b.visit_pk
+	WHERE a.ARTStartDate > CAST('' AS datetime)
+	GROUP BY a.ptn_pk
+	union
+	SELECT c.ptn_pk,MIN(a.TreatmentStartDate) ARTStartDate,MAX(b.DisplayName) Regimen
+	FROM dbo.PatientTransferIn a
+	inner join dbo.Patient c on c.Id=a.PatientId
+	LEFT JOIN dbo.LookupItem b ON a.[CurrentTreatment] = b.Id
+	WHERE a.TreatmentStartDate > CAST('' AS datetime)
+	GROUP BY ptn_pk
+	) A	GROUP BY A.Ptn_Pk) Tdate on Tdate.Ptn_Pk=pt.ptn_pk
+WHERE PE.ServiceAreaId = 1</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
