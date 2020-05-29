@@ -517,53 +517,57 @@ CREATE TABLE migration_tr.tr_tb_screening
       Encounter_ID,
       (case Cough
        when "Yes" then 159799
-       when "No" then 1066  else NULL end)as Cough,
+       when "No" then 1066  else "" end)as Cough,
       (case Fever
        when "Yes" then 1494
-       when "No" then 1066  else NULL end)as Fever,
+       when "No" then 1066  else "" end)as Fever,
       (case Weight_loss
        when "Yes" then 832
-       when "No" then 1066  else NULL end)as Weight_loss,
+       when "No" then 1066  else "" end)as Weight_loss,
       (case Night_sweats
        when "Yes" then 133027
-       when "No" then 1066  else NULL end)as Night_sweats,
+       when "No" then 1066  else "" end)as Night_sweats,
       (case Tests_Ordered
        when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Tests_Ordered,
+       when "No" then 1066  else "" end)as Tests_Ordered,
       (case Sputum_Smear
        when "Positive" then 703
        when "Ordered" then 307
-       when "Negative" then 664  else NULL end)as Sputum_Smear,
+       when "Negative" then 664  else "" end)as Sputum_Smear,
       (case X_ray 
        when "Ordered" then 12
        when "Suggestive" then 152526
        when "Normal" then 1115
        when "Not Done" then 1118
-       when "NotDone" then 1118 else NULL end)as X_ray ,
+       when "NotDone" then 1118 else "" end)as X_ray ,
       (case Gene_xpert
        when "Ordered" then 162202
        when "Negative" then 664
        when "Positive" then 162204
        when "Not Done" then 1118
-       when "NotDone" then 1118  else NULL end)as Gene_xpert,     
-      Contact_tb_case,
-      Lethergy,       
+       when "NotDone" then 1118  else "" end)as Gene_xpert,     
+      (case Contact_tb_case
+       when "Yes" then 1065
+       when "No" then 1066  else "" end)as Contact_tb_case,           
       Referral,
       Clinical_diagnosis,
       (case Invitation_contacts
        when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Invitation_contacts,
+       when "No" then 1066  else "" end)as Invitation_contacts,
       (case Evaluated_for_IPT
        when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Evaluated_for_IPT,
+       when "No" then 1066  else "" end)as Evaluated_for_IPT,
       (case TB_results
        when "No TB Signs" then 1660
+       when "No Signs" then 1660
        when "Presumed TB" then 142177
        when "TB Confirmed" then 1661
        when "TB Rx" then  1662
        when "INH" then 1679 
-       when "TB Screening Not Done" then  160737 else NULL end)as TB_results
-    FROM migration_st.st_tb_screening WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+       when "Not Done" then  160737
+       when "TB Screening Not Done" then  160737 else "" end)as TB_results
+    FROM migration_st.st_tb_screening WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL) 
+    AND (TB_results != "Not Done") 
     GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>

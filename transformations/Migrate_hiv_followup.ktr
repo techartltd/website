@@ -718,7 +718,7 @@ CREATE TABLE migration_st.st_hiv_followup
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 16. HIV Followup Validated by FG and PG V4.0.0
+    <sql>-- 16. HIV Followup Validated by FG V5.0.0
 
 SELECT P.PersonId Person_Id,
 		P.ptn_pk
@@ -882,25 +882,25 @@ SELECT P.PersonId Person_Id,
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	WHERE ov.VisitType = 4 AND d.Prophylaxis = 0 AND o.PatientMasterVisitId IS NOT NULL AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
 	WHEN papp.Next_appointment_date &lt; (select TOP 1
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	WHERE ov.VisitType = 4 AND d.Prophylaxis = 0 AND o.PatientMasterVisitId IS NOT NULL AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
 	THEN (select TOP 1
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	WHERE ov.VisitType = 4 AND d.Prophylaxis = 0 AND o.PatientMasterVisitId IS NOT NULL AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
 	WHEN papp.Next_appointment_date > (select TOP 1
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit ov on ov.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
+	WHERE ov.VisitType = 4 AND d.Prophylaxis = 0 AND o.PatientMasterVisitId IS NOT NULL AND o.DispensedByDate IS NOT NULL AND o.Ptn_pk = P.ptn_pk and o.DispensedByDate = PM.VisitDate)
 	THEN papp.Next_appointment_date
 	ELSE papp.Next_appointment_date end
 	AS DATE), 'yyyy-MM-dd') AS Next_appointment_date
@@ -1490,12 +1490,108 @@ WHERE PE.EncounterTypeId = (
 		WHERE MasterName = 'EncounterType'
 			AND ItemName = 'ccc-encounter'
 		)
+		UNION
+--Greencard pharmacy
+SELECT 
+
+P.PersonId Person_Id,
+P.Ptn_Pk,
+format(cast(coalesce(PD.DispensedByDate,PD.OrderedByDate,PD.VisitDate) AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
+NULL AS Encounter_ID,
+NULL AS Visit_scheduled,
+NULL AS Visit_by,
+NULL Visit_by_other,
+NULL AS Nutritional_status,
+NULL AS Who_stage,
+NULL AS Clinical_notes,
+NULL as Last_menstrual_period,
+NULL as Pregnancy_status,
+NULL as Wants_pregnancy,
+NULL as Pregnancy_outcome,
+NULL as Anc_number,
+NULL AS Anc_profile,
+NULL  as Expected_delivery_date,
+NULL as Gravida,
+NULL as Parity_term,
+NULL as Parity_abortion,
+NULL as Family_planning_status,
+NULL Reason_not_using_family_planning,
+NULL as General_examinations_findings,
+NULL as System_review_finding,
+NULL as Skin,
+NULL as Skin_finding_notes,
+NULL as Eyes,
+NULL as Eyes_Finding_notes,
+NULL as ENT,
+NULL as ENT_finding_notes,
+NULL as Chest,
+NULL as Chest_finding_notes,
+NULL as CVS,
+NULL as CVS_finding_notes,
+NULL as Abdomen,
+NULL as Abdomen_finding_notes,
+NULL as CNS,
+NULL as CNS_finding_notes,
+NULL as Genitourinary,
+NULL as Genitourinary_finding_notes,
+NULL as Treatment_plan,
+NULL as Ctx_adherence,
+NULL as Ctx_dispensed,
+NULL as Dapsone_adherence,
+NULL as Dapsone_dispensed,
+NULL Morisky_forget_taking_drugs,
+NULL Morisky_careless_taking_drugs,
+NULL Morisky_stop_taking_drugs_feeling_worse,
+NULL Morisky_stop_taking_drugs_feeling_better,
+NULL Morisky_took_drugs_yesterday,
+NULL Morisky_stop_taking_drugs_symptoms_under_control,
+NULL Morisky_feel_under_pressure_on_treatment_plan,
+NULL Morisky_how_often_difficulty_remembering,
+NULL as Arv_adherence,
+NULL Condom_Provided,
+NULL Screened_for_substance_abuse,
+NULL Pwp_Disclosure,
+NULL Pwp_partner_tested,
+NULL as Cacx_Screening,
+NULL Screened_for_sti,
+NULL as Sti_partner_notification,
+NULL as Stability,
+format(cast(PD.ExpectedReturn AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
+NULL Next_appointment_reason,
+NULL Appointment_type,
+NULL as Differentiated_care,
+NULL as Voided
+
+FROM(SELECT 
+dateadd(day, ro.Duration, o.DispensedByDate) AS ExpectedReturn, 
+PM.PatientId,
+PM.VisitDate,
+o.DispensedByDate,
+o.OrderedByDate
+
+FROM ord_PatientPharmacyOrder o
+INNER JOIN dtl_PatientPharmacyOrder ro on ro.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+LEFT JOIN PatientMasterVisit PM on PM.Id = o.PatientMasterVisitId
+LEFT JOIN PatientEncounter PE ON PE.PatientMasterVisitId = PM.Id
+WHERE o.DispensedByDate is not null AND ro.Prophylaxis = 0  AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT')) AND o.PatientMasterVisitId IS NOT NULL AND PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'EncounterType' AND ItemName = 'Pharmacy-encounter')) PD
+LEFT JOIN (
+SELECT 
+PM.VisitDate,
+PM.PatientId
+
+FROM PatientEncounter PE
+LEFT JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
+LEFT JOIN Patient P ON P.Id = PM.PatientId
+WHERE PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'EncounterType' AND ItemName = 'ccc-encounter')
+) PDR ON PDR.PatientId = PD.PatientId AND format(cast(PDR.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd')
+INNER JOIN Patient P ON P.Id = PD.PatientId
+WHERE PDR.VisitDate IS NULL
 
 UNION
-
+--BLUECARD FOLLOWUP
 SELECT
 P.PersonId Person_Id,
-CASE WHEN MP.Ptn_Pk is null THEN P.ptn_pk else MP.Ptn_Pk end as Ptn_Pk,
+MP.Ptn_Pk,
 format(cast(OV.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
 NULL AS Encounter_ID,
 CASE WHEN ISNULL(PAE.Scheduled, '0') = '0' THEN 'No' WHEN PAE.Scheduled = '1' THEN 'Yes' END AS Visit_scheduled,
@@ -1565,25 +1661,25 @@ WHEN bapp.AppDate IS NULL
 		from ord_PatientPharmacyOrder o
 		inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 		inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-		WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+		WHERE kth.VisitType = 4 AND d.Prophylaxis = 0  AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT')) AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk AND PatientMasterVisitId IS NULL) 
 WHEN (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk)  > bapp.AppDate 
+	WHERE kth.VisitType = 4 AND d.Prophylaxis = 0  AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT')) AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk AND PatientMasterVisitId IS NULL)  > bapp.AppDate 
 THEN (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+	WHERE kth.VisitType = 4 AND d.Prophylaxis = 0  AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT')) AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk AND PatientMasterVisitId IS NULL) 
 WHEN bapp.AppDate > (select TOP 1 
 	dateadd(day,d.Duration,o.DispensedByDate) as ExpectedReturn
 	from ord_PatientPharmacyOrder o
 	inner join ord_Visit kth on kth.Visit_Id = o.VisitID
 	inner join dtl_PatientPharmacyOrder d on d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	WHERE kth.VisitType = 4 AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk) 
+	WHERE kth.VisitType = 4 AND d.Prophylaxis = 0  AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT')) AND o.DispensedByDate IS NOT NULL AND kth.VisitDate = OV.VisitDate and kth.Ptn_pk = OV.Ptn_Pk AND PatientMasterVisitId IS NULL) 
 THEN bapp.AppDate 
 ELSE bapp.AppDate END AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
 NULL Next_appointment_reason,
@@ -1605,16 +1701,16 @@ LEFT JOIN (
 		a.Visit_pk
 		FROM dtl_patientappointment a
 		INNER JOIN mst_decode b ON a.appstatus = b.id
-		WHERE a.deleteflag = 0 AND a.ModuleId IN(SELECT m.ModuleID FROM mst_module m WHERE m.ModuleName='CCC Patient Card MoH 257')) bapp ON bapp.Visit_pk = OV.Visit_Id
-WHERE OV.VisitType=17
+		WHERE a.deleteflag = 0 AND format(cast(a.AppDate AS DATE), 'yyyy-MM-dd') &lt;&gt; '1900-01-01' AND a.ModuleId IN(SELECT m.ModuleID FROM mst_module m WHERE m.ModuleName='CCC Patient Card MoH 257')) bapp ON bapp.Visit_pk = OV.Visit_Id
+WHERE OV.VisitType=17 and MP.DeleteFlag = 0
 
 UNION
-
+--BLUECARD PHARMACY
 select 
 
 P.PersonId Person_Id,
 P.Ptn_Pk,
-format(cast(t.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
+format(cast(coalesce(t.DispensedByDate,t.OrderedByDate,t.VisitDate) AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
 NULL AS Encounter_ID,
 NULL AS Visit_scheduled,
 NULL AS Visit_by,
@@ -1680,11 +1776,13 @@ NULL Appointment_type,
 NULL as Differentiated_care,
 NULL as Voided
 
-from(SELECT dateadd(day, d.Duration, o.DispensedByDate) AS ExpectedReturn, o.Ptn_pk, ov.VisitDate, ov.VisitType
-FROM ord_PatientPharmacyOrder o
+from(SELECT dateadd(day, d.Duration, CASE WHEN o.OrderedByDate > o.DispensedByDate THEN o.OrderedByDate ELSE o.DispensedByDate END) AS ExpectedReturn, 
+o.DispensedByDate, o.OrderedByDate,
+o.Ptn_pk, ov.VisitDate, ov.VisitType, ov.Visit_Id
+FROM ord_PatientPharmacyOrder o 
 INNER JOIN ord_Visit ov ON ov.Visit_Id = o.VisitID
 INNER JOIN dtl_PatientPharmacyOrder d ON d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-WHERE ov.VisitType = 4 AND o.DispensedByDate IS NOT NULL) t
+WHERE ov.VisitType = 4 AND d.Prophylaxis = 0  AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT')) AND o.DispensedByDate IS NOT NULL and o.PatientMasterVisitId is null) t
 INNER JOIN Patient P ON P.ptn_pk = t.Ptn_Pk
 left join( select 
 vo.Ptn_Pk,
@@ -1692,103 +1790,6 @@ vo.VisitDate
 FROM ord_Visit vo
 WHERE vo.VisitType = 17) d on d.Ptn_Pk = t.Ptn_pk AND t.VisitDate = d.VisitDate
 WHERE d.VisitDate is null
-
-UNION
-
-SELECT 
-
-P.PersonId Person_Id,
-P.Ptn_Pk,
-format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
-NULL AS Encounter_ID,
-NULL AS Visit_scheduled,
-NULL AS Visit_by,
-NULL Visit_by_other,
-NULL AS Nutritional_status,
-NULL AS Who_stage,
-NULL AS Clinical_notes,
-NULL as Last_menstrual_period,
-NULL as Pregnancy_status,
-NULL as Wants_pregnancy,
-NULL as Pregnancy_outcome,
-NULL as Anc_number,
-NULL AS Anc_profile,
-NULL  as Expected_delivery_date,
-NULL as Gravida,
-NULL as Parity_term,
-NULL as Parity_abortion,
-NULL as Family_planning_status,
-NULL Reason_not_using_family_planning,
-NULL as General_examinations_findings,
-NULL as System_review_finding,
-NULL as Skin,
-NULL as Skin_finding_notes,
-NULL as Eyes,
-NULL as Eyes_Finding_notes,
-NULL as ENT,
-NULL as ENT_finding_notes,
-NULL as Chest,
-NULL as Chest_finding_notes,
-NULL as CVS,
-NULL as CVS_finding_notes,
-NULL as Abdomen,
-NULL as Abdomen_finding_notes,
-NULL as CNS,
-NULL as CNS_finding_notes,
-NULL as Genitourinary,
-NULL as Genitourinary_finding_notes,
-NULL as Treatment_plan,
-NULL as Ctx_adherence,
-NULL as Ctx_dispensed,
-NULL as Dapsone_adherence,
-NULL as Dapsone_dispensed,
-NULL Morisky_forget_taking_drugs,
-NULL Morisky_careless_taking_drugs,
-NULL Morisky_stop_taking_drugs_feeling_worse,
-NULL Morisky_stop_taking_drugs_feeling_better,
-NULL Morisky_took_drugs_yesterday,
-NULL Morisky_stop_taking_drugs_symptoms_under_control,
-NULL Morisky_feel_under_pressure_on_treatment_plan,
-NULL Morisky_how_often_difficulty_remembering,
-NULL as Arv_adherence,
-NULL Condom_Provided,
-NULL Screened_for_substance_abuse,
-NULL Pwp_Disclosure,
-NULL Pwp_partner_tested,
-NULL as Cacx_Screening,
-NULL Screened_for_sti,
-NULL as Sti_partner_notification,
-NULL as Stability,
-format(cast(PD.ExpectedReturn AS DATE), 'yyyy-MM-dd') AS Next_appointment_date,
-NULL Next_appointment_reason,
-NULL Appointment_type,
-NULL as Differentiated_care,
-NULL as Voided
-
-FROM(SELECT 
-dateadd(day, ro.Duration, o.DispensedByDate) AS ExpectedReturn, 
-PM.PatientId,
-PM.VisitDate
-
-FROM ord_PatientPharmacyOrder o
-INNER JOIN dtl_PatientPharmacyOrder ro on ro.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-LEFT JOIN PatientMasterVisit PM on PM.Id = o.PatientMasterVisitId
-LEFT JOIN PatientEncounter PE ON PE.PatientMasterVisitId = PM.Id
-WHERE o.DispensedByDate is not null AND PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'EncounterType' AND ItemName = 'Pharmacy-encounter')) PD
-LEFT JOIN (
-SELECT 
-PM.VisitDate,
-PM.PatientId
-
-FROM PatientEncounter PE
-LEFT JOIN PatientMasterVisit PM ON PM.Id = PE.PatientMasterVisitId
-LEFT JOIN Patient P ON P.Id = PM.PatientId
-WHERE PE.EncounterTypeId = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'EncounterType' AND ItemName = 'ccc-encounter')
-) PDR ON PDR.PatientId = PD.PatientId AND format(cast(PDR.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PD.VisitDate AS DATE), 'yyyy-MM-dd')
-INNER JOIN Patient P ON P.Id = PD.PatientId
-WHERE PDR.VisitDate IS NULL
-
-
 </sql>
     <limit>0</limit>
     <lookup/>
