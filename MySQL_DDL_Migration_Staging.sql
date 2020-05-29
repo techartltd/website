@@ -1370,6 +1370,9 @@ CREATE TABLE migration_st.st_chronic_illness (
   Has_Chronic_illnesses_cormobidities VARCHAR(200),
   Chronic_illnesses_name            VARCHAR(200),
   Chronic_illnesses_onset_date      DATE,
+  Treatment 						VARCHAR(200),
+  Dose								int(11),
+  Duration						     int(11),
   Voided                           int(11)
 );
 
