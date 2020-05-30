@@ -841,14 +841,16 @@ NULL Next_appointment_reason,
 NULL Appointment_type,
 NULL as Differentiated_care,
 NULL as Voided
-
+,PD.Created_by as Created_by
+,PD.Create_date as Create_date
 FROM(SELECT 
 dateadd(day, ro.Duration, o.DispensedByDate) AS ExpectedReturn, 
 PM.PatientId,
 PM.VisitDate,
 o.DispensedByDate,
 o.OrderedByDate
-
+,o.UserID as Created_by
+,o.CreateDate as Create_date
 FROM ord_PatientPharmacyOrder o
 INNER JOIN dtl_PatientPharmacyOrder ro on ro.ptn_pharmacy_pk = o.ptn_pharmacy_pk
 LEFT JOIN PatientMasterVisit PM on PM.Id = o.PatientMasterVisitId
@@ -966,7 +968,8 @@ NULL Next_appointment_reason,
 NULL Appointment_type,
 NULL as Differentiated_care,
 NULL as Voided
-
+,OV.UserID as Created_by
+,OV.CreateDate as Create_date
 FROM ord_Visit OV
 LEFT JOIN mst_Patient MP ON MP.Ptn_Pk = OV.Ptn_Pk
 LEFT JOIN Patient P ON P.ptn_pk = MP.Ptn_Pk
@@ -1055,10 +1058,12 @@ NULL Next_appointment_reason,
 NULL Appointment_type,
 NULL as Differentiated_care,
 NULL as Voided
-
+,t.UserID as Created_by
+,t.CreateDate as Create_date
 from(SELECT dateadd(day, d.Duration, CASE WHEN o.OrderedByDate > o.DispensedByDate THEN o.OrderedByDate ELSE o.DispensedByDate END) AS ExpectedReturn, 
 o.DispensedByDate, o.OrderedByDate,
-o.Ptn_pk, ov.VisitDate, ov.VisitType, ov.Visit_Id
+o.Ptn_pk, ov.VisitDate, ov.VisitType, ov.Visit_Id,
+o.CreateDate,o.UserID
 FROM ord_PatientPharmacyOrder o 
 INNER JOIN ord_Visit ov ON ov.Visit_Id = o.VisitID
 INNER JOIN dtl_PatientPharmacyOrder d ON d.ptn_pharmacy_pk = o.ptn_pharmacy_pk
