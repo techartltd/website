@@ -1408,6 +1408,7 @@ CREATE TABLE migration_st.st_diagnosis (
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Diagnosis                        VARCHAR(200),
+  ManagementPlan				  VARCHAR(300),
   Voided                           int(11)
 );
 
