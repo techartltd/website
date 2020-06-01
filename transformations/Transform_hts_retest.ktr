@@ -629,7 +629,7 @@ CREATE TABLE migration_tr.tr_hts_retest as
     Remarks
     Remarks
   FROM migration_st.st_hts_test where TestType = "Repeat Test" AND
-  (Encounter_Date != "" OR Encounter_Date != NULL)
+  (Encounter_Date != "" OR Encounter_Date != NULL) AND (Test_1_Final_Result != "" OR Test_1_Final_Result IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>

@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_demographics</name>
+    <name>Migrate_adverse_reactions</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/11 12:24:10.841</created_date>
+    <created_date>2020/06/01 10:09:16.567</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/11 12:24:10.841</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/01 10:09:16.567</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>adverse_reactions_conn</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
-    <database>mysql_tr</database>
-    <port>3306</port>
+    <database>mysql_st</database>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -496,10 +490,75 @@
       </attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>mssql</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
+    <hop>
+      <from>Create_st_adverse_reactions</from>
+      <to>iqcare_source_adverse_reactions</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_adverse_reactions</from>
+      <to>load_st_adverse_reactions</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <step>
-    <name>load_tr_demographics</name>
+    <name>Create_st_adverse_reactions</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,84 +568,26 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>adverse_reactions_conn</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- -------------------------- creating transformed patient demographics --------------------------------------
--- 1. Create demographics transformed table
-DROP TABLE IF EXISTS migration_tr.tr_demographics;
-CREATE TABLE migration_tr.tr_demographics as
-  select
-    Person_Id,
-    First_Name,
-    Middle_Name,
-    Last_Name,
-    DOB,
-    Exact_DOB,
-    (case Sex
-     when "F" then "F"
-     when "M" then "M"
-     when "U" then "U"
-     else "U" end) as Sex,
-    UPN,
-    Encounter_Date,
-    Encounter_ID,
-    National_id_no,
-    Patient_clinic_number,
-    Phone_number,
-    Alternate_Phone_number,
-    Postal_Address,
-    Email_address,
-    County,
-    Sub_county,
-    Ward,
-    Village,
-    Landmark,
-    Nearest_Health_Centre,
-    Next_of_kin,
-    Next_of_kin_phone,
-    Next_of_kin_relationship,
-    Next_of_kin_address,
-    (case Marital_status
-     when "Divorced" then 1058
-     when "Married Monogamous" then 5555
-     when "Single" then 1057
-     when "Cohabiting" then 5555
-     when "Married Polygamous" then 159715
-     when "Widowed" then 1059
-     when "Separated" then 1056
-     when "Unknown" then 1067
-     when "Other" then 5622 else NULL end) as Marital_status,
-    (case Occupation when "Farmer" then 1538
-     when "Trader" then 1539
-     when "Tailor" then 1539
-     when "SelfEmployment" then 1539
-     when "Saloonist" then 1539
-     when "Employee" then 1540
-     when "HouseKeeper" then 1540
-     when "SecurityGuard" then 1540
-     when "CasualLabouror" then 1540
-     when "Hotelier" then 1540
-     when "Student" then 159465
-     when "Driver" then 159466
-     when "None" then 1107
-     when "Other" then 5622
-     else NULL end) as Occupation,
-    (case Education_level
-     when "Primary School" then 1713
-     when "Secondary School" then 1714
-     when "University" then 159785
-     when "College" then 159785
-     when "NONE" then 1107
-     when "Other" then 5622
-     else NULL end) as Education_level,
-    Dead,
-    Death_date,
-    voided
-  FROM migration_st.st_demographics
-  WHERE voided != 1;   -- removed deleted clients</sql>
+    <sql>-- 41. Creating Adverse Drug Reactions table
+DROP TABLE IF EXISTS migration_st.st_drug_reactions;
+CREATE TABLE migration_st.st_drug_reactions (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Has_adverse_drug_reaction        VARCHAR(200),
+  Medicine_causing_drug_reaction   VARCHAR(200),
+  Drug_reaction                    VARCHAR(200),
+  Drug_reaction_severity           VARCHAR(200),
+  Drug_reaction_onset_date         DATE,
+  Drug_reaction_action_taken       VARCHAR(200),
+  Voided                           int(11)
+);
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -603,8 +604,100 @@ CREATE TABLE migration_tr.tr_demographics as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
-      <yloc>128</yloc>
+      <xloc>246</xloc>
+      <yloc>99</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_adverse_reactions</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <sql>
+select p.PersonId as Person_Id,
+pmv.VisitDate as Encounter_Date,
+NULL as Encounter_ID,
+'Yes' as Has_adverse_drug_reaction,
+ae.EventCause as Medicine_causing_drug_reaction,
+ae.EventName as Drug_reaction,
+(select  top 1 [Name] from LookupItem where Id=Severity) as Drug_reaction_severity,
+
+NULL as Drug_reaction_onset_date,
+ae.[Action] as  Drug_reaction_action_taken,
+ae.DeleteFlag as Voided
+
+ from AdverseEvent ae
+inner join Patient p on p.Id =ae.PatientId
+inner join PatientMasterVisit pmv on pmv.Id=ae.PatientMasterVisitId
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>518</xloc>
+      <yloc>99</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_adverse_reactions</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>adverse_reactions_conn</connection>
+    <schema>migration_st</schema>
+    <table>st_drug_reactions</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>870</xloc>
+      <yloc>99</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
