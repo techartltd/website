@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_demographics</name>
+    <name>Transform_hiv_regimen_TI_history</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/11 12:24:10.841</created_date>
+    <created_date>2020/05/30 14:45:05.701</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/11 12:24:10.841</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/05/30 14:45:05.701</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>ti_regimen_con</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
     <database>mysql_tr</database>
-    <port>3306</port>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -499,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_demographics</name>
+    <name>load_tr_hiv_ti_regimen_history</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,84 +503,33 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>ti_regimen_con</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- -------------------------- creating transformed patient demographics --------------------------------------
--- 1. Create demographics transformed table
-DROP TABLE IF EXISTS migration_tr.tr_demographics;
-CREATE TABLE migration_tr.tr_demographics as
+    <sql>
+-- 15B. HIV Regimen History for TI table
+INSERT INTO migration_tr.tr_hiv_regimen_history
   select
-    Person_Id,
-    First_Name,
-    Middle_Name,
-    Last_Name,
-    DOB,
-    Exact_DOB,
-    (case Sex
-     when "F" then "F"
-     when "M" then "M"
-     when "U" then "U"
-     else "U" end) as Sex,
-    UPN,
-    Encounter_Date,
-    Encounter_ID,
-    National_id_no,
-    Patient_clinic_number,
-    Phone_number,
-    Alternate_Phone_number,
-    Postal_Address,
-    Email_address,
-    County,
-    Sub_county,
-    Ward,
-    Village,
-    Landmark,
-    Nearest_Health_Centre,
-    Next_of_kin,
-    Next_of_kin_phone,
-    Next_of_kin_relationship,
-    Next_of_kin_address,
-    (case Marital_status
-     when "Divorced" then 1058
-     when "Married Monogamous" then 5555
-     when "Single" then 1057
-     when "Cohabiting" then 5555
-     when "Married Polygamous" then 159715
-     when "Widowed" then 1059
-     when "Separated" then 1056
-     when "Unknown" then 1067
-     when "Other" then 5622 else NULL end) as Marital_status,
-    (case Occupation when "Farmer" then 1538
-     when "Trader" then 1539
-     when "Tailor" then 1539
-     when "SelfEmployment" then 1539
-     when "Saloonist" then 1539
-     when "Employee" then 1540
-     when "HouseKeeper" then 1540
-     when "SecurityGuard" then 1540
-     when "CasualLabouror" then 1540
-     when "Hotelier" then 1540
-     when "Student" then 159465
-     when "Driver" then 159466
-     when "None" then 1107
-     when "Other" then 5622
-     else NULL end) as Occupation,
-    (case Education_level
-     when "Primary School" then 1713
-     when "Secondary School" then 1714
-     when "University" then 159785
-     when "College" then 159785
-     when "NONE" then 1107
-     when "Other" then 5622
-     else NULL end) as Education_level,
-    Dead,
-    Death_date,
-    voided
-  FROM migration_st.st_demographics
-  WHERE voided != 1;   -- removed deleted clients</sql>
+   Person_Id,
+   Encounter_Date,
+   Encounter_ID,
+   1255 as Program,
+   1256 as  Drug_Event,  
+   Baseline_arv_regimen as Regimen_Name,   
+   Baseline_arv_date_last_used as Date_Started, 
+   NULL as Regimen_Discontinued, 
+   NULL as Date_Discontinued,
+   NULL as Reason_Discontinued,
+   NULL as RegimenSwitchTo,
+   NULL as CurrentRegimen
+  FROM migration_tr.tr_hiv_enrollment
+  where
+   (Baseline_arv_regimen != "" OR Baseline_arv_regimen IS NOT NULL)
+   AND (Baseline_arv_date_last_used != "" OR Baseline_arv_date_last_used IS NOT NULL)
+   AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -603,8 +546,8 @@ CREATE TABLE migration_tr.tr_demographics as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
-      <yloc>128</yloc>
+      <xloc>327</xloc>
+      <yloc>67</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

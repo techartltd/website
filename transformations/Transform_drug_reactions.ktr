@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_demographics</name>
+    <name>Transform_drug_reactions</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/11 12:24:10.841</created_date>
+    <created_date>2020/06/01 10:21:09.214</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/11 12:24:10.841</modified_date>
+    <modified_date>2020/06/01 10:21:09.214</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>adverse_reactions_con</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
     <database>mysql_tr</database>
-    <port>3306</port>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -499,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_demographics</name>
+    <name>load_tr_drug_reactions</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,84 +503,129 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>adverse_reactions_con</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- -------------------------- creating transformed patient demographics --------------------------------------
--- 1. Create demographics transformed table
-DROP TABLE IF EXISTS migration_tr.tr_demographics;
-CREATE TABLE migration_tr.tr_demographics as
-  select
+    <sql>	     -- 42. Adverse Drug Reactions table
+DROP TABLE IF EXISTS migration_tr.tr_drug_reactions;
+CREATE TABLE migration_tr.tr_drug_reactions as
+    select
     Person_Id,
-    First_Name,
-    Middle_Name,
-    Last_Name,
-    DOB,
-    Exact_DOB,
-    (case Sex
-     when "F" then "F"
-     when "M" then "M"
-     when "U" then "U"
-     else "U" end) as Sex,
-    UPN,
     Encounter_Date,
     Encounter_ID,
-    National_id_no,
-    Patient_clinic_number,
-    Phone_number,
-    Alternate_Phone_number,
-    Postal_Address,
-    Email_address,
-    County,
-    Sub_county,
-    Ward,
-    Village,
-    Landmark,
-    Nearest_Health_Centre,
-    Next_of_kin,
-    Next_of_kin_phone,
-    Next_of_kin_relationship,
-    Next_of_kin_address,
-    (case Marital_status
-     when "Divorced" then 1058
-     when "Married Monogamous" then 5555
-     when "Single" then 1057
-     when "Cohabiting" then 5555
-     when "Married Polygamous" then 159715
-     when "Widowed" then 1059
-     when "Separated" then 1056
-     when "Unknown" then 1067
-     when "Other" then 5622 else NULL end) as Marital_status,
-    (case Occupation when "Farmer" then 1538
-     when "Trader" then 1539
-     when "Tailor" then 1539
-     when "SelfEmployment" then 1539
-     when "Saloonist" then 1539
-     when "Employee" then 1540
-     when "HouseKeeper" then 1540
-     when "SecurityGuard" then 1540
-     when "CasualLabouror" then 1540
-     when "Hotelier" then 1540
-     when "Student" then 159465
-     when "Driver" then 159466
-     when "None" then 1107
-     when "Other" then 5622
-     else NULL end) as Occupation,
-    (case Education_level
-     when "Primary School" then 1713
-     when "Secondary School" then 1714
-     when "University" then 159785
-     when "College" then 159785
-     when "NONE" then 1107
-     when "Other" then 5622
-     else NULL end) as Education_level,
-    Dead,
-    Death_date,
-    voided
-  FROM migration_st.st_demographics
-  WHERE voided != 1;   -- removed deleted clients</sql>
+   (case Has_adverse_drug_reaction
+      when "Yes" then 1065
+      when "No" then 1066  else NULL end)as Has_adverse_drug_reaction,
+   (case Medicine_causing_drug_reaction
+        when "Ragweed" then 162541
+        when "Pollen" then 162540
+        when "Mold" then 162539
+        when "Latex" then 162538
+        when "Dust" then 162537
+        when "Bee stings" then 162536
+        when "Adhesive tape" then 162542
+        when "Wheat" then 162177
+        when "Strawberries" then 162548
+        when "Soy" then 162176
+        when "Shellfish" then 162175
+        when "Peanuts" then 162172
+        when "Milk protein" then 162547
+        when "Fish" then 162546
+        when "Eggs" then 162171
+        when "Dairy food" then 162545
+        when "Chocolate" then 162544
+        when "Caffeine" then 72609
+        when "Beef" then 162543
+        when "Zidovudine" then 86663  
+        when "DOLUTEGRAVIR" then 164967 
+        when "Dolutegravir" then 164967 
+        when "dtg" then 164967 
+        when "Tetracyline" then 84893
+        when "Tenofovir" then 84795
+        when "Sulfonamides" then 162170
+        when "Stavudine" then 84309
+        when "Statins" then 162307
+        when "Rifampin" then 767
+        when "Quinidine" then 83018
+        when "Pyrazinamide" then 82900
+        when "rhze" then 1675   
+        when "Procainamide" then 82559
+        when "Phenytoin" then 82023  
+        when "Phenolphthaleins" then 81959
+        when "Penicillins" then 81724
+        when "Penicillamine" then 81723
+        when "Non-steroidal anti-inflammatory drugs" then 162306
+        when "Nitrofurans" then 158005
+        when "Nevirapine" then 80586
+        when "Morphine" then 80106
+        when "Lopinavir/ritonavir" then 794
+        when "Isoniazid" then 78280
+        when "Hydralazine" then 77675
+        when "Heparins" then 162305
+        when "Griseofulvin" then 77164
+        when "Ethambutol" then 75948
+        when "Erythromycins" then 162302
+        when "Efavirenz" then 75523
+        when "Didanosine" then 74807
+        when "Codeine" then 73667
+        when "Choloroquine" then 73300
+        when "Cephalosporins" then 162301
+        when "Carbamazepine" then 72822
+        when "Atazanavir" then 71647
+        when "Aspirin" then 155175
+        when "ARBs (angiotensin II receptor blockers)" then 162299
+        when "Aminoglycosides" then 155060
+        when "Allopurinol" then 70878
+        when "ACE inhibitors" then 162298
+        when "Abacavir" then 70056
+        when "Other" then 5622 else '' end)as Medicine_causing_drug_reaction,
+   (case Drug_reaction
+        when "Unknown" then 1067
+        when "Anaemia" then 121629
+        when "Anaphylaxis" then 148888
+        when "Angioedema" then 148787
+        when "Arrhythmia" then 120148
+        when "Bronchospasm" then 108
+        when "Cough" then 143264
+        when "Diarrhea" then 142412
+        when "Dystonia" then 118773
+        when "Fever" then 140238
+        when "Flushing" then 140039
+        when "GI upset" then 139581
+        when "Headache" then 139084
+        when "Hepatotoxicity" then 159098
+        when "Hives" then 111061
+        when "Hypertension" then 117399
+        when "Itching" then 879
+        when "Mental status change" then 121677
+        when "Musculoskeletal pain" then 159347
+        when "Myalgia" then 121
+        when "Rash" then 512
+        when "Skin rash/hypersensitivity reaction" then 512
+        when "Other" then 5622   else '' end)as Drug_reaction,
+   (case Drug_reaction_severity
+        when "Mild" then 160754
+        when "Moderate" then 160755
+        when "Severe" then 160756
+        when "Fatal" then 160758
+        when "Unknown" then 1067  else '' end)as Drug_reaction_severity,
+   Drug_reaction_onset_date,
+  (case Drug_reaction_action_taken
+        when "CONTINUE REGIMEN" then 1257
+        when "Medicine not changed" then 1257
+        when "SWITCHED REGIMEN" then 1259
+        when "CHANGED DOSE" then 981
+        when "SUBSTITUTED DRUG" then 1258
+        when "Medicine causing AE substituted/withdrawn" then 1258
+        when "NONE" then 1107
+        when "STOP" then 1260
+        when "OTHER" then 5622  else '' end)as Drug_reaction_action_taken
+    FROM migration_st.st_drug_reactions WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;	
+	</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -603,8 +642,8 @@ CREATE TABLE migration_tr.tr_demographics as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
-      <yloc>128</yloc>
+      <xloc>282</xloc>
+      <yloc>103</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

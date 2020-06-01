@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_demographics</name>
+    <name>Transform_complaints</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/11 12:24:10.841</created_date>
+    <created_date>2020/06/01 11:12:32.819</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/11 12:24:10.841</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/01 11:12:32.819</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>migration_complaints</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
     <database>mysql_tr</database>
-    <port>3306</port>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -499,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_demographics</name>
+    <name>load_tr_complaints</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,84 +503,89 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>migration_complaints</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- -------------------------- creating transformed patient demographics --------------------------------------
--- 1. Create demographics transformed table
-DROP TABLE IF EXISTS migration_tr.tr_demographics;
-CREATE TABLE migration_tr.tr_demographics as
-  select
+    <sql>		    -- 39. Complaints table
+DROP TABLE IF EXISTS migration_tr.tr_complaints;
+CREATE TABLE migration_tr.tr_complaints as
+    select
     Person_Id,
-    First_Name,
-    Middle_Name,
-    Last_Name,
-    DOB,
-    Exact_DOB,
-    (case Sex
-     when "F" then "F"
-     when "M" then "M"
-     when "U" then "U"
-     else "U" end) as Sex,
-    UPN,
     Encounter_Date,
     Encounter_ID,
-    National_id_no,
-    Patient_clinic_number,
-    Phone_number,
-    Alternate_Phone_number,
-    Postal_Address,
-    Email_address,
-    County,
-    Sub_county,
-    Ward,
-    Village,
-    Landmark,
-    Nearest_Health_Centre,
-    Next_of_kin,
-    Next_of_kin_phone,
-    Next_of_kin_relationship,
-    Next_of_kin_address,
-    (case Marital_status
-     when "Divorced" then 1058
-     when "Married Monogamous" then 5555
-     when "Single" then 1057
-     when "Cohabiting" then 5555
-     when "Married Polygamous" then 159715
-     when "Widowed" then 1059
-     when "Separated" then 1056
-     when "Unknown" then 1067
-     when "Other" then 5622 else NULL end) as Marital_status,
-    (case Occupation when "Farmer" then 1538
-     when "Trader" then 1539
-     when "Tailor" then 1539
-     when "SelfEmployment" then 1539
-     when "Saloonist" then 1539
-     when "Employee" then 1540
-     when "HouseKeeper" then 1540
-     when "SecurityGuard" then 1540
-     when "CasualLabouror" then 1540
-     when "Hotelier" then 1540
-     when "Student" then 159465
-     when "Driver" then 159466
-     when "None" then 1107
-     when "Other" then 5622
-     else NULL end) as Occupation,
-    (case Education_level
-     when "Primary School" then 1713
-     when "Secondary School" then 1714
-     when "University" then 159785
-     when "College" then 159785
-     when "NONE" then 1107
-     when "Other" then 5622
-     else NULL end) as Education_level,
-    Dead,
-    Death_date,
-    voided
-  FROM migration_st.st_demographics
-  WHERE voided != 1;   -- removed deleted clients</sql>
+   (case Presenting_complaints
+       when "Yes" then 1065
+       when "No" then 1066  else NULL end)as Presenting_complaints,
+   (case Presenting_complaints
+        when "Weight loss" then 832
+        when "Vomiting" then 122983
+        when "Vertigo" then 111525
+        when "Urinary symptoms Pain/frequency/Urgency" then 160208
+        when "Tremors" then 112200
+        when "Swollen legs" then 125198
+        when "Sweating-excessive" then 140941
+        when "Sore Throat" then 158843
+        when "Sleep disturbance" then 141597
+        when "Shoulder pain" then 126535
+        when "Scrotal pain" then 131032
+        when "Runny/blocked nose" then 113224   
+        when "Ringing/Buzzing ears" then 117698
+        when "Red eye" then 127777
+        when "Rash" then 512
+        when "Poor Vision" then 5953
+        when "Pelvic pain" then 131034
+        when "Pain when swallowing" then 125225
+        when "Numbness" then 132653
+        when "Night Sweats" then 133027
+        when "Neck pain" then 133469
+        when "Nausea" then 5978
+        when "Muscle pain" then 133632
+        when "Muscle cramps" then 133028
+        when "Mouth ulcers" then 111721
+        when "Mouth pain/burning" then 131015
+        when "Mental status, acute change (coma, lethargy)" then 144576
+        when "Memory loss" then 121657
+        when "Lymphadenopathy" then 135488
+        when "Loss of appetite" then 135595
+        when "Leg pain" then 114395
+        when "Joint Pain" then 116558
+        when "Itchiness/Pruritus" then 879
+        when "Hypotension/Shock" then 116214
+        when "Hearing loss" then 117698
+        when "Headache" then 139084
+        when "Genital skin lesion/Ulcer" then 135462
+        when "Genital Discharge" then 123396
+        when "Flank pain" then 140070
+        when "Fever" then 140238
+        when "Fatigue/weakness" then 162626
+        when "Facial pain" then 114399
+        when "Eye pain" then 131040
+        when "Epigastric Pain" then 141128
+        when "Ear pain" then 141585
+        when "Dizziness" then 141830
+        when "Difficulty in swallowing" then 118789
+        when "Difficult in breathing" then 122496
+        when "Diarrhoea" then 142412
+        when "Crying infant" then 143129
+        when "Cough" then 143264
+        when "Convulsions/Seizure" then 206
+        when "Confusion/Delirium" then 119574
+        when "Cold/Chills" then 871
+        when "Chest pain" then 120749
+        when "Breast pain" then 131021
+        when "Bloody Urine" then 840
+        when "Back pain" then 148035
+        when "Anxiety, depression" then 119537
+        when "Abnormal uterine bleeding" then 141631
+        when "Abdominal pain" then 151
+        when "Other" then 5622  else '' end)as Complaint,
+   Duration,
+   Onset_Date
+    FROM migration_st.st_complaints WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -603,8 +602,8 @@ CREATE TABLE migration_tr.tr_demographics as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>480</xloc>
-      <yloc>128</yloc>
+      <xloc>623</xloc>
+      <yloc>83</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
