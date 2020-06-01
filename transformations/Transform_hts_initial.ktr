@@ -545,7 +545,12 @@ CREATE TABLE migration_tr.tr_hts_initial as
      when "B: Blind/Visually impaired" then 147215
      when "M: Mentally Challenged" then 151342
      when "P: Physically Challenged" then  164538
-     when "Other" then 5622 else "" end)as Disability,
+     when "Other" then 5622
+     when "D: Deaf/Hearing impaired ," then 120291
+     when "B: Blind/Visually impaired ," then 147215
+     when "M: Mentally Challenged ," then 151342
+     when "P: Physically Challenged ," then  164538
+     when "Other ," then 5622 else "" end)as Disability,
     (case Ever_Tested
      when "Yes" then 1065
      when "No" then 1066  else "" end)as Ever_Tested,
