@@ -545,7 +545,12 @@ CREATE TABLE migration_tr.tr_hts_retest as
      when "B: Blind/Visually impaired" then 147215
      when "M: Mentally Challenged" then 151342
      when "P: Physically Challenged" then  164538
-     when "Other" then 5622 else "" end)as Disability,
+     when "Other" then 5622
+     when "D: Deaf/Hearing impaired ," then 120291
+     when "B: Blind/Visually impaired ," then 147215
+     when "M: Mentally Challenged ," then 151342
+     when "P: Physically Challenged ," then  164538
+     when "Other ," then 5622 else "" end)as Disability,
     (case Ever_Tested
      when "Yes" then 1065
      when "No" then 1066  else "" end)as Ever_Tested,
@@ -629,7 +634,7 @@ CREATE TABLE migration_tr.tr_hts_retest as
     Remarks
     Remarks
   FROM migration_st.st_hts_test where TestType = "Repeat Test" AND
-  (Encounter_Date != "" OR Encounter_Date != NULL)
+  (Encounter_Date != "" OR Encounter_Date != NULL) AND (Test_1_Final_Result != "" OR Test_1_Final_Result IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>

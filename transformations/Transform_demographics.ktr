@@ -583,8 +583,10 @@ CREATE TABLE migration_tr.tr_demographics as
      when "Other" then 5622
      else NULL end) as Education_level,
     Dead,
-    Death_date
-  FROM migration_st.st_demographics;</sql>
+    Death_date,
+    voided
+  FROM migration_st.st_demographics
+  WHERE voided != 1;   -- removed deleted clients</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

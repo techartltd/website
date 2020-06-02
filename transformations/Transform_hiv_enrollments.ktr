@@ -580,8 +580,11 @@ CREATE TABLE migration_tr.tr_hiv_enrollment as
     Name_of_treatment_supporter,
     Relationship_of_treatment_supporter,
     Treatment_supporter_telephone,
-    Treatment_supporter_address
-  FROM migration_st.st_hiv_enrollment WHERE Encounter_Date != "" OR Encounter_Date IS NOT NULL
+    Treatment_supporter_address,
+    Created_by,
+    Create_date                       
+  FROM migration_st.st_hiv_enrollment 
+  WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (UPN != "" OR UPN IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;
 </sql>
     <set_params>N</set_params>
