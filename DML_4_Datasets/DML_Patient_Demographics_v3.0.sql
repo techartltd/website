@@ -70,9 +70,12 @@ Dead = (SELECT top 1  'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND Exit
 Death_date = (SELECT TOP 1 DateOfDeath FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
 ts.Consent as Consent,
 ts.Consent_Decline_Reason as Consent_Decline_Reason,
-PT.DeleteFlag AS voided,
-P.CreateDate,
-P.CreatedBy
+PT.DeleteFlag AS Patient_voided, 
+P.DeleteFlag as Person_voided,
+CASE WHEN PT.DeleteFlag is null and P.DeleteFlag = 0 then 0
+WHEN PT.DeleteFlag =1 and P.DeleteFlag=1 then 1
+WHEN PT.DeleteFlag is null then P.DeleteFlag
+ELSE PT.DeleteFlag end as voided
 
 FROM Person P
 LEFT JOIN Patient PT ON PT.PersonId = P.Id
