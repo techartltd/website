@@ -17,8 +17,7 @@ LEAD(ds.DispensedByDate) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDat
 ,REPLACE(REPLACE(REPLACE (LAST_VALUE(REPLACE(ds.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP')) OVER (PARTITION BY ds.ptn_pk ORDER BY ds.DispensedByDate asc RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r') as CurrentRegimen
 ,0 as Voided
 ,NULL as Date_Voided
-,ds.CreateDate,
-ds.CreatedBy
+
 from (select 
 *,
 (
@@ -58,9 +57,16 @@ o.OrderedByDate,
 o.DispensedByDate,
 o.ProgID,
 o.ptn_pharmacy_pk,
-o.CreateDate,
-o.UserID as CreatedBy,
-ROW_NUMBER() OVER (PARTITION BY r.Ptn_pk, dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(r.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), rn1 - rn2 ORDER BY DispensedByDate) rn
+ROW_NUMBER() OVER (PARTITION BY r.Ptn_pk, dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(
+	CASE WHEN r.RegimenType IN ('3TC/ATV/AZT/r','3TC/ATR/AZT','3TC/AZT/ATV/r','ATV/r/3TC/AZT','AZT/3TC/ATV/r','3TC/ATV/AZT','3TC/AZT/ATV','ATV/3TC/AZT') then  'AZT+3TC+ATV/r' 
+		when r.RegimenType in  ('3TC/ATV/r/TDF','3TC/TDF/ATV/r','ATV/r/3TC/TDF','3TC/ATV/TDF','3TC/TDF/ATV','ATV/3TC/TDF') then  'TDF+3TC+ATV/r' 
+		when r.RegimenType in  ('3TC/LPV/r/TDF','3TC/TDF/LPV/r','LPV/r/3TC/TDF') then  'TDF+3TC+LPV/r'
+		when r.RegimenType in  ('3TC/ABC/ATV/r','ABC/3TC/ATV/r','3TC/ABC/ATV') then  'ABC+3TC+ATV/r'               
+		when r.RegimenType in  ('3TC/ABC/LPV/r','ABC/3TC/LPV/r','LPV/r/ABC/3TC')  then 'ABC+3TC+LPV/r'   
+		when r.RegimenType in  ('3TC/LPV/r/AZT','AZT/3TC/LPV/r','LPV/r/3TC/AZT','3TC/AZT/LPV/r') then  'AZT+3TC+LPV/r'
+		when r.RegimenType in  ('3TC/ATR/TDF') then 'TDF+3TC+ATV/r'
+	ELSE r.RegimenType END
+	, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), rn1 - rn2 ORDER BY DispensedByDate) rn
 from dtl_RegimenMap r
 inner join ord_PatientPharmacyOrder o on o.ptn_pharmacy_pk = r.OrderID
 inner join Patient pt on pt.ptn_pk = r.Ptn_Pk
@@ -68,7 +74,17 @@ left join ord_Visit ov on o.VisitID = ov.Visit_Id
 left join mst_Decode dc on dc.ID = o.ProgID
 inner join (SELECT d.ptn_pharmacy_pk,
         ROW_NUMBER() OVER (PARTITION BY f.ptn_pk ORDER BY d.DispensedByDate) rn1,
-        ROW_NUMBER() OVER (PARTITION BY dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(f.RegimenType, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), f.ptn_pk ORDER BY d.DispensedByDate) rn2
+        ROW_NUMBER() OVER (PARTITION BY dbo.fn_ARTRegimenORDER(REPLACE(REPLACE(REPLACE (REPLACE(
+		CASE WHEN f.RegimenType IN ('3TC/ATV/AZT/r','3TC/ATR/AZT','3TC/AZT/ATV/r','ATV/r/3TC/AZT','AZT/3TC/ATV/r','3TC/ATV/AZT','3TC/AZT/ATV','ATV/3TC/AZT') then  'AZT+3TC+ATV/r' 
+			when f.RegimenType in  ('3TC/ATV/r/TDF','3TC/TDF/ATV/r','ATV/r/3TC/TDF','3TC/ATV/TDF','3TC/TDF/ATV','ATV/3TC/TDF') then  'TDF+3TC+ATV/r' 
+			when f.RegimenType in  ('3TC/LPV/r/TDF','3TC/TDF/LPV/r','LPV/r/3TC/TDF') then  'TDF+3TC+LPV/r'
+			when f.RegimenType in  ('3TC/ABC/ATV/r','ABC/3TC/ATV/r','3TC/ABC/ATV') then  'ABC+3TC+ATV/r'               
+			when f.RegimenType in  ('3TC/ABC/LPV/r','ABC/3TC/LPV/r','LPV/r/ABC/3TC')  then 'ABC+3TC+LPV/r'   
+			when f.RegimenType in  ('3TC/LPV/r/AZT','AZT/3TC/LPV/r','LPV/r/3TC/AZT','3TC/AZT/LPV/r') then  'AZT+3TC+LPV/r'
+			when f.RegimenType in  ('3TC/ATR/TDF') then 'TDF+3TC+ATV/r'
+			ELSE f.RegimenType END
+		
+		, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), f.ptn_pk ORDER BY d.DispensedByDate) rn2
     FROM dtl_RegimenMap f
 	inner join ord_PatientPharmacyOrder d on d.ptn_pharmacy_pk = f.OrderID) w on w.ptn_pharmacy_pk = o.ptn_pharmacy_pk
 	where o.DispensedByDate IS NOT NULL AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT'))
