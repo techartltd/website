@@ -526,10 +526,13 @@ CREATE TABLE migration_tr.tr_hts_retest as
      when "Key Population" then 164929
      when "Priority Population" then 138643  else "" end)as Pop_Type,
     (case Key_Pop_Type
-     when "Male Sex Worker" then 165084
+      when "Male Sex Worker" then 165084
      when "People who Inject with Drugs" then 105
      when "Female Sex Worker" then 160579
+     when "SW" then 160579
      when "Men having Sex with Men" then 160578
+     when "Other ," then 5622
+     when "Other , Other ," then 5622
      when "other" then 5622  else "" end) as Key_Pop_Type,
     (case Priority_Pop_Type
      when "Fisher folk" then 159674

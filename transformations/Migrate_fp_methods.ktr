@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_complaints</name>
+    <name>Migrate_fp_methods</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,20 +427,20 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/06/01 11:12:32.819</created_date>
+    <created_date>2020/06/02 08:34:02.481</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/06/01 11:12:32.819</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/02 08:34:02.481</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>migration_complaints</name>
+    <name>fp_methods_con</name>
     <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
-    <database>mysql_tr</database>
+    <database>mysql_st</database>
     <port>1521</port>
     <username/>
     <password>Encrypted </password>
@@ -490,10 +490,75 @@
       </attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>mssql</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
+    <hop>
+      <from>Create_st_fp_methods</from>
+      <to>iqcare_source_fp_methods</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_fp_methods</from>
+      <to>load_st_fp_methods</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <step>
-    <name>load_tr_complaints</name>
+    <name>Create_st_fp_methods</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,89 +568,20 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>migration_complaints</connection>
+    <connection>fp_methods_con</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>		    -- 39. Complaints table
-DROP TABLE IF EXISTS migration_tr.tr_complaints;
-CREATE TABLE migration_tr.tr_complaints as
-    select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-   (case Presenting_complaints
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Presenting_complaints,
-   (case Presenting_complaints
-        when "Weight loss" then 832
-        when "Vomiting" then 122983
-        when "Vertigo" then 111525
-        when "Urinary symptoms Pain/frequency/Urgency" then 160208
-        when "Tremors" then 112200
-        when "Swollen legs" then 125198
-        when "Sweating-excessive" then 140941
-        when "Sore Throat" then 158843
-        when "Sleep disturbance" then 141597
-        when "Shoulder pain" then 126535
-        when "Scrotal pain" then 131032
-        when "Runny/blocked nose" then 113224   
-        when "Ringing/Buzzing ears" then 117698
-        when "Red eye" then 127777
-        when "Rash" then 512
-        when "Poor Vision" then 5953
-        when "Pelvic pain" then 131034
-        when "Pain when swallowing" then 125225
-        when "Numbness" then 132653
-        when "Night Sweats" then 133027
-        when "Neck pain" then 133469
-        when "Nausea" then 5978
-        when "Muscle pain" then 133632
-        when "Muscle cramps" then 133028
-        when "Mouth ulcers" then 111721
-        when "Mouth pain/burning" then 131015
-        when "Mental status, acute change (coma, lethargy)" then 144576
-        when "Memory loss" then 121657
-        when "Lymphadenopathy" then 135488
-        when "Loss of appetite" then 135595
-        when "Leg pain" then 114395
-        when "Joint Pain" then 116558
-        when "Itchiness/Pruritus" then 879
-        when "Hypotension/Shock" then 116214
-        when "Hearing loss" then 117698
-        when "Headache" then 139084
-        when "Genital skin lesion/Ulcer" then 135462
-        when "Genital Discharge" then 123396
-        when "Flank pain" then 140070
-        when "Fever" then 140238
-        when "Fatigue/weakness" then 162626
-        when "Facial pain" then 114399
-        when "Eye pain" then 131040
-        when "Epigastric Pain" then 141128
-        when "Ear pain" then 141585
-        when "Dizziness" then 141830
-        when "Difficulty in swallowing" then 118789
-        when "Difficult in breathing" then 122496
-        when "Diarrhoea" then 142412
-        when "Crying infant" then 143129
-        when "Cough" then 143264
-        when "Convulsions/Seizure" then 206
-        when "Confusion/Delirium" then 119574
-        when "Cold/Chills" then 871
-        when "Chest pain" then 120749
-        when "Breast pain" then 131021
-        when "Bloody Urine" then 840
-        when "Back pain" then 148035
-        when "Anxiety, depression" then 119537
-        when "Abnormal uterine bleeding" then 141631
-        when "Abdominal pain" then 151
-        when "Other" then 5622  else '' end)as Complaint,
-   Duration,
-   Onset_Date
-    FROM migration_st.st_complaints WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND  (Presenting_complaints != "" OR Presenting_complaints IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    <sql>-- 42. Creating Family planning  table
+DROP TABLE IF EXISTS migration_st.st_fp_methods;
+CREATE TABLE migration_st.st_fp_methods (
+  Person_Id                        INT(11),
+  Encounter_Date                   DATE,
+  Encounter_ID                     VARCHAR(50),
+  Family_planning_method           VARCHAR(255),
+  Voided                           int(11)
+);</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -602,8 +598,104 @@ CREATE TABLE migration_tr.tr_complaints as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>224</xloc>
-      <yloc>112</yloc>
+      <xloc>194</xloc>
+      <yloc>27</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_fp_methods</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <sql>
+SELECT p.PersonId as Person_Id,
+pmv.VisitDate as  Encounter_Date,
+NULL as Encounter_ID,
+(select top 1.[DisplayName]  from LookupItem lt where lt.Id=pfm.FPMethodId) as Family_Planning_Method
+
+from PatientFamilyPlanningMethod pfm 
+inner join Patient p on p.Id=pfm.PatientId
+left join PatientFamilyPlanning pfp on pfp.Id=pfm.PatientFPId
+inner join PatientMasterVisit pmv on pmv.Id=pfp.PatientMasterVisitId
+left join Person pe on pe.Id=p.PersonId
+INNER JOIN LookupItem lki 
+ON lki.Id = pfm.FPMethodId
+union
+select pa.PersonId as Person_Id,V.VisitDate as Encounter_Date,NULL as Encounter_ID,
+(select top 1.[Name]  from mst_BlueDecode lt where lt.Id=pfp.FamilyPlanningMethod)
+as Family_Planning_Method  from dtl_PatientFamilyPlanning pfp
+left join mst_Patient p on p.Ptn_Pk=pfp.Ptn_Pk
+left join ord_Visit v on v.Visit_Id=pfp.Visit_Id
+left join Patient pa on pa.Ptn_Pk=pfp.Ptn_Pk
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>466</xloc>
+      <yloc>27</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_fp_methods</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>fp_methods_con</connection>
+    <schema>migration_st</schema>
+    <table>st_fp_methods</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>818</xloc>
+      <yloc>27</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

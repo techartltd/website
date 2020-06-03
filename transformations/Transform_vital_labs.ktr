@@ -512,15 +512,15 @@
 DROP TABLE IF EXISTS migration_tr.tr_vital_labs;
 CREATE TABLE migration_tr.tr_vital_labs
     select
-      Person_Id,
-      Encounter_Date,
-      Encounter_ID,
-      LabTestName,      
-      Test_result,    
-      Date_test_requested ,
-      Date_test_result_received ,
-      OrderNumber,
-      (case Lab_Reason
+      lbs.Person_Id,
+      lbs.Encounter_Date,
+      lbs.Encounter_ID,
+      lbs.LabTestName,      
+      lbs.Test_result,    
+      lbs.Date_test_requested ,
+      lbs.Date_test_result_received ,
+      lbs.OrderNumber,
+      (case lbs.Lab_Reason
             when "Routine" then 161236
             when "Routine VL" then 161236
 		    when "Other" then 5622
@@ -530,18 +530,20 @@ CREATE TABLE migration_tr.tr_vital_labs
 		    when "Baseline" then 162080
 		    when "Clinical Failure" then 163523
             else NULL end)as Lab_Reason,
-      Urgency,
-      (case Lab_test
+      lbs.Urgency,
+      (case lbs.Lab_test
             when "VIRALLOAD" then 856
 			when "Viral Load" then 856
 		    when "CD4" then 5497
 		    when "CD4PERCENT" then 730
 			when "CD4 Percent" then 730
             else NULL end)as Lab_test
-    FROM migration_st.st_laboratory WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-    AND Lab_test in ("VIRALLOAD","Viral Load","CD4","CD4PERCENT","CD4 Percent")
-    AND (Test_result != "" OR Test_result IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    FROM migration_st.st_laboratory lbs
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = lbs.Person_Id
+    WHERE (lbs.Encounter_Date != "" OR lbs.Encounter_Date IS NOT NULL)
+    AND lbs.Lab_test in ("VIRALLOAD","Viral Load","CD4","CD4PERCENT","CD4 Percent")
+    AND (lbs.Test_result != "" OR lbs.Test_result IS NOT NULL)
+  GROUP BY lbs.Person_Id, lbs.Encounter_Date;
 
 UPDATE tr_vital_labs
 SET Test_result = "LDL"

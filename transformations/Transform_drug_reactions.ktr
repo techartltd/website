@@ -623,7 +623,7 @@ CREATE TABLE migration_tr.tr_drug_reactions as
         when "STOP" then 1260
         when "OTHER" then 5622  else '' end)as Drug_reaction_action_taken
     FROM migration_st.st_drug_reactions WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (Medicine_causing_drug_reaction != "" OR Medicine_causing_drug_reaction IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;	
 	</sql>
     <set_params>N</set_params>
