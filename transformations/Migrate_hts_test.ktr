@@ -664,7 +664,7 @@ CREATE TABLE migration_st.st_hts_test
 SELECT hts.Person_Id
 	,hts.Patient_Id
 	,hts.Encounter_Date
-	,hts.Encounter_ID
+	,NULL as Encounter_ID
 	,hts.Pop_Type
 	,hts.Key_Pop_Type
 	,hts.Priority_Pop_Type
