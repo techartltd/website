@@ -52,14 +52,15 @@ from (select
 from (select 
 pt.PersonId as Person_Id,
 r.Ptn_Pk,
-CASE WHEN r.RegimenType IN ('3TC/ATV/AZT/r','3TC/ATR/AZT','3TC/AZT/ATV/r','ATV/r/3TC/AZT','AZT/3TC/ATV/r','3TC/ATV/AZT','3TC/AZT/ATV','ATV/3TC/AZT') then  'AZT+3TC+ATV/r' 
-			when r.RegimenType in  ('3TC/ATV/r/TDF','3TC/TDF/ATV/r','ATV/r/3TC/TDF','3TC/ATV/TDF','3TC/TDF/ATV','ATV/3TC/TDF', 'ATV/RTV/3TC/TDF', '3TC/TDF/ATV/RTV') then  'TDF+3TC+ATV/r' 
-			when r.RegimenType in  ('3TC/LPV/r/TDF','3TC/TDF/LPV/r','LPV/r/3TC/TDF') then  'TDF+3TC+LPV/r'
-			when r.RegimenType in  ('3TC/ABC/ATV/r','ABC/3TC/ATV/r','3TC/ABC/ATV') then  'ABC+3TC+ATV/r'               
-			when r.RegimenType in  ('3TC/ABC/LPV/r','ABC/3TC/LPV/r','LPV/r/ABC/3TC')  then 'ABC+3TC+LPV/r'   
-			when r.RegimenType in  ('3TC/LPV/r/AZT','AZT/3TC/LPV/r','LPV/r/3TC/AZT','3TC/AZT/LPV/r') then  'AZT+3TC+LPV/r'
-			when r.RegimenType in  ('3TC/ATR/TDF') then 'TDF+3TC+ATV/r'
-			ELSE r.RegimenType END as RegimenType, 
+r.RegimenType,
+--CASE WHEN r.RegimenType IN ('3TC/ATV/AZT/r','3TC/ATR/AZT','3TC/AZT/ATV/r','ATV/r/3TC/AZT','AZT/3TC/ATV/r','3TC/ATV/AZT','3TC/AZT/ATV','ATV/3TC/AZT') then  'AZT+3TC+ATV/r' 
+--			when r.RegimenType in  ('3TC/ATV/r/TDF','3TC/TDF/ATV/r','ATV/r/3TC/TDF','3TC/ATV/TDF','3TC/TDF/ATV','ATV/3TC/TDF', 'ATV/RTV/3TC/TDF', '3TC/TDF/ATV/RTV') then  'TDF+3TC+ATV/r' 
+--			when r.RegimenType in  ('3TC/LPV/r/TDF','3TC/TDF/LPV/r','LPV/r/3TC/TDF') then  'TDF+3TC+LPV/r'
+--			when r.RegimenType in  ('3TC/ABC/ATV/r','ABC/3TC/ATV/r','3TC/ABC/ATV') then  'ABC+3TC+ATV/r'               
+--			when r.RegimenType in  ('3TC/ABC/LPV/r','ABC/3TC/LPV/r','LPV/r/ABC/3TC')  then 'ABC+3TC+LPV/r'   
+--			when r.RegimenType in  ('3TC/LPV/r/AZT','AZT/3TC/LPV/r','LPV/r/3TC/AZT','3TC/AZT/LPV/r') then  'AZT+3TC+LPV/r'
+--			when r.RegimenType in  ('3TC/ATR/TDF') then 'TDF+3TC+ATV/r'
+--			ELSE r.RegimenType END as RegimenType, 
 o.OrderedByDate, 
 o.DispensedByDate,
 o.ProgID,
@@ -94,8 +95,8 @@ inner join (SELECT d.ptn_pharmacy_pk,
 		, 'AF1A(AZT + 3TC + NVP)', 'AZT+3TC+NVP'),'/', '+'),'LPV+r','LPV/r'), 'ATV+r','ATV/r')), f.ptn_pk ORDER BY d.DispensedByDate) rn2
     FROM dtl_RegimenMap f
 	inner join ord_PatientPharmacyOrder d on d.ptn_pharmacy_pk = f.OrderID
-	WHERE ISNULL(f.RegimenType,'') <> '') w on w.ptn_pharmacy_pk = o.ptn_pharmacy_pk
-	where o.DispensedByDate IS NOT NULL AND o.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT'))
+	WHERE ISNULL(f.RegimenType,'') <> '' AND d.ProgID IN (SELECT ID FROM mst_Decode WHERE Name IN ('ART', 'PMTCT'))) w on w.ptn_pharmacy_pk = o.ptn_pharmacy_pk
+	where o.DispensedByDate IS NOT NULL
 ) ev 
 where ev.rn = 1 and ev.DispensedByDate is not null
 ) ds
