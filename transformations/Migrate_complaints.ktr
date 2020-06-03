@@ -430,7 +430,7 @@
     <created_date>2020/06/01 11:04:59.805</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/06/01 11:04:59.805</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -579,9 +579,9 @@ CREATE TABLE migration_st.st_complaints (
   Person_Id                        INT(11),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
-  Presenting_complaints 	         VARCHAR(200),
-  Complaint                        VARCHAR(255),
-  Duration                         VARCHAR(100),
+  Presenting_complaints 	       TEXT,
+  Complaint                        TEXT,
+  Duration                         TEXT,
   Onset_Date                       DATE,
   Voided                           int(11)
 );
