@@ -577,7 +577,7 @@ CREATE TABLE migration_tr.tr_hts_initial as
      when "MCH" then 160538
      when "OPD" then 160542
      when "Other" then 5622
-     when "PNS" then 160538
+     when "PNS" then 161557
      when "TB" then 160541
      when "Mobile Outreach" then 159939
      when "PeD" then 162181
