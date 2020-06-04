@@ -665,10 +665,8 @@ CREATE TABLE migration_st.st_hiv_enrollment
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 2. HIV Enrollment DML Validated by LO v2.0.0 
+    <sql>-- 2. HIV Enrollment DML Validated by LO and PG v3.0.0 
 
-
--- -----------------------------2. HIV Enrollment DML ---------------------------------------------
 EXEC pr_OpenDecryptedSession;
 
 SELECT DISTINCT P.Id AS Person_Id
@@ -707,12 +705,21 @@ SELECT DISTINCT P.Id AS Person_Id
 		WHERE MasterName = 'PatientType'
 			AND itemId = PT.PatientType
 		)
-	,ent.Entry_point
+	,coalesce (EP.ReferredFrom, ent.Entry_point)Entry_point
+	--,ent.Entry_point
 	,pti.FacilityFrom AS TI_Facility
-	,PE.EnrollmentDate AS Date_First_enrolled_in_care
-	,bas.TransferInDate AS Transfer_In_Date
-	,bas.ARTInitiationDate AS Date_started_art_at_transferring_facility
-	,bas.HIVDiagnosisDate AS Date_Confirmed_hiv_positive
+	,Case WHEN HIVDate.DateEnrolledInCare is not null THEN HIVDate.DateEnrolledInCare
+		ELSE PE.EnrollmentDate END AS Date_First_enrolled_in_care
+	,bas.TransferInDate  AS Transfer_In_Date
+	,CASE WHEN (
+		SELECT itemName
+		FROM LookupItemView
+		WHERE MasterName = 'PatientType'
+			AND itemId = PT.PatientType
+		)='Transfer-In' and trans.ARTTransferInDate >'1900-01-01 00:00:00.000' then Tdate.StartARTDate 
+		ELSE bas.ARTInitiationDate END AS Date_started_art_at_transferring_facility
+	,case when bas.HIVDiagnosisDate is not Null then bas.HIVDiagnosisDate
+	else HIVDate.ConfirmHIVPosDate END AS Date_Confirmed_hiv_positive
 	,bas.FacilityFrom AS Facility_confirmed_hiv_positive
 	,bas.HistoryARTUse AS Baseline_arv_use
 	,parv.Purpose AS Purpose_of_Baseline_arv_use
@@ -733,13 +740,13 @@ SELECT DISTINCT P.Id AS Person_Id
 	,bas.[Weight] AS Baseline_Weight
 	,bas.[Height] AS Baseline_Height
 	,bas.BMI AS Baseline_BMI
-	,treatmentl.Name_of_treatment_supporter
-	,treatmentl.Relationship_of_treatment_supporter
-	,treatmentl.Treatment_supporter_telephone
+	,CASE WHEN treatmentl.Name_of_treatment_supporter IS NOT NULL THEN treatmentl.Name_of_treatment_supporter
+		ELSE TS.[TreatmentSupporterName] END AS Name_of_treatment_supporter
+	,treatmentl.Relationship_of_treatment_supporter 
+	,CASE WHEN treatmentl.Treatment_supporter_telephone IS NOT NULL THEN treatmentl.Treatment_supporter_telephone
+		ELSE TS.TreatmentSupportTelNumber END AS Treatment_supporter_telephone
 	,treatmentl.Treatment_supporter_address
-	,0 AS Voided,
-	P.CreateDate as Create_Date,
-	P.CreatedBy as Created_By
+	,0 AS Voided
 FROM Person P
 INNER JOIN Patient PT ON PT.PersonId = P.Id
 INNER JOIN PatientEnrollment PE ON PE.PatientId = PT.Id
@@ -905,9 +912,62 @@ LEFT OUTER JOIN (
 			WHERE deleteflag = 0
 			)
 	) AS ptC ON PT.Id = ptC.PatientId
-WHERE PE.ServiceAreaId = 1
-
-</sql>
+LEFT JOIN (select  distinct a.Ptn_Pk, Max(ARTTransferInDate) ARTTransferInDate 
+from(Select distinct Ptn_Pk, Max(ARTTransferInDate) ARTTransferInDate From dtl_PatientHivPrevCareIE 
+where ARTTransferInDate is not null  and ARTTransferInDate>'1900-06-15 00:00:00.000'Group By Ptn_Pk
+union 
+Select distinct Ptn_Pk, Max(TransferInDate) ARTTransferInDate 
+From dbo.PatientTransferIn a inner join dbo.Patient b on b.Id=a.PatientId 
+where  TransferInDate>'1900-06-15 00:00:00.000'Group By Ptn_Pk)a Group By Ptn_Pk)trans on trans.Ptn_pk=pt.ptn_pk
+LEFT JOIN (SELECT A.Ptn_Pk,
+	MIN(A.prevARTStartDate) StartARTDate,
+	MAX(A.prevRegimen) StartRegimen
+	FROM
+	(SELECT ptn_pk,
+	MIN([Previous ART StartDate]) prevARTStartDate ,
+	MAX([Previous ART Regimen]) prevRegimen
+	FROM vw_patientdetail
+	WHERE [Previous ART StartDate] > CAST('' AS datetime)
+	GROUP BY ptn_pk
+	UNION 
+	SELECT a.ptn_pk,
+	MIN(a.ARTStartDate) prevARTStartDate,
+	MAX(b.regimen) prevRegimen
+	FROM dtl_patientHivPrevCareEnrollment a
+	LEFT JOIN dtl_patientBlueCardPriorART b ON a.visit_pk = b.visit_pk
+	WHERE a.ARTStartDate > CAST('' AS datetime)
+	GROUP BY a.ptn_pk
+	union
+	SELECT c.ptn_pk,MIN(a.TreatmentStartDate) ARTStartDate,MAX(b.DisplayName) Regimen
+	FROM dbo.PatientTransferIn a
+	inner join dbo.Patient c on c.Id=a.PatientId
+	LEFT JOIN dbo.LookupItem b ON a.[CurrentTreatment] = b.Id
+	WHERE a.TreatmentStartDate > CAST('' AS datetime)
+	GROUP BY ptn_pk
+	) A	GROUP BY A.Ptn_Pk) Tdate on Tdate.Ptn_Pk=pt.ptn_pk
+Left join (SELECT distinct  [Ptn_pk]
+      ,[ConfirmHIVPosDate]
+      ,[DateEnrolledInCare]
+  FROM [dbo].[dtl_PatientHivPrevCareEnrollment]
+  where ConfirmHIVPosDate is not null or DateEnrolledInCare is not null) HIVDate on HIVDate.ptn_pk=pt.ptn_pk
+LEFT JOIN (SELECT distinct  [ptn_pk]
+      ,max(cast([CreateDate] as date))[CreateDate]
+      ,UPPER([TreatmentSupporterName])[TreatmentSupporterName]
+      ,[TreatmentSupportTelNumber]
+FROM [dbo].[dtl_PatientContacts]
+GROUP BY [ptn_pk],[TreatmentSupporterName],[TreatmentSupportTelNumber])TS on TS.ptn_pk=pt.ptn_pk
+LEFT JOIN (SELECT DISTINCT Ptn_pk,
+		CASE WHEN  d2.Name  in ('Other source', 'Other: Specify','Other facility') THEN 'Other'
+			WHEN  d2.Name  in ('TB OPD', 'TB','TB outpatient') THEN 'TB Clinic'
+			WHEN  d2.Name  in ('VCT') THEN 'Volunatry Counselling Centre'
+			WHEN  d2.Name  in ('PMTCT') THEN 'PMTCT'
+			WHEN  d2.Name  in ('Medical out patient') THEN 'Outpatient Department'
+			WHEN  d2.Name  in ('IPD-Ad','IPD-Ch','Inpatient ward') THEN 'Inpatient Adult'
+			WHEN  d2.Name  in ('IPD-Ch') THEN 'Inpatient Child'
+			WHEN  d2.Name  in ('Child Welfare Clinic','Exposed infant','Under 5') THEN 'CWC'
+			ELSE d2.Name END AS ReferredFrom FROM mst_Patient a
+		INNER JOIN mst_decode d2 on a.ReferredFrom=d2.ID)EP ON EP.Ptn_Pk=pt.ptn_pk
+WHERE PE.ServiceAreaId = 1</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
