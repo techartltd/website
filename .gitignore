@@ -19,10 +19,10 @@
 [Ll]ogs/
 
 # Visual Studio 2015 cache/options directory
-.vs/
-.vs/.v15/
-.vs/slnx.sqlite
-.vs/kenyaemrMigration/v15/.suo
+*.vs/
+*.vs/.v15/
+*.vs/slnx.sqlite
+*.vs/kenyaemrMigration/v15/.suo
 
 
 
