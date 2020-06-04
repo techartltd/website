@@ -564,7 +564,7 @@ CREATE TABLE migration_tr.tr_hts_initial as
     MonthsSinceLastTest,
     (case HTS_Strategy
      when "NP: Non-Patients" then 164953
-     when "HP: Health Facility Patients" then 164955
+     when "HP: Health Facility Patients" then 164163
      when "VI: Integrated VCT sites" then 164954     
      when "HB: Home-based" then 159938
      when "MO: Mobile and Outreach" then 159939
