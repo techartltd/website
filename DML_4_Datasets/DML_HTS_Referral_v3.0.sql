@@ -1,0 +1,27 @@
+
+
+SELECT DISTINCT R.PersonID Person_Id
+	,format(cast(R.ReferralDate AS DATE), 'yyyy-MM-dd') Encounter_Date
+	,NULL Encounter_ID
+	,Facility_Referred = CASE 
+		WHEN (
+				SELECT top 1 Name
+				FROM FacilityList
+				WHERE MFLCode = R.ToFacility
+				) IS NULL
+			THEN 'OTHER'
+		ELSE (
+				SELECT top 1 Name
+				FROM FacilityList
+				WHERE MFLCode = R.ToFacility
+				)
+		END
+	,R.ExpectedDate Date_To_Be_Enrolled
+	,NULL Remarks
+	,R.DeleteFlag Voided,
+	R.CreatedBy,
+	R.CreateDate
+	
+FROM Referral R
+LEFT JOIN HtsEncounter HE ON HE.PersonId = R.PersonId;
+
