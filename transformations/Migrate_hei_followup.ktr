@@ -642,7 +642,7 @@ CREATE TABLE migration_st.st_hei_followup (
   Deworming_Drug                            VARCHAR(100),
   Deworming_Dosage_Units                    VARCHAR(100),
   Date_of_next_appointment                  DATE,
-  Comments                                  VARCHAR(100),
+  Comments                                  TEXT,
   Voided                                    INT(11)
 );
 </sql>

@@ -564,7 +564,7 @@ CREATE TABLE migration_tr.tr_hts_retest as
     MonthsSinceLastTest,
     (case HTS_Strategy
      when "NP: Non-Patients" then 164953
-     when "HP: Health Facility Patients" then 164955
+     when "HP: Health Facility Patients" then 164163
      when "VI: Integrated VCT sites" then 164954     
      when "HB: Home-based" then 159938
      when "MO: Mobile and Outreach" then 159939
@@ -577,7 +577,7 @@ CREATE TABLE migration_tr.tr_hts_retest as
      when "MCH" then 160538
      when "OPD" then 160542
      when "Other" then 5622
-     when "PNS" then 160538
+     when "PNS" then 161557
      when "TB" then 160541
      when "Mobile Outreach" then 159939
      when "PeD" then 162181
