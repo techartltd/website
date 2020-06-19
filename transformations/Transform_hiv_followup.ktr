@@ -647,6 +647,13 @@ CREATE TABLE migration_tr.tr_hiv_followup
     WHERE (fup.Encounter_Date != "" OR fup.Encounter_Date IS NOT NULL) AND (dm.UPN != "" OR dm.UPN IS NOT NULL)
     GROUP BY fup.Person_Id, fup.Encounter_Date;
 
+UPDATE tr_hiv_followup
+SET Gravida = NULL WHERE Gravida = "null" OR Gravida = "" ;
+UPDATE tr_hiv_followup
+SET Parity_term = NULL WHERE Parity_term = "null" OR Parity_term = ""; 
+   
+
+
 </sql>
     <set_params>N</set_params>
     <insert_field/>

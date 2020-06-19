@@ -512,18 +512,20 @@
 DROP TABLE IF EXISTS migration_tr.tr_ipt_outcome;
 CREATE TABLE migration_tr.tr_ipt_outcome
     select
-      Person_Id,    
-      Encounter_Date,
-      Encounter_ID,
-      (case IPT_Outcome when "TransferredOut" then 159492
+      ipt.Person_Id,    
+      ipt.Encounter_Date,
+      ipt.Encounter_ID,
+      (case ipt.IPT_Outcome when "TransferredOut" then 159492
        when "Died" then 160034
        when "Discontinued" then 159836
        when "LostToFollowUp" then 5240
        when "Completed" then 1267
        when "Unknown" then 1067 else NULL end) as IPT_Outcome,
-      Outcome_Date
-    FROM migration_st.st_ipt_program WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-    GROUP BY Person_Id, Encounter_Date;</sql>
+      ipt.Outcome_Date
+    FROM migration_st.st_ipt_program ipt
+       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ipt.Person_Id  
+       WHERE (ipt.Encounter_Date != "" OR ipt.Encounter_Date IS NOT NULL)
+       GROUP BY ipt.Person_Id, ipt.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

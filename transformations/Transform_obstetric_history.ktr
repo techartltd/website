@@ -430,7 +430,7 @@
     <created_date>2020/04/02 15:06:02.204</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/04/02 15:06:02.204</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -512,28 +512,29 @@
 DROP TABLE IF EXISTS migration_tr.tr_obstetric_history;
 CREATE TABLE migration_tr.tr_obstetric_history as
     select
-   Person_Id,
-   Encounter_Date,
-   Encounter_ID,
-   Pregnancy_order,
-   Number_ANC_Visits_Attended,
-   Place_of_delivery,
-   Maturity_in_weeks,
-   Duration_of_labour,
-   (case Type_of_delivery
+   obs.Person_Id,
+   obs.Encounter_Date,
+   obs.Encounter_ID,
+   obs.Pregnancy_order,
+   obs.Number_ANC_Visits_Attended,
+   obs.Place_of_delivery,
+   obs.Maturity_in_weeks,
+   obs.Duration_of_labour,
+   (case obs.Type_of_delivery
     when "SVD" then 1170
     when "Caesarean section" then 1171
     when "Breech" then 1172
     when "Assisted Vaginal Delivery" then 118159
     when "Other" then 5622 else NULL end) as Type_of_delivery,
-   Birth_weight,
- (case Sex when "Female" then 1535 when "Male" then 1534 else NULL end) as Sex,
-  Outcome,
-  Puerperium_events,
-  Voided
-    FROM migration_st.st_obstetric_history WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+   obs.Birth_weight,
+ (case obs.Sex when "Female" then 1535 when "Male" then 1534 else NULL end) as Sex,
+  obs.Outcome,
+  obs.Puerperium_events,
+  obs.Voided
+    FROM migration_st.st_obstetric_history obs
+       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = obs.Person_Id  
+       WHERE (obs.Encounter_Date != "" OR obs.Encounter_Date IS NOT NULL)
+       GROUP BY obs.Person_Id, obs.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

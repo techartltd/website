@@ -512,20 +512,21 @@
 DROP TABLE IF EXISTS migration_tr.tr_ovc_enrolment;
 CREATE TABLE migration_tr.tr_ovc_enrolment as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    (case Caregiver_enrolled_here when "Yes" then 1065 when NULL then 1066 else NULL end) as Caregiver_enrolled_here,
-    Caregiver_name,
-    (case Caregiver_gender when "Female" then 1535 when "Male" then 1534 else NULL end) as Caregiver_gender,
-    (case Relationship_to_Client when "Childrenshome" then 162722 when "Aunt" then 975 when "Uncle" then 974 when "Sibling" then 972 when "Parent" then 1527 else NULL end) as Relationship_to_Client,
-    Caregiver_Phone_Number,
-    (case Client_Enrolled_cpims when "Yes" then 1065 when "No" then 1066 else NULL end) as Client_Enrolled_cpims,
-    Partner_Offering_OVC,
-    voided
-    FROM migration_st.st_ovc_enrolment WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    ovc.Person_Id,
+    ovc.Encounter_Date,
+    ovc.Encounter_ID,
+    (case ovc.Caregiver_enrolled_here when "Yes" then 1065 when NULL then 1066 else NULL end) as Caregiver_enrolled_here,
+    ovc.Caregiver_name,
+    (case ovc.Caregiver_gender when "Female" then 1535 when "Male" then 1534 else NULL end) as Caregiver_gender,
+    (case ovc.Relationship_to_Client when "Childrenshome" then 162722 when "Aunt" then 975 when "Uncle" then 974 when "Sibling" then 972 when "Parent" then 1527 else NULL end) as Relationship_to_Client,
+    ovc.Caregiver_Phone_Number,
+    (case ovc.Client_Enrolled_cpims when "Yes" then 1065 when "No" then 1066 else NULL end) as Client_Enrolled_cpims,
+    ovc.Partner_Offering_OVC,
+    ovc.voided
+    FROM migration_st.st_ovc_enrolment ovc
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ovc.Person_Id  
+     WHERE (ovc.Encounter_Date != "" OR ovc.Encounter_Date IS NOT NULL)
+     GROUP BY ovc.Person_Id, ovc.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -543,8 +544,8 @@ CREATE TABLE migration_tr.tr_ovc_enrolment as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>390</xloc>
-      <yloc>116</yloc>
+      <xloc>208</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

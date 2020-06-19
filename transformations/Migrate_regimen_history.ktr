@@ -607,7 +607,7 @@ CREATE TABLE migration_st.st_regimen_history
   Date_Stopped                     DATE,
   Regimen_Discontinued             VARCHAR(200),
   Date_Discontinued                DATE,
-  Reason_Discontinued              VARCHAR(255),
+  Reason_Discontinued              TEXT,
   RegimenSwitchTo                  VARCHAR(255),
   CurrentRegimen                   VARCHAR(255),
   Voided                           INT(11),

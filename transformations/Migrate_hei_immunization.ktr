@@ -643,7 +643,7 @@ CREATE TABLE migration_st.st_hei_immunization (
   VitaminA_1_yr           VARCHAR(50),
   VitaminA_1_and_half_yr  VARCHAR(50),
   VitaminA_2_yr           VARCHAR(50),
-  VitaminA2_to_5_yr      VARCHAR(50),
+  VitaminA2_to_5_yr       VARCHAR(50),
   fully_immunized         DATE,
   Voided                  INT(11)
 );</sql>

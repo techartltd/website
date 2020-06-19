@@ -670,33 +670,7 @@ CREATE TABLE migration_st.st_hiv_enrollment
 EXEC pr_OpenDecryptedSession;
 
 SELECT DISTINCT P.Id AS Person_Id
-	,UPN = (
-		SELECT TOP 1 pdd.IdentifierValue
-		FROM (
-			SELECT pid.PatientId
-				,pid.IdentifierTypeId
-				,pid.IdentifierValue
-				,pdd.Code
-				,pdd.DisplayName
-				,pdd.[Name]
-				,pid.CreateDate
-				,pid.DeleteFlag
-			FROM PatientIdentifier pid
-			INNER JOIN (
-				SELECT id.Id
-					,id.[Name]
-					,id.[Code]
-					,id.[DisplayName]
-				FROM Identifiers id
-				INNER JOIN IdentifierType it ON it.Id = id.IdentifierType
-				WHERE it.Name = 'Patient'
-				) pdd ON pdd.Id = pid.IdentifierTypeId
-			) pdd
-		WHERE pdd.PatientId = PT.Id
-			AND pdd.[Code] = 'CCCNumber'
-			AND pdd.DeleteFlag = 0
-		ORDER BY pdd.CreateDate DESC
-		)
+	,UPN = (SELECT top 1 IdentifierValue FROM PatientEnrollment PTE INNER JOIN PatientIdentifier PIE ON PIE.PatientEnrollmentId = PTE.Id WHERE PTE.ServiceAreaId = 1 AND PIE.IdentifierTypeId = 1 AND PIE.DeleteFlag = 0 AND PTE.DeleteFlag = 0 AND PTE.PatientId = PT.Id AND PIE.PatientId = PT.Id)
 	,format(cast(PE.EnrollmentDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date
 	,NULL Encounter_ID
 	,Patient_Type = (

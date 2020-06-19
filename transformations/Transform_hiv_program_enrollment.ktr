@@ -512,14 +512,16 @@
 DROP TABLE IF EXISTS migration_tr.tr_hiv_program_enrollment;
 CREATE TABLE migration_tr.tr_hiv_program_enrollment as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Program,
-    Date_Enrolled,
-    Date_Completed
-  FROM migration_st.st_program_enrollment WHERE Program = "CCC" 
-  AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL) ;
+    pe.Person_Id,
+    pe.Encounter_Date,
+    pe.Encounter_ID,
+    pe.Program,
+    pe.Date_Enrolled,
+    pe.Date_Completed
+  FROM migration_st.st_program_enrollment pe
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pe.Person_Id  
+    WHERE pe.Program = "CCC" 
+    AND (pe.Encounter_Date != "" OR pe.Encounter_Date IS NOT NULL) ;
     </sql>
     <set_params>N</set_params>
     <insert_field/>

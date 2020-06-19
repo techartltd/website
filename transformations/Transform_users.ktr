@@ -540,8 +540,8 @@ ALTER TABLE migration_tr.tr_users ADD INDEX(User_Id);
       </output>
     </remotesteps>
     <GUI>
-      <xloc>514</xloc>
-      <yloc>69</yloc>
+      <xloc>304</xloc>
+      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

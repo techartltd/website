@@ -583,6 +583,8 @@ CREATE TABLE migration_st.st_allergies (
   Allergies_causative_agents       TEXT,
   Allergies_reactions              TEXT,
   Allergies_severity               TEXT,
+  CreateDate			    	   DATE,
+  CreateBy             		       VARCHAR(100),
   Voided                           int(11)
 );
 </sql>
@@ -631,6 +633,8 @@ li.Id=pa.Allergen) as Allergies_causative_agents,
  where li.Id=pa.Reaction) as Allergies_reactions,
  (select top 1 li.[Name] from LookupItem li
  where li.Id=pa.Severity) as Allergies_severity,
+ pa.CreateBy,
+ pa.CreateDate,
  pa.DeleteFlag as Voided
 
 from PatientAllergy pa

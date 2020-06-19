@@ -430,7 +430,7 @@
     <created_date>2020/06/02 10:53:33.695</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/06/02 10:53:33.695</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -512,14 +512,14 @@
 DROP TABLE IF EXISTS migration_tr.tr_population_type;
 CREATE TABLE migration_tr.tr_population_type as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-   (case Population_type
+    pt.Person_Id,
+    pt.Encounter_Date,
+    pt.Encounter_ID,
+   (case pt.Population_type
      when "General Population" then 164928
      when "Key Population" then 164929
      when "Priority Population" then 138643  else "" end)as Population_type,
-    (case Key_population_type
+    (case pt.Key_population_type
      when "Male Sex Worker" then 165084
      when "People who Inject with Drugs" then 105
      when "Female Sex Worker" then 160579
@@ -528,16 +528,20 @@ CREATE TABLE migration_tr.tr_population_type as
      when "Other ," then 5622
      when "Other , Other ," then 5622
      when "other" then 5622  else "" end) as Key_population_type,
-    -- (case Priority_Pop_Type
-    --  when "Fisher folk" then 159674
-    -- when "Truck driver" then 162198
-    -- when "Adolescent and young girls" then 160549
-     -- when "Prisoner" then 162277
-    --  when "other" then 5622  else "" end) as Priority_Pop_Type,
-    voided
-    FROM migration_st.st_population_type WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (Population_type != "" OR Population_type IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    (case pt.Priority_Pop_Type
+       when "Fisher folk" then 159674
+       when "Truck driver" then 162198
+       when "Adolescent and young girls" then 160549
+       when "Prisoner" then 162277
+       when "other" then 5622  else "" end) as Priority_Pop_Type,
+    pt.voided,
+    pt.CreateDate,
+    pt.CreatedBy
+    FROM migration_st.st_population_type pt
+       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pt.Person_Id 
+       WHERE (pt.Population_type != "" OR pt.Population_type IS NOT NULL)
+       GROUP BY pt.Person_Id;
+  /* This dataset  is updated on the fly in IQcare as such encounter_dated appear as Nulls*/</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

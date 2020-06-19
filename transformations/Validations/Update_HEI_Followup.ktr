@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_otz_outcome</name>
+    <name>Update_HEI_Followup</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,20 +427,20 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/04/01 11:59:36.421</created_date>
+    <created_date>2020/06/12 18:45:58.856</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/04/01 11:59:36.421</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/12 18:45:58.856</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
+    <name>mssql</name>
     <server/>
-    <type>MYSQL</type>
+    <type>MSSQLNATIVE</type>
     <access>JNDI</access>
-    <database>mysql_tr</database>
+    <database>mssql</database>
     <port>1521</port>
     <username/>
     <password>Encrypted </password>
@@ -461,6 +461,10 @@
         <attribute>N</attribute>
       </attribute>
       <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
         <code>PORT_NUMBER</code>
         <attribute>1521</attribute>
       </attribute>
@@ -471,10 +475,6 @@
       <attribute>
         <code>QUOTE_ALL_FIELDS</code>
         <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>STREAM_RESULTS</code>
-        <attribute>Y</attribute>
       </attribute>
       <attribute>
         <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
@@ -493,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_otz_outcome</name>
+    <name>update_hei_followup</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,28 +503,19 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>mssql</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>    -- 36. OTZ Outcome
-DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
-CREATE TABLE migration_tr.tr_otz_outcome as
-    select
-    otz.Person_Id,
-    otz.Encounter_Date,
-    otz.Encounter_ID,
-    (case otz.Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
-    otz.Death_Date,
-    otz.Transfer_Facility,
-    otz.Transfer_Date,
-    otz.voided
-    FROM migration_st.st_otz_outcome otz
-      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
-      WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
-      GROUP BY otz.Person_Id, otz.Encounter_Date;
-</sql>
+    <sql>--  Update HIE Followup by adding missing patientId 
+IF NOT EXISTS(SELECT 1 FROM sys.columns
+WHERE Name = N'PatientId'
+AND Object_ID = Object_ID(N'HeiLabTests'))
+BEGIN
+ALTER TABLE HeiLabTests ADD PatientId VARCHAR (255) NOT NULL
+
+END</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -541,8 +532,8 @@ CREATE TABLE migration_tr.tr_otz_outcome as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>294</xloc>
-      <yloc>55</yloc>
+      <xloc>256</xloc>
+      <yloc>74</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

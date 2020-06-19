@@ -513,16 +513,16 @@
 DROP TABLE IF EXISTS migration_tr.tr_hts_tracing;
 CREATE TABLE migration_tr.tr_hts_tracing as
   select
-  Person_Id,
-  Encounter_Date,
-  Encounter_ID,
-  (case Contact_Type
+  ht.Person_Id,
+  ht.Encounter_Date,
+  ht.Encounter_ID,
+  (case ht.Contact_Type
      when "Phone" then 1650
      when "Physical" then 164965 else NULL end) as Contact_Type,
-  (case Contact_Outcome
+  (case ht.Contact_Outcome
      when "Contacted" then 1065
      when "Not Contacted" then 1118 else NULL end) as Contact_Outcome,
-  (case Reason_uncontacted
+  (case ht.Reason_uncontacted
      when "No locator information in record" then 165073
      when "Incorrect locator information in record" then 165072
      when "Died" then 160034
@@ -530,10 +530,11 @@ CREATE TABLE migration_tr.tr_hts_tracing as
      when "Migrated from reported location" then 160415
      when "Not found at home" then 1706  
      when "Mteja, calls not going through, not picking calls" then 1567 else NULL end) as Reason_uncontacted,
-  Remarks,
-  Voided
-FROM migration_st.st_hts_tracing WHERE
- (Encounter_Date != "" OR Encounter_Date != NULL)
+  ht.Remarks,
+  ht.Voided
+FROM migration_st.st_hts_tracing ht
+  INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ht.Person_Id  
+  WHERE (ht.Encounter_Date != "" OR ht.Encounter_Date != NULL)
   GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>

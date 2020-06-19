@@ -430,7 +430,7 @@
     <created_date>2020/06/02 08:40:48.427</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/06/02 08:40:48.427</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -512,26 +512,40 @@
 DROP TABLE IF EXISTS migration_tr.tr_fp_methods;
 CREATE TABLE migration_tr.tr_fp_methods as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-  (case Family_planning_method
+    fp.Person_Id,
+    fp.Encounter_Date,
+    fp.Encounter_ID,
+  (case fp.Family_planning_method
      when "Vasectomy" then 1489
      when "Tubal Ligation /Female Sterilization" then 1472
+     when "TL =tubal ligation/female sterilization" then 1472
      when "Fertility Awareness Method" then 5277
      when "Diaphragm/Cervical Cap" then 5278
+     when "D =diaphragm/cervical cap" then 5278
      when "Lactational Amenorrhea Method" then 136163
+     when "LAM =Lactational Amenorrhea Method" then 136163
      when "Intra Uterine Device" then 5275
+     when "IUD =intrauterine device" then 5275
      when "Implant" then 1359
+     when "IMP =implant" then 1359
      when "Injectable" then 5279
+     when "INJ =Injectable" then 5279
      when "Oral Contraceptive Pills" then 780
+     when "OC =oral contraceptive pills" then 780
      when "Emergency Contraceptive Pills" then 160570
+     when "ECP =emergency contraceptive pills dispensed" then 160570
      when "Condoms" then 190
-     when "Unknown" then 1067  else '' end)as  Family_planning_method,  
-    voided
-    FROM migration_st.st_fp_methods WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (Family_planning_method != "" OR Family_planning_method IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+     when "C =condoms" then 190
+     when "UND =undecided" then 162332
+     when "Undecided" then 162332
+     when "Unknown" then 1067  else '' end)as  Family_planning_method, 
+    fp.CreatedBy,
+    fp.CreateDate,   
+    fp.voided
+    FROM migration_st.st_fp_methods fp
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fp.Person_Id  
+      WHERE (fp.Encounter_Date != "" OR fp.Encounter_Date IS NOT NULL) AND (fp.Family_planning_method != "" OR fp.Family_planning_method IS NOT NULL)
+      GROUP BY fp.Person_Id, fp.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

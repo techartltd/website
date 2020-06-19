@@ -547,7 +547,11 @@ CREATE TABLE migration_tr.tr_vital_labs
 
 UPDATE tr_vital_labs
 SET Test_result = "LDL"
-WHERE Test_result like "%LDL%" OR Test_result like "%undetectable%" OR Test_result like "%undetactable%";
+WHERE Test_result like "%LDL%" 
+   OR Test_result like "%undetectable%" 
+   OR Test_result like "%Undetectable%"
+   OR Test_result like "%UNDETECTABLE%"  
+   OR Test_result like "%undetactable%";
 </sql>
     <set_params>N</set_params>
     <insert_field/>

@@ -430,7 +430,7 @@
     <created_date>2020/06/02 11:20:51.364</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/06/02 11:20:51.364</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -580,6 +580,8 @@ CREATE TABLE migration_st.st_disability_type (
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Disability                       TEXT,
+  CreateBy             		       VARCHAR(100),
+  CreateDate			    	   DATE,  
   Voided                           int(11)
 );</sql>
     <set_params>N</set_params>
@@ -616,11 +618,10 @@ CREATE TABLE migration_st.st_disability_type (
     </partitioning>
     <connection>mssql</connection>
     <sql>select cd.PersonId as Person_Id
-,pmv.VisitDate as Encounter_Date,
-NULL as Encounter_ID,
-(select top 1.name from Lookupitem li where li.Id=cd.DisabilityId)Disability,
-cd.DeleteFlag  as Voided
-from ClientDisability cd
+,pmv.VisitDate as Encounter_Date,NULL as Encounter_ID,(select top 1.name from Lookupitem li where li.Id=cd.DisabilityId)Disability,NULL as Disability_Type,cd.DeleteFlag,
+cd.CreatedBy,cd.CreateDate 
+
+  from ClientDisability cd
 left join PatientEncounter pe on pe.Id=cd.PatientEncounterID
 left join PatientMasterVisit pmv on pmv.Id =pe.PatientMasterVisitId</sql>
     <limit>0</limit>

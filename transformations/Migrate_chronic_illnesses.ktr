@@ -585,6 +585,8 @@ CREATE TABLE migration_st.st_chronic_illness (
   Treatment 						TEXT,
   Dose								TEXT,
   Duration						    TEXT,
+  CreateBy             		       VARCHAR(100),
+  CreateDate			    	   DATE,  
   Voided                           int(11)
 );
 </sql>
@@ -630,6 +632,8 @@ pcs.OnsetDate as Chronic_illnesses_onset_date,
 pcs.Treatment,
 pcs.Dose,
 pcs.Duration,
+pcs.CreateBy,
+pcs.CreateDate,
 pcs.DeleteFlag as Voided
 from PatientChronicIllness pcs
 inner join Patient p on p.Id=pcs.PatientId

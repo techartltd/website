@@ -524,10 +524,10 @@
 DROP TABLE IF EXISTS migration_tr.tr_hiv_regimen_history;
 CREATE TABLE migration_tr.tr_hiv_regimen_history
   select
-   Person_Id,
-   Encounter_Date,
-   Encounter_ID,
-   (case Program
+   rh.Person_Id,
+   rh.Encounter_Date,
+   rh.Encounter_ID,
+   (case rh.Program
     when "ART" then 1255
     when "TB" then 1268
     when "PMTCT" then 1255
@@ -538,14 +538,14 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     when "Treatment" then 1255
     when "prophylaxis" then 1255
     when "Non-ART" then 5622 else NULL end)as Program,
-   (case Drug_Event
+   (case rh.Drug_Event
     when "STARTED" then 1256
     when "start" then 1256
     when "SWITCH" then 1259
     when "switch" then 1259
     when "substitution" then 1258
     when "STOP" then 1260 else NULL end)as Drug_Event,
-   (case Regimen_Name
+   (case rh.Regimen_Name
     -- 3TC+DTG+TDF
     when 'TDF + 3TC + DTG' then 164969
     when 'TDF/3TC/DTG' then 164969
@@ -1679,8 +1679,8 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as Regimen_Name,
-   Date_Started,
-   (case Regimen_Discontinued
+   rh.Date_Started,
+   (case rh.Regimen_Discontinued
 
     -- 3TC+DTG+TDF
     when 'TDF + 3TC + DTG' then 164969
@@ -2815,9 +2815,9 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as Regimen_Discontinued,
-   Date_Discontinued,
-   Reason_Discontinued,
-   (case RegimenSwitchTo
+   rh.Date_Discontinued,
+   rh.Reason_Discontinued,
+   (case rh.RegimenSwitchTo
 
     -- 3TC+DTG+TDF
     when 'TDF + 3TC + DTG' then 164969
@@ -3952,7 +3952,7 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as RegimenSwitchTo,
-   (case CurrentRegimen
+   (case rh.CurrentRegimen
 
     -- 3TC+DTG+TDF
     when 'TDF + 3TC + DTG' then 164969
@@ -5087,12 +5087,12 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
     -- when 'TLE 400+NVP' then 162565
 
     else "" end ) as CurrentRegimen
-  FROM migration_st.st_regimen_history
-  where
-   (Date_Started != "" OR Date_Started IS NOT NULL)
-   AND (Regimen_Name != "" OR Regimen_Name IS NOT NULL)
-   AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  FROM migration_st.st_regimen_history rh
+   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = rh.Person_Id  
+   WHERE (rh.Date_Started != "" OR rh.Date_Started IS NOT NULL)
+   AND  (rh.Regimen_Name != "" OR rh.Regimen_Name IS NOT NULL)
+   AND  (rh.Encounter_Date != "" OR rh.Encounter_Date IS NOT NULL)
+  GROUP BY rh.Person_Id, rh.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

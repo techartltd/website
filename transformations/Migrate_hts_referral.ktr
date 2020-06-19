@@ -583,6 +583,8 @@ CREATE TABLE migration_st.st_hts_referral
   Facility_Referred                VARCHAR(255),
   Date_To_Be_Enrolled              DATE,
   Remarks                          TEXT,
+  CreateDate			    	   DATE,
+  CreatedBy             		   VARCHAR(100),
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -618,19 +620,35 @@ CREATE TABLE migration_st.st_hts_referral
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 6. HTS Client Referral Validated by FG
+    <sql>-- 6. HTS Client Referral Validated by FG v3.0.0
 
-select 
-R.PersonID Person_Id,
-format(cast(R.ReferralDate AS DATE), 'yyyy-MM-dd') Encounter_Date,
-NULL Encounter_ID,
-Facility_Referred = CASE WHEN (SELECT Name FROM FacilityList WHERE MFLCode = R.ToFacility) IS NULL THEN 'OTHER' ELSE (SELECT Name FROM FacilityList WHERE MFLCode = R.ToFacility) END,
-R.ExpectedDate Date_To_Be_Enrolled,
-NULL Remarks,
-R.DeleteFlag Voided
 
-from Referral R
-LEFT join HtsEncounter HE ON HE.PersonId = R.PersonId;</sql>
+SELECT DISTINCT R.PersonID Person_Id
+	,format(cast(R.ReferralDate AS DATE), 'yyyy-MM-dd') Encounter_Date
+	,NULL Encounter_ID
+	,Facility_Referred = CASE 
+		WHEN (
+				SELECT top 1 Name
+				FROM FacilityList
+				WHERE MFLCode = R.ToFacility
+				) IS NULL
+			THEN 'OTHER'
+		ELSE (
+				SELECT top 1 Name
+				FROM FacilityList
+				WHERE MFLCode = R.ToFacility
+				)
+		END
+	,R.ExpectedDate Date_To_Be_Enrolled
+	,NULL Remarks
+	,R.DeleteFlag Voided,
+	R.CreatedBy,
+	R.CreateDate
+	
+FROM Referral R
+LEFT JOIN HtsEncounter HE ON HE.PersonId = R.PersonId;
+
+</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

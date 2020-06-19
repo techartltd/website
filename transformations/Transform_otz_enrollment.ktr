@@ -512,23 +512,24 @@
 DROP TABLE IF EXISTS migration_tr.tr_otz_enrolment;
 CREATE TABLE migration_tr.tr_otz_enrolment as
    select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    (case Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
-    (case Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
-    (case Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
-    (case Treatment_literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_literacy,
-    (case Transition_to_adult_care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_adult_care,
-    (case Making_decision_future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_decision_future,
-    (case Srh when "Yes" then 1065 when NULL then 1066 else NULL end) as Srh,
-    (case Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
-    (case Transfer_in when "Yes" then 1065 when NULL then 1066 else NULL end) as Transfer_in,
-    Initial_Enrolment_Date,
-    voided
-    FROM migration_st.st_otz_enrolment WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    otz.Person_Id,
+    otz.Encounter_Date,
+    otz.Encounter_ID,
+    (case otz.Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
+    (case otz.Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
+    (case otz.Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
+    (case otz.Treatment_literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_literacy,
+    (case otz.Transition_to_adult_care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_adult_care,
+    (case otz.Making_decision_future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_decision_future,
+    (case otz.Srh when "Yes" then 1065 when NULL then 1066 else NULL end) as Srh,
+    (case otz.Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
+    (case otz.Transfer_in when "Yes" then 1065 when NULL then 1066 else NULL end) as Transfer_in,
+    otz.Initial_Enrolment_Date,
+    otz.voided
+    FROM migration_st.st_otz_enrolment otz
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
+      WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
+      GROUP BY otz.Person_Id, otz.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -545,7 +546,7 @@ CREATE TABLE migration_tr.tr_otz_enrolment as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>467</xloc>
+      <xloc>224</xloc>
       <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>

@@ -514,128 +514,129 @@
 DROP TABLE IF EXISTS migration_tr.tr_mch_delivery;
 CREATE TABLE migration_tr.tr_mch_delivery as
   select
-  Person_Id,
-  Encounter_Date,
-  Encounter_ID,
-  Admission_number,
-  Gestation_Weeks,
-  Duration_Labour,
-(case Delivery_Mode
+  mch.Person_Id,
+  mch.Encounter_Date,
+  mch.Encounter_ID,
+  mch.Admission_number,
+  mch.Gestation_Weeks,
+  mch.Duration_Labour,
+(case mch.Delivery_Mode
     when "SVD" then 1170
     when "Caesarean section" then 1171
     when "Breech" then 1172
     when "Assisted Vaginal Delivery" then 118159
     when "Other" then 5622 else NULL end) as Delivery_Mode,
-  Delivery_Date_Time,
- (case Placenta_Complete
+  mch.Delivery_Date_Time,
+ (case mch.Placenta_Complete
         when "Yes" then 1065
         when "No" then 1066
         when "Unknown" then 1067 else NULL end) as Placenta_Complete,
-  (case Blood_Loss
+  (case mch.Blood_Loss
       when "Medium" then 1499
       when "None" then 1107
       when "Light" then 1498
       when "Heavy" then 1500 else NULL end) as Blood_Loss,
-  (case Mother_Condition
+  (case mch.Mother_Condition
       when "Alive" then 160429
       when "Dead" then 134612 else NULL end) as Mother_Condition,
-  Death_Audited,
-  (case Resuscitation_Done
+  mch.Death_Audited,
+  (case mch.Resuscitation_Done
         when "Yes" then 1065
         when "No" then 1066
         when "Unknown" then 1067 else NULL end) as Resuscitation_Done,
- (case Delivery_Complications
+ (case mch.Delivery_Complications
         when "Yes" then 1065
         when "No" then 1066
         when "Unknown" then 1067 else NULL end) as Delivery_Complications,
-  Delivery_Complications_Type,
-  Delivery_Complications_Other,
- (case Delivery_Place
+  mch.Delivery_Complications_Type,
+  mch.Delivery_Complications_Other,
+ (case mch.Delivery_Place
       when "Home" then 1536
       when "Health Facility" then 1588
       when "Other" then 5622
       when "Unknown" then 1067 else NULL end) as Delivery_Place,
-  Delivery_Conducted_By,
-  Delivery_Cadre,
-  Delivery_Outcome,
-  Baby_Name,
- (case Baby_Sex
+  mch.Delivery_Conducted_By,
+  mch.Delivery_Cadre,
+  mch.Delivery_Outcome,
+  mch.Baby_Name,
+ (case mch.Baby_Sex
       when "Male" then 1534
       when "Female" then  1535 else NULL end) as Baby_Sex,
-  Baby_Weight,
-  (case Baby_Condition
+  mch.Baby_Weight,
+  (case mch.Baby_Condition
    when "Alive" then 151849
    when "Dead" then 125872  else NULL end) as Baby_Condition,
-  (case Birth_Deformity
+  (case mch.Birth_Deformity
       when "Yes" then 155871
       when "No" then 1066
       when "Not applicable" then 1175  else NULL end) as Birth_Deformity,
-  (case TEO_Birth
+  (case mch.TEO_Birth
       when "Yes" then 84893
       when "No" then 1066
       when "Not applicable" then 1175 else NULL end) as TEO_Birth,
-  (case BF_At_Birth_Less_1_hr
+  (case mch.BF_At_Birth_Less_1_hr
       when "Yes" then 1065
       when "No" then 1066 else NULL end) as BF_At_Birth_Less_1_hr,
-  Apgar_1,
-  Apgar_5,
-  Apgar_10,
-    (case Test_1_Kit_Name
+  mch.Apgar_1,
+  mch.Apgar_5,
+  mch.Apgar_10,
+    (case mch.Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
      when "Other" then 1175  else NULL end) as Test_1_Kit_Name,
-    Test_1_kit_lot_no,
-    Test_1_kit_expiry,
-    (case Test_1_Result
+    mch.Test_1_kit_lot_no,
+    mch.Test_1_kit_expiry,
+    (case mch.Test_1_Result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else NULL end)as  Test_1_Result,
-    (case Test_2_Kit_Name
+    (case mch.Test_2_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
      when "Other" then 1175  else NULL end)as  Test_2_Kit_Name,
-    Test_2_kit_lot_no,
-    Test_2_kit_expiry,
-    (case Test_2_Result
+    mch.Test_2_kit_lot_no,
+    mch.Test_2_kit_expiry,
+    (case mch.Test_2_Result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else NULL end)as  Test_2_Result,
-    (case  Final_test_result
+    (case  mch.Final_test_result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else NULL end)as  Final_test_result,
-    (case Patient_given_result
+    (case mch.Patient_given_result
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Patient_given_result,
-    (case Partner_hiv_tested
+    (case mch.Partner_hiv_tested
      when "Yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_hiv_tested,
-    (case Partner_hiv_status
+    (case mch.Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
      when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
-  (case Syphilis_Treated
+  (case mch.Syphilis_Treated
      when "Positive" then 703
      when "Negative" then 664
      when "Not Done" then 1118  else NULL end) as  Syphilis_Treated,
- (case Prophylaxis_given
+ (case mch.Prophylaxis_given
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Prophylaxis_given,
- (case Baby_azt_dispensed
+ (case mch.Baby_azt_dispensed
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else NULL end)as  Baby_azt_dispensed,
- (case Baby_nvp_dispensed
+ (case mch.Baby_nvp_dispensed
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else NULL end)as  Baby_nvp_dispensed,
-  Clinical_notes,
-  Next_Appointment_Date,
-  Voided                                     
-FROM migration_st.st_mch_delivery_discharge  WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  mch.Clinical_notes,
+  mch.Next_Appointment_Date,
+  mch.Voided                                     
+FROM migration_st.st_mch_delivery_discharge  mch
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = mch.Person_Id  
+    WHERE (mch.Encounter_Date != "" OR mch.Encounter_Date IS NOT NULL)
+  GROUP BY mch.Person_Id, mch.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

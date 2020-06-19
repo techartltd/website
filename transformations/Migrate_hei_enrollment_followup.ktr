@@ -704,8 +704,8 @@ CREATE TABLE migration_st.st_hei_enrollment_followup (
       </output>
     </remotesteps>
     <GUI>
-      <xloc>576</xloc>
-      <yloc>176</yloc>
+      <xloc>192</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -991,8 +991,8 @@ left join (	Select	O.Id				LabId
       </output>
     </remotesteps>
     <GUI>
-      <xloc>880</xloc>
-      <yloc>176</yloc>
+      <xloc>464</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1035,8 +1035,8 @@ left join (	Select	O.Id				LabId
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1248</xloc>
-      <yloc>176</yloc>
+      <xloc>784</xloc>
+      <yloc>112</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

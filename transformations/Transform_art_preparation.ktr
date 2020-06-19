@@ -512,57 +512,58 @@
 DROP TABLE IF EXISTS migration_tr.tr_art_preparation;
 CREATE TABLE migration_tr.tr_art_preparation as
   select
-  Person_Id,
-  Encounter_Date,
-  Encounter_ID,
-  (case Understands_hiv_art_benefits
+  tp.Person_Id,
+  tp.Encounter_Date,
+  tp.Encounter_ID,
+  (case tp.Understands_hiv_art_benefits
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Understands_hiv_art_benefits,
-  (case Screened_negative_substance_abuse
+  (case tp.Screened_negative_substance_abuse
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Screened_negative_substance_abuse,
-  (case Screened_negative_psychiatric_illness
+  (case tp.Screened_negative_psychiatric_illness
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Screened_negative_psychiatric_illness,
-  (case HIV_status_disclosure
+  (case tp.HIV_status_disclosure
      when "Yes" then 1
      when "No" then 2  else NULL end)as HIV_status_disclosure,
-  (case Trained_drug_admin
+  (case tp.Trained_drug_admin
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Trained_drug_admin,
-  (case Informed_drug_side_effects
+  (case tp.Informed_drug_side_effects
      when "Yes" then 1
      when "No" then 2  else NULL end)as Informed_drug_side_effects,
-  (case Caregiver_committed
+  (case tp.Caregiver_committed
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Caregiver_committed,
-  (case Adherance_barriers_identified
+  (case tp.Adherance_barriers_identified
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Adherance_barriers_identified,
-  (case Caregiver_location_contacts_known
+  (case tp.Caregiver_location_contacts_known
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Caregiver_location_contacts_known,
-  (case Ready_to_start_art
+  (case tp.Ready_to_start_art
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Ready_to_start_art,
-  (case Identified_drug_time
+  (case tp.Identified_drug_time
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Identified_drug_time,
-  (case Treatment_supporter_engaged
+  (case tp.Treatment_supporter_engaged
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Treatment_supporter_engaged,
-  (case Support_grp_meeting_awareness
+  (case tp.Support_grp_meeting_awareness
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Support_grp_meeting_awareness,
-  (case Enrolled_in_reminder_system
+  (case tp.Enrolled_in_reminder_system
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Enrolled_in_reminder_system,
-  (case Other_support_systems
+  (case tp.Other_support_systems
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Other_support_systems
-  FROM migration_st.st_art_preparation WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  FROM migration_st.st_art_preparation tp
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = tp.Person_Id  
+     WHERE (tp.Encounter_Date != "" OR tp.Encounter_Date IS NOT NULL)
+     GROUP BY tp.Person_Id, tp.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

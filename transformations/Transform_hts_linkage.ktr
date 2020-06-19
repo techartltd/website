@@ -512,13 +512,13 @@
 DROP TABLE IF EXISTS migration_tr.tr_hts_linkage;
 CREATE TABLE migration_tr.tr_hts_linkage as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Facility_Linked,
-    CCC_Number,
-    Health_Worker_Handed_To,
-   (case Cadre
+    lk.Person_Id,
+    lk.Encounter_Date,
+    lk.Encounter_ID,
+    lk.Facility_Linked,
+    lk.CCC_Number,
+    lk.Health_Worker_Handed_To,
+   (case lk.Cadre
      when "Nurse" then 1577
      when "NURSE" then 1577
      when "Clinical Officer/Doctor" then 1574
@@ -526,13 +526,14 @@ CREATE TABLE migration_tr.tr_hts_linkage as
      when "Employee" then 1540
      when "Other" then 5622
      when "COUNSELLOR" then 1577 else NULL end) as Cadre,
-    Date_Enrolled,
-    ART_Start_Date,
-    Remarks,
-    Voided
-  FROM migration_st.st_hts_linkage WHERE
-    (Encounter_Date != "" OR Encounter_Date != NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    lk.Date_Enrolled,
+    lk.ART_Start_Date,
+    lk.Remarks,
+    lk.Voided
+  FROM migration_st.st_hts_linkage lk
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = lk.Person_Id  
+    WHERE (lk.Encounter_Date != "" OR lk.Encounter_Date != NULL)
+    GROUP BY lk.Person_Id, lk.Encounter_Date;
 ;</sql>
     <set_params>N</set_params>
     <insert_field/>

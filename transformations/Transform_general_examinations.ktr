@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_otz_outcome</name>
+    <name>Transform_general_examinations</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,16 +427,16 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/04/01 11:59:36.421</created_date>
+    <created_date>2020/06/08 14:30:06.796</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/04/01 11:59:36.421</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/08 14:30:06.796</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
+    <name>migration_tr</name>
     <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
@@ -493,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_otz_outcome</name>
+    <name>load_tr_general_examinations</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,28 +503,40 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>migration_tr</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>    -- 36. OTZ Outcome
-DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
-CREATE TABLE migration_tr.tr_otz_outcome as
+    <sql>       	     -- 43. General examinations table
+DROP TABLE IF EXISTS migration_tr.tr_general_examinations;
+CREATE TABLE migration_tr.tr_general_examinations as
     select
-    otz.Person_Id,
-    otz.Encounter_Date,
-    otz.Encounter_ID,
-    (case otz.Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
-    otz.Death_Date,
-    otz.Transfer_Facility,
-    otz.Transfer_Date,
-    otz.voided
-    FROM migration_st.st_otz_outcome otz
-      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
-      WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
-      GROUP BY otz.Person_Id, otz.Encounter_Date;
-</sql>
+    ge.Person_Id,
+    ge.Encounter_Date,
+    ge.Encounter_ID,
+   (case ge.Exam            						
+      when "None" then 1107
+      when "Pallor" then 5245
+      when "Jaundice" then 136443
+      when "Oedema" then 460
+      when "Oral thrush" then 5334
+      when "Cyanosis" then 143050
+      when "Dehydration" then 142630
+      when "Finger Clubbing" then 140125
+      when "Lethargic" then 116334
+      when "Lymph nodes axillary" then 126952
+      when "Lymph nodes inguinal" then 126939
+      when "Wasting" then 823
+      when "No" then 1066  else NULL end)as Exam,
+    ge.CreateDate,
+	ge.CreatedBy   
+    FROM migration_st.st_general_examinations ge
+        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ge.Person_Id  
+        WHERE (ge.Encounter_Date != "" OR ge.Encounter_Date IS NOT NULL) AND (ge.Exam != "" OR ge.Exam IS NOT NULL)
+        GROUP BY ge.Person_Id, ge.Encounter_Date;	
+	
+     </sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -541,8 +553,8 @@ CREATE TABLE migration_tr.tr_otz_outcome as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>294</xloc>
-      <yloc>55</yloc>
+      <xloc>282</xloc>
+      <yloc>59</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

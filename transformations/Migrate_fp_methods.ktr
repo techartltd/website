@@ -580,6 +580,8 @@ CREATE TABLE migration_st.st_fp_methods (
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Family_planning_method           TEXT,
+  CreatedBy            		       VARCHAR(100),
+  CreateDate			    	   DATE,  
   Voided                           int(11)
 );</sql>
     <set_params>N</set_params>
@@ -617,10 +619,10 @@ CREATE TABLE migration_st.st_fp_methods (
     <connection>mssql</connection>
     <sql>
 SELECT p.PersonId as Person_Id,
-pmv.VisitDate as  Encounter_Date,
-NULL as Encounter_ID,
-(select top 1.[DisplayName]  from LookupItem lt where lt.Id=pfm.FPMethodId) as Family_Planning_Method
-
+       pmv.VisitDate as  Encounter_Date,
+       NULL as Encounter_ID,(select top 1.[DisplayName]  from LookupItem lt where lt.Id=pfm.FPMethodId) as Family_Planning_Method
+,pfm.CreatedBy
+,pfm.CreateDate
 from PatientFamilyPlanningMethod pfm 
 inner join Patient p on p.Id=pfm.PatientId
 left join PatientFamilyPlanning pfp on pfp.Id=pfm.PatientFPId
@@ -631,11 +633,10 @@ ON lki.Id = pfm.FPMethodId
 union
 select pa.PersonId as Person_Id,V.VisitDate as Encounter_Date,NULL as Encounter_ID,
 (select top 1.[Name]  from mst_BlueDecode lt where lt.Id=pfp.FamilyPlanningMethod)
-as Family_Planning_Method  from dtl_PatientFamilyPlanning pfp
+as Family_Planning_Method,pfp.UserId as CreatedBy,pfp.CreateDate  from dtl_PatientFamilyPlanning pfp
 left join mst_Patient p on p.Ptn_Pk=pfp.Ptn_Pk
 left join ord_Visit v on v.Visit_Id=pfp.Visit_Id
-left join Patient pa on pa.Ptn_Pk=pfp.Ptn_Pk
-</sql>
+left join Patient pa on pa.Ptn_Pk=pfp.Ptn_Pk</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

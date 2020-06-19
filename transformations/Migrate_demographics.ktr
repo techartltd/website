@@ -642,6 +642,8 @@ CREATE TABLE migration_st.st_demographics
   Consent_decline_reason VARCHAR(255),
   Patient_voided         INT(11), 
   Person_voided          INT(11),
+  CreateDate             DATE,
+  CreatedBy              VARCHAR(100),   
   voided                 INT(11)
 );
 </sql>
@@ -678,7 +680,7 @@ CREATE TABLE migration_st.st_demographics
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 1. Demographics/Registration   v2.0  Validated by FG
+    <sql>-- 1. Demographics/Registration for only patients  v3.0.0 created by Chester
 
 exec pr_OpenDecryptedSession;
 SELECT
@@ -752,15 +754,12 @@ Dead = (SELECT top 1  'Yes' FROM PatientCareending WHERE DeleteFlag = 0 AND Exit
 Death_date = (SELECT TOP 1 DateOfDeath FROM PatientCareending WHERE DeleteFlag = 0 AND ExitReason = (SELECT ItemId FROM LookupItemView WHERE MasterName = 'CareEnded' AND ItemName = 'Death') AND PatientId = PT.Id AND DateOfDeath IS NOT NULL ORDER BY Id DESC),
 ts.Consent as Consent,
 ts.Consent_Decline_Reason as Consent_Decline_Reason,
-PT.DeleteFlag AS Patient_voided, 
-P.DeleteFlag as Person_voided,
-CASE WHEN PT.DeleteFlag is null and P.DeleteFlag = 0 then 0
-WHEN PT.DeleteFlag =1 and P.DeleteFlag=1 then 1
-WHEN PT.DeleteFlag is null then P.DeleteFlag
-ELSE PT.DeleteFlag end as voided
+PT.DeleteFlag AS voided,
+P.CreateDate,
+P.CreatedBy
 
 FROM Person P
-LEFT JOIN Patient PT ON PT.PersonId = P.Id
+INNER JOIN Patient PT ON PT.PersonId = P.Id
 LEFT JOIN (select t.PersonId,t.SupporterId,t.Next_of_kin,t.Next_of_kin_phone,t.Next_of_kin_relationship,t.Next_of_kin_address,t.Consent,t.Consent_Decline_Reason from (select pts.PersonId ,pts.SupporterId,(pt.FirstName + ' ' + pt.MiddleName + ' ' + pt.LastName) as Next_of_kin,pts.ContactCategory,pts.ContactRelationship,lts.DisplayName as Next_of_kin_relationship
 ,pts.MobileContact as Next_of_kin_phone,pcv.PhysicalAddress as [Next_of_kin_address],pcc.Consent,pcc.Consent_Decline_Reason
 ,pts.CreateDate ,ROW_NUMBER() OVER(Partition by pts.PersonId order by pts.CreateDate desc)rownum from PatientTreatmentSupporter pts

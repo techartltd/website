@@ -512,13 +512,13 @@
 DROP TABLE IF EXISTS migration_tr.tr_drug_reactions;
 CREATE TABLE migration_tr.tr_drug_reactions as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-   (case Has_adverse_drug_reaction
+    dr.Person_Id,
+    dr.Encounter_Date,
+    dr.Encounter_ID,
+   (case dr.Has_adverse_drug_reaction
       when "Yes" then 1065
       when "No" then 1066  else NULL end)as Has_adverse_drug_reaction,
-   (case Medicine_causing_drug_reaction
+   (case dr.Medicine_causing_drug_reaction
         when "Ragweed" then 162541
         when "Pollen" then 162540
         when "Mold" then 162539
@@ -581,7 +581,7 @@ CREATE TABLE migration_tr.tr_drug_reactions as
         when "ACE inhibitors" then 162298
         when "Abacavir" then 70056
         when "Other" then 5622 else '' end)as Medicine_causing_drug_reaction,
-   (case Drug_reaction
+   (case dr.Drug_reaction
         when "Unknown" then 1067
         when "Anaemia" then 121629
         when "Anaphylaxis" then 148888
@@ -605,14 +605,14 @@ CREATE TABLE migration_tr.tr_drug_reactions as
         when "Rash" then 512
         when "Skin rash/hypersensitivity reaction" then 512
         when "Other" then 5622   else '' end)as Drug_reaction,
-   (case Drug_reaction_severity
+   (case dr.Drug_reaction_severity
         when "Mild" then 160754
         when "Moderate" then 160755
         when "Severe" then 160756
         when "Fatal" then 160758
         when "Unknown" then 1067  else '' end)as Drug_reaction_severity,
-   Drug_reaction_onset_date,
-  (case Drug_reaction_action_taken
+   dr.Drug_reaction_onset_date,
+  (case dr.Drug_reaction_action_taken
         when "CONTINUE REGIMEN" then 1257
         when "Medicine not changed" then 1257
         when "SWITCHED REGIMEN" then 1259
@@ -621,10 +621,13 @@ CREATE TABLE migration_tr.tr_drug_reactions as
         when "Medicine causing AE substituted/withdrawn" then 1258
         when "NONE" then 1107
         when "STOP" then 1260
-        when "OTHER" then 5622  else '' end)as Drug_reaction_action_taken
-    FROM migration_st.st_drug_reactions WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (Medicine_causing_drug_reaction != "" OR Medicine_causing_drug_reaction IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;	
+        when "OTHER" then 5622  else '' end)as Drug_reaction_action_taken,
+    dr.CreateDate,							    
+	dr.CreateBy 
+    FROM migration_st.st_drug_reactions dr
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = dr.Person_Id  
+    WHERE (dr.Encounter_Date != "" OR dr.Encounter_Date IS NOT NULL) AND (dr.Medicine_causing_drug_reaction != "" OR dr.Medicine_causing_drug_reaction IS NOT NULL)
+    GROUP BY dr.Person_Id, dr.Encounter_Date;	
 	</sql>
     <set_params>N</set_params>
     <insert_field/>

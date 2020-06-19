@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_otz_outcome</name>
+    <name>Transform_differentiated_care</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,16 +427,16 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/04/01 11:59:36.421</created_date>
+    <created_date>2020/06/08 16:06:47.941</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/04/01 11:59:36.421</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/08 16:06:47.941</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
+    <name>diff_care_con</name>
     <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
@@ -493,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_otz_outcome</name>
+    <name>load_tr_differentaited_care</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,27 +503,44 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>diff_care_con</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>    -- 36. OTZ Outcome
-DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
-CREATE TABLE migration_tr.tr_otz_outcome as
+    <sql>    	     -- 44. Differentiated Care table
+DROP TABLE IF EXISTS migration_tr.tr_differentaited_care;
+CREATE TABLE migration_tr.tr_differentaited_care as
     select
-    otz.Person_Id,
-    otz.Encounter_Date,
-    otz.Encounter_ID,
-    (case otz.Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
-    otz.Death_Date,
-    otz.Transfer_Facility,
-    otz.Transfer_Date,
-    otz.voided
-    FROM migration_st.st_otz_outcome otz
-      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
-      WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
-      GROUP BY otz.Person_Id, otz.Encounter_Date;
+    dc.Person_Id,
+    dc.Encounter_Date,
+    dc.Encounter_ID,
+    (case On_DifferentiatedCare
+       when "Yes" then 1065
+       when "YES" then 1065
+       when "No" then 1066
+       when "NO" then 1066
+       else '' end)as On_DifferentiatedCare,                   
+    (case dc.Differentiated_Care_Model
+         when "Standard Care" then 164942
+         when "Express Care" then 164943
+         when "Fast Track" then 164943
+         when "FT = Fast Track" then 164943
+         when "Facility ART Distribution Group" then 164946
+         when "FADG = Facility ART Distribution Group" then 164946
+         when "Community Based Dispensing" then 164944
+         when "Community ART Distribution - HCW Led" then 164944
+         when "CADH = Community ART Distribution - HCW Led" then 164944         
+         when "Community ART Distribution - Peer Led" then 164945
+		 when "CADP = Community ART Distribution - Peer Led" then 164945
+         when "Other" then 5622 else '' end)as Differentiated_Care_Model,
+    dc.CreateDate,
+	dc.CreatedBy   
+    FROM migration_st.st_differentiated_care  dc
+       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = dc.Person_Id 
+       WHERE (dc.Encounter_Date != "" OR dc.Encounter_Date IS NOT NULL) AND (dc.Differentiated_care_model != "" OR dc.Differentiated_care_model IS NOT NULL)
+       GROUP BY dc.Person_Id, dc.Encounter_Date;	
+
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -541,8 +558,8 @@ CREATE TABLE migration_tr.tr_otz_outcome as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>294</xloc>
-      <yloc>55</yloc>
+      <xloc>484</xloc>
+      <yloc>47</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
