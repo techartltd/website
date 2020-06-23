@@ -562,13 +562,13 @@
   </connection>
   <order>
     <hop>
-      <from>Create_Staging_DB</from>
-      <to>iqcare_source_hiv_enrollments</to>
+      <from>iqcare_source_hiv_enrollments</from>
+      <to>load_st_hiv_enrollments</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>iqcare_source_hiv_enrollments</from>
-      <to>load_st_hiv_enrollments</to>
+      <from>Create_Staging_DB</from>
+      <to>Create PatientBaselineView </to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -593,8 +593,7 @@ DROP TABLE IF EXISTS migration_st.st_hiv_enrollment;
 CREATE TABLE migration_st.st_hiv_enrollment
 (
   Person_Id                        INT(11),
-  Ptn_pk                           VARCHAR(20),
-  UPN                              VARCHAR(100),
+  UPN                              VARCHAR(20),
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Patient_Type                     VARCHAR(100),
@@ -628,9 +627,7 @@ CREATE TABLE migration_st.st_hiv_enrollment
   Relationship_of_treatment_supporter VARCHAR(100),
   Treatment_supporter_telephone      VARCHAR(100),
   Treatment_supporter_address        VARCHAR(100),
-  voided                             INT(11),
-  Created_by                         INT(11),
-  Create_date                        DATE
+  voided                             INT(11)
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -648,8 +645,8 @@ CREATE TABLE migration_st.st_hiv_enrollment
       </output>
     </remotesteps>
     <GUI>
-      <xloc>96</xloc>
-      <yloc>48</yloc>
+      <xloc>144</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -665,13 +662,10 @@ CREATE TABLE migration_st.st_hiv_enrollment
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 2. HIV Enrollment DML Validated by LO and PG v3.0.0 
+    <sql>
 
--- updated after revision by Chester and tested by PG
-
--- -----------------------------2. HIV Enrollment DML ---------------------------------------------
+-- 2. HIV Enrollment DML Validated by PG
 EXEC pr_OpenDecryptedSession;
-
 SELECT DISTINCT P.Id AS Person_Id
 	,UPN = (
 		SELECT TOP 1 pdd.IdentifierValue
@@ -811,7 +805,7 @@ LEFT JOIN (
 	FROM (
 		SELECT *
 			,ROW_NUMBER() OVER (
-				PARTITION BY PatientId ORDER BY PatientMasterVisitId desc
+				PARTITION BY PatientId ORDER BY PatientMasterVisitId
 				) rownum
 		FROM PatientBaselineView
 		) rte
@@ -921,8 +915,8 @@ WHERE PE.ServiceAreaId = 1
       </output>
     </remotesteps>
     <GUI>
-      <xloc>352</xloc>
-      <yloc>48</yloc>
+      <xloc>496</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -965,8 +959,147 @@ WHERE PE.ServiceAreaId = 1
       </output>
     </remotesteps>
     <GUI>
-      <xloc>608</xloc>
-      <yloc>48</yloc>
+      <xloc>864</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Create PatientBaselineView </name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql</connection>
+    <execute_each_row>N</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>N</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>/****** Object:  View [dbo].[PatientBaselineView]    Script Date: 06/05/2020 11:18:48 ******/
+
+ALTER VIEW [dbo].[PatientBaselineView]
+AS
+SELECT DISTINCT dbo.PatientHivDiagnosis.PatientId
+	,dbo.PatientHivDiagnosis.Id
+	,dbo.PatientHivDiagnosis.PatientMasterVisitId
+	,dbo.PatientTransferIn.ServiceAreaId
+	,dbo.PatientTransferIn.TransferInDate
+	,dbo.PatientTransferIn.TreatmentStartDate
+	,ISNULL(dbo.PatientTransferIn.CurrentTreatment, 0) AS CurrentTreatment
+	,CASE WHEN (
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem
+		WHERE (Id = dbo.PatientTransferIn.CurrentTreatment)
+		) = 'Unknown' THEN (SELECT TOP 1 FirstLineReg
+					FROM dtl_patientARTCare
+					WHERE ptn_pk = P.ptn_pk
+						AND FirstLineRegStDate IS NOT NULL AND FirstLineRegStDate &lt;&gt; '1900-06-15 00:00:00.000') WHEN (
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem
+		WHERE (Id = dbo.PatientTransferIn.CurrentTreatment)
+		) IS NULL THEN (SELECT TOP 1 FirstLineReg
+					FROM dtl_patientARTCare
+					WHERE ptn_pk = P.ptn_pk
+						AND FirstLineRegStDate IS NOT NULL AND FirstLineRegStDate &lt;&gt; '1900-06-15 00:00:00.000') ELSE (
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem
+		WHERE (Id = dbo.PatientTransferIn.CurrentTreatment)
+		) END AS CurrentTreatmentName
+	,dbo.PatientTransferIn.FacilityFrom
+	,dbo.PatientTransferIn.MFLCode
+	,ISNULL(dbo.PatientTransferIn.CountyFrom, 0) AS CountyFrom
+	,dbo.PatientTransferIn.TransferInNotes
+	,dbo.PatientHivDiagnosis.HIVDiagnosisDate
+	,dbo.PatientHivDiagnosis.EnrollmentDate
+	,ISNULL(dbo.PatientHivDiagnosis.EnrollmentWHOStage, 0) AS EnrollmentWHOStage
+	,(
+		SELECT Name
+		FROM dbo.LookupItem AS LookupItem_3
+		WHERE (Id = dbo.PatientHivDiagnosis.EnrollmentWHOStage)
+		) AS EnrollmentWHOStageName
+	,CASE 
+		WHEN dbo.PatientHivDiagnosis.ARTInitiationDate IS NULL
+			THEN (
+					SELECT TOP 1 FirstLineRegStDate
+					FROM dtl_patientARTCare
+					WHERE ptn_pk = P.ptn_pk
+						AND FirstLineRegStDate IS NOT NULL AND FirstLineRegStDate &lt;&gt; '1900-06-15 00:00:00.000'
+					)
+		ELSE dbo.PatientHivDiagnosis.ARTInitiationDate
+		END AS ARTInitiationDate
+	,(
+		SELECT TOP (1) DispensedByDate
+		FROM dbo.ord_PatientPharmacyOrder
+		WHERE (PatientId = dbo.PatientHivDiagnosis.PatientId)
+			AND (
+				ptn_pharmacy_pk IN (
+					SELECT ptn_pharmacy_pk
+					FROM dbo.dtl_PatientPharmacyOrder
+					WHERE (Prophylaxis = 0)
+					)
+				)
+		ORDER BY ptn_pharmacy_pk
+		) AS ARTInitiationDateNew
+	,dbo.PatientTreatmentInitiation.DateStartedOnFirstLine
+	,dbo.PatientTreatmentInitiation.Cohort
+	,ISNULL(dbo.PatientTreatmentInitiation.Regimen, 0) AS Regimen
+	,(
+		SELECT DisplayName AS Expr1
+		FROM dbo.LookupItem AS LookupItem_2
+		WHERE (Id = dbo.PatientTreatmentInitiation.Regimen)
+		) AS RegimenName
+	,dbo.PatientTreatmentInitiation.BaselineViralload
+	,dbo.PatientTreatmentInitiation.BaselineViralloadDate
+	,dbo.PatientBaselineAssessment.HBVInfected
+	,dbo.PatientBaselineAssessment.Pregnant
+	,dbo.PatientBaselineAssessment.TBinfected
+	,dbo.PatientBaselineAssessment.WHOStage
+	,(
+		SELECT Name
+		FROM dbo.LookupItem AS LookupItem_1
+		WHERE (Id = dbo.PatientBaselineAssessment.WHOStage)
+		) AS WhoStageName
+	,dbo.PatientBaselineAssessment.BreastFeeding
+	,dbo.PatientBaselineAssessment.CD4Count
+	,dbo.PatientBaselineAssessment.MUAC
+	,dbo.PatientBaselineAssessment.Weight
+	,dbo.PatientBaselineAssessment.Height
+	,dbo.PatientBaselineAssessment.BMI
+	,dbo.PatientTreatmentInitiation.ldl
+	,dbo.PatientHivDiagnosis.HistoryARTUse
+FROM dbo.PatientHivDiagnosis
+INNER JOIN Patient P ON P.Id = dbo.PatientHivDiagnosis.PatientId
+LEFT OUTER JOIN dbo.PatientTransferIn ON dbo.PatientHivDiagnosis.PatientId = dbo.PatientTransferIn.PatientId
+LEFT OUTER JOIN dbo.PatientTreatmentInitiation ON dbo.PatientHivDiagnosis.PatientId = dbo.PatientTreatmentInitiation.PatientId
+LEFT OUTER JOIN dbo.PatientBaselineAssessment ON dbo.PatientHivDiagnosis.PatientId = dbo.PatientBaselineAssessment.PatientId
+
+
+
+
+</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

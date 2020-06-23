@@ -430,7 +430,7 @@
     <created_date>2020/05/30 14:45:05.701</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/05/30 14:45:05.701</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -518,16 +518,16 @@ INSERT INTO migration_tr.tr_hiv_regimen_history
    1255 as Program,
    1256 as  Drug_Event,  
    Baseline_arv_regimen as Regimen_Name,   
-   Date_started_art_at_transferring_facility as Date_Started, 
+   Baseline_arv_date_last_used as Date_Started, 
    NULL as Regimen_Discontinued, 
    NULL as Date_Discontinued,
    NULL as Reason_Discontinued,
    NULL as RegimenSwitchTo,
    NULL as CurrentRegimen
   FROM migration_tr.tr_hiv_enrollment
-   -- INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = Person_Id  
-   WHERE (Baseline_arv_regimen != "" OR Baseline_arv_regimen IS NOT NULL)
-   AND (Date_started_art_at_transferring_facility != "" OR Date_started_art_at_transferring_facility IS NOT NULL)
+  where
+   (Baseline_arv_regimen != "" OR Baseline_arv_regimen IS NOT NULL)
+   AND (Baseline_arv_date_last_used != "" OR Baseline_arv_date_last_used IS NOT NULL)
    AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;</sql>
     <set_params>N</set_params>
