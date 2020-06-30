@@ -543,7 +543,7 @@ CREATE TABLE migration_tr.tr_vital_labs
     WHERE (lbs.Encounter_Date != "" OR lbs.Encounter_Date IS NOT NULL)
     AND lbs.Lab_test in ("VIRALLOAD","Viral Load","CD4","CD4PERCENT","CD4 Percent")
     AND (lbs.Test_result != "" OR lbs.Test_result IS NOT NULL)
-  GROUP BY lbs.Person_Id, lbs.Encounter_Date;
+  GROUP BY lbs.Person_Id, lbs.Encounter_Date,lbs.Lab_test;
 
 UPDATE tr_vital_labs
 SET Test_result = "LDL"

@@ -516,11 +516,16 @@ CREATE TABLE migration_tr.tr_art_fastrack as
    ft.Encounter_Date,
    ft.Encounter_ID,
  (case ft.Refill_model
-     when "CADH = Community ART Distribution - HCW Led" then 164944
-     when  "CADP = Community ART Distribution - Peer Led" then 164945
+     when  "CADH = Community ART Distribution - HCW Led" then 164944
+     when  "CADH" then 164944
+     when  "CADP = Community ART Distribution - Peer Led" then 164945  
+     when  "CADP" then 164945
      when  "FADG = Facility ART Distribution Group" then 164946
+     when  "FADG" then 164946
      when  "FT = Fast Track" then 164943
+     when  "FT" then 164943
      when  "SC = Standard Care" then 164942
+     when  "SC" then 164942
      when "Unknown" then 1067 else '' end) as Refill_model,
   (case ft.Condoms_dispensed
       when "Yes"  then 1065
