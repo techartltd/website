@@ -512,13 +512,13 @@
 DROP TABLE IF EXISTS migration_tr.tr_chronic_illness;
 CREATE TABLE migration_tr.tr_chronic_illness as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-   (case Has_Chronic_illnesses_cormobidities
+    ch.Person_Id,
+    ch.Encounter_Date,
+    ch.Encounter_ID,
+   (case ch.Has_Chronic_illnesses_cormobidities
       when "Yes" then 1065
       when "No" then 1066  else NULL end)as Has_Chronic_illnesses_cormobidities,
-   (case Chronic_illnesses_name
+   (case ch.Chronic_illnesses_name
         when "Alzheimer's Disease and other Dementias" then 149019
         when "Arthritis" then 148432
         when "Asthma" then 153754
@@ -544,10 +544,13 @@ CREATE TABLE migration_tr.tr_chronic_illness as
         when "Osteoporosis" then 114662
         when "Sickle Cell Anemia" then 117703
         when "Thyroid disease" then 118976 else '' end)as Chronic_illnesses_name,
-   Chronic_illnesses_onset_date
-    FROM migration_st.st_chronic_illness WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (Chronic_illnesses_name != "" OR Chronic_illnesses_name IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;	</sql>
+     ch.Chronic_illnesses_onset_date,
+     ch.CreateBy,
+     ch.CreateDate 
+    FROM migration_st.st_chronic_illness ch
+        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ch.Person_Id  
+        WHERE (ch.Encounter_Date != "" OR ch.Encounter_Date IS NOT NULL) AND (ch.Chronic_illnesses_name != "" OR ch.Chronic_illnesses_name IS NOT NULL)
+        GROUP BY ch.Person_Id, ch.Encounter_Date;	</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

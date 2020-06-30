@@ -585,6 +585,8 @@ CREATE TABLE migration_st.st_drug_reactions (
   Drug_reaction_severity           TEXT,
   Drug_reaction_onset_date         TEXT,
   Drug_reaction_action_taken       TEXT,
+  CreateDate			    	   DATE,
+  CreateBy             	     	   VARCHAR(100),
   Voided                           int(11)
 );
 </sql>
@@ -632,6 +634,8 @@ ae.EventName as Drug_reaction,
 
 NULL as Drug_reaction_onset_date,
 ae.[Action] as  Drug_reaction_action_taken,
+ae.CreateDate,
+ae.CreateBy,
 ae.DeleteFlag as Voided
 
  from AdverseEvent ae

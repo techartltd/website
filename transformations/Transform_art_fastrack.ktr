@@ -430,7 +430,7 @@
     <created_date>2020/04/02 13:00:38.949</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/04/02 13:00:38.949</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -512,65 +512,71 @@
 DROP TABLE IF EXISTS migration_tr.tr_art_fastrack;
 CREATE TABLE migration_tr.tr_art_fastrack as
     select
-   Person_Id,
-   Encounter_Date,
-  Encounter_ID,
- (case Refill_model
-     when "CADH = Community ART Distribution - HCW Led" then 164944
-     when  "CADP = Community ART Distribution - Peer Led" then 164945
+   ft.Person_Id,
+   ft.Encounter_Date,
+   ft.Encounter_ID,
+ (case ft.Refill_model
+     when  "CADH = Community ART Distribution - HCW Led" then 164944
+     when  "CADH" then 164944
+     when  "CADP = Community ART Distribution - Peer Led" then 164945  
+     when  "CADP" then 164945
      when  "FADG = Facility ART Distribution Group" then 164946
+     when  "FADG" then 164946
      when  "FT = Fast Track" then 164943
+     when  "FT" then 164943
      when  "SC = Standard Care" then 164942
+     when  "SC" then 164942
      when "Unknown" then 1067 else '' end) as Refill_model,
-  (case Condoms_dispensed
+  (case ft.Condoms_dispensed
       when "Yes"  then 1065
       when "No" then 1066
       when "Not applicable" then 1175 else "" end) as Condoms_dispensed,
-   (case Missed_doses
+   (case ft.Missed_doses
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as Missed_doses,
-   (case Fatigue
+   (case ft.Fatigue
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as Fatigue,
-   (case  Cough
+   (case ft.Cough
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Cough,
-    (case  Fever
+    (case ft.Fever
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Fever,
-    (case  Rash
+    (case ft.Rash
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Rash,
-   (case  Nausea_vomiting
+   (case ft.Nausea_vomiting
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Nausea_vomiting,
-   (case  Genital_sore_discharge
+   (case ft.Genital_sore_discharge
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Genital_sore_discharge,
-    (case  Diarrhea
+    (case ft.Diarrhea
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Diarrhea,
-  Other_symptoms,
-  (case  Other_medications
+  ft.Other_symptoms,
+  (case  ft.Other_medications
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Other_medications,
-  Other_medications_specify,
-  (case  Pregnancy_status
+  ft.Other_medications_specify,
+  (case ft.Pregnancy_status
       when "Pregnant"  then 1065
       when "Not Pregnant" then 1066 else "" end) as  Pregnancy_status,
-   (case  FP_use
+   (case ft.FP_use
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  FP_use,
-  FP_use_specify,
-  Reason_not_using_FP,
-  (case  Referred
+  ft.FP_use_specify,
+  ft.Reason_not_using_FP,
+  (case ft.Referred
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Referred,
-  Referral_specify,
-  Next_Appointment_Date
-    FROM migration_st.st_art_fastrack WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  ft.Referral_specify,
+  ft.Next_Appointment_Date
+    FROM migration_st.st_art_fastrack ft
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ft.Person_Id
+      WHERE (ft.Encounter_Date != "" OR ft.Encounter_Date IS NOT NULL)
+      GROUP BY ft.Person_Id, ft.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

@@ -430,7 +430,7 @@
     <created_date>2020/04/01 11:13:09.938</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/04/01 11:13:09.938</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -512,23 +512,24 @@
 DROP TABLE IF EXISTS migration_tr.tr_otz_activity;
 CREATE TABLE migration_tr.tr_otz_activity as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    (case Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
-    (case Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
-    (case Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
-    (case Treatment_Literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_Literacy,
-    (case Transition_to_Adult_Care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_Adult_Care,
-    (case Making_Decision_Future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_Decision_Future,
-    (case srh when "Yes" then 1065 when NULL then 1066 else NULL end) as srh,
-    (case Beyond_Third_Ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_Third_Ninety,
-    (case Attended_Support_Group when "Yes" then 1065 when "No" then 1066 else NULL end) as Attended_Support_Group,
-    Remarks,
-    voided
-    FROM migration_st.st_otz_activity WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    otz.Person_Id,
+    otz.Encounter_Date,
+    otz.Encounter_ID,
+    (case otz.Orientation when "Yes" then 1065 when NULL then 1066 else NULL end) as Orientation,
+    (case otz.Leadership when "Yes" then 1065 when NULL then 1066 else NULL end) as Leadership,
+    (case otz.Participation when "Yes" then 1065 when NULL then 1066 else NULL end) as Participation,
+    (case otz.Treatment_Literacy when "Yes" then 1065 when NULL then 1066 else NULL end) as Treatment_Literacy,
+    (case otz.Transition_to_Adult_Care when "Yes" then 1065 when NULL then 1066 else NULL end) as Transition_to_Adult_Care,
+    (case otz.Making_Decision_Future when "Yes" then 1065 when NULL then 1066 else NULL end) as Making_Decision_Future,
+    (case otz.srh when "Yes" then 1065 when NULL then 1066 else NULL end) as srh,
+    (case otz.Beyond_Third_Ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_Third_Ninety,
+    (case otz.Attended_Support_Group when "Yes" then 1065 when "No" then 1066 else NULL end) as Attended_Support_Group,
+    otz.Remarks,
+    otz.voided
+    FROM migration_st.st_otz_activity otz
+       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
+       WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
+       GROUP BY otz.Person_Id, otz.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -545,8 +546,8 @@ CREATE TABLE migration_tr.tr_otz_activity as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>350</xloc>
-      <yloc>42</yloc>
+      <xloc>224</xloc>
+      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

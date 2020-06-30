@@ -513,30 +513,32 @@
 DROP TABLE IF EXISTS migration_tr.tr_ipt_followup;
 CREATE TABLE migration_tr.tr_ipt_followup
     select
-      Person_Id,      
-      Encounter_Date,
-      Encounter_ID,
-      Ipt_due_date,
-      Date_collected_ipt,
-      Weight,
-      (case Hepatotoxity
+      ip.Person_Id,      
+      ip.Encounter_Date,
+      ip.Encounter_ID,
+      ip.Ipt_due_date,
+      ip.Date_collected_ipt,
+      ip.Weight,
+      (case ip.Hepatotoxity
        when "Yes" then 1065
        when "No" then 1066  else NULL end)as Hepatotoxity,
-      (case Peripheral_neuropathy
+      (case ip.Peripheral_neuropathy
        when "Yes" then 1065
        when "No" then 1066  else NULL end)as Peripheral_neuropathy,
-      (case Rash
+      (case ip.Rash
        when "Yes" then 1065
        when "No" then 1066  else NULL end)as Rash,
-      (case Adherence
+      (case ip.Adherence
        when "Good(Missed&lt;3/month)" then 159405
        when "Fair(Missed4-8/month)" then 159406
        when "Bad()Missed 9" then 159407 else NULL end)as Adherence,
-      AdheranceMeasurement_Action,
-      IPT_Outcome,
-      Outcome_Date
-    FROM migration_st.st_ipt_followup WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-    GROUP BY Person_Id, Encounter_Date;</sql>
+      ip.AdheranceMeasurement_Action,
+      ip.IPT_Outcome,
+      ip.Outcome_Date
+    FROM migration_st.st_ipt_followup ip
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ip.Person_Id  
+      WHERE (ip.Encounter_Date != "" OR ip.Encounter_Date IS NOT NULL)
+      GROUP BY ip.Person_Id, ip.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

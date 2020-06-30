@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_otz_outcome</name>
+    <name>Transform_systems_examinations</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,16 +427,16 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/04/01 11:59:36.421</created_date>
+    <created_date>2020/06/09 20:13:00.248</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/04/01 11:59:36.421</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/06/09 20:13:00.248</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
+    <name>systems_tr</name>
     <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
@@ -493,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_otz_outcome</name>
+    <name>load_tr_systems_examinations</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,28 +503,112 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>systems_tr</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>    -- 36. OTZ Outcome
-DROP TABLE IF EXISTS migration_tr.tr_otz_outcome;
-CREATE TABLE migration_tr.tr_otz_outcome as
+    <sql>   	     -- 44. Systems examinations table
+DROP TABLE IF EXISTS migration_tr.tr_systems_examinations;
+CREATE TABLE migration_tr.tr_systems_examinations as
     select
-    otz.Person_Id,
-    otz.Encounter_Date,
-    otz.Encounter_ID,
-    (case otz.Discontinuation_Reason when "Transition to Adult care" then 165363 when "Opt out of OTZ" then 159836 else NULL end) as Discontinuation_Reason,
-    otz.Death_Date,
-    otz.Transfer_Facility,
-    otz.Transfer_Date,
-    otz.voided
-    FROM migration_st.st_otz_outcome otz
-      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
-      WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
-      GROUP BY otz.Person_Id, otz.Encounter_Date;
-</sql>
+    se.Person_Id,
+    se.Encounter_Date,
+    se.Encounter_ID,
+  (case se.Skin_finding
+       when "Skin Eruptions/Rashes" then 1249
+       when "Sores" then 1249
+       when "Oral sores" then 5244
+       when "Growths/Swellings" then 125201
+       when "Itching" then 136455
+       when "Abscess" then 150555
+       when "Swelling/Growth" then 125201
+       when "Hair Loss" then 135591
+       when "Kaposi Sarcoma" then 507 else '' end)as Skin,
+  se.Skin_finding_notes,
+  (case se.Eyes_finding
+       when "Irritation" then 123074
+       when "Visual Disturbance" then 123074
+       when "Excessive tearing" then 140940
+       when "Eye pain" then 131040
+       when "Eye redness" then 127777
+       when "Light sensitive" then 140827
+       when "Itchy eyes" then 139100 else '' end)as Eyes,
+  se.Eyes_finding_notes,
+  (case se.ENT_finding
+       when "Pain" then 160285
+       when "Discharge" then 128055
+       when "Sore Throat" then 158843
+       when "Tinnitus" then 123588
+       when "Apnea" then 117698
+       when "Hearing disorder" then 117698
+       when "Dental caries" then 119558
+       when "Erythema" then 118536
+       when "Frequent colds" then 106
+       when "Gingival bleeding" then 147230
+       when "Hairy cell leukoplakia" then 135841
+       when "Hoarseness" then 138554
+       when "Kaposi Sarcoma" then 507
+       when "Masses" then 152228
+       when "Nasal discharge" then 152228
+       when "Nosebleed" then 133499
+       when "Nasal discharge" then 128055
+       when "Post nasal discharge" then 110099
+       when "Sinus problems" then 126423
+       when "Snoring" then 126318
+       when "Oral sores" then 5244
+       when "Thrush" then 5334
+       when "Toothache" then 124601
+       when "Ulcers" then 123919
+       when "Vertigo" then 111525 else '' end)as ENT,
+      se.ENT_finding_notes,
+      (case se.Chest_finding
+       when "Bronchial breathing" then 146893
+       when "Crackles" then 127640
+       when "Dullness" then 145712
+       when "Reduced breathing" then 164440
+       when "Respiratory distress" then 127639
+       when "Wheezing" then 5209 else '' end)as Chest,
+  se.Chest_finding_notes,
+  (case se.CVS_finding
+       when "Elevated blood pressure" then 140147
+       when "Irregular heartbeat" then 136522
+       when "Cardiac murmur" then 562
+       when "Cardiac rub" then 130560  else '' end)as CVS,
+  se.CVS_finding_notes,
+  (case se.Abdomen_finding
+       when "Abdominal distension" then 150915
+       when "Distension" then 150915
+       when "Hepatomegaly" then 5008
+       when "Abdominal mass" then 5103
+       when "Mass" then 5103
+       when "Splenomegaly" then 5009
+       when "Abdominal tenderness" then 5105
+       when "Tenderness" then 5105 else '' end)as Abdomen,
+  se.Abdomen_finding_notes,
+ (case se.CNS_finding
+       when "Altered sensations" then 118872
+       when "Bulging fontenelle" then 1836
+       when "Abnormal reflexes" then 150817
+       when "Confusion" then 120345
+       when "Confused" then 120345
+       when "Limb weakness" then 157498
+       when "Stiff neck" then 112721
+       when "Kernicterus" then 136282 else '' end)as CNS,
+    se.CNS_finding_notes,
+   (case se.Genitourinary_finding
+       when "Bleeding" then 147241
+       when "Rectal discharge" then 154311
+       when "Urethral discharge" then 123529
+       when "Vaginal discharge" then 123396
+       when "Ulceration" then 124087 else '' end)as Genitourinary,
+     se.Genitourinary_finding_notes,
+     se.CreateDate,
+     se.CreateBy   
+   FROM migration_st.st_systems_examinations se 
+   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = se.Person_Id  
+   WHERE (se.Encounter_Date != "" OR se.Encounter_Date IS NOT NULL)
+  GROUP BY se.Person_Id, se.Encounter_Date;	</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -541,8 +625,8 @@ CREATE TABLE migration_tr.tr_otz_outcome as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>294</xloc>
-      <yloc>55</yloc>
+      <xloc>360</xloc>
+      <yloc>115</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

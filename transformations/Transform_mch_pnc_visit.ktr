@@ -513,139 +513,139 @@
   DROP TABLE IF EXISTS migration_tr.tr_mch_pnc_visit;
   CREATE TABLE migration_tr.tr_mch_pnc_visit as
   select
-  Person_Id,
-  Encounter_Date,
-  Encounter_ID,
-  PNC_Register_number,
-  PNC_VisitNumber,
-  Delivery_Date,
-  (case Mode_Of_Delivery
+  pnc.Person_Id,
+  pnc.Encounter_Date,
+  pnc.Encounter_ID,
+  pnc.PNC_Register_number,
+  pnc.PNC_VisitNumber,
+  pnc.Delivery_Date,
+  (case pnc.Mode_Of_Delivery
      when "Caesarean section" then 1171
      when "SVD" then 1170
      when "Unknown" then 1067  else NULL end)as  Mode_Of_Delivery,
-  Place_Of_delivery,
-  Temperature,
-  Pulse_rate,
-  Systolic_bp,
-  Diastolic_bp,
-  Respiratory_rate,
-  Oxygen_saturation,
-  Weight,
-  Height,
-  BMI,
-  Muac,
-  General_Condition,
-  (case Pallor
+  pnc.Place_Of_delivery,
+  pnc.Temperature,
+  pnc.Pulse_rate,
+  pnc.Systolic_bp,
+  pnc.Diastolic_bp,
+  pnc.Respiratory_rate,
+  pnc.Oxygen_saturation,
+  pnc.Weight,
+  pnc.Height,
+  pnc.BMI,
+  pnc.Muac,
+  pnc.General_Condition,
+  (case pnc.Pallor
      when "Pallor" then 1065
      when "No" then 1066
      when "Unknown" then 1067  else NULL end)as  Pallor,
-  (case Breast_Examination
+  (case pnc.Breast_Examination
      when "Mastitis" then 115915
      when "Engorged" then 127522
      when "Cracked" then 143242
      when "Normal" then 1115
      when "Unknown" then 1067  else NULL end)as  Breast_Examination,
-  (case PPH
+  (case pnc.PPH
      when "PostPartumHaemorrhage" then 1065
      when "No" then 1066
      when "Unknown" then 1067  else NULL end)as  PPH,
-  (case CS_Scar
+  (case pnc.CS_Scar
      when "Infected" then 156794
      when "Gaping" then 145776
      when "Bleeding" then 145776
      when "Normal" then 162129
      when "N/A" then 1175
      when "Unknown" then 1067  else NULL end)as  CS_Scar,
-  Haemoglobin,
- (case Involution_Of_Uterus
+  pnc.Haemoglobin,
+ (case pnc.Involution_Of_Uterus
      when "Not Contracted" then 162111
      when "Contracted" then 123427
      when "Other" then 5622
      when "Other (Specify)" then 5622
      when "N/A" then 1175
      when "Unknown" then 1067  else NULL end)as  Involution_Of_Uterus,
- (case Condition_Of_Episiotomy
+ (case pnc.Condition_Of_Episiotomy
      when "Healed" then 159843
      when "Infected" then 113919
      when "Gaping" then 159841
      when "Repaired" then 159842
      when "N/A" then 1175
      when "Unknown" then 1067  else NULL end)as  Condition_Of_Episiotomy,
- (case Lochia
+ (case pnc.Lochia
      when "Excessive" then 159845
      when "Foul smelling" then 159846
      when "Normal" then 159721
      when "Unknown" then 1067  else NULL end)as  Lochia,
-(case Counselling_On_Infant_Feeding
+(case pnc.Counselling_On_Infant_Feeding
      when "Yes" then 1065
      when "No" then 1066
      when "N/A" then 1175
      when "Unknown" then 1067  else NULL end)as  Counselling_On_Infant_Feeding,
-  Counselling_On_FamilyPlanning,
-  Delivery_outcome,
- (case Baby_Condition
+  pnc.Counselling_On_FamilyPlanning,
+  pnc.Delivery_outcome,
+ (case pnc.Baby_Condition
      when "Unwell" then 162132
      when "Well" then 1855
      when "Unknown" then 1067  else NULL end)as  Baby_Condition,
-  Feeding_Method,
-  Umblical_Cord,
-  Immunization_Started,
-    (case Test_1_Kit_Name
+  pnc.Feeding_Method,
+  pnc.Umblical_Cord,
+  pnc.Immunization_Started,
+    (case pnc.Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
      when "Other" then 1175  else '' end) as Test_1_Kit_Name,
-    Test_1_kit_lot_no,
-    Test_1_kit_expiry,
-    (case Test_1_Result
+    pnc.Test_1_kit_lot_no,
+    pnc.Test_1_kit_expiry,
+    (case pnc.Test_1_Result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else '' end)as  Test_1_Result,
-    (case Test_2_Kit_Name
+    (case pnc.Test_2_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
      when "Other" then 1175  else '' end)as  Test_2_Kit_Name,
-    Test_2_kit_lot_no,
-    Test_2_kit_expiry,
-    (case Test_2_Result
+    pnc.Test_2_kit_lot_no,
+    pnc.Test_2_kit_expiry,
+    (case pnc.Test_2_Result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else '' end)as  Test_2_Result,
-    (case  Final_test_result
+    (case  pnc.Final_test_result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else '' end)as  Final_test_result,
-    (case Patient_given_result
+    (case pnc.Patient_given_result
      when "Yes" then 1065
      when "No" then 1066  else '' end)as Patient_given_result,
-    (case Partner_hiv_tested
+    (case pnc.Partner_hiv_tested
      when "Yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else '' end) as  Partner_hiv_tested,
-    (case Partner_hiv_status
+    (case pnc.Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
      when "Unknown" then 1067 else '' end) as Partner_hiv_status,
-    (case Prophylaxis_given
+    (case pnc.Prophylaxis_given
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else '' end)as  Prophylaxis_given,
-    (case Baby_azt_dispensed
+    (case pnc.Baby_azt_dispensed
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else '' end)as  Baby_azt_dispensed,
-    (case Baby_nvp_dispensed
+    (case pnc.Baby_nvp_dispensed
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else '' end)as  Baby_nvp_dispensed,
-  (case Pnc_exercises
+  (case pnc.Pnc_exercises
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else '' end)as  Pnc_exercises,
-  Maternal_condition,
- (case Iron_supplementation
+  pnc.Maternal_condition,
+ (case pnc.Iron_supplementation
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else '' end)as  Iron_supplementation,
-    (case Cacx_screening
+    (case pnc.Cacx_screening
      when "No" then 1066
      when "yes" then 1066
      when "Confirmed" then 703
@@ -654,7 +654,7 @@
      when "Normal" then 664
      when "Never" then 1090
      when "Not Done" then 1118 end)as Cacx_screening,
-    (case Cacx_screening_method
+    (case pnc.Cacx_screening_method
      when "Pap Smear" then 885
      when "VIA" then 162816
      when "VIA/VILI" then 162816
@@ -662,16 +662,16 @@
      when "Other" then 5622
      when "Not Done" then 1118
      when "Not Applicable" then 1175 end)as Cacx_screening_method,  
-  (case Fistula_screening
+  (case pnc.Fistula_screening
      when "Vesicovaginal Fistula" then 49
      when "Rectovaginal Fistula" then 127847
      when "Not done" then 1118
      when "N/A" then 1175  else NULL end) as  Fistula_screening,
-  (case On_FP
+  (case pnc.On_FP
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  On_FP,
-  (case FP_Method
+  (case pnc.FP_Method
      when "Vasectomy" then 1489
      when "Tubal Ligation /Female Sterilization" then 1472
      when "Fertility Awareness Method" then 5277
@@ -684,21 +684,22 @@
      when "Emergency Contraceptive Pills" then 160570
      when "Condoms" then 190
      when "Unknown" then 1067  else '' end)as  FP_Method,  
- (case Referred_From
+ (case pnc.Referred_From
      when "Another Health Facility" then 164407
      when "Current Health Facility" then 163266
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_From,
- (case Referred_To
+ (case pnc.Referred_To
      when "Another Health Facility" then 164407
      when "Current Health Facility" then 163266
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_To,
-  Clinical_notes,
-  Next_Appointment_Date
-  FROM migration_st.st_mch_pnc_visit WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  pnc.Clinical_notes,
+  pnc.Next_Appointment_Date
+  FROM migration_st.st_mch_pnc_visit pnc
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pnc.Person_Id  
+      WHERE (pnc.Encounter_Date != "" OR pnc.Encounter_Date IS NOT NULL)
+      GROUP BY pnc.Person_Id, pnc.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -715,8 +716,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>128</yloc>
+      <xloc>176</xloc>
+      <yloc>48</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

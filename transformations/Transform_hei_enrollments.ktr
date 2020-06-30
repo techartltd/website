@@ -513,73 +513,72 @@
 DROP TABLE IF EXISTS migration_tr.tr_hei_enrollment;
 CREATE TABLE migration_tr.tr_hei_enrollment as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Gestation_at_birth,
-    Birth_weight,
-    Child_exposed,
-    Hei_id_number,
-    Spd_number,
-    Birth_length,
-    Birth_order,
-    Birth_type,
-  (case Place_of_delivery
+    hnr.Person_Id,
+    hnr.Encounter_Date,
+    hnr.Encounter_ID,
+    hnr.Gestation_at_birth,
+    hnr.Birth_weight,
+    hnr.Child_exposed,
+    hnr.Hei_id_number,
+    hnr.Spd_number,
+    hnr.Birth_length,
+    hnr.Birth_order,
+    hnr.Birth_type,
+  (case hnr.Place_of_delivery
      when "Home" then 1536
      when "Health Facility" then 1589
      when "Other" then 5622
      when "Unknown" then 1067 else NULL end) as Place_of_delivery,
-   (case Mode_of_delivery
+   (case hnr.Mode_of_delivery
     when "SVD" then 1170
     when "Caesarean section" then 1171
     when "Breech" then 1172
     when "Assisted Vaginal Delivery" then 118159
     when "Other" then 5622
     when "Unknown" then 1067  else NULL end) as  Mode_of_delivery,
-    Birth_notification_number,
-    Date_birth_notification_number_issued,
-    Birth_certificate_number,
-    Date_first_enrolled_in_hei_care,
-    Birth_registration_place,
-    Birth_registration_date,
-    Mothers_name,
-    Fathers_name,
-    Guardians_name,
-    Community_HealthWorkers_name,
-    Alternative_Contact_name,
-    Contacts_For_Alternative_Contact,
-    Need_for_special_care,
-    Reason_for_special_care,
-    (case TB_contact_history_in_household
+    hnr.Birth_notification_number,
+    hnr.Date_birth_notification_number_issued,
+    hnr.Birth_certificate_number,
+    hnr.Date_first_enrolled_in_hei_care,
+    hnr.Birth_registration_place,
+    hnr.Birth_registration_date,
+    hnr.Mothers_name,
+    hnr.Fathers_name,
+    hnr.Guardians_name,
+    hnr.Community_HealthWorkers_name,
+    hnr.Alternative_Contact_name,
+    hnr.Contacts_For_Alternative_Contact,
+    hnr.Need_for_special_care,
+    hnr.Reason_for_special_care,
+    (case hnr.TB_contact_history_in_household
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end) as  TB_contact_history_in_household,
-   (case Mother_alive
+   (case hnr.Mother_alive
      when "Dead" then 2
      when "Alive" then 1 else NULL end) as  Mother_alive,
-    Health_facility_name,
-    (case Mother_breastfeeding
+    hnr.Health_facility_name,
+    (case hnr.Mother_breastfeeding
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end) as  Mother_breastfeeding,
-    Referral_source,
-    Transfer_in,
-    Transfer_in_date,
-    Facility_transferred_from,
-    District_transferred_from,
-    Child_arv_prophylaxis,
-   (case Mother_on_NVP_during_breastfeeding
+    hnr.Referral_source,
+    hnr.Transfer_in,
+    hnr.Transfer_in_date,
+    hnr.Facility_transferred_from,
+    hnr.District_transferred_from,
+    hnr.Child_arv_prophylaxis,
+   (case hnr.Mother_on_NVP_during_breastfeeding
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Mother_on_NVP_during_breastfeeding,
-    Infant_mother_link,
-
-   (case Mother_on_pmtct_drugs
+    hnr.Infant_mother_link,
+   (case hnr.Mother_on_pmtct_drugs
      when "HAART" then 1065
      when "None" then 1066
      when "Other" then 1065
      when "Unknown" then 1067  else NULL end)as  Mother_on_pmtct_drugs,
-   (case Mother_on_pmtct_drugs_regimen
+   (case hnr.Mother_on_pmtct_drugs_regimen
       when "PM 8 SD Nevirapine (NVP)" then 80586
       when "PM1 AZT from 14Wks" then 86663
       when "PM 9 TDF + 3TC + EFV"  then 164505
@@ -591,12 +590,12 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
       when "PM 6 TDF + 3TC + NVP"  then 162565
       when "PM 10 AZT + 3TC + ATV/r"  then 164511
       when "PM 11 TDF + 3TC + ATV/r"  then 164512 else NULL end) as Mother_on_pmtct_drugs_regimen,
-    Mother_on_pmtct_other_regimen,
-  (case Mother_on_art_at_infant_enrollment
+    hnr.Mother_on_pmtct_other_regimen,
+  (case hnr.Mother_on_art_at_infant_enrollment
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Mother_on_art_at_infant_enrollment,
-  (case Mother_drug_regimen
+  (case hnr.Mother_drug_regimen
      when "PM 8 SD Nevirapine (NVP)" then 80586
      when "PM1 AZT from 14Wks" then 86663
      when "PM 9 TDF + 3TC + EFV"  then 164505
@@ -608,18 +607,19 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
      when "PM 6 TDF + 3TC + NVP"  then 162565
      when "PM 10 AZT + 3TC + ATV/r"  then 164511
      when "PM 11 TDF + 3TC + ATV/r"  then 164512 else NULL end) as Mother_drug_regimen,
-   (case Infant_prophylaxis
+   (case hnr.Infant_prophylaxis
      when "AZT liquid BID for 12 weeks" then 160123
      when "NVP liquid OD for 12 weeks" then 80586
      when "AZT liquid BID + NVP liquid OD for 6 weeks then NVP liquid OD for 6 weeks" then 1652
      when "Other" then 5622
      when "None" then 1107  else NULL end)as  Infant_prophylaxis,
-    Infant_prophylaxis_other,
-    Mother_ccc_number,
-    Voided
-  FROM migration_st.st_hei_enrollment WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    hnr.Infant_prophylaxis_other,
+    hnr.Mother_ccc_number,
+    hnr.Voided
+  FROM migration_st.st_hei_enrollment hnr
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = hnr.Person_Id  
+    WHERE (hnr.Encounter_Date != "" OR hnr.Encounter_Date IS NOT NULL)
+    GROUP BY hnr.Person_Id, hnr.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

@@ -523,23 +523,25 @@
 DROP TABLE IF EXISTS migration_tr.tr_hiv_program_discontinuation;
 CREATE TABLE migration_tr.tr_hiv_program_discontinuation as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Program,
-    Date_Enrolled,
-    Date_Completed,
-    (case Care_Ending_Reason when "Transfer Out" then 159492
+    pd.Person_Id,
+    pd.Encounter_Date,
+    pd.Encounter_ID,
+    pd.Program,
+    pd.Date_Enrolled,
+    pd.Date_Completed,
+    (case pd.Care_Ending_Reason when "Transfer Out" then 159492
      when "Death" then 160034
      when "Lost To Follow Up" then 5240
      when "Confirmed HIV Negative" then 1403
      when "HIV Negative" then 1403
      when "Other" then 5622
      when "Unknown" then 1067 else NULL end) as Care_Ending_Reason,
-    Facility_Transfered_To,
-    Death_Date
-  FROM migration_st.st_program_discontinuation WHERE Program = "CCC" 
-  AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)   ;
+    pd.Facility_Transfered_To,
+    pd.Death_Date
+  FROM migration_st.st_program_discontinuation pd
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pd.Person_Id  
+     WHERE pd.Program = "CCC"
+     AND (pd.Encounter_Date != "" OR pd.Encounter_Date IS NOT NULL)   ;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

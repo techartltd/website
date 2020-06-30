@@ -518,24 +518,26 @@
 DROP TABLE IF EXISTS migration_tr.tr_ipt_screening;
 CREATE TABLE migration_tr.tr_ipt_screening
     select
-      Person_Id,     
-      Encounter_Date,
-      Encounter_ID,
-      (case Yellow_urine
+      ipt.Person_Id,     
+      ipt.Encounter_Date,
+      ipt.Encounter_ID,
+      (case ipt.Yellow_urine
        when "Yes" then 162311
        when "No" then 1066  else NULL end)as Yellow_urine,
-      (case Numbness
+      (case ipt.Numbness
        when "Yes" then 132652
        when "No" then 1066  else NULL end)as Numbness,
-      (case Yellow_eyes
+      (case ipt.Yellow_eyes
        when "Yes" then 5192
        when "No" then 1066  else NULL end)as Yellow_eyes,
-      (case Tenderness
+      (case ipt.Tenderness
        when "Yes" then 124994
        when "No" then 1066  else NULL end)as Tenderness,
-      IPT_Start_Date
-    FROM migration_st.st_ipt_screening WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-    GROUP BY Person_Id, Encounter_Date;</sql>
+      ipt.IPT_Start_Date
+    FROM migration_st.st_ipt_screening ipt
+        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ipt.Person_Id  
+        WHERE (ipt.Encounter_Date != "" OR ipt.Encounter_Date IS NOT NULL)
+        GROUP BY ipt.Person_Id, ipt.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

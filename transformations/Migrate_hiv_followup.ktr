@@ -596,10 +596,10 @@ CREATE TABLE migration_st.st_hiv_followup
   Ptn_PK                             INT(11),
   Encounter_Date                     DATE,
   Encounter_ID                  	 VARCHAR(100),
-  Visit_scheduled            	    	VARCHAR(100),
-  Visit_by                  	      VARCHAR(100),
-  Visit_by_other           		      VARCHAR(100),
-  Nutritional_status                VARCHAR(200),
+  Visit_scheduled            	     VARCHAR(100),
+  Visit_by                  	     VARCHAR(100),
+  Visit_by_other           		     VARCHAR(100),
+  Nutritional_status                 VARCHAR(200),
   Population_type                   VARCHAR(200),
   Key_population_type               VARCHAR(200),
   Who_stage            		          VARCHAR(200),
@@ -631,9 +631,9 @@ CREATE TABLE migration_st.st_hiv_followup
   Anc_number                        VARCHAR(100),
   Anc_profile                       VARCHAR(100),
   Expected_delivery_date            DATE,
-  Gravida                           INT(11),
-  Parity_term                       INT(11),
-  Parity_abortion                   INT(11),
+  Gravida                           VARCHAR(100),
+  Parity_term                       VARCHAR(100),
+  Parity_abortion                   VARCHAR(100),
   Family_planning_status            VARCHAR(100),
   Family_planning_method            VARCHAR(255),
   Reason_not_using_family_planning  VARCHAR(255),
@@ -720,7 +720,7 @@ CREATE TABLE migration_st.st_hiv_followup
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 16. HIV Followup Validated by FG V5.0.0
+    <sql>-- 16. HIV Followup Validated by FG V6.0.0
 
 --greencard followup
 SELECT P.PersonId Person_Id,

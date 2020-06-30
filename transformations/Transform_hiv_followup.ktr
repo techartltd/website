@@ -583,10 +583,11 @@ CREATE TABLE migration_tr.tr_hiv_followup
        when "Good" then 159405
        when "Fair" then 163794
        when "Inadequate" then 159407
-       when "Poor" then 159407 else NULL end)as Ctx_adherence,
+       when "Poor" then 159407 else "" end)as Ctx_adherence,
       (case fup.Ctx_dispensed
        when "Yes" then 1065
-       when "No" then 1066 else NULL end)as Ctx_dispensed,
+       when " No" then 1066
+       when "No" then 1066 else "" end)as Ctx_dispensed,
       (case fup.Dapsone_adherence
        when "Good" then 159405
        when "Fair" then 163794
@@ -646,6 +647,13 @@ CREATE TABLE migration_tr.tr_hiv_followup
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fup.Person_Id
     WHERE (fup.Encounter_Date != "" OR fup.Encounter_Date IS NOT NULL) AND (dm.UPN != "" OR dm.UPN IS NOT NULL)
     GROUP BY fup.Person_Id, fup.Encounter_Date;
+
+UPDATE tr_hiv_followup
+SET Gravida = NULL WHERE Gravida = "null" OR Gravida = "" ;
+UPDATE tr_hiv_followup
+SET Parity_term = NULL WHERE Parity_term = "null" OR Parity_term = ""; 
+   
+
 
 </sql>
     <set_params>N</set_params>

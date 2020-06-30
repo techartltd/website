@@ -513,78 +513,79 @@ SET SESSION SQL_MODE='ALLOW_INVALID_DATES';
 DROP TABLE IF EXISTS migration_tr.tr_enhanced_adherence;
 CREATE TABLE migration_tr.tr_enhanced_adherence as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Session_number,
-    First_session_date,
-    Pill_count,
-    (case Arv_adherence
+    ea.Person_Id,
+    ea.Encounter_Date,
+    ea.Encounter_ID,
+    ea.Session_number,
+    ea.First_session_date,
+    ea.Pill_count,
+    (case ea.Arv_adherence
      when "Good" then 159405
      when "Inadequate" then 163794
      when "Poor" then 159407
      else NULL end)as Arv_adherence,
-    (case Has_vl_results
+    (case ea.Has_vl_results
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Has_vl_results,
-    (case Vl_results_suppressed
+    (case ea.Vl_results_suppressed
      when "Suppressed" then 1302
      when "Unsuppresed" then 1066  else NULL end)as Vl_results_suppressed,
-    Vl_results_feeling,
-    Cause_of_high_vl,
-    Way_forward,
+    ea.Vl_results_feeling,
+    ea.Cause_of_high_vl,
+    ea.Way_forward,
     Patient_hiv_knowledge,
-    Patient_drugs_uptake,
-    Patient_drugs_reminder_tools,
-    Patient_drugs_uptake_during_travels,
-    Patient_drugs_side_effects_response,
-    Patient_drugs_uptake_most_difficult_times,
-    Patient_drugs_daily_uptake_feeling,
-    Patient_ambitions,
-    (case Patient_has_people_to_talk
+    ea.Patient_drugs_uptake,
+    ea.Patient_drugs_reminder_tools,
+    ea.Patient_drugs_uptake_during_travels,
+    ea.Patient_drugs_side_effects_response,
+    ea.Patient_drugs_uptake_most_difficult_times,
+    ea.Patient_drugs_daily_uptake_feeling,
+    ea.Patient_ambitions,
+    (case ea.Patient_has_people_to_talk
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as  Patient_has_people_to_talk,
-    Patient_enlisting_social_support,
-    Patient_income_sources,
-    (case Patient_challenges_reaching_clinic
+    ea.Patient_enlisting_social_support,
+    ea.Patient_income_sources,
+    (case ea.Patient_challenges_reaching_clinic
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Patient_challenges_reaching_clinic,
-    (case Patient_worried_of_accidental_disclosure
+    (case ea.Patient_worried_of_accidental_disclosure
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Patient_worried_of_accidental_disclosure,
-    (case Patient_treated_differently
+    (case ea.Patient_treated_differently
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Patient_treated_differently,
-    (case Stigma_hinders_adherence
+    (case ea.Stigma_hinders_adherence
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Stigma_hinders_adherence,
-    (case Patient_tried_faith_healing
+    (case ea.Patient_tried_faith_healing
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Patient_tried_faith_healing,
-    (case Patient_adherence_improved
+    (case ea.Patient_adherence_improved
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Patient_adherence_improved,
-    (case Patient_doses_missed
+    (case ea.Patient_doses_missed
      when "Yes" then 1
      when "No" then 0  else NULL end)as Patient_doses_missed,
-    Review_and_barriers_to_adherence,
-    (case Other_referrals
+    ea.Review_and_barriers_to_adherence,
+    (case ea.Other_referrals
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Other_referrals,
-    (case Appointments_honoured
+    (case ea.Appointments_honoured
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Appointments_honoured,
-    Referral_experience,
-    (case Home_visit_benefit
+    ea.Referral_experience,
+    (case ea.Home_visit_benefit
      when "Yes" then 1065
      when "No" then 1066  else NULL end)as Home_visit_benefit,
-    Adherence_plan,
-    date_format(str_to_date(Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
-    Voided
-  FROM migration_st.st_enhanced_adherence WHERE
-  (STR_TO_DATE(Next_appointment_date, '%d-%M-%Y') IS NOT NULL OR Next_appointment_date IS NULL)
-    AND (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-   GROUP BY Person_Id, Encounter_Date;
+    ea.Adherence_plan,
+    date_format(str_to_date(ea.Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
+    ea.Voided
+  FROM migration_st.st_enhanced_adherence ea
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ea.Person_Id  
+     WHERE (STR_TO_DATE(ea.Next_appointment_date, '%d-%M-%Y') IS NOT NULL OR ea.Next_appointment_date IS NULL)
+     AND (ea.Encounter_Date != "" OR ea.Encounter_Date IS NOT NULL)
+     GROUP BY ea.Person_Id, ea.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

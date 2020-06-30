@@ -512,52 +512,52 @@
 DROP TABLE IF EXISTS migration_tr.tr_tb_screening;
 CREATE TABLE migration_tr.tr_tb_screening
     select
-      Person_Id,
-      Encounter_Date,
-      Encounter_ID,
-      (case Cough
+      scr.Person_Id,
+      scr.Encounter_Date,
+      scr.Encounter_ID,
+      (case scr.Cough
        when "Yes" then 159799
        when "No" then 1066  else "" end)as Cough,
-      (case Fever
+      (case scr.Fever
        when "Yes" then 1494
        when "No" then 1066  else "" end)as Fever,
-      (case Weight_loss
+      (case scr.Weight_loss
        when "Yes" then 832
        when "No" then 1066  else "" end)as Weight_loss,
-      (case Night_sweats
+      (case scr.Night_sweats
        when "Yes" then 133027
        when "No" then 1066  else "" end)as Night_sweats,
-      (case Tests_Ordered
+      (case scr.Tests_Ordered
        when "Yes" then 1065
        when "No" then 1066  else "" end)as Tests_Ordered,
-      (case Sputum_Smear
+      (case scr.Sputum_Smear
        when "Positive" then 703
        when "Ordered" then 307
        when "Negative" then 664  else "" end)as Sputum_Smear,
-      (case X_ray 
+      (case scr.X_ray 
        when "Ordered" then 12
        when "Suggestive" then 152526
        when "Normal" then 1115
        when "Not Done" then 1118
        when "NotDone" then 1118 else "" end)as X_ray ,
-      (case Gene_xpert
+      (case scr.Gene_xpert
        when "Ordered" then 162202
        when "Negative" then 664
        when "Positive" then 162204
        when "Not Done" then 1118
        when "NotDone" then 1118  else "" end)as Gene_xpert,     
-      (case Contact_tb_case
+      (case scr.Contact_tb_case
        when "Yes" then 1065
        when "No" then 1066  else "" end)as Contact_tb_case,           
-      Referral,
-      Clinical_diagnosis,
-      (case Invitation_contacts
+      scr.Referral,
+      scr.Clinical_diagnosis,
+      (case scr.Invitation_contacts
        when "Yes" then 1065
        when "No" then 1066  else "" end)as Invitation_contacts,
-      (case Evaluated_for_IPT
+      (case scr.Evaluated_for_IPT
        when "Yes" then 1065
        when "No" then 1066  else "" end)as Evaluated_for_IPT,
-      (case TB_results
+      (case scr.TB_results
        when "No TB Signs" then 1660
        when "No Signs" then 1660
        when "Presumed TB" then 142177
@@ -566,9 +566,11 @@ CREATE TABLE migration_tr.tr_tb_screening
        when "INH" then 1679 
        when "Not Done" then  160737
        when "TB Screening Not Done" then  160737 else "" end)as TB_results
-    FROM migration_st.st_tb_screening WHERE (Encounter_Date != "" OR Encounter_Date IS NOT NULL) 
-    AND (TB_results != "Not Done") 
-    GROUP BY Person_Id, Encounter_Date;</sql>
+    FROM migration_st.st_tb_screening scr
+         INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = scr.Person_Id 
+         WHERE (scr.Encounter_Date != "" OR scr.Encounter_Date IS NOT NULL) 
+         AND (scr.TB_results != "Not Done") 
+         GROUP BY scr.Person_Id, scr.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -585,8 +587,8 @@ CREATE TABLE migration_tr.tr_tb_screening
       </output>
     </remotesteps>
     <GUI>
-      <xloc>368</xloc>
-      <yloc>160</yloc>
+      <xloc>224</xloc>
+      <yloc>80</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

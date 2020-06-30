@@ -512,13 +512,13 @@
 DROP TABLE IF EXISTS migration_tr.tr_allergies;
 CREATE TABLE migration_tr.tr_allergies as
     select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-   (case Has_known_allergies
+    al.Person_Id,
+    al.Encounter_Date,
+    al.Encounter_ID,
+   (case al.Has_known_allergies
       when "Yes" then 1065
       when "No" then 1066  else NULL end)as Has_known_allergies,
-   (case Allergies_causative_agents
+   (case al.Allergies_causative_agents
         when "Ragweed" then 162541
         when "Pollen" then 162540
         when "Mold" then 162539
@@ -577,7 +577,7 @@ CREATE TABLE migration_tr.tr_allergies as
         when "ACE inhibitors" then 162298
         when "Abacavir" then 70056
         when "Other" then 5622 else '' end)as Allergies_causative_agents,
-   (case Allergies_reactions
+   (case al.Allergies_reactions
         when "Unknown" then 1067
         when "Anaemia" then 121629
         when "Anaphylaxis" then 148888
@@ -600,15 +600,18 @@ CREATE TABLE migration_tr.tr_allergies as
         when "Myalgia" then 121
         when "Rash" then 512
         when "Other" then 5622   else '' end)as Allergies_reactions,
-   (case Allergies_severity
+   (case al.Allergies_severity
         when "Mild" then 160754
         when "Moderate" then 160755
         when "Severe" then 160756
         when "Fatal" then 160758
-        when "Unknown" then 1067  else '' end)as Allergies_severity
-    FROM migration_st.st_allergies WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL) AND (Allergies_causative_agents != "" OR Allergies_causative_agents IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+        when "Unknown" then 1067  else '' end)as Allergies_severity,
+     al.CreateDate,							    
+	 al.CreateBy      
+    FROM migration_st.st_allergies al
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = al.Person_Id  
+     WHERE (al.Encounter_Date != "" OR al.Encounter_Date IS NOT NULL) AND (al.Allergies_causative_agents != "" OR al.Allergies_causative_agents IS NOT NULL)
+     GROUP BY al.Person_Id, al.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

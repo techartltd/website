@@ -1584,15 +1584,19 @@ CREATE TABLE migration_tr.tr_hiv_regimen_history
        when "Treatment Preparation" then 159382
        when "ART Fast Track Referral" then 160521
        when "Other" then 5622 else NULL end)as Next_appointment_reason,
---   (case Appointment_type
---        when "Standard Care" then 164942
---        when "Express Care" then 164943
---        when "Fast Track" then 164943
---        when "Facility ART Distribution Group" then 164946
---        when "Community Based Dispensing" then 164944
---        when "Community ART Distribution - HCW Led" then 164944
---        when "Community ART Distribution - Peer Led" then 164945
---        when "Other" then 5622 else '' end)as Appointment_type,
+     (case Appointment_type
+         when "Standard Care" then 164942
+         when "Express Care" then 164943
+         when "Fast Track" then 164943
+         when "FT = Fast Track" then 164943
+         when "Facility ART Distribution Group" then 164946
+         when "FADG = Facility ART Distribution Group" then 164946
+         when "Community Based Dispensing" then 164944
+         when "Community ART Distribution - HCW Led" then 164944
+         when "CADH = Community ART Distribution - HCW Led" then 164944         
+         when "Community ART Distribution - Peer Led" then 164945
+		 when "CADP = Community ART Distribution - Peer Led" then 164945
+         when "Other" then 5622 else '' end)as Differentiated_care_model,
   (case Differentiated_care
        when "Yes" then 164947
        when "No" then 164942 else NULL end)as Differentiated_care,
@@ -3512,6 +3516,86 @@ CREATE TABLE migration_tr.tr_drug_reactions as
         when "STOP" then 1260
         when "OTHER" then 5622  else '' end)as Drug_reaction_action_taken
     FROM migration_st.st_drug_reactions WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;	
+  
+  	     -- 43. General examinations table
+DROP TABLE IF EXISTS migration_tr.tr_general_examinations;
+CREATE TABLE migration_tr.tr_general_examinations as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+   (case Exam            						
+      when "None" then 1107
+      when "Pallor" then 5245
+      when "Jaundice" then 136443
+      when "Oedema" then 460
+      when "Oral thrush" then 5334
+      when "Cyanosis" then 143050
+      when "Dehydration" then 142630
+      when "Finger Clubbing" then 140125
+      when "Lethargic" then 116334
+      when "Lymph nodes axillary" then 126952
+      when "Lymph nodes inguinal" then 126939
+      when "Wasting" then 823
+      when "No" then 1066  else NULL end)as Exam,
+    CreateDate,
+	CreateBy   
+    FROM migration_st.st_general_examinations WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;	
+  
+   	     -- 44. Systems examinations table
+DROP TABLE IF EXISTS migration_tr.tr_systems_examinations;
+CREATE TABLE migration_tr.tr_systems_examinations as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+   (case Exam            						
+      when "None" then 1107
+      when "Pallor" then 5245
+      when "Jaundice" then 136443
+      when "Oedema" then 460
+      when "Oral thrush" then 5334
+      when "Cyanosis" then 143050
+      when "Dehydration" then 142630
+      when "Finger Clubbing" then 140125
+      when "Lethargic" then 116334
+      when "Lymph nodes axillary" then 126952
+      when "Lymph nodes inguinal" then 126939
+      when "Wasting" then 823
+      when "No" then 1066  else NULL end)as Exam,
+    CreateDate,
+	CreateBy   
+    FROM migration_st.st_general_examinations WHERE
+       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
+  GROUP BY Person_Id, Encounter_Date;	
+  
+    	     -- 45. Differentiated Care table
+DROP TABLE IF EXISTS migration_tr.tr_differentaited_care;
+CREATE TABLE migration_tr.tr_differentaited_care as
+    select
+    Person_Id,
+    Encounter_Date,
+    Encounter_ID,
+    (case Differentiated_care_model
+         when "Standard Care" then 164942
+         when "Express Care" then 164943
+         when "Fast Track" then 164943
+         when "FT = Fast Track" then 164943
+         when "Facility ART Distribution Group" then 164946
+         when "FADG = Facility ART Distribution Group" then 164946
+         when "Community Based Dispensing" then 164944
+         when "Community ART Distribution - HCW Led" then 164944
+         when "CADH = Community ART Distribution - HCW Led" then 164944         
+         when "Community ART Distribution - Peer Led" then 164945
+		 when "CADP = Community ART Distribution - Peer Led" then 164945
+         when "Other" then 5622 else '' end)as Differentiated_care_model,
+    CreateDate,
+	CreateBy   
+    FROM migration_st.st_differentaited_care WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;	
 	

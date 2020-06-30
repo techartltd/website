@@ -512,104 +512,104 @@
 DROP TABLE IF EXISTS migration_tr.tr_mch_anc_visit;
 CREATE TABLE migration_tr.tr_mch_anc_visit as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Anc_visit_number,
-    Anc_number,
-    Temperature,
-    Pulse_rate,
-    Systolic_bp,
-    Diastolic_bp,
-    Respiratory_rate,
-    Oxygen_saturation,
-    Weight,
-    Height,
-    Muac,
-    Hemoglobin,
-    (case Breast_exam_done
+    anc.Person_Id,
+    anc.Encounter_Date,
+    anc.Encounter_ID,
+    anc.Anc_visit_number,
+    anc.Anc_number,
+    anc.Temperature,
+    anc.Pulse_rate,
+    anc.Systolic_bp,
+    anc.Diastolic_bp,
+    anc.Respiratory_rate,
+    anc.Oxygen_saturation,
+    anc.Weight,
+    anc.Height,
+    anc.Muac,
+    anc.Hemoglobin,
+    (case anc.Breast_exam_done
      when "yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as Breast_exam_done,
-    Pallor,
-    Maturity,
-    Fundal_height,
-    Fetal_presentation,
-    Lie,
-    Fetal_heart_rate,
-    Fetal_movement,
-    (case Who_stage when "Stage1" then 1204
+    anc.Pallor,
+    anc.Maturity,
+    anc.Fundal_height,
+    anc.Fetal_presentation,
+    anc.Lie,
+    anc.Fetal_heart_rate,
+    anc.Fetal_movement,
+    (case anc.Who_stage when "Stage1" then 1204
      when "Stage2" then 1205
      when "Stage3" then 1206
      when "Stage4" then 1207 else NULL end )as Who_stage,
-    (case Viral_load_sample_taken
+    (case anc.Viral_load_sample_taken
      when "yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as Viral_load_sample_taken,
-    (case Test_1_Kit_Name
+    (case anc.Test_1_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
      when "Other" then 1175  else NULL end) as Test_1_Kit_Name,
-    Test_1_kit_lot_no,
-    Test_1_kit_expiry,
-    (case Test_1_Result
+    anc.Test_1_kit_lot_no,
+    anc.Test_1_kit_expiry,
+    (case anc.Test_1_Result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else NULL end)as  Test_1_Result,
-    (case Test_2_Kit_Name
+    (case anc.Test_2_Kit_Name
      when "First Response" then 164961
      when "Determine" then 164960
      when "Other" then 1175  else NULL end)as  Test_2_Kit_Name,
-    Test_2_kit_lot_no,
-    Test_2_kit_expiry,
-    (case Test_2_Result
+    anc.Test_2_kit_lot_no,
+    anc.Test_2_kit_expiry,
+    (case anc.Test_2_Result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else NULL end)as  Test_2_Result,
-    (case  Final_test_result
+    (case  anc.Final_test_result
      when "Positive" then 703
      when "Negative" then 664
      when "Inconclusive" then 1138  else NULL end)as  Final_test_result,
-    (case Patient_given_result
+    (case anc.Patient_given_result
      when "Yes" then 1065
      when "No" then 1066  else '' end)as Patient_given_result,
-    (case Partner_hiv_tested
+    (case anc.Partner_hiv_tested
      when "Yes" then 1065
      when "No" then 1066  when "N/A" then 1175 else NULL end) as  Partner_hiv_tested,
-    (case Partner_hiv_status
+    (case anc.Partner_hiv_status
      when "Negative" then 664
      when  "Positive" then 703
      when "Unknown" then 1067 else NULL end) as Partner_hiv_status,
-    Urine_microscopy,
-    Urinary_albumin,
-    Glucose_measurement,
-    Urine_ph,
-    Urine_gravity,
-    Urine_nitrite_test,
-    Urine_leukocyte_esterace_test,
-    Urinary_ketone,
-    Urine_bile_salt_test,
-    Urine_bile_pigment_test,
-    Urine_colour,
-    Urine_turbidity,
-    Urine_dipstick_for_blood,
-    (case Syphilis_test_status
+    anc.Urine_microscopy,
+    anc.Urinary_albumin,
+    anc.Glucose_measurement,
+    anc.Urine_ph,
+    anc.Urine_gravity,
+    anc.Urine_nitrite_test,
+    anc.Urine_leukocyte_esterace_test,
+    anc.Urinary_ketone,
+    anc.Urine_bile_salt_test,
+    anc.Urine_bile_pigment_test,
+    anc.Urine_colour,
+    anc.Urine_turbidity,
+    anc.Urine_dipstick_for_blood,
+    (case anc.Syphilis_test_status
      when "No" then 1066
      when "yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Syphilis_test_status,
-    (case Syphilis_treated_status
+    (case anc.Syphilis_treated_status
      when "Positive" then 703
      when "Negative" then 664
      when "Not Done" then 1118  else NULL end)as  Syphilis_treated_status,
-    Bs_for_mps,
-   (case Anc_exercises
+    anc.Bs_for_mps,
+   (case anc.Anc_exercises
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Anc_exercises,
-    (case TB_screening_results
+    (case anc.TB_screening_results
      when "No TB" then 1660
      when "PrTB" then 142177
      when "TBRx" then 1662
      when "Not Done" then 1118  else NULL end)as Tb_screening_results,
-    (case Cacx_screening
+    (case anc.Cacx_screening
      when "No" then 1066
      when "yes" then 1066
      when "Confirmed" then 703
@@ -618,7 +618,7 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Normal" then 664
      when "Never" then 1090
      when "Not Done" then 1118 end)as Cacx_screening,
-    (case Cacx_screening_method
+    (case anc.Cacx_screening_method
      when "Pap Smear" then 885
      when "VIA" then 162816
      when "VIA/VILI" then 162816
@@ -626,31 +626,31 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Other" then 5622
      when "Not Done" then 1118
      when "Not Applicable" then 1175 end)as Cacx_screening_method,
-    (case Prophylaxis_given
+    (case anc.Prophylaxis_given
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Prophylaxis_given,
-    (case Baby_azt_dispensed
+    (case anc.Baby_azt_dispensed
      when "No" then 1066
      when "Yes" then 1065
      when "N/A" then 1175  else NULL end)as  Baby_azt_dispensed,
-   (case Baby_nvp_dispensed
+   (case anc.Baby_nvp_dispensed
     when "No" then 1066
     when "Yes" then 1065
     when "N/A" then 1175  else NULL end)as  Baby_nvp_dispensed,
-    (case Has_other_illnes
+    (case anc.Has_other_illnes
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Has_other_illnes,
-    (case Drug
+    (case anc.Drug
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Drug,
-    (case Anc_counselled
+    (case anc.Anc_counselled
      when "NO" then 1066
      when "YES" then 1065
      when "Unknown" then 1067  else NULL end)as  Anc_counselled,
-    (case Counselled_subject
+    (case anc.Counselled_subject
      when "Birth Plans" then 159758
      when "Danger Signs" then 159857
      when "HIV" then 1914
@@ -660,22 +660,23 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Supplimental feeding" then 159854
      when "Breast Care" then 159856
      when "Unknown" then 1067  else NULL end)as  Counselled_subject,
- (case Referred_From
+ (case anc.Referred_From
      when "Another Health Facility" then 164407
      when "Current Health Facility" then 163266
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_From,
- (case Referred_To
+ (case anc.Referred_To
      when "Another Health Facility" then 164407
      when "Current Health Facility" then 163266
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_To,
-    Next_appointment_date,
-    Clinical_notes,
-    Voided
-  FROM migration_st.st_mch_enrollment_visit WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    anc.Next_appointment_date,
+    anc.Clinical_notes,
+    anc.Voided
+  FROM migration_st.st_mch_enrollment_visit anc
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = anc.Person_Id  
+      WHERE (anc.Encounter_Date != "" OR anc.Encounter_Date IS NOT NULL)
+      GROUP BY anc.Person_Id, anc.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

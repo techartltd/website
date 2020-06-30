@@ -582,7 +582,9 @@ CREATE TABLE migration_st.st_complaints (
   Presenting_complaints 	       TEXT,
   Complaint                        TEXT,
   Duration                         TEXT,
-  Onset_Date                       DATE,
+  Onset_Date                       DATE,  
+  CreatedBy             		   VARCHAR(100),
+  CreatedDate			    	   DATE,
   Voided                           int(11)
 );
 </sql>
@@ -620,10 +622,17 @@ CREATE TABLE migration_st.st_complaints (
     </partitioning>
     <connection>mssql_complaints</connection>
     <sql>
-select pe.Id as Person_Id,pmv.VisitDate as Encounter_Date,NULL as Encounter_ID,(select top 1 li.[Name]  from LookupItem li where li.Id =psc.PresentingComplaintsId) as Presenting_complaints,ch.PresentingComplaint as Complaint,NULL as Duration,psc.onsetDate as Onset_Date
- from(select pcs.PatientId,pcs.PatientMasterVisitId from PresentingComplaints pcs
+select pe.Id as Person_Id,
+       pmv.VisitDate as Encounter_Date,
+       NULL as Encounter_ID,
+      (select top 1 li.[Name]  from LookupItem li where li.Id =psc.PresentingComplaintsId) as Presenting_complaints,
+      ch.PresentingComplaint as Complaint,
+      NULL as Duration,psc.onsetDate as Onset_Date,
+      psh.CreatedBy,
+      psh.CreatedDate
+ from(select pcs.PatientId,pcs.PatientMasterVisitId,pcs.CreatedBy,pcs.CreatedDate from PresentingComplaints pcs
 union
-select  ch.PatientId,ch.PatientMasterVisitId from ComplaintsHistory  ch 
+select  ch.PatientId,ch.PatientMasterVisitId,ch.CreateBy as CreatedBy,ch.CreateDate from ComplaintsHistory  ch 
 where ch.AnyComplaint =1
 )psh 
 left join Patient p on p.Id=psh.PatientId

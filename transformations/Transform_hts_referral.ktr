@@ -513,16 +513,19 @@
 DROP TABLE IF EXISTS migration_tr.tr_hts_referral;
 CREATE TABLE migration_tr.tr_hts_referral as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Facility_Referred,
-    Date_To_Be_Enrolled,
-    Remarks,
-    Voided
-  FROM migration_st.st_hts_referral WHERE
- (Encounter_Date != "" OR Encounter_Date != NULL)
-  GROUP BY Person_Id, Encounter_Date; </sql>
+    hr.Person_Id,
+    hr.Encounter_Date,
+    hr.Encounter_ID,
+    hr.Facility_Referred,
+    hr.Date_To_Be_Enrolled,
+    hr.Remarks,
+    hr.CreateDate,							    
+	hr.CreatedBy,             					
+    hr.Voided
+  FROM migration_st.st_hts_referral hr
+   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = hr.Person_Id  
+   WHERE (hr.Encounter_Date != "" OR hr.Encounter_Date != NULL)
+   GROUP BY hr.Person_Id, hr.Encounter_Date; </sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -539,8 +542,8 @@ CREATE TABLE migration_tr.tr_hts_referral as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>416</xloc>
-      <yloc>64</yloc>
+      <xloc>208</xloc>
+      <yloc>128</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

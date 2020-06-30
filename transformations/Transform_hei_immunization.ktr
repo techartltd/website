@@ -508,84 +508,205 @@
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 27. Create hei immunizations transformed table
+    <sql>-- 28. Create hei immunizations transformed table
 
 DROP TABLE IF EXISTS migration_tr.tr_hei_immunization;
 CREATE TABLE migration_tr.tr_hei_immunization as
   select
     Person_Id,
     Encounter_Date,
-    Encounter_ID,
-    BCG,
+    Encounter_ID, 
+	(case BCG
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as BCG,
     BCG_Date,
     BCG_Period,
-    OPV_birth,
+    (case OPV_birth
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as OPV_birth,
     OPV_Birth_Date,
     OPV_Birth_Period,
-    OPV_1,
+    (case OPV_1
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as OPV_1,
     OPV_1_Date,
     OPV_1_Period,
-    OPV_2,
+    (case OPV_2
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as OPV_2,
     OPV_2_Date,
     OPV_2_Period,
-    OPV_3,
+    (case OPV_3
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as OPV_3,
     OPV_3_Date,
     OPV_3_Period,
-    DPT_Hep_B_Hib_1,
-    DPT_Hep_B_Hib_2,
-    DPT_Hep_B_Hib_3,
-    IPV,
+	(case DPT_Hep_B_Hib_1
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as DPT_Hep_B_Hib_1,
+    (case DPT_Hep_B_Hib_2
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as DPT_Hep_B_Hib_2,
+   	(case DPT_Hep_B_Hib_3
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as DPT_Hep_B_Hib_3,
+   	(case IPV
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as IPV,
     IPV_Date,
     IPV_Period,
-    ROTA_1,
+   (case ROTA_1
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as ROTA_1,
     ROTA_1_Date,
     ROTA_1_Period,
-    ROTA_2,
+   (case ROTA_2
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as ROTA_2,
     ROTA_2_Date,
     ROTA_2_Period,
-    Measles_rubella_1,
-    Measles_rubella_2,
-    Yellow_fever,
-    Measles_6_months,
+   (case Measles_rubella_1
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Measles_rubella_1,
+   (case Measles_rubella_2
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Measles_rubella_2,
+   (case Yellow_fever
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Yellow_fever,
+   (case Measles_6_months
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Measles_6_months,
     Measles_6_Date,
     Measles_6_Period,
-    Measles_9_Months,
+   (case Measles_9_Months
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Measles_9_Months,
     Measles_9_Date,
     Measles_9_Period,
-    Measles_18_Months,
+    (case Measles_18_Months
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Measles_18_Months,
     Measles_18_Date,
     Measles_18_Period,
-    Pentavalent_1,
+    (case Pentavalent_1
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Pentavalent_1,
     Pentavalent_1_Date,
     Pentavalent_1_Period,
-    Pentavalent_2,
+    (case Pentavalent_2
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Pentavalent_2,
     Pentavalent_2_Date,
     Pentavalent_2_Period,
-    Pentavalent_3,
+    (case Pentavalent_3
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Pentavalent_3,
     Pentavalent_3_Date,
     Pentavalent_3_Period,
-    PCV_10_1,
+    (case PCV_10_1
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as PCV_10_1,
     PCV_10_1_Date,
     PCV_10_1_Period,
-    PCV_10_2,
+    (case PCV_10_2
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as PCV_10_2,
     PCV_10_2_Date,
     PCV_10_2_Period,
-    PCV_10_3,
+   (case PCV_10_3
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as PCV_10_3,
     PCV_10_3_Date,
     PCV_10_3_Period,
-    Other,
+    (case Other
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as Other,
     Other_Date,
     Other_Period,
-    VitaminA_6_months,
-    VitaminA_1_yr,
-    VitaminA_1_and_half_yr,
-    VitaminA_2_yr,
-    VitaminA2_to_5_yr,
-    fully_immunized,
-    Voided             
+    (case VitaminA_6_months
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as VitaminA_6_months,
+   	(case VitaminA_1_yr
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as VitaminA_1_yr,
+    (case VitaminA_1_and_half_yr
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as VitaminA_1_and_half_yr,
+   	(case VitaminA_2_yr
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as VitaminA_2_yr,
+    (case VitaminA2_to_5_yr
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as VitaminA2_to_5_yr,
+  (case fully_immunized
+     when "Yes" then 1065
+	 when "YES" then 1065
+	 when "NO" then 1066
+     when "No" then 1066  else '' end)as fully_immunized,
+    Voided
   FROM migration_st.st_hei_immunization WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  GROUP BY Person_Id, Encounter_Date;
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

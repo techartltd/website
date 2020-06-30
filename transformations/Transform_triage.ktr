@@ -518,26 +518,27 @@
 DROP TABLE IF EXISTS migration_tr.tr_triage;
 CREATE TABLE migration_tr.tr_triage as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Visit_reason,
-    Systolic_pressure,
-    Diastolic_pressure,
-    Respiratory_rate,
-    Pulse_rate,
-    Oxygen_saturation,
-    Weight,
-    Height,
-    Temperature,
-    BMI,
-    Muac,
-    Nutritional_status,
-    Last_menstrual_period,
-    Nurse_comments
-  FROM migration_st.st_triage 
-  WHERE Encounter_Date != "" OR Encounter_Date != NULL
-  GROUP BY Person_Id, Encounter_Date;</sql>
+    tr.Person_Id,
+    tr.Encounter_Date,
+    tr.Encounter_ID,
+    tr.Visit_reason,
+    tr.Systolic_pressure,
+    tr.Diastolic_pressure,
+    tr.Respiratory_rate,
+    tr.Pulse_rate,
+    tr.Oxygen_saturation,
+    tr.Weight,
+    tr.Height,
+    tr.Temperature,
+    tr.BMI,
+    tr.Muac,
+    tr.Nutritional_status,
+    tr.Last_menstrual_period,
+    tr.Nurse_comments
+  FROM migration_st.st_triage tr
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = tr.Person_Id  
+     WHERE tr.Encounter_Date != "" OR tr.Encounter_Date != NULL
+     GROUP BY tr.Person_Id, tr.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>

@@ -665,7 +665,8 @@ CREATE TABLE migration_st.st_hiv_enrollment
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 2. HIV Enrollment DML Validated by LO and PG v3.0.0 
+    <sql>-- 2. HIV Enrollment DML Validated by Chester v3.1.0 (Added date of diagnisis)
+
 
 -- updated after revision by Chester and tested by PG
 

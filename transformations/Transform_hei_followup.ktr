@@ -513,124 +513,125 @@
 DROP TABLE IF EXISTS migration_tr.tr_hei_followup;
 CREATE TABLE migration_tr.tr_hei_followup as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Weight,
-    Height,
-    (case Primary_care_give
+    fup.Person_Id,
+    fup.Encounter_Date,
+    fup.Encounter_ID,
+    fup.Weight,
+    fup.Height,
+    (case fup.Primary_care_give
        when "Mother" then 970
        when "Father" then 971
        when "Unknown" then 1067 else NULL end) as Primary_care_give,
-    (case Infant_feeding
+    (case fup.Infant_feeding
            when "Breast Feeding (EBF)" then 5526
            when "Exclusive Replacement(ERF)" then 1595
            when "Mixed Feeding(MF)" then 6046 else "" end) as Infant_feeding,
-    (case TB_Assessment_outcome
+    (case fup.TB_Assessment_outcome
      when "No TB" then 1660
      when "PrTB" then 142177
      when "TBRx" then 1662
      when "INH" then 1679
      when "Not Done" then 1118  else '' end)as TB_Assessment_outcome,
-    (case Social_smile_milestone_Under_2Months
+    (case fup.Social_smile_milestone_Under_2Months
        when "Regressed"  then 6025
        when "Delayed"  then 6022
        when "Normal"  then 162056   else NULL end)as Social_smile_milestone_Under_2Months,
-    (case Social_smile_milestone_2Months
+    (case fup.Social_smile_milestone_2Months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162056   else NULL end)as Social_smile_milestone_2Months,
-    (case Head_control_milestone_3Months
+    (case fup.Head_control_milestone_3Months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162057   else NULL end)as Head_control_milestone_3Months,
-    (case Head_control_milestone_4Months
+    (case fup.Head_control_milestone_4Months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162058   else NULL end)as Head_control_milestone_4Months,
-    (case Hand_extension_milestone_9months
+    (case fup.Hand_extension_milestone_9months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162059   else NULL end)as Hand_extension_milestone_9months,
-    (case Sitting_milestone_12months
+    (case fup.Sitting_milestone_12months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162061   else NULL end)as Sitting_milestone_12months,
-    (case Standing_milestone_15months
+    (case fup.Standing_milestone_15months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162062   else NULL end)as Standing_milestone_15months,
-    (case Walking_milestone_18months
+    (case fup.Walking_milestone_18months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162063   else NULL end)as Walking_milestone_18months,
-    (case Talking_milestone_36months
+    (case fup.Talking_milestone_36months
      when "Regressed"  then 6025
      when "Delayed"  then 6022
      when "Normal"  then 162060   else NULL end)as Talking_milestone_36months,
-    First_DNA_PCRSampleDate,
-    First_DNA_PCRResult,
-    First_DNA_PCRResultDate,
-    Second_DNA_PCRSampleDate,
-    Second_DNA_PCRResult,
-    Second_DNA_PCRResultDate,
-    Third_DNA_PCRSampleDate,
-    Third_DNA_PCRResult,
-    Third_DNA_PCRResultDate,
-    ConfimatoryPCR_SampleDate,
-    ConfirmatoryPCR_Result,
-    ConfimatoryPCR_ResultDate,
-    RepeatConfirmatoryPCR_SampleDate,
-    RepeatConfirmatoryPCR_Result,
-    RepeatConfirmatoryPCR_ResultDate,
-    BaselineViralLoadSampleDate,
-    BaselineViralLoadResult,
-    BaselineViralLoadResultDate,
-    Final_AntibodySampleDate,
-    Final_AntibodyResult,
-    Final_AntibodyResultDate,
+    fup.First_DNA_PCRSampleDate,
+    fup.First_DNA_PCRResult,
+    fup.First_DNA_PCRResultDate,
+    fup.Second_DNA_PCRSampleDate,
+    fup.Second_DNA_PCRResult,
+    fup.Second_DNA_PCRResultDate,
+    fup.Third_DNA_PCRSampleDate,
+    fup.Third_DNA_PCRResult,
+    fup.Third_DNA_PCRResultDate,
+    fup.ConfimatoryPCR_SampleDate,
+    fup.ConfirmatoryPCR_Result,
+    fup.ConfimatoryPCR_ResultDate,
+    fup.RepeatConfirmatoryPCR_SampleDate,
+    fup.RepeatConfirmatoryPCR_Result,
+    fup.RepeatConfirmatoryPCR_ResultDate,
+    fup.BaselineViralLoadSampleDate,
+    fup.BaselineViralLoadResult,
+    fup.BaselineViralLoadResultDate,
+    fup.Final_AntibodySampleDate,
+    fup.Final_AntibodyResult,
+    fup.Final_AntibodyResultDate,
     -- Review_of_systems_developmental VARCHAR(100),
-    Dna_pcr_sample_date,
-    Dna_pcr_contextual_status,
-    Dna_pcr_results,
-    Dna_pcr_dbs_sample_code,
-    Dna_pcr_results_date,
-    (case Azt_given
+    fup.Dna_pcr_sample_date,
+    fup.Dna_pcr_contextual_status,
+    fup.Dna_pcr_results,
+    fup.Dna_pcr_dbs_sample_code,
+    fup.Dna_pcr_results_date,
+    (case fup.Azt_given
      when "Yes" then 1065
      when "No" then 1066  else '' end)as Azt_given,
-    (case Nvp_given
+    (case fup.Nvp_given
      when "Yes" then 1065
      when "No" then 1066  else '' end)as Nvp_given,
-    (case Ctx_given
+    (case fup.Ctx_given
      when "Yes" then 1065
      when "No" then 1066  else '' end)as Ctx_given,
-    (case ARV_prophylaxis_received
+    (case fup.ARV_prophylaxis_received
      when "AZT liquid BID for 12 weeks" then 160123
      when "NVP liquid OD for 12 weeks" then 80586
      when "AZT liquid BID + NVP liquid OD for 6 weeks then NVP liquid OD for 6 weeks" then 1652
      when "Other" then 5622
      when "None" then 1107  else NULL end)as  ARV_prophylaxis_received,
-    ARV_prophylaxis_Other_received,
-    First_antibody_sample_date,
-    First_antibody_result,
-    First_antibody_dbs_sample_code,
-    First_antibody_result_date,
-    Final_antibody_sample_date,
-    Final_antibody_result,
-    Final_antibody_dbs_sample_code,
-    Final_antibody_result_date,
-    Tetracycline_Eye_Ointment,
-    Pupil,
-    Sight,
-    Squint,
-    Deworming_Drug,
-    Deworming_Dosage_Units,
-    Date_of_next_appointment,
-    Comments,
-    Voided
-  FROM migration_st.st_hei_followup WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    fup.ARV_prophylaxis_Other_received,
+    fup.First_antibody_sample_date,
+    fup.First_antibody_result,
+    fup.First_antibody_dbs_sample_code,
+    fup.First_antibody_result_date,
+    fup.Final_antibody_sample_date,
+    fup.Final_antibody_result,
+    fup.Final_antibody_dbs_sample_code,
+    fup.Final_antibody_result_date,
+    fup.Tetracycline_Eye_Ointment,
+    fup.Pupil,
+    fup.Sight,
+    fup.Squint,
+    fup.Deworming_Drug,
+    fup.Deworming_Dosage_Units,
+    fup.Date_of_next_appointment,
+    fup.Comments,
+    fup.Voided
+  FROM migration_st.st_hei_followup fup
+   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fup.Person_Id  
+   WHERE (fup.Encounter_Date != "" OR fup.Encounter_Date IS NOT NULL)
+   GROUP BY fup.Person_Id, fup.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

@@ -513,40 +513,41 @@
 DROP TABLE IF EXISTS migration_tr.tr_mch_discharge;
 CREATE TABLE migration_tr.tr_mch_discharge as
   select
-  Person_Id,
-  Encounter_Date,
-  Encounter_ID,
-  Discharge_Date,
- (case Vitamin_A_Supplimentation
+  dis.Person_Id,
+  dis.Encounter_Date,
+  dis.Encounter_ID,
+  dis.Discharge_Date,
+ (case dis.Vitamin_A_Supplimentation
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Vitamin_A_Supplimentation,
-  (case Counselled_Infant_Feeding
+  (case dis.Counselled_Infant_Feeding
      when "No" then 1066
      when "Yes" then 1065
      when "Unknown" then 1067  else NULL end)as  Counselled_Infant_Feeding,
-  (case Baby_Status_On_Discharge
+  (case dis.Baby_Status_On_Discharge
      when "Alive" then 163016
      when "Dead" then 160432
      when "Unknown" then 1067  else NULL end)as  Baby_Status_On_Discharge,
-  Mother_Status_On_Discharge,
-  Birth_Notification_Number,
- (case Referred_From
+  dis.Mother_Status_On_Discharge,
+  dis.Birth_Notification_Number,
+ (case dis.Referred_From
      when "Another Health Facility" then 164407
      when "Current Health Facility" then 163266
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_From,
- (case Referred_To
+ (case dis.Referred_To
      when "Another Health Facility" then 164407
      when "Current Health Facility" then 163266
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_To,
-  Clinical_notes,
-  Next_Appointment_Date,
-  Voided
-  FROM migration_st.st_mch_delivery_discharge WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;
+  dis.Clinical_notes,
+  dis.Next_Appointment_Date,
+  dis.Voided
+  FROM migration_st.st_mch_delivery_discharge dis
+      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = dis.Person_Id  
+      WHERE (dis.Encounter_Date != "" OR dis.Encounter_Date IS NOT NULL)
+      GROUP BY dis.Person_Id, dis.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>

@@ -512,21 +512,21 @@
 DROP TABLE IF EXISTS migration_tr.tr_hts_contact_listing;
 CREATE TABLE migration_tr.tr_hts_contact_listing as
   select
-    Person_Id,
-    Contact_Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-  (case Consent
+    cl.Person_Id,
+    cl.Contact_Person_Id,
+    cl.Encounter_Date,
+    cl.Encounter_ID,
+  (case cl.Consent
      when "YES" then 1065
      when "NO" then 1066 else NULL end) as Consent,
-    First_Name,
-    Middle_Name,
-    Last_Name,
-  (case Sex
+    cl.First_Name,
+    cl.Middle_Name,
+    cl.Last_Name,
+  (case cl.Sex
      when "Male" then 1534
      when "Female" then  1535 else NULL end) as Sex,
-    DoB,
-   (case Marital_Status
+    cl.DoB,
+   (case cl.Marital_Status
      when "Divorced" then 1058
      when "Married Monogamous" then 5555
      when "Single" then 1057
@@ -536,9 +536,9 @@ CREATE TABLE migration_tr.tr_hts_contact_listing as
      when "Separated" then 1056
      when "Unknown" then 1067
      when "Other" then 5622 else NULL end) as Marital_Status,
-    Physical_Address,
-    Phone_Number,
-  (case Relationship_To_Index
+    cl.Physical_Address,
+    cl.Phone_Number,
+  (case cl.Relationship_To_Index
      when "Mother" then 970
      when "Father" then 971
      when "Child - C" then 1528
@@ -549,24 +549,24 @@ CREATE TABLE migration_tr.tr_hts_contact_listing as
      when "Unknown" then 1067
      when "Injectable Drug User (IDU)" then 157351
      when "Other" then 5622 else NULL end) as Relationship_To_Index,
-    PNSScreeningDate,
-   (case Currently_Living_With_Index
+    cl.PNSScreeningDate,
+   (case cl.Currently_Living_With_Index
      when "Yes" then 1065
      when "No" then 1066
      when "Declined" then 162570  else NULL end) as Currently_Living_With_Index,
-  (case IPV_Physically_Hurt
+  (case cl.IPV_Physically_Hurt
      when "Yes" then 1065
      when "No" then 1066
      when "N/A" then 1175 else NULL end) as IPV_Physically_Hurt,
-  (case IPV_Threatened_Hurt
+  (case cl.IPV_Threatened_Hurt
      when "Yes" then 1065
      when "No" then 1066
      when "N/A" then 1175 else NULL end) as IPV_Threatened_Hurt,
-  (case IPV_Sexual_Hurt
+  (case cl.IPV_Sexual_Hurt
      when "Yes" then 1065
      when "No" then 1066
      when "N/A" then 1175 else NULL end) as IPV_Sexual_Hurt,
-  (case IPV_Outcome
+  (case cl.IPV_Outcome
      when "NA-CHILD" then 1066
      when "Sexual" then 1066
      when "Emotional" then 1066
@@ -574,22 +574,23 @@ CREATE TABLE migration_tr.tr_hts_contact_listing as
      when "No IPV" then 1065
      when "No" then 1066
      when "N/A" then 1175 else NULL end) as IPV_Outcome,
-  (case HIV_Status
+  (case cl.HIV_Status
      when "Positive" then 703
      when "Negative" then 664
      when "Unknown" then 1067 else NULL end)as HIV_Status,
-  (case PNS_Approach
+  (case cl.PNS_Approach
      when "Pr: Provider Referral" then 703
      when "Cr: Passive Referral" then 664
      when "D: Dual Referral" then 664
      when "Con: Contract Referral" then 664
      when "Unknown" then 1067 else NULL end)as PNS_Approach,
-    Booking_Date,
-    Date_Reminded,
-    Voided
-  FROM migration_st.st_hts_contact_listing WHERE
-    (Encounter_Date != "" OR Encounter_Date != NULL)
-  GROUP BY Person_Id, Encounter_Date;
+    cl.Booking_Date,
+    cl.Date_Reminded,
+    cl.Voided
+  FROM migration_st.st_hts_contact_listing cl
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = cl.Person_Id  
+     WHERE (cl.Encounter_Date != "" OR cl.Encounter_Date != NULL)
+     GROUP BY cl.Person_Id, cl.Encounter_Date;
 
 ;</sql>
     <set_params>N</set_params>

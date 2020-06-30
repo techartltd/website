@@ -512,11 +512,11 @@
 DROP TABLE IF EXISTS migration_tr.tr_hei_outcome;
 CREATE TABLE migration_tr.tr_hei_outcome as
   select
-    Person_Id,
-    Encounter_Date,
-    Encounter_ID,
-    Child_hei_outcomes_exit_date,
-    (case Child_hei_outcomes_HIV_status
+    he.Person_Id,
+    he.Encounter_Date,
+    he.Encounter_ID,
+    he.Child_hei_outcomes_exit_date,
+    (case he.Child_hei_outcomes_HIV_status
      when "Died Child died before confirming the HIV status" then 160432
      when "Uninfected not Breastfed (UBFn)" then 1403
      when "Uninfected Breastfed (UBF)" then 1403
@@ -526,9 +526,10 @@ CREATE TABLE migration_tr.tr_hei_outcome as
      when "Infected not Breastfed (IBFn)" then 138571
      when "Infected Breastfed (IBF)" then 138571
      when "Unknown" then 1067 else NULL end) as Child_hei_outcomes_HIV_status
-  FROM migration_st.st_hei_outcome WHERE
-       (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
-  GROUP BY Person_Id, Encounter_Date;</sql>
+  FROM migration_st.st_hei_outcome he
+    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = he.Person_Id  
+    WHERE (he.Encounter_Date != "" OR he.Encounter_Date IS NOT NULL)
+    GROUP BY he.Person_Id, he.Encounter_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
