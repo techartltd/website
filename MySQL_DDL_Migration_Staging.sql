@@ -382,6 +382,7 @@ CREATE TABLE migration_st.st_hiv_followup
   Person_Id                          INT(100),
   Encounter_Date                    DATE,
   Encounter_ID                  		VARCHAR(100),
+  Encounter_type                  		VARCHAR(100),
   Visit_scheduled            	    	VARCHAR(100),
   Visit_by                  	      VARCHAR(100),
   Visit_by_other           		      VARCHAR(100),
