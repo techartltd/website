@@ -539,19 +539,19 @@ CREATE TABLE migration_tr.tr_hiv_followup
       (case fup.Who_stage when "Stage1" then 1204
        when "Stage2" then 1205
        when "Stage3" then 1206
-       when "Stage4" then 1207 else NULL end )as Who_stage,
+       when "Stage4" then 1207 else "" end )as Who_stage,
       (case fup.Presenting_complaints
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Presenting_complaints,
+       when "Yes" then 1
+       when "No" then 2  else "" end)as Presenting_complaints,
       (case fup.Has_known_allergies
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Has_known_allergies,
+       when "Yes" then 1
+       when "No" then 2  else "" end)as Has_known_allergies,
       (case fup.Has_Chronic_illnesses_cormobidities
        when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Has_Chronic_illnesses_cormobidities,
+       when "No" then 1066  else "" end)as Has_Chronic_illnesses_cormobidities,
       (case fup.Has_adverse_drug_reaction
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Has_adverse_drug_reaction,
+       when "Yes" then 1
+       when "No" then 2  else "" end)as Has_adverse_drug_reaction,
       (case fup.Vaccinations_today when "BCG" then 886 else NULL end)as Vaccinations_today_bcg,
       (case fup.Vaccinations_today when "OPV" then 82215 when "IPV" then 82215 else NULL end)as Vaccinations_today_pv,
       (case fup.Vaccinations_today when "Penta" then 1423 else NULL end)as Vaccinations_today_penta,
