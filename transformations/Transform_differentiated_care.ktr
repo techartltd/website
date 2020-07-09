@@ -430,7 +430,7 @@
     <created_date>2020/06/08 16:06:47.941</created_date>
     <modified_user>-</modified_user>
     <modified_date>2020/06/08 16:06:47.941</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -509,8 +509,8 @@
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
     <sql>    	     -- 44. Differentiated Care table
-DROP TABLE IF EXISTS migration_tr.tr_differentaited_care;
-CREATE TABLE migration_tr.tr_differentaited_care as
+DROP TABLE IF EXISTS migration_tr.tr_differentiated_care;  
+CREATE TABLE migration_tr.tr_differentiated_care as
     select
     dc.Person_Id,
     dc.Encounter_Date,

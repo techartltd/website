@@ -519,7 +519,9 @@ CREATE TABLE migration_tr.tr_otz_outcome as
     otz.Death_Date,
     otz.Transfer_Facility,
     otz.Transfer_Date,
-    otz.voided
+    otz.voided,
+    otz.CreateDate,
+    otz.CreatedBy 
     FROM migration_st.st_otz_outcome otz
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
       WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)
