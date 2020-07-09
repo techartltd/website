@@ -589,7 +589,9 @@ CREATE TABLE migration_st.st_otz_enrolment (
   Beyond_third_ninety              VARCHAR(100),
   Transfer_in                      VARCHAR(100),
   Initial_Enrolment_Date           DATE,
-  voided                           INT(11)
+  voided                           INT(11),
+  CreateDate                       DATE,
+  CreatedBy                        INT
 );
 </sql>
     <set_params>N</set_params>
@@ -625,107 +627,109 @@ CREATE TABLE migration_st.st_otz_enrolment (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 33. Creating OTZ enrollment table Validated by FG
+    <sql>-- 33. Creating OTZ enrollment table Validated by Chester v2.0
 
-select pt.PersonId as Person_Id 
-,pe.EnrollmentDate as Encounter_Date,NULL as Encounter_ID,
-CASE WHEN otz1.Topic is not null then 'Yes' else NULL end as Orientation,
-CASE WHEN otz3.Topic is not null then 'Yes' else NULL end as Leadership,
-CASE WHEN otz2.Topic is not null then 'Yes' else NULL end as Participation,
-CASE WHEN otz6.Topic is not null then 'Yes' else NULL end as Treatment_literacy,
-CASE WHEN otz5.Topic is not null then 'Yes' else NULL end as Transition_to_adult_care,
-CASE WHEN otz4.Topic is not null then 'Yes' else NULL end as Making_Decision_future,
-CASE WHEN otz7.Topic is not null then 'Yes' else NULL end as Srh,
-CASE WHEN otz8.Topic is not null then 'Yes' else NULL end as Beyond_third_ninety,
-CASE WHEN pe.TransferIn=1 then 'Yes'   when pe.TransferIn =1
-then 'No' else NULL end as   Transfer_In,
-pe.EnrollmentDate as Initial_Enrolment_Date,
-pe.DeleteFlag as Voided
-  from PatientEnrollment pe
-  inner join Patient pt on pt.Id=pe.PatientId
-inner join ServiceArea sa on sa.Id=pe.ServiceAreaId
-inner join OtzActivityForms oaf on format(oaf.VisitDate,'M/dd/YYYY')=format(pe.EnrollmentDate,'M/dd/YYYY') and oaf.PatientId=pe.PatientId
-left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='1. OTZ Orientation')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz1 on otz1.Id=oaf.Id
-
-left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='2. OTZ Participation')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz2 on otz2.Id=oaf.Id
-
-
-   
-left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='3. OTZ Leadership')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz3 on otz3.Id=oaf.Id
-
-left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='4. OTZ Making Decisions for the future')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz4 on otz4.Id=oaf.Id
-left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='5. OTZ Transition to Adult Care')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz5 on otz5.Id=oaf.Id
-   left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='6. OTZ Treatment Literacy')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz6 on otz6.Id=oaf.Id
-
-   left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='7. OTZ SRH')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz7 on otz7.Id=oaf.Id
-  left join  (select  tt.Id,tt.VisitDate,tt.AttendedSupportGroup,tt.DateCompleted,tt.Topic 
- from( select otzf.Id,otzf.VisitDate,otzf.AttendedSupportGroup,otzm.ItemName as Topic ,ott.DateCompleted,ott.TopicId,
-  ROW_NUMBER() OVER(partition by otzf.Id, otzf.VisitDate order by ott.Id desc)rownum
-   from OtzActivityForms otzf
-   inner join OtzActivityTopics ott on ott.ActivityFormId=otzf.Id
-   inner join (select * from LookupItemView where MasterName='OTZ_Modules'
-   and ItemName='8. OTZ Beyond the 3rd 90')otzm on otzm.ItemId=ott.TopicId)
-   tt where tt.rownum='1'
-   )otz8 on otz8.Id=oaf.Id
-where sa.Code='OTZ'
-
-</sql>
+SELECT 
+P.PersonId AS Person_Id,
+format(cast(PE.EnrollmentDate AS DATE), 'yyyy-MM-dd') AS Encounter_Date,
+NULL AS Encounter_ID,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '1. OTZ Orientation'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Orientation,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '3. OTZ Leadership'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Leadership,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '2. OTZ Participation'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Participation,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '6. OTZ Treatment Literacy'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Treatment_literacy,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '5. OTZ Transition to Adult Care'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Transition_to_adult_care,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '4. OTZ Making Decisions for the future'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Making_Decision_future,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '7. OTZ SRH'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Srh,
+CASE WHEN (SELECT top 1 OTZT.TopicId
+FROM [dbo].[OtzActivityForm] OTZF
+INNER JOIN [dbo].[OtzActivityTopics] OTZT ON OTZT.ActivityFormId = OTZF.Id
+INNER JOIN PatientMasterVisit PMV ON PMV.Id = OTZF.PatientMasterVisitId
+WHERE OTZT.TopicId = (
+		SELECT top 1 ItemId
+		FROM LookupItemView
+		WHERE MasterName = 'OTZ_Modules'
+			AND ItemName = '8. OTZ Beyond the 3rd 90'
+		) AND format(cast(PMV.VisitDate AS DATE), 'yyyy-MM-dd') = format(cast(PM.VisitDate AS DATE), 'yyyy-MM-dd')) IS NOT NULL THEN 'Yes' ELSE NULL END AS Beyond_third_ninety,
+		CASE 
+WHEN PE.TransferIn = 1
+THEN 'Yes'
+WHEN PE.TransferIn = 0
+THEN 'No'
+ELSE NULL
+END AS Transfer_In
+,pe.EnrollmentDate AS Initial_Enrolment_Date  
+,pe.DeleteFlag AS Voided
+,pe.CreateDate
+,pe.CreatedBy
+FROM Patient P 
+INNER JOIN PatientEnrollment PE ON PE.PatientId = P.Id
+INNER JOIN PatientIdentifier PI ON PI.PatientId = P.Id AND PI.PatientEnrollmentId = PE.Id
+LEFT JOIN ServiceArea SA ON SA.Id = PE.ServiceAreaId
+INNER JOIN PatientMasterVisit PM ON PM.PatientId = P.Id AND PM.ServiceId = SA.Id
+WHERE SA.Code = 'OTZ' AND  PM.VisitType = (select top 1 ItemId from LookupItemView where MasterName = 'VisitType' and ItemName = 'Enrollment');</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
