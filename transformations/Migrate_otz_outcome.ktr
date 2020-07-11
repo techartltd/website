@@ -585,7 +585,9 @@ CREATE TABLE migration_st.st_otz_outcome (
   Death_Date                       DATE,
   Transfer_Facility                VARCHAR(255),
   Transfer_Date                    DATE,
-  Voided                           int(11)
+  Voided                           int(11),
+  CreateDate                       DATE,
+  CreatedBy                        INT
 );
 </sql>
     <set_params>N</set_params>
@@ -621,8 +623,7 @@ CREATE TABLE migration_st.st_otz_outcome (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 36. Creating OTZ Outcome table Validated by FG
-
+    <sql>-- 36. Creating OTZ Outcome table Validated by Chester v2.0
 
 SELECT p.PersonId AS Person_Id
 	,pmv.VisitDate AS Encounter_Date
@@ -633,10 +634,12 @@ SELECT p.PersonId AS Person_Id
 		WHERE li.Id = pce.ExitReason
 		) AS Discontinuation_Reason
 	,pce.ExitDate AS ExitDate
-	,pce.DateOfDeath AS Death_Date 
+	,pce.DateOfDeath
 	,pce.TransferOutfacility AS Transfer_Facility
 	,NULL AS Transfer_Date
 	,pce.DeleteFlag AS Voided
+	,pmv.CreateDate
+	,pmv.CreatedBy
 FROM PatientCareending pce
 INNER JOIN Patient p ON pce.PatientId = p.Id
 INNER JOIN PatientMasterVisit pmv ON pmv.Id = pce.PatientMasterVisitId

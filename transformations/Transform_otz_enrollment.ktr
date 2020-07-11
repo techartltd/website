@@ -525,7 +525,9 @@ CREATE TABLE migration_tr.tr_otz_enrolment as
     (case otz.Beyond_third_ninety when "Yes" then 1065 when NULL then 1066 else NULL end) as Beyond_third_ninety,
     (case otz.Transfer_in when "Yes" then 1065 when NULL then 1066 else NULL end) as Transfer_in,
     otz.Initial_Enrolment_Date,
-    otz.voided
+    otz.voided,
+    otz.CreateDate,
+    otz.CreatedBy 
     FROM migration_st.st_otz_enrolment otz
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
       WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)

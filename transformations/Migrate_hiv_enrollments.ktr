@@ -668,9 +668,6 @@ CREATE TABLE migration_st.st_hiv_enrollment
     <sql>-- 2. HIV Enrollment DML Validated by Chester v3.1.0 (Added date of diagnisis)
 
 
--- updated after revision by Chester and tested by PG
-
--- -----------------------------2. HIV Enrollment DML ---------------------------------------------
 EXEC pr_OpenDecryptedSession;
 
 SELECT DISTINCT P.Id AS Person_Id

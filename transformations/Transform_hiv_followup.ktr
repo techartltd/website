@@ -521,6 +521,7 @@ CREATE TABLE migration_tr.tr_hiv_followup
       fup.Person_Id as Person_Id,
       fup.Encounter_Date as Encounter_Date,
       fup.Encounter_ID as Encounter_ID,
+      fup.Encounter_type as Encounter_type,
       (case fup.Visit_scheduled when "Yes" then 1
        when "No" then 2 else NULL end )as Visit_scheduled,
       (case fup.Visit_by when "S" then 978
@@ -538,19 +539,19 @@ CREATE TABLE migration_tr.tr_hiv_followup
       (case fup.Who_stage when "Stage1" then 1204
        when "Stage2" then 1205
        when "Stage3" then 1206
-       when "Stage4" then 1207 else NULL end )as Who_stage,
+       when "Stage4" then 1207 else "" end )as Who_stage,
       (case fup.Presenting_complaints
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Presenting_complaints,
+       when "Yes" then 1
+       when "No" then 2  else "" end)as Presenting_complaints,
       (case fup.Has_known_allergies
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Has_known_allergies,
+       when "Yes" then 1
+       when "No" then 2  else "" end)as Has_known_allergies,
       (case fup.Has_Chronic_illnesses_cormobidities
        when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Has_Chronic_illnesses_cormobidities,
+       when "No" then 1066  else "" end)as Has_Chronic_illnesses_cormobidities,
       (case fup.Has_adverse_drug_reaction
-       when "Yes" then 1065
-       when "No" then 1066  else NULL end)as Has_adverse_drug_reaction,
+       when "Yes" then 1
+       when "No" then 2  else "" end)as Has_adverse_drug_reaction,
       (case fup.Vaccinations_today when "BCG" then 886 else NULL end)as Vaccinations_today_bcg,
       (case fup.Vaccinations_today when "OPV" then 82215 when "IPV" then 82215 else NULL end)as Vaccinations_today_pv,
       (case fup.Vaccinations_today when "Penta" then 1423 else NULL end)as Vaccinations_today_penta,
@@ -592,10 +593,11 @@ CREATE TABLE migration_tr.tr_hiv_followup
        when "Good" then 159405
        when "Fair" then 163794
        when "Inadequate" then 159407
-       when "Poor" then 159407 else NULL end)as Dapsone_adherence,
+       when "Poor" then 159407 else "" end)as Dapsone_adherence,
       (case fup.Dapsone_dispensed
        when "Yes" then 1065
-       when "No" then 1066 else NULL end)as Dapsone_dispensed,
+       when " No" then 1066
+       when "No" then 1066 else "" end)as Dapsone_dispensed,
       (case fup.Arv_adherence
        when "Good" then 159405
        when "Fair" then 163794
