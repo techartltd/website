@@ -521,9 +521,9 @@ CREATE TABLE migration_tr.tr_disability_type as
      when "M: Mentally Challenged" then 151342
      when "P: Physically Challenged" then  164538
      when "Other" then 5622 else NULL end)as Disability,
-    ds.CreateBy,
-    ds.CreateDate,  
-    ds.voided
+    ds.Voided,
+    ds.CreatedBy,
+    ds.CreateDate    
     FROM migration_st.st_disability_type ds
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ds.Person_Id  
       WHERE (ds.Encounter_Date != "" OR ds.Encounter_Date IS NOT NULL) AND (ds.Disability != "" OR ds.Disability IS NOT NULL)

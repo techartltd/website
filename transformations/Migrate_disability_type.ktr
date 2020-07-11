@@ -580,7 +580,7 @@ CREATE TABLE migration_st.st_disability_type (
   Encounter_Date                   DATE,
   Encounter_ID                     VARCHAR(50),
   Disability                       TEXT,
-  CreateBy             		       VARCHAR(100),
+  CreatedBy             		   VARCHAR(100),
   CreateDate			    	   DATE,  
   Voided                           int(11)
 );</sql>
@@ -618,9 +618,12 @@ CREATE TABLE migration_st.st_disability_type (
     </partitioning>
     <connection>mssql</connection>
     <sql>select cd.PersonId as Person_Id
-,pmv.VisitDate as Encounter_Date,NULL as Encounter_ID,(select top 1.name from Lookupitem li where li.Id=cd.DisabilityId)Disability,NULL as Disability_Type,cd.DeleteFlag,
-cd.CreatedBy,cd.CreateDate 
-
+,pmv.VisitDate as Encounter_Date,
+NULL as Encounter_ID,
+(select top 1.name from Lookupitem li where li.Id=cd.DisabilityId)Disability,
+cd.DeleteFlag as Voided,
+cd.CreatedBy,
+cd.CreateDate 
   from ClientDisability cd
 left join PatientEncounter pe on pe.Id=cd.PatientEncounterID
 left join PatientMasterVisit pmv on pmv.Id =pe.PatientMasterVisitId</sql>
