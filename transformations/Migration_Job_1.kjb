@@ -728,7 +728,7 @@
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>load_st_program_discontinuations_hiv</name>
+      <name>load_st_program_discontinuations</name>
       <description/>
       <type>TRANS</type>
       <attributes/>
@@ -761,12 +761,12 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
+      <xloc>432</xloc>
       <yloc>672</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>load_tr_hiv_program_discontinuations</name>
+      <name>load_tr_hiv_discontinuations</name>
       <description/>
       <type>TRANS</type>
       <attributes/>
@@ -837,8 +837,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>848</yloc>
+      <xloc>432</xloc>
+      <yloc>928</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -876,7 +876,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1024</xloc>
-      <yloc>784</yloc>
+      <yloc>848</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -914,7 +914,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1024</xloc>
-      <yloc>912</yloc>
+      <yloc>976</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -951,8 +951,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>1072</yloc>
+      <xloc>384</xloc>
+      <yloc>1104</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -989,8 +989,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1056</yloc>
+      <xloc>1024</xloc>
+      <yloc>1104</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1027,8 +1027,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>752</xloc>
-      <yloc>992</yloc>
+      <xloc>704</xloc>
+      <yloc>1040</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1065,8 +1065,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>912</xloc>
-      <yloc>992</yloc>
+      <xloc>864</xloc>
+      <yloc>1040</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1103,8 +1103,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>736</yloc>
+      <xloc>416</xloc>
+      <yloc>784</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1142,7 +1142,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1024</xloc>
-      <yloc>720</yloc>
+      <yloc>784</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1179,8 +1179,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>1136</yloc>
+      <xloc>384</xloc>
+      <yloc>1168</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1217,8 +1217,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1120</yloc>
+      <xloc>1024</xloc>
+      <yloc>1168</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1293,7 +1293,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
+      <xloc>384</xloc>
       <yloc>1264</yloc>
       <attributes_kjc/>
     </entry>
@@ -1331,8 +1331,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1200</yloc>
+      <xloc>1024</xloc>
+      <yloc>1232</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1369,8 +1369,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>464</xloc>
-      <yloc>1440</yloc>
+      <xloc>384</xloc>
+      <yloc>1424</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1407,8 +1407,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1376</yloc>
+      <xloc>1024</xloc>
+      <yloc>1360</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1445,8 +1445,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1472</yloc>
+      <xloc>1024</xloc>
+      <yloc>1424</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1483,8 +1483,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>1600</yloc>
+      <xloc>384</xloc>
+      <yloc>1520</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1521,8 +1521,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1536</yloc>
+      <xloc>1024</xloc>
+      <yloc>1488</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1559,8 +1559,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1616</yloc>
+      <xloc>1024</xloc>
+      <yloc>1552</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1597,8 +1597,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>1696</yloc>
+      <xloc>400</xloc>
+      <yloc>1616</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1635,8 +1635,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1680</yloc>
+      <xloc>1024</xloc>
+      <yloc>1616</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1673,8 +1673,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>1760</yloc>
+      <xloc>400</xloc>
+      <yloc>1696</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1711,8 +1711,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1744</yloc>
+      <xloc>1024</xloc>
+      <yloc>1680</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1749,8 +1749,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2064</yloc>
+      <xloc>1024</xloc>
+      <yloc>2016</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1787,8 +1787,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2128</yloc>
+      <xloc>1024</xloc>
+      <yloc>2080</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1825,8 +1825,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2192</yloc>
+      <xloc>1024</xloc>
+      <yloc>2144</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1864,7 +1864,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1024</xloc>
-      <yloc>848</yloc>
+      <yloc>912</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1901,8 +1901,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>1808</yloc>
+      <xloc>400</xloc>
+      <yloc>1760</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1939,8 +1939,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1808</yloc>
+      <xloc>1024</xloc>
+      <yloc>1744</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -1977,8 +1977,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>1872</yloc>
+      <xloc>400</xloc>
+      <yloc>1824</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2015,8 +2015,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1872</yloc>
+      <xloc>1024</xloc>
+      <yloc>1824</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2053,8 +2053,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>1936</yloc>
+      <xloc>400</xloc>
+      <yloc>1888</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2091,8 +2091,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1936</yloc>
+      <xloc>1024</xloc>
+      <yloc>1888</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2129,8 +2129,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2000</yloc>
+      <xloc>400</xloc>
+      <yloc>1952</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2167,8 +2167,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2000</yloc>
+      <xloc>1024</xloc>
+      <yloc>1952</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2205,8 +2205,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>752</xloc>
-      <yloc>2064</yloc>
+      <xloc>704</xloc>
+      <yloc>2016</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2243,8 +2243,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2128</yloc>
+      <xloc>400</xloc>
+      <yloc>2080</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2281,8 +2281,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2192</yloc>
+      <xloc>400</xloc>
+      <yloc>2144</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2319,8 +2319,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2256</yloc>
+      <xloc>400</xloc>
+      <yloc>2208</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2357,8 +2357,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2256</yloc>
+      <xloc>1024</xloc>
+      <yloc>2208</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2395,8 +2395,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2320</yloc>
+      <xloc>400</xloc>
+      <yloc>2272</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2433,8 +2433,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2320</yloc>
+      <xloc>1024</xloc>
+      <yloc>2272</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2471,8 +2471,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1056</xloc>
-      <yloc>1280</yloc>
+      <xloc>1024</xloc>
+      <yloc>1296</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2509,8 +2509,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2384</yloc>
+      <xloc>400</xloc>
+      <yloc>2336</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2548,7 +2548,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1232</xloc>
-      <yloc>2384</yloc>
+      <yloc>2336</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2585,8 +2585,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2384</yloc>
+      <xloc>1024</xloc>
+      <yloc>2336</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2623,8 +2623,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2448</yloc>
+      <xloc>400</xloc>
+      <yloc>2400</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2661,8 +2661,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2448</yloc>
+      <xloc>1024</xloc>
+      <yloc>2400</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2699,8 +2699,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2512</yloc>
+      <xloc>400</xloc>
+      <yloc>2464</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2737,8 +2737,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2512</yloc>
+      <xloc>1024</xloc>
+      <yloc>2464</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2775,8 +2775,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2576</yloc>
+      <xloc>400</xloc>
+      <yloc>2528</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2813,8 +2813,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>2576</yloc>
+      <xloc>1024</xloc>
+      <yloc>2528</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2851,8 +2851,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2640</yloc>
+      <xloc>400</xloc>
+      <yloc>2592</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2890,7 +2890,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>2640</yloc>
+      <yloc>2592</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2927,8 +2927,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2704</yloc>
+      <xloc>400</xloc>
+      <yloc>2656</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -2966,7 +2966,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>2704</yloc>
+      <yloc>2656</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3003,8 +3003,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2768</yloc>
+      <xloc>400</xloc>
+      <yloc>2720</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3042,7 +3042,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>2768</yloc>
+      <yloc>2720</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3079,8 +3079,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2832</yloc>
+      <xloc>400</xloc>
+      <yloc>2784</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3118,7 +3118,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>2832</yloc>
+      <yloc>2784</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3155,8 +3155,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2896</yloc>
+      <xloc>400</xloc>
+      <yloc>2848</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3194,7 +3194,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>2896</yloc>
+      <yloc>2848</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3231,8 +3231,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1232</xloc>
-      <yloc>1936</yloc>
+      <xloc>1200</xloc>
+      <yloc>1888</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3269,8 +3269,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1232</xloc>
-      <yloc>2320</yloc>
+      <xloc>1216</xloc>
+      <yloc>2272</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3307,8 +3307,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2960</yloc>
+      <xloc>400</xloc>
+      <yloc>2928</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3346,7 +3346,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>2960</yloc>
+      <yloc>2928</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3383,8 +3383,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3040</yloc>
+      <xloc>400</xloc>
+      <yloc>2992</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3422,7 +3422,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1040</xloc>
-      <yloc>3040</yloc>
+      <yloc>2992</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3459,8 +3459,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3104</yloc>
+      <xloc>400</xloc>
+      <yloc>3056</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3497,8 +3497,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3104</yloc>
+      <xloc>1024</xloc>
+      <yloc>3056</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3535,8 +3535,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3168</yloc>
+      <xloc>384</xloc>
+      <yloc>3120</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3573,8 +3573,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3168</yloc>
+      <xloc>1024</xloc>
+      <yloc>3120</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3611,8 +3611,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3232</yloc>
+      <xloc>368</xloc>
+      <yloc>3200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3649,8 +3649,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3232</yloc>
+      <xloc>1024</xloc>
+      <yloc>3200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3688,7 +3688,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1200</xloc>
-      <yloc>1376</yloc>
+      <yloc>1360</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3725,8 +3725,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1200</xloc>
-      <yloc>1472</yloc>
+      <xloc>1216</xloc>
+      <yloc>1424</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3763,8 +3763,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>992</yloc>
+      <xloc>384</xloc>
+      <yloc>1040</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3801,8 +3801,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>592</xloc>
-      <yloc>992</yloc>
+      <xloc>544</xloc>
+      <yloc>1040</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3839,8 +3839,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1216</xloc>
-      <yloc>1808</yloc>
+      <xloc>1200</xloc>
+      <yloc>1744</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3877,8 +3877,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1232</xloc>
-      <yloc>1872</yloc>
+      <xloc>1200</xloc>
+      <yloc>1824</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -3991,8 +3991,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1072</xloc>
-      <yloc>992</yloc>
+      <xloc>1024</xloc>
+      <yloc>1040</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4029,7 +4029,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
+      <xloc>368</xloc>
       <yloc>3296</yloc>
       <attributes_kjc/>
     </entry>
@@ -4067,7 +4067,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
+      <xloc>1024</xloc>
       <yloc>3296</yloc>
       <attributes_kjc/>
     </entry>
@@ -4105,8 +4105,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3360</yloc>
+      <xloc>368</xloc>
+      <yloc>3376</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4143,8 +4143,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3360</yloc>
+      <xloc>1024</xloc>
+      <yloc>3376</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4181,8 +4181,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3424</yloc>
+      <xloc>368</xloc>
+      <yloc>3456</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4219,8 +4219,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3424</yloc>
+      <xloc>1024</xloc>
+      <yloc>3456</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4257,8 +4257,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3472</yloc>
+      <xloc>368</xloc>
+      <yloc>3536</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4295,8 +4295,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3472</yloc>
+      <xloc>1024</xloc>
+      <yloc>3536</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4333,8 +4333,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3536</yloc>
+      <xloc>368</xloc>
+      <yloc>3600</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4371,8 +4371,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3536</yloc>
+      <xloc>1024</xloc>
+      <yloc>3600</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4409,8 +4409,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3600</yloc>
+      <xloc>368</xloc>
+      <yloc>3664</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4447,8 +4447,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3600</yloc>
+      <xloc>1024</xloc>
+      <yloc>3664</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4485,8 +4485,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3664</yloc>
+      <xloc>368</xloc>
+      <yloc>3728</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4523,8 +4523,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3664</yloc>
+      <xloc>1024</xloc>
+      <yloc>3728</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4561,8 +4561,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3744</yloc>
+      <xloc>368</xloc>
+      <yloc>3792</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4599,8 +4599,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3744</yloc>
+      <xloc>1024</xloc>
+      <yloc>3792</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4637,8 +4637,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>3824</yloc>
+      <xloc>368</xloc>
+      <yloc>3856</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4675,8 +4675,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1040</xloc>
-      <yloc>3824</yloc>
+      <xloc>1024</xloc>
+      <yloc>3872</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4713,8 +4713,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>464</xloc>
-      <yloc>3904</yloc>
+      <xloc>368</xloc>
+      <yloc>3936</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4752,7 +4752,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1024</xloc>
-      <yloc>3904</yloc>
+      <yloc>3952</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4789,8 +4789,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>2064</yloc>
+      <xloc>400</xloc>
+      <yloc>2016</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -4945,6 +4945,44 @@
       <yloc>528</yloc>
       <attributes_kjc/>
     </entry>
+    <entry>
+      <name>load_tr_mch_discontinuations </name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/Transform_mch_program_discontinuations.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>720</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -5020,8 +5058,8 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>load_st_program_discontinuations_hiv</from>
-      <to>load_tr_hiv_program_discontinuations</to>
+      <from>load_st_program_discontinuations</from>
+      <to>load_tr_hiv_discontinuations</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -5102,7 +5140,7 @@
     </hop>
     <hop>
       <from>Start</from>
-      <to>load_st_program_discontinuations_hiv</to>
+      <to>load_st_program_discontinuations</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -6039,6 +6077,15 @@
     <hop>
       <from>load_st_programs_enrollment</from>
       <to>load_tr_ovc_program</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_st_program_discontinuations</from>
+      <to>load_tr_mch_discontinuations </to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
