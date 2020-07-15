@@ -513,7 +513,7 @@ DROP TABLE IF EXISTS migration_tr.tr_ipt_outcome;
 CREATE TABLE migration_tr.tr_ipt_outcome
     select
       ipt.Person_Id,    
-      ipt.Encounter_Date,
+      ipt.Outcome_Date as Encounter_Date,
       ipt.Encounter_ID,
       (case ipt.IPT_Outcome when "TransferredOut" then 159492
        when "Died" then 160034

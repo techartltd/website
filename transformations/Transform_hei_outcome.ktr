@@ -513,7 +513,7 @@ DROP TABLE IF EXISTS migration_tr.tr_hei_outcome;
 CREATE TABLE migration_tr.tr_hei_outcome as
   select
     he.Person_Id,
-    he.Encounter_Date,
+    he.Child_hei_outcomes_exit_date as Encounter_Date,
     he.Encounter_ID,
     he.Child_hei_outcomes_exit_date,
     (case he.Child_hei_outcomes_HIV_status

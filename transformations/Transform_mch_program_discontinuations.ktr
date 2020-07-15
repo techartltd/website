@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Validate_demographics</name>
+    <name>Transform_mch_program_discontinuations</name>
     <description/>
     <extended_description/>
     <trans_version/>
     <trans_type>Normal</trans_type>
-    <trans_status>0</trans_status>
     <directory>/</directory>
     <parameters>
-      <parameter>
-        <name>mysql_tr</name>
-        <default_value/>
-        <description/>
-      </parameter>
     </parameters>
     <log>
       <trans-log-table>
@@ -433,21 +427,21 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2019/12/17 09:30:08.579</created_date>
+    <created_date>2020/07/14 12:44:09.375</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/17 09:30:08.579</modified_date>
+    <modified_date>2020/07/14 12:44:09.375</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
-    <server>localhost</server>
+    <name>mch_discontinuation_conn</name>
+    <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
     <database>mysql_tr</database>
-    <port>3306</port>
+    <port>1521</port>
     <username/>
     <password>Encrypted </password>
     <servername/>
@@ -468,7 +462,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>1521</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -499,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>Remove_demographics_special_characters</name>
+    <name>load_tr_mch_program_discontinuation</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -509,20 +503,35 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>mch_discontinuation_conn</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>-- 1.  Validation: Remove  special characters from Phone_Number
-update tr_demographics
-set Phone_number=replace(Phone_number,"\\",""),
-    Phone_number=replace(Phone_number,"\/",""),
-    Phone_number=replace(Phone_number,"\)",""),
-    Phone_number=replace(Phone_number,"\(",""),
-    Phone_number=replace(Phone_number,"\"",""),
-    Phone_number=replace(Phone_number,"\'","");
-   </sql>
+    <sql>-- 11. MCH Patient Program Discontinuation transformed table
+DROP TABLE IF EXISTS migration_tr.tr_mch_program_discontinuation;
+CREATE TABLE migration_tr.tr_mch_program_discontinuation as
+  select
+    pd.Person_Id,
+    pd.Date_Completed as Encounter_Date,
+    pd.Encounter_ID,
+    pd.Program,
+    pd.Date_Enrolled,
+    pd.Date_Completed,
+    (case pd.Care_Ending_Reason when "Transfer Out" then 159492
+     when "Death" then 160034
+     when "Lost To Follow Up" then 5240
+     when "Confirmed HIV Negative" then 1403
+     when "HIV Negative" then 1403
+     when "Other" then 5622
+     when "Unknown" then 1067 else NULL end) as Care_Ending_Reason,
+    pd.Facility_Transfered_To,
+    pd.Death_Date
+  FROM migration_st.st_program_discontinuation pd
+     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pd.Person_Id  
+    WHERE pd.Program = "ANC" OR pd.Program = "PNC" OR pd.Program = "PMTCT" OR pd.Program = "Maternity"
+     AND (pd.Encounter_Date != "" OR pd.Encounter_Date IS NOT NULL)   ;
+</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -539,8 +548,8 @@ set Phone_number=replace(Phone_number,"\\",""),
       </output>
     </remotesteps>
     <GUI>
-      <xloc>208</xloc>
-      <yloc>80</yloc>
+      <xloc>240</xloc>
+      <yloc>63</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
