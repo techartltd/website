@@ -524,7 +524,7 @@ DROP TABLE IF EXISTS migration_tr.tr_hiv_program_discontinuation;
 CREATE TABLE migration_tr.tr_hiv_program_discontinuation as
   select
     pd.Person_Id,
-    pd.Encounter_Date,
+    pd.Date_Completed as Encounter_Date,
     pd.Encounter_ID,
     pd.Program,
     pd.Date_Enrolled,
