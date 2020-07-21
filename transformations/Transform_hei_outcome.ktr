@@ -525,7 +525,9 @@ CREATE TABLE migration_tr.tr_hei_outcome as
      when "Infected BF Unknown (IBFu)" then 138571
      when "Infected not Breastfed (IBFn)" then 138571
      when "Infected Breastfed (IBF)" then 138571
-     when "Unknown" then 1067 else NULL end) as Child_hei_outcomes_HIV_status
+     when "Unknown" then 1067 else NULL end) as Child_hei_outcomes_HIV_status,
+   he.CreateDate as Create_date,
+   he.CreatedBy as Created_by
   FROM migration_st.st_hei_outcome he
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = he.Person_Id  
     WHERE (he.Encounter_Date != "" OR he.Encounter_Date IS NOT NULL)

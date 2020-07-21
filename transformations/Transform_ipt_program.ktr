@@ -529,8 +529,10 @@ CREATE TABLE migration_tr.tr_ipt_program
        when "LostToFollowUp" then 5240
        when "Completed" then 1267
        when "Unknown" then 1067 else NULL end) as IPT_Outcome,
-      ipp.Outcome_Date    
-    FROM migration_st.st_ipt_program ipp
+      ipp.Outcome_Date,
+      ipp.created_at as Create_date,
+      ipp.created_by as Created_by                  
+     FROM migration_st.st_ipt_program ipp
        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ipp.Person_Id  
        WHERE (ipp.Encounter_Date != "" OR ipp.Encounter_Date IS NOT NULL)
        GROUP BY ipp.Person_Id, ipp.Encounter_Date;</sql>

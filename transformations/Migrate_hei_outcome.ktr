@@ -582,6 +582,8 @@ CREATE TABLE migration_st.st_hei_outcome (
   Encounter_ID                     VARCHAR(50),
   Child_hei_outcomes_exit_date     DATE,
   Child_hei_outcomes_HIV_status    VARCHAR(255),
+  CreateDate                       DATE,
+  CreatedBy                        INT(11),
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -617,16 +619,17 @@ CREATE TABLE migration_st.st_hei_outcome (
       <schema_name/>
     </partitioning>
     <connection>mssql</connection>
-    <sql>-- 26. HEI Outcome  Validated by DNG
-select p.PersonId as Person_Id ,v.VisitDate as Encounter_Date, (select ltv.[Name] from LookupItem ltv  where ltv.Id =  he.Outcome24MonthId) as Child_hei_outcomes_HIV_Status,v.VisitDate as Child_hei_outcomes_exit_date
-  from HEIEncounter he 
+    <sql>-- 26. HEI Outcome Validated by DNG
+select p.PersonId as Person_Id ,v.VisitDate as Encounter_Date, (select ltv.[Name] from LookupItem ltv where ltv.Id = he.Outcome24MonthId) as Child_hei_outcomes_HIV_Status,v.VisitDate as Child_hei_outcomes_exit_date,
+he.CreateDate,
+he.CreatedBy
+from HEIEncounter he
 inner join PatientMasterVisit v on v.Id=he.PatientMasterVisitId
 inner join Patient p on he.PatientId=p.Id
-inner join  PatientEnrollment pe on p.Id =pe.PatientId
-inner join Person per on per.Id=p.PersonId 
-left join PatientVitals pvs on pvs.PatientId=he.PatientId  and pvs.PatientMasterVisitId=v.Id
-where he.Outcome24MonthId is not null
-</sql>
+inner join PatientEnrollment pe on p.Id =pe.PatientId
+inner join Person per on per.Id=p.PersonId
+left join PatientVitals pvs on pvs.PatientId=he.PatientId and pvs.PatientMasterVisitId=v.Id
+where he.Outcome24MonthId is not null</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

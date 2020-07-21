@@ -623,6 +623,8 @@ CREATE TABLE migration_st.st_hts_test
   Couple_Discordant                VARCHAR(255),
   Tb_Screening_Results             VARCHAR(255),
   Remarks                          TEXT,
+  CreatedBy                        INT(11),
+  CreateDate                       DATE,
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -700,6 +702,8 @@ SELECT hts.Person_Id
 	,hts.TB_SCreening_Results
 	,hts.Remarks
 	,hts.Voided
+	,hts.CreatedBy,
+	hts.CreateDate
 FROM (
 	SELECT HE.PersonId Person_Id
 		,PT.Id Patient_Id
@@ -882,6 +886,8 @@ FROM (
 					)
 			)
 		,HE.EncounterRemarks AS Remarks
+		,PE.CreateDate
+		,PE.CreatedBy
 		,0 AS Voided
 	FROM HtsEncounter HE
 	LEFT JOIN HtsEncounterResult HER ON HER.HtsEncounterId = HE.Id
@@ -992,6 +998,8 @@ FROM (
 		,hts.TB_SCreening_Results
 		,hts.Remarks
 		,hts.Voided
+		,hts.CreatedBy,
+	     hts.CreateDate
 	FROM (
 		SELECT HE.PersonId Person_Id
 			,PT.Id Patient_Id
@@ -1175,6 +1183,8 @@ FROM (
 				)
 			,HE.EncounterRemarks AS Remarks
 			,0 AS Voided
+			,PE.CreateDate
+			,PE.CreatedBy
 		FROM HtsEncounter HE
 		LEFT JOIN HtsEncounterResult HER ON HER.HtsEncounterId = HE.Id
 		INNER JOIN PatientEncounter PE ON PE.Id = HE.PatientEncounterID

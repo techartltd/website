@@ -627,6 +627,8 @@ CREATE TABLE migration_tr.tr_hei_followup as
     fup.Deworming_Dosage_Units,
     fup.Date_of_next_appointment,
     fup.Comments,
+    fup.CreatedBy as Created_by,
+    fup.CreateDate as Create_date,
     fup.Voided
   FROM migration_st.st_hei_followup fup
    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fup.Person_Id  

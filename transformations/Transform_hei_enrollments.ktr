@@ -615,6 +615,8 @@ CREATE TABLE migration_tr.tr_hei_enrollment as
      when "None" then 1107  else NULL end)as  Infant_prophylaxis,
     hnr.Infant_prophylaxis_other,
     hnr.Mother_ccc_number,
+    hnr.CreateDate as Create_date,
+    hnr.CreatedBy as Created_by,
     hnr.Voided
   FROM migration_st.st_hei_enrollment hnr
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = hnr.Person_Id  

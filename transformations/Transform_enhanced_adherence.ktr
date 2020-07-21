@@ -580,6 +580,8 @@ CREATE TABLE migration_tr.tr_enhanced_adherence as
      when "No" then 1066  else NULL end)as Home_visit_benefit,
     ea.Adherence_plan,
     date_format(str_to_date(ea.Next_appointment_date, '%d-%M-%Y'), '%Y-%m-%d') as Next_appointment_date,
+    ea.CreatedBy as Created_by,
+    ea.CreateDate as Create_date,
     ea.Voided
   FROM migration_st.st_enhanced_adherence ea
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ea.Person_Id  

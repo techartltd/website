@@ -517,7 +517,9 @@ CREATE TABLE migration_tr.tr_otz_program_enrollment as
     pe.Encounter_ID,
     pe.Program,
     pe.Date_Enrolled,
-    pe.Date_Completed
+    pe.Date_Completed,
+    pe.Created_At as Create_date,
+    pe.Created_By as Created_by     
   FROM migration_st.st_program_enrollment pe
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pe.Person_Id  
     WHERE pe.Program = "OTZ" 

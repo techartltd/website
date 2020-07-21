@@ -526,8 +526,8 @@ CREATE TABLE migration_tr.tr_otz_activity as
     (case otz.Attended_Support_Group when "Yes" then 1065 when "No" then 1066 else NULL end) as Attended_Support_Group,
     otz.Remarks,
     otz.voided,
-    otz.CreateDate,
-    otz.CreatedBy 
+    otz.CreateDate as Create_date,
+    otz.CreatedBy as Created_by 
     FROM migration_st.st_otz_activity otz
        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = otz.Person_Id  
        WHERE (otz.Encounter_Date != "" OR otz.Encounter_Date IS NOT NULL)

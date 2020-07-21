@@ -529,6 +529,8 @@ CREATE TABLE migration_tr.tr_hts_linkage as
     lk.Date_Enrolled,
     lk.ART_Start_Date,
     lk.Remarks,
+    lk.CreatedBy as Created_by,
+    lk.CreateDate as Create_date,
     lk.Voided
   FROM migration_st.st_hts_linkage lk
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = lk.Person_Id  

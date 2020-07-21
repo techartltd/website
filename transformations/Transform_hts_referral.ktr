@@ -519,8 +519,8 @@ CREATE TABLE migration_tr.tr_hts_referral as
     hr.Facility_Referred,
     hr.Date_To_Be_Enrolled,
     hr.Remarks,
-    hr.CreateDate,							    
-	hr.CreatedBy,             					
+    hr.CreateDate as Create_date,							    
+	hr.CreatedBy as Created_by,             					
     hr.Voided
   FROM migration_st.st_hts_referral hr
    INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = hr.Person_Id  

@@ -570,7 +570,9 @@ CREATE TABLE migration_tr.tr_depression_screening as
         when "Severe" then 160756
         when "Fatal" then 160758
         when "Unknown" then 1067  else '' end)as DepressionSeverity,
-	ds.DepressionTotal
+	ds.DepressionTotal,
+    ds.CreatedBy as Created_by,
+    ds.CreateDate as Create_date
     FROM migration_st.st_depression_screening ds
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ds.Person_Id  
      WHERE (ds.Encounter_Date != "" OR ds.Encounter_Date IS NOT NULL)

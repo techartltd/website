@@ -644,7 +644,9 @@ CREATE TABLE migration_st.st_mch_delivery_discharge
   Referred_To                                 VARCHAR(200),  
   Next_Appointment_Date                       DATE,
   Appointment_Reason                          VARCHAR(200),
-  Voided                                     INT(11)
+  CreateDate                                  DATE,
+  CreatedBy                                   INT(11),
+  Voided                                      INT(11)
 );
 </sql>
     <set_params>N</set_params>
@@ -762,7 +764,10 @@ SELECT p.id AS Person_Id,
                  VITS.[vitaminasupplementation] as Vitamin_A_Supplimentation,
                  TCAs.[description] AS Clinical_notes,
                  TCAs.appointmentdate AS Next_Appointment_Date,
-                 d.deleteflag AS Voided 
+                 d.deleteflag AS Voided,
+				 d.CreateDate,
+				 d.CreatedBy
+				 
 FROM person p
 INNER JOIN patient b ON b.personid = p.id
 INNER JOIN patientmastervisit d ON b.id = d.patientid
@@ -776,6 +781,8 @@ INNER JOIN
           visittype,
           [visitnumber],
           [dayspostpartum]
+		  
+		  
    FROM patientenrollment a
    INNER JOIN servicearea b ON a.serviceareaid = b.id
    INNER JOIN patientidentifier c ON c.patientid = a.patientid

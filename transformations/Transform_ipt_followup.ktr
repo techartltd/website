@@ -534,7 +534,9 @@ CREATE TABLE migration_tr.tr_ipt_followup
        when "Bad()Missed 9" then 159407 else NULL end)as Adherence,
       ip.AdheranceMeasurement_Action,
       ip.IPT_Outcome,
-      ip.Outcome_Date
+      ip.Outcome_Date,
+      ip.created_at as Create_date,
+      ip.created_by as Created_by     
     FROM migration_st.st_ipt_followup ip
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ip.Person_Id  
       WHERE (ip.Encounter_Date != "" OR ip.Encounter_Date IS NOT NULL)

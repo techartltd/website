@@ -695,7 +695,9 @@
      when "Community Unit" then 160543
      when "Unknown" then 1067  else NULL end)as  Referred_To,
   pnc.Clinical_notes,
-  pnc.Next_Appointment_Date
+  pnc.Next_Appointment_Date,
+  pnc.CreatedBy as Created_by,
+  pnc.CreateDate as Create_date                       
   FROM migration_st.st_mch_pnc_visit pnc
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pnc.Person_Id  
       WHERE (pnc.Encounter_Date != "" OR pnc.Encounter_Date IS NOT NULL)

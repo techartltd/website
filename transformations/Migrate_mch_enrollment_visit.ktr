@@ -674,6 +674,8 @@ CREATE TABLE migration_st.st_mch_enrollment_visit
   Referred_To                      VARCHAR(100),
   Next_appointment_date            DATE,
   Clinical_notes                   TEXT,
+  CreateDate                       DATE,
+  CreatedBy                        INT(11),
   Voided                           INT(11)
 );
 </sql>
@@ -802,13 +804,14 @@ IPT as IPT_1_3,
  TreatedNets AS Received_ITN ,
  partnerTesting.PartnerTested as Partner_tested ,
 partnerTesting.PartnerHIVResult,
-d.DeleteFlag as Voided 
-
+d.DeleteFlag as Voided,
+h.CreateDate,
+h.CreatedBy
 from Patient p 
 inner join Person pe on pe.Id =p.PersonId 
 inner join dbo.PatientMasterVisit d ON p.Id = d.PatientId INNER JOIN
     (select a.patientID,EnrollmentDate,IdentifierValue,Visitdate,PatientMasterVisitId,
-							VisitType ,[VisitNumber] ,[DaysPostPartum]  from PatientEnrollment a 
+							VisitType ,[VisitNumber] ,[DaysPostPartum] ,a.CreateDate,a.CreatedBy from PatientEnrollment a 
 							inner  join ServiceArea b on a.ServiceAreaId=b.id
 								inner join PatientIdentifier c on c.PatientId=a.PatientId
 							inner join ServiceAreaIdentifiers d on c.IdentifierTypeId=d.IdentifierId and b.id=d.ServiceAreaId

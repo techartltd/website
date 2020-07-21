@@ -672,6 +672,8 @@ CREATE TABLE migration_tr.tr_mch_anc_visit as
      when "Unknown" then 1067  else NULL end)as  Referred_To,
     anc.Next_appointment_date,
     anc.Clinical_notes,
+    anc.CreateDate as Create_date,
+    anc.CreatedBy as Created_by,
     anc.Voided
   FROM migration_st.st_mch_enrollment_visit anc
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = anc.Person_Id  

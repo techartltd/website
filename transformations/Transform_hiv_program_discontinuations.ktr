@@ -537,7 +537,9 @@ CREATE TABLE migration_tr.tr_hiv_program_discontinuation as
      when "Other" then 5622
      when "Unknown" then 1067 else NULL end) as Care_Ending_Reason,
     pd.Facility_Transfered_To,
-    pd.Death_Date
+    pd.Death_Date,
+    pd.CreatedBy as Created_by,
+    pd.CreateDate as Create_date
   FROM migration_st.st_program_discontinuation pd
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pd.Person_Id  
      WHERE pd.Program = "CCC"

@@ -632,7 +632,9 @@ CREATE TABLE migration_tr.tr_mch_delivery as
      when "N/A" then 1175  else NULL end)as  Baby_nvp_dispensed,
   mch.Clinical_notes,
   mch.Next_Appointment_Date,
-  mch.Voided                                     
+  mch.CreateDate as Create_date,
+  mch.CreatedBy as Created_by,
+  mch.Voided                                      
 FROM migration_st.st_mch_delivery_discharge  mch
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = mch.Person_Id  
     WHERE (mch.Encounter_Date != "" OR mch.Encounter_Date IS NOT NULL)

@@ -627,6 +627,8 @@ CREATE TABLE migration_st.st_hei_enrollment (
   Infant_prophylaxis_other 	  		TEXT,
   Mother_linked_to_care             VARCHAR(100),
   Mother_ccc_number 			    VARCHAR(100),
+  CreateDate                         DATE,
+  CreatedBy                          INT(11),
   Voided                            INT(50)
 );</sql>
     <set_params>N</set_params>
@@ -728,7 +730,9 @@ he.MotherPMTCTRegimenOther as Mother_on_pmtct_other_regimen,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.MotherArtInfantEnrolRegimenId) as Mother_drug_regimen,
 (select  lt.[Name] from LookupItem lt where lt.Id=he.ArvProphylaxisId) as Infant_prophylaxis,
 he.ArvProphylaxisOther as Infant_prophylaxis_other,
-he.MotherCCCNumber as Mother_ccc_number
+he.MotherCCCNumber as Mother_ccc_number,
+he.CreateDate,
+he.CreatedBy
 
 from   dbo.PatientMasterVisit AS v INNER JOIN
                          dbo.Patient AS p ON v.PatientId = p.Id INNER JOIN

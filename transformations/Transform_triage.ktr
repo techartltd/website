@@ -534,7 +534,9 @@ CREATE TABLE migration_tr.tr_triage as
     tr.Muac,
     tr.Nutritional_status,
     tr.Last_menstrual_period,
-    tr.Nurse_comments
+    tr.Nurse_comments,
+    tr.CreatedBy as Created_by, 
+    tr.CreateDate as Create_date
   FROM migration_st.st_triage tr
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = tr.Person_Id  
      WHERE tr.Encounter_Date != "" OR tr.Encounter_Date != NULL

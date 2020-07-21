@@ -559,7 +559,9 @@ CREATE TABLE migration_tr.tr_art_preparation as
      when "No" then 1066  else NULL end)as Enrolled_in_reminder_system,
   (case tp.Other_support_systems
      when "Yes" then 1065
-     when "No" then 1066  else NULL end)as Other_support_systems
+     when "No" then 1066  else NULL end)as Other_support_systems,
+  tp.created_at as Create_date,
+  tp.created_by as Created_by                          
   FROM migration_st.st_art_preparation tp
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = tp.Person_Id  
      WHERE (tp.Encounter_Date != "" OR tp.Encounter_Date IS NOT NULL)
