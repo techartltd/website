@@ -528,6 +528,8 @@ CREATE TABLE migration_tr.tr_defaulter_tracing as
            when "HIV disease resulting in other infectious and parasitic diseases" then 151522 when "Other natural causes not directly related to HIV" then 133481
            when "Non-natural causes (e.g, trauma, accident, suicide, war, etc)" then 1603 when "Unknown cause" then 5622 else NULL end)as Cause_of_death,
            dt.Comments,
+           dt.CreateDate as Create_date,
+           dt.CreatedBy as Created_by,
            dt.Voided
     FROM migration_st.st_defaulter_tracing dt
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = dt.Person_Id  

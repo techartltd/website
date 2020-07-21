@@ -572,7 +572,9 @@ CREATE TABLE migration_tr.tr_art_fastrack as
       when "Yes"  then 1065
       when "No" then 1066 else "" end) as  Referred,
   ft.Referral_specify,
-  ft.Next_Appointment_Date
+  ft.Next_Appointment_Date,
+  ft.CreateDate as Create_date,
+  ft.CreatedBy as Created_by
     FROM migration_st.st_art_fastrack ft
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ft.Person_Id
       WHERE (ft.Encounter_Date != "" OR ft.Encounter_Date IS NOT NULL)

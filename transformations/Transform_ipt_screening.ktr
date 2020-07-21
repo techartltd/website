@@ -533,7 +533,9 @@ CREATE TABLE migration_tr.tr_ipt_screening
       (case ipt.Tenderness
        when "Yes" then 124994
        when "No" then 1066  else NULL end)as Tenderness,
-      ipt.IPT_Start_Date
+      ipt.IPT_Start_Date,
+      ipt.created_at as Create_date,
+      ipt.created_by as Created_by 
     FROM migration_st.st_ipt_screening ipt
         INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ipt.Person_Id  
         WHERE (ipt.Encounter_Date != "" OR ipt.Encounter_Date IS NOT NULL)

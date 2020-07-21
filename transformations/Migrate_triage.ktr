@@ -620,6 +620,8 @@ CREATE TABLE migration_st.st_triage
   Nutritional_status               VARCHAR(100),
   Last_menstrual_period            DATE,
   Nurse_comments                   TEXT,
+  CreatedBy                        INT(11), 
+  CreateDate                       DATE,
   Voided                           INT(11)
 );
 </sql>
@@ -728,8 +730,9 @@ Head_circumference = PV.HeadCircumference,
 NUll as Nutritional_status,
 format(cast(PIR.LMP as date),'yyyy-MM-dd') as Last_menstrual_period,
 CAST(PV.NursesComments AS varchar(MAX)) as Nurse_Comments,
-PV.DeleteFlag as Voided
-
+PV.DeleteFlag as Voided,
+PV.CreatedBy,
+PV.CreateDate
 FROM [dbo].[PatientVitals] PV
 INNER JOIN Patient P ON P.Id = PV.PatientId
 INNER JOIN PatientMasterVisit PM ON PM.Id = PV.PatientMasterVisitId
@@ -758,7 +761,9 @@ Head_circumference = NULL,
 NUll as Nutritional_status,
 format(cast(PCS.LMP as date),'yyyy-MM-dd') as Last_menstrual_period,
 NULL as Nurse_Comments,
-0 as Voided
+0 as Voided,
+DPV.UserID as CreatedBy, 
+DPV.CreateDate
 
 FROM dtl_PatientVitals DPV
 left join Patient P on p.ptn_pk = DPV.Ptn_pk

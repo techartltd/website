@@ -603,6 +603,8 @@ CREATE TABLE migration_st.st_hts_contact_listing
   Booking_Date                     DATE,
   Consent_For_Testing              VARCHAR(50),
   Date_Reminded                    DATE,
+  CreatedBy                        INT(11),
+  CreateDate                       DATE,
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -668,7 +670,9 @@ PNS_Approach = (SELECT TOP 1 ItemName FROM LookupItemView WHERE ItemId = (SELECT
 Booking_Date = (select top 1 DateBookedTesting from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner')),
 Consent_For_Testing = (SELECT Top 1 ItemName FROM LookupItemView WHERE MasterName = 'YesNo' AND ItemId = (select top 1 Consent from Tracing where PersonId = PR.PersonId AND TracingType = (select ItemId from LookupItemView where MasterName = 'TracingType' and ItemName = 'Partner'))),
 Date_Reminded = NULL,
-NULL Voided
+NULL Voided,
+PR.CreatedBy,
+PR.CreateDate
 
 FROM [dbo].[PersonRelationship] PR
 LEFT JOIN dbo.Patient AS PT ON PT.Id = PR.PatientId

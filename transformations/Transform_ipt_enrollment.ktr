@@ -516,7 +516,9 @@ CREATE TABLE migration_tr.tr_ipt_enrollment
       ipt.Encounter_Date,
       ipt.Encounter_ID,
       ipt.IPT_Start_Date,
-      ipt.Indication_for_IPT     
+      ipt.Indication_for_IPT,
+      ipt.created_at as Create_date,
+      ipt.created_by as Created_by
     FROM migration_st.st_ipt_program ipt
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ipt.Person_Id  
       WHERE (ipt.Encounter_Date != "" OR ipt.Encounter_Date IS NOT NULL)

@@ -643,6 +643,8 @@ CREATE TABLE migration_st.st_hei_followup (
   Deworming_Dosage_Units                    TEXT,
   Date_of_next_appointment                  DATE,
   Comments                                  TEXT,
+  CreatedBy                                 INT(11),
+  CreateDate                                DATE,
   Voided                                    INT(11)
 );
 </sql>
@@ -749,8 +751,9 @@ NULL Deworming_Drug,
 NULL Deworming_Dosage_Units,
 heapp.AppointmentDate as [Date_of_next_appointment],
 heapp.[Description] as Comments,
-he.DeleteFlag as Voided
- 
+he.DeleteFlag as Voided,
+he.CreatedBy,
+he.CreateDate
 
   from HEIEncounter he
 inner join Patient p on he.PatientId=p.Id

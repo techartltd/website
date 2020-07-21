@@ -623,6 +623,8 @@ CREATE TABLE migration_st.st_enhanced_adherence (
   Home_visit_benefit                 TEXT,
   Adherence_plan                     TEXT,
   Next_appointment_date              TEXT,   -- Should be a date
+  CreatedBy                          INT(11),
+  CreateDate                         DATE,
   Voided                             INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -708,8 +710,10 @@ FROM (
 		,sessionrefq3.Answer AS Referral_experience
 		,sessionrefq4.Answer AS Home_visit_benefit
 		,sessionrefq5.Answer AS Adherence_Plan
-		,session1followup.Answer AS Next_Appointment_Date
+		,session1followup.Answer AS Next_Appointment_Date        
 		,pd.DeleteFlag AS Voided
+        ,pd.createdby as CreatedBy
+		,pd.CreateDate
 	FROM (
 		SELECT pe.PatientId
 			,pe.PatientMasterVisitId
@@ -718,6 +722,8 @@ FROM (
 			,pe.EncounterTypeId
 			,lt.ItemName
 			,pm.VisitDate
+            ,pe.createdby
+            ,pe.CreateDate			
 		FROM PatientEncounter pe
 		INNER JOIN PatientMasterVisit pm ON pe.PatientMasterVisitId = pm.Id
 		INNER JOIN Patient p ON p.Id = pe.PatientId
@@ -1291,6 +1297,8 @@ FROM (
 		,sessionrefq5.Answer AS Adherence_Plan
 		,session1followup.Answer AS Next_Appointment_Date        
 		,pd.DeleteFlag AS Voided
+		,pd.createdby as CreatedBy
+		,pd.CreateDate
 	FROM (
 		SELECT pe.PatientId
 			,pe.PatientMasterVisitId
@@ -1299,6 +1307,8 @@ FROM (
 			,pe.EncounterTypeId
 			,lt.ItemName
 			,pm.VisitDate
+			,pe.CreateDate
+			,pe.CreatedBy
 		FROM PatientEncounter pe
 		INNER JOIN PatientMasterVisit pm ON pe.PatientMasterVisitId = pm.Id
 		INNER JOIN Patient p ON p.Id = pe.PatientId
@@ -1584,6 +1594,10 @@ FROM (
 		,sessionrefq5.Answer AS Adherence_Plan
 		,session1followup.Answer AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
+		,pd.createdby as CreatedBy
+		,pd.CreateDate
+
+
 	FROM (
 		SELECT pe.PatientId
 			,pe.PatientMasterVisitId
@@ -1592,6 +1606,8 @@ FROM (
 			,pe.EncounterTypeId
 			,lt.ItemName
 			,pm.VisitDate
+			,pe.CreateDate
+			,pe.CreatedBy
 		FROM PatientEncounter pe
 		INNER JOIN PatientMasterVisit pm ON pe.PatientMasterVisitId = pm.Id
 		INNER JOIN Patient p ON p.Id = pe.PatientId
@@ -1862,6 +1878,8 @@ FROM (
 		,sessionrefq5.Answer AS Adherence_Plan
 		,session1followup.Answer AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
+		,pd.createdby as CreatedBy
+		,pd.CreateDate
 	FROM (
 		SELECT pe.PatientId
 			,pe.PatientMasterVisitId
@@ -1870,6 +1888,8 @@ FROM (
 			,pe.EncounterTypeId
 			,lt.ItemName
 			,pm.VisitDate
+			,pe.CreateDate
+			,pe.CreatedBy
 		FROM PatientEncounter pe
 		INNER JOIN PatientMasterVisit pm ON pe.PatientMasterVisitId = pm.Id
 		INNER JOIN Patient p ON p.Id = pe.PatientId
@@ -2140,6 +2160,8 @@ FROM (
 		,NULL AS Adherence_Plan
 		,NULL AS Next_Appointment_Date
 		,pd.DeleteFlag AS Voided
+		,pd.createdby as CreatedBy
+		,pd.CreateDate
 	FROM (
 		SELECT pe.PatientId
 			,pe.PatientMasterVisitId
@@ -2148,6 +2170,8 @@ FROM (
 			,pe.EncounterTypeId
 			,lt.ItemName
 			,pm.VisitDate
+			,pe.CreateDate
+			,pe.CreatedBy
 		FROM PatientEncounter pe
 		INNER JOIN PatientMasterVisit pm ON pe.PatientMasterVisitId = pm.Id
 		INNER JOIN Patient p ON p.Id = pe.PatientId

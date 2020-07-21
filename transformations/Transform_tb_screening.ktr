@@ -565,7 +565,9 @@ CREATE TABLE migration_tr.tr_tb_screening
        when "TB Rx" then  1662
        when "INH" then 1679 
        when "Not Done" then  160737
-       when "TB Screening Not Done" then  160737 else "" end)as TB_results
+       when "TB Screening Not Done" then  160737 else "" end)as TB_results,
+       scr.created_at as Create_date,
+       scr.created_by as Created_by 
     FROM migration_st.st_tb_screening scr
          INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = scr.Person_Id 
          WHERE (scr.Encounter_Date != "" OR scr.Encounter_Date IS NOT NULL) 

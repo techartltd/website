@@ -522,6 +522,8 @@ CREATE TABLE migration_tr.tr_ovc_enrolment as
     ovc.Caregiver_Phone_Number,
     (case ovc.Client_Enrolled_cpims when "Yes" then 1065 when "No" then 1066 else NULL end) as Client_Enrolled_cpims,
     ovc.Partner_Offering_OVC,
+    ovc.created_by as Created_by,
+    ovc.created_at as Create_date,  
     ovc.voided
     FROM migration_st.st_ovc_enrolment ovc
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ovc.Person_Id  

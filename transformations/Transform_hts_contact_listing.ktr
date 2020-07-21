@@ -586,6 +586,8 @@ CREATE TABLE migration_tr.tr_hts_contact_listing as
      when "Unknown" then 1067 else NULL end)as PNS_Approach,
     cl.Booking_Date,
     cl.Date_Reminded,
+    cl.CreatedBy as Created_by,
+    cl.CreateDate as Create_date,
     cl.Voided
   FROM migration_st.st_hts_contact_listing cl
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = cl.Person_Id  

@@ -590,6 +590,8 @@ CREATE TABLE migration_st.st_defaulter_tracing (
   Exit_Date                        DATE,
   Exit_Reason                      TEXT,
   Reason_LostToFollowup            TEXT,
+  CreateDate                       DATE,
+  CreatedBy                        INT(11),
   Voided                           INT(11)
 );
 </sql>
@@ -639,16 +641,20 @@ pce.ReasonLostToFollowup as Reason_LostToFollowup,
 NULL as Attempt_number,
 NUll as Is_final_trace,
 NULL as True_status,
-pce.ReasonsForDeath as  Cause_of_death,
+pce.ReasonsForDeath as Cause_of_death,
 pce.CareEndingNotes as Comments,
-pce.DeleteFlag  as Voided
- from(select p.id, p.PersonId,pce.PatientId,pce.PatientMasterVisitId,pmv.Start, pmv.VisitDate,pce.ExitDate,
+pce.CreateDate,
+pce.CreatedBy,
+pce.DeleteFlag as Voided
+from(select p.id, p.PersonId,pce.PatientId,pce.PatientMasterVisitId,pmv.Start, pmv.VisitDate,pce.ExitDate,
 (select top 1. [Name] from Lookupitem where id= pce.ExitReason) as ExitReason,
 pce.DeleteFlag,
 (select top 1. [Name] from Lookupitem where id= pce.TracingOutome) as TracingOutcome ,
 (select top 1. [Name] from Lookupitem where id= pce.ReasonLostToFollowup) as ReasonLostToFollowup
 ,(select top 1. [Name] from Lookupitem where id= pce.ReasonsForDeath) as ReasonsForDeath
 ,pce.CareEndingNotes
+,pce.CreateDate 
+,pce.CreatedBy 
 from PatientCareending pce
 inner join Patient p on p.Id=pce.PatientId
 inner join PatientMasterVisit pmv on pmv.Id=pce.PatientMasterVisitId and pce.patientId=pmv.PatientId

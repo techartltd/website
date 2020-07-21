@@ -521,7 +521,11 @@ set Phone_number=replace(Phone_number,"\\",""),
     Phone_number=replace(Phone_number,"\)",""),
     Phone_number=replace(Phone_number,"\(",""),
     Phone_number=replace(Phone_number,"\"",""),
-    Phone_number=replace(Phone_number,"\'","");
+    Phone_number=replace(Phone_number,"\'","");   
+   
+
+ update tr_demographics
+set Next_of_kin_phone = 0 where  Next_of_kin_phone not regexp '^(-|\\+)?([0-9]+\\.[0-9]*|[0-9]*\\.[0-9]+|[0-9]+)$';
    </sql>
     <set_params>N</set_params>
     <insert_field/>
