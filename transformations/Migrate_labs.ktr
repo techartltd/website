@@ -717,6 +717,8 @@ CREATE TABLE migration_st.st_laboratory
   LabTestName      VARCHAR(200),
   ParameterName    VARCHAR(200),
   LabDepartmentName VARCHAR(200),
+  Create_By         INT(11),
+  Created_Date      DATE,
   Voided           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -792,7 +794,9 @@ r.Undetectable,
  r.HasResult,
  vlw.LabTestName,
 vlw.ParameterName,
- vlw.LabDepartmentName
+ vlw.LabDepartmentName,
+ plo.CreatedBy as Create_By,
+ plo.CreateDate as Created_Date
 
 from ord_LabOrder	 plo
 inner join dtl_LabOrderTest OT on OT.LabOrderId=plo.Id

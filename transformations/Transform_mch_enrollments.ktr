@@ -613,6 +613,8 @@ CREATE TABLE migration_tr.tr_mch_enrollment as
          when "One Plus(+)" then 1362
          when "Two Plus(++)" then 1363
          when "Three Plus(+++)" then 1364 else NULL end) as Urine_dipstick_for_blood,
+    mch.CreateDate as Create_date,
+    mch.CreatedBy as Created_by,
     mch.Voided
   FROM migration_st.st_mch_enrollment_visit mch
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = mch.Person_Id  

@@ -536,7 +536,9 @@ select
 		 when "Spouse" then 5617
 		 when "Sibling" then 972
 		 when "Unknown" then 1067
-		 when "Injectable Drug User (IDU)" then 157351 else NULL end) as Relationship,		
+		 when "Injectable Drug User (IDU)" then 157351 else NULL end) as Relationship,
+    pr.created_at as Create_date,
+	pr.created_by as Created_by,		
 	pr.Voided
  FROM migration_st.st_person_relationship pr  
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pr.Index_Person_Id 

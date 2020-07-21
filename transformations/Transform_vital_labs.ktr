@@ -537,7 +537,9 @@ CREATE TABLE migration_tr.tr_vital_labs
 		    when "CD4" then 5497
 		    when "CD4PERCENT" then 730
 			when "CD4 Percent" then 730
-            else NULL end)as Lab_test
+            else NULL end)as Lab_test,
+      lbs.Create_By as Created_by,
+      lbs.Created_Date as Create_date
     FROM migration_st.st_laboratory lbs
     INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = lbs.Person_Id
     WHERE (lbs.Encounter_Date != "" OR lbs.Encounter_Date IS NOT NULL)

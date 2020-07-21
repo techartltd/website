@@ -702,6 +702,8 @@ CREATE TABLE migration_tr.tr_hei_immunization as
 	 when "YES" then 1065
 	 when "NO" then 1066
      when "No" then 1066  else '' end)as fully_immunized,
+     CreatedBy as Created_by,
+     CreateDate as Create_date,
     Voided
   FROM migration_st.st_hei_immunization WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)

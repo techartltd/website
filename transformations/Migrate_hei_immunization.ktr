@@ -645,6 +645,8 @@ CREATE TABLE migration_st.st_hei_immunization (
   VitaminA_2_yr           VARCHAR(50),
   VitaminA2_to_5_yr       VARCHAR(50),
   fully_immunized         DATE,
+  CreatedBy               INT(11),
+  CreateDate              DATE,
   Voided                  INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -718,8 +720,9 @@ imm.VitaminA_1_and_half_yr,
 imm.VitaminA_2_yr,
 imm.VitaminA2_to_5_yr,
 imm.fully_immunized,
-imm.Voided
-
+imm.Voided,
+he.CreatedBy,
+he.CreateDate
   from  HEIEncounter he 
 inner join PatientMasterVisit v on v.Id=he.PatientMasterVisitId
 inner join Patient p on he.PatientId=p.Id

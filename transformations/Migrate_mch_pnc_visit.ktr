@@ -641,7 +641,9 @@ CREATE TABLE migration_st.st_mch_pnc_visit (
   Referred_To					   VARCHAR(255),
   Diagnosis						   VARCHAR(500),
   Clinical_notes                   VARCHAR(255),
-  Next_Appointment_Date            DATE
+  Next_Appointment_Date            DATE,
+  CreatedBy                        INT(11),
+  CreateDate                       DATE
 );</sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -747,7 +749,9 @@ SELECT  distinct
  ref.ReferredFrom as Referred_From,ref.ReferredTo as Referred_To
  ,diag.Diagnosis as Diagnosis
  ,TCAs.[Description] as Clinical_notes,
- TCAs.AppointmentDate as Next_Appointment_Date
+ TCAs.AppointmentDate as Next_Appointment_Date,
+ d.CreateDate,
+ d.CreatedBy
 FROM           
                          dbo.Patient AS b INNER JOIN
                          dbo.PatientMasterVisit AS d ON b.Id = d.PatientId INNER JOIN
@@ -957,7 +961,9 @@ SELECT  distinct
  ref.ReferredFrom as Referred_From,ref.ReferredTo as Referred_To
  ,diag.Diagnosis as Diagnosis
  ,TCAs.[Description] as Clinical_notes,
- TCAs.AppointmentDate as Next_Appointment_Date
+ TCAs.AppointmentDate as Next_Appointment_Date,
+ d.CreatedBy,
+ d.CreateDate
 FROM           
                          dbo.Patient AS b INNER JOIN
                          dbo.PatientMasterVisit AS d ON b.Id = d.PatientId INNER JOIN

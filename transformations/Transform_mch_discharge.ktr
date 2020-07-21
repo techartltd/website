@@ -543,6 +543,8 @@ CREATE TABLE migration_tr.tr_mch_discharge as
      when "Unknown" then 1067  else NULL end)as  Referred_To,
   dis.Clinical_notes,
   dis.Next_Appointment_Date,
+  dis.CreateDate as Create_date,
+  dis.CreatedBy as Created_by,
   dis.Voided
   FROM migration_st.st_mch_delivery_discharge dis
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = dis.Person_Id  

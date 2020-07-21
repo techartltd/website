@@ -563,11 +563,11 @@
   <order>
     <hop>
       <from>Create_st_ipt_program</from>
-      <to>iqcare_source_ipt_program_and_enrollmenr</to>
+      <to>iqcare_source_ipt_program_and_enrollment</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>iqcare_source_ipt_program_and_enrollmenr</from>
+      <from>iqcare_source_ipt_program_and_enrollment</from>
       <to>load_st_ipt_program</to>
       <enabled>Y</enabled>
     </hop>
@@ -626,7 +626,7 @@ CREATE TABLE migration_st.st_ipt_program
     </GUI>
   </step>
   <step>
-    <name>iqcare_source_ipt_program_and_enrollmenr</name>
+    <name>iqcare_source_ipt_program_and_enrollment</name>
     <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>

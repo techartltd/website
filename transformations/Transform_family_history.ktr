@@ -548,7 +548,9 @@ CREATE TABLE migration_tr.tr_family_history as
      when "Unknown" then 1067 else '' end) as Hiv_status,
   (case fh.In_Care when "Yes" then 1065 when "No" then 1066 else NULL end) as In_Care,
   fh.Linkage_CCC_Number,
-  fh.CCC_Number  
+  fh.CCC_Number,
+  fh.created_at as Create_date,
+  fh.created_by as Created_by
 FROM migration_st.st_family_history fh
      INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fh.Person_Id  
      WHERE (fh.Encounter_Date != "" OR fh.Encounter_Date IS NOT NULL)

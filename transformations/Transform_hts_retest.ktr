@@ -634,7 +634,9 @@ CREATE TABLE migration_tr.tr_hts_retest as
      when "TB Confirmed" then 1662
      when "ND: Not Done" then 160737
      when "TBRx: On TB treatment" then 1111 else "" end)as Tb_Screening_Results,
-    ht.Remarks
+    ht.Remarks,
+    ht.CreatedBy as Created_by,
+	ht.CreateDate as Create_date
    FROM migration_st.st_hts_test ht
        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ht.Person_Id  
        WHERE ht.TestType = "Repeat Test" 

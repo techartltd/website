@@ -519,6 +519,8 @@ CREATE TABLE migration_tr.tr_ovc_outcome as
     (case ovc.Exit_Reason when "GraduatedOutOVC" then 1267 when "ExitWithoutGraduation" then 165219 when "TransferOutNonPepfarFacility" then 159492 when "TransferOutPepfarFacility" then 160036 else NULL end) as Exit_Reason,
     ovc.Transfer_Facility,
     ovc.Transfer_Date,
+    ovc.created_by as Created_by,
+    ovc.created_at as Create_date,  
     ovc.voided
     FROM migration_st.st_ovc_outcome ovc
       INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ovc.Person_Id  

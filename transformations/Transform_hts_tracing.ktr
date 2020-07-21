@@ -531,6 +531,8 @@ CREATE TABLE migration_tr.tr_hts_tracing as
      when "Not found at home" then 1706  
      when "Mteja, calls not going through, not picking calls" then 1567 else NULL end) as Reason_uncontacted,
   ht.Remarks,
+  ht.CreatedBy as Created_by,
+  ht.CreateDate as Create_date,
   ht.Voided
 FROM migration_st.st_hts_tracing ht
   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ht.Person_Id  

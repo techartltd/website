@@ -586,6 +586,8 @@ CREATE TABLE migration_st.st_hts_tracing
   Reason_uncontacted               TEXT,
   OtherReasonSpecify               VARCHAR(255),
   Remarks                          TEXT,
+  CreatedBy                        INT(11),
+  CreateDate                       DATE,
   Voided                           INT(11)
 );</sql>
     <set_params>N</set_params>
@@ -631,7 +633,9 @@ Contact_Outcome = (SELECT top 1 ItemName FROM LookupItemView WHERE ItemId = T.Ou
 Reason_uncontacted = (SELECT top 1 ItemName FROM LookupItemView WHERE ItemId= T.ReasonNotContacted AND MasterName in ('TracingReasonNotContactedPhone','TracingReasonNotContactedPhysical')),
 OtherReasonSpecify = T.OtherReasonSpecify,
 Remarks = T.Remarks,
-NULL Voided
+NULL Voided,
+T.CreatedBy,
+T.CreateDate
 from Tracing T
 WHERE T.TracingType = (SELECT top 1 ItemId FROM LookupItemView WHERE MasterName='TracingType' AND ItemName = 'Enrolment');</sql>
     <limit>0</limit>
