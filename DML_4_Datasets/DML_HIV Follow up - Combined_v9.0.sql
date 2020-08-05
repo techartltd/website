@@ -782,10 +782,10 @@ OPPO.OrderedByDate,
 NULL Encounter_ID,
 RM.RegimenType,
 OPPO.PatientMasterVisitId,
-CASE WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+CASE WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select  top 1 DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
  else NULL end as OnCtx,
 (select top 1 DrugName from VW_Drug where Drug_pk = DPPO.Drug_Pk) Drug_name,
 Dose = (1),
@@ -938,10 +938,10 @@ NULL Encounter_ID,
 RM.RegimenType,
 OPPO.PatientMasterVisitId,
 
-CASE WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+CASE WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
  else NULL end as OnCtx,
 (select top 1 DrugName from VW_Drug where Drug_pk = DPPO.Drug_Pk) Drug_name,
 Dose = (1),
@@ -1094,10 +1094,10 @@ NULL Encounter_ID,
 RM.RegimenType,
 OPPO.PatientMasterVisitId,
 
-CASE WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+CASE WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
  else NULL end as OnCtx,
 (select top 1 DrugName from VW_Drug where Drug_pk = DPPO.Drug_Pk) Drug_name,
 Dose = (1),
@@ -1220,10 +1220,10 @@ NULL Encounter_ID,
 RM.RegimenType,
 OPPO.PatientMasterVisitId,
 
-CASE WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
- WHEN (select DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+CASE WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa/TMX-Cotrimoxazole%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1 DrugName from VW_Drug where DrugName like '%Sulfa%tmx%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1  DrugName from VW_Drug where DrugName like '%co%tri%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
+ WHEN (select top 1  DrugName from VW_Drug where DrugName like '%dapson%' AND Drug_pk = DPPO.Drug_Pk) IS NOT NULL THEN 'Yes'
  else NULL end as OnCtx,
 (select top 1 DrugName from VW_Drug where Drug_pk = DPPO.Drug_Pk) Drug_name,
 Dose = (1),

@@ -736,7 +736,9 @@ SELECT DISTINCT P.Id AS Person_Id
 	,treatmentl.Relationship_of_treatment_supporter
 	,treatmentl.Treatment_supporter_telephone
 	,treatmentl.Treatment_supporter_address
-	,0 AS Voided
+	,0 AS Voided,
+    P.CreateDate as Create_date,
+	P.CreatedBy as Created_by
 FROM Person P
 INNER JOIN Patient PT ON PT.PersonId = P.Id
 INNER JOIN PatientEnrollment PE ON PE.PatientId = PT.Id
