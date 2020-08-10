@@ -795,7 +795,7 @@ r.Undetectable,
  vlw.LabTestName,
 vlw.ParameterName,
  vlw.LabDepartmentName,
- plo.CreatedBy as Create_By,
+ COALESCE(plo.OrderedBy,plo.CreatedBy) as Create_By,
  plo.CreateDate as Created_Date
 
 from ord_LabOrder	 plo
