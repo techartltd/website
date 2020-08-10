@@ -527,7 +527,7 @@ CREATE TABLE migration_tr.tr_ipt_outcome
     FROM migration_st.st_ipt_program ipt
        INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = ipt.Person_Id  
        WHERE (ipt.Outcome_Date != "" OR ipt.Outcome_Date IS NOT NULL)
-       GROUP BY ipt.Person_Id, ipt.Encounter_Date;</sql>
+       GROUP BY ipt.Person_Id, ipt.Outcome_Date;</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
