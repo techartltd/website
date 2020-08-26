@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_hei_followup</name>
+    <name>Migrate_progress_notes</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,20 +427,75 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/01/23 16:14:08.845</created_date>
+    <created_date>2020/08/25 10:18:50.383</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/01/23 16:14:08.845</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/08/25 10:18:50.383</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
+    <name>mssql_progress</name>
+    <server/>
+    <type>MSSQLNATIVE</type>
+    <access>JNDI</access>
+    <database>mssql</database>
+    <port>1521</port>
+    <username/>
+    <password>Encrypted </password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>MSSQL_DOUBLE_DECIMAL_SEPARATOR</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>1521</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>progress_notes_con</name>
     <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
-    <database>mysql_tr</database>
+    <database>mysql_st</database>
     <port>1521</port>
     <username/>
     <password>Encrypted </password>
@@ -491,9 +546,19 @@
     </attributes>
   </connection>
   <order>
+    <hop>
+      <from>Create_st_progress_notes</from>
+      <to>iqcare_source_progress_notes</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>iqcare_source_progress_notes</from>
+      <to>load_st_progress_notes</to>
+      <enabled>Y</enabled>
+    </hop>
   </order>
   <step>
-    <name>load_tr_hei_followup</name>
+    <name>Create_st_progress_notes</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,138 +568,24 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>progress_notes_con</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>  -- 25. Create HEI followup transformed table
+    <sql>-- 57. Creating progress notes
+DROP TABLE IF EXISTS migration_st.st_progress_notes;
+CREATE TABLE migration_st.st_progress_notes
+(
+	Person_Id								int(11),
+	Encounter_Date							DATE,				
+	Encounter_ID							VARCHAR(50),
+	Clinical_notes				     		TEXT,
+    Created_by                              VARCHAR(50),
+    Create_date                             DATE, 
+    Voided                                  VARCHAR(50)
 
-DROP TABLE IF EXISTS migration_tr.tr_hei_followup;
-CREATE TABLE migration_tr.tr_hei_followup as
-  select
-    fup.Person_Id,
-    fup.Encounter_Date,
-    fup.Encounter_ID,
-    fup.Weight,
-    fup.Height,
-    (case fup.Primary_care_give
-       when "Mother" then 970
-       when "Father" then 971
-       when "Unknown" then 1067 else "" end) as Primary_care_give,
-    (case fup.Infant_feeding
-           when "Breast Feeding (EBF)" then 5526
-           when "Exclusive Replacement(ERF)" then 1595
-           when "Mixed Feeding(MF)" then 6046 else "" end) as Infant_feeding,
-    (case fup.TB_Assessment_outcome
-     when "No TB" then 1660
-     when "PrTB" then 142177
-     when "TBRx" then 1662
-     when "INH" then 1679
-     when "Not Done" then 1118  else "" end)as TB_Assessment_outcome,
-    (case fup.Social_smile_milestone_Under_2Months
-       when "Regressed"  then 6025
-       when "Delayed"  then 6022
-       when "Normal"  then 162056   else "" end)as Social_smile_milestone_Under_2Months,
-    (case fup.Social_smile_milestone_2Months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162056   else "" end)as Social_smile_milestone_2Months,
-    (case fup.Head_control_milestone_3Months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162057   else "" end)as Head_control_milestone_3Months,
-    (case fup.Head_control_milestone_4Months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162058   else "" end)as Head_control_milestone_4Months,
-    (case fup.Hand_extension_milestone_9months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162059   else "" end)as Hand_extension_milestone_9months,
-    (case fup.Sitting_milestone_12months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162061   else "" end)as Sitting_milestone_12months,
-    (case fup.Standing_milestone_15months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162062   else "" end)as Standing_milestone_15months,
-    (case fup.Walking_milestone_18months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162063   else "" end)as Walking_milestone_18months,
-    (case fup.Talking_milestone_36months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162060   else "" end)as Talking_milestone_36months,
-    fup.First_DNA_PCRSampleDate,
-    fup.First_DNA_PCRResult,
-    fup.First_DNA_PCRResultDate,
-    fup.Second_DNA_PCRSampleDate,
-    fup.Second_DNA_PCRResult,
-    fup.Second_DNA_PCRResultDate,
-    fup.Third_DNA_PCRSampleDate,
-    fup.Third_DNA_PCRResult,
-    fup.Third_DNA_PCRResultDate,
-    fup.ConfimatoryPCR_SampleDate,
-    fup.ConfirmatoryPCR_Result,
-    fup.ConfimatoryPCR_ResultDate,
-    fup.RepeatConfirmatoryPCR_SampleDate,
-    fup.RepeatConfirmatoryPCR_Result,
-    fup.RepeatConfirmatoryPCR_ResultDate,
-    fup.BaselineViralLoadSampleDate,
-    fup.BaselineViralLoadResult,
-    fup.BaselineViralLoadResultDate,
-    fup.Final_AntibodySampleDate,
-    fup.Final_AntibodyResult,
-    fup.Final_AntibodyResultDate,
-    -- Review_of_systems_developmental VARCHAR(100),
-    fup.Dna_pcr_sample_date,
-    fup.Dna_pcr_contextual_status,
-    fup.Dna_pcr_results,
-    fup.Dna_pcr_dbs_sample_code,
-    fup.Dna_pcr_results_date,
-    (case fup.Azt_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Azt_given,
-    (case fup.Nvp_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Nvp_given,
-    (case fup.Ctx_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Ctx_given,
-    (case fup.ARV_prophylaxis_received
-     when "AZT liquid BID for 12 weeks" then 160123
-     when "NVP liquid OD for 12 weeks" then 80586
-     when "AZT liquid BID + NVP liquid OD for 6 weeks then NVP liquid OD for 6 weeks" then 1652
-     when "Other" then 5622
-     when "None" then 1107  else "" end)as  ARV_prophylaxis_received,
-    fup.ARV_prophylaxis_Other_received,
-    fup.First_antibody_sample_date,
-    fup.First_antibody_result,
-    fup.First_antibody_dbs_sample_code,
-    fup.First_antibody_result_date,
-    fup.Final_antibody_sample_date,
-    fup.Final_antibody_result,
-    fup.Final_antibody_dbs_sample_code,
-    fup.Final_antibody_result_date,
-    fup.Tetracycline_Eye_Ointment,
-    fup.Pupil,
-    fup.Sight,
-    fup.Squint,
-    fup.Deworming_Drug,
-    fup.Deworming_Dosage_Units,
-    fup.Date_of_next_appointment,
-    fup.Comments,
-    fup.CreatedBy as Created_by,
-    fup.CreateDate as Create_date,
-    fup.Voided
-  FROM migration_st.st_hei_followup fup
-   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fup.Person_Id  
-   WHERE (fup.Encounter_Date != "" OR fup.Encounter_Date IS NOT NULL)
-   GROUP BY fup.Person_Id, fup.Encounter_Date;
-</sql>
+);</sql>
     <set_params>N</set_params>
     <insert_field/>
     <update_field/>
@@ -651,8 +602,103 @@ CREATE TABLE migration_tr.tr_hei_followup as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
-      <yloc>128</yloc>
+      <xloc>174</xloc>
+      <yloc>104</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>iqcare_source_progress_notes</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>mssql_progress</connection>
+    <sql>	
+	---- 57. Progress notes
+select 
+p.PersonId as Person_Id,
+CASE WHEN pmv.VisitDate is null then Cast (pmv.[Start]as date) else pmv.VisitDate end as Encounter_Date,
+NULL as Encounter_ID ,
+pcs.ClinicalNotes as Clinical_notes,
+pcs.CreatedBy as Created_by,
+pcs.CreateDate as Create_date,
+pcs.DeleteFlag as Voided
+ from PatientClinicalNotes pcs
+ left join Patient p on p.Id=pcs.PatientId
+ left join PatientMasterVisit pmv on pmv.Id=pcs.PatientMasterVisitId
+  where pcs.NotesCategoryId is null
+
+
+
+
+
+</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>478</xloc>
+      <yloc>104</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>load_st_progress_notes</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>progress_notes_con</connection>
+    <schema>migration_st</schema>
+    <table>st_progress_notes</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>N</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>782</xloc>
+      <yloc>104</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

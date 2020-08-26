@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>Transform_hei_followup</name>
+    <name>Transform_progress_notes</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,16 +427,16 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/01/23 16:14:08.845</created_date>
+    <created_date>2020/08/25 10:40:17.347</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/01/23 16:14:08.845</modified_date>
-    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <modified_date>2020/08/25 10:40:17.347</modified_date>
+    <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>mysql_tr</name>
+    <name>mysql_tr_notes</name>
     <server/>
     <type>MYSQL</type>
     <access>JNDI</access>
@@ -493,7 +493,7 @@
   <order>
   </order>
   <step>
-    <name>load_tr_hei_followup</name>
+    <name>load_tr_progress_notes</name>
     <type>ExecSQL</type>
     <description/>
     <distribute>Y</distribute>
@@ -503,137 +503,26 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>mysql_tr</connection>
+    <connection>mysql_tr_notes</connection>
     <execute_each_row>N</execute_each_row>
     <single_statement>N</single_statement>
     <replace_variables>N</replace_variables>
     <quoteString>N</quoteString>
-    <sql>  -- 25. Create HEI followup transformed table
+    <sql>      	     -- 46. Progress notes table
 
-DROP TABLE IF EXISTS migration_tr.tr_hei_followup;
-CREATE TABLE migration_tr.tr_hei_followup as
+DROP TABLE IF EXISTS migration_tr.tr_progress_notes;
+CREATE TABLE migration_tr.tr_progress_notes as
   select
-    fup.Person_Id,
-    fup.Encounter_Date,
-    fup.Encounter_ID,
-    fup.Weight,
-    fup.Height,
-    (case fup.Primary_care_give
-       when "Mother" then 970
-       when "Father" then 971
-       when "Unknown" then 1067 else "" end) as Primary_care_give,
-    (case fup.Infant_feeding
-           when "Breast Feeding (EBF)" then 5526
-           when "Exclusive Replacement(ERF)" then 1595
-           when "Mixed Feeding(MF)" then 6046 else "" end) as Infant_feeding,
-    (case fup.TB_Assessment_outcome
-     when "No TB" then 1660
-     when "PrTB" then 142177
-     when "TBRx" then 1662
-     when "INH" then 1679
-     when "Not Done" then 1118  else "" end)as TB_Assessment_outcome,
-    (case fup.Social_smile_milestone_Under_2Months
-       when "Regressed"  then 6025
-       when "Delayed"  then 6022
-       when "Normal"  then 162056   else "" end)as Social_smile_milestone_Under_2Months,
-    (case fup.Social_smile_milestone_2Months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162056   else "" end)as Social_smile_milestone_2Months,
-    (case fup.Head_control_milestone_3Months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162057   else "" end)as Head_control_milestone_3Months,
-    (case fup.Head_control_milestone_4Months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162058   else "" end)as Head_control_milestone_4Months,
-    (case fup.Hand_extension_milestone_9months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162059   else "" end)as Hand_extension_milestone_9months,
-    (case fup.Sitting_milestone_12months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162061   else "" end)as Sitting_milestone_12months,
-    (case fup.Standing_milestone_15months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162062   else "" end)as Standing_milestone_15months,
-    (case fup.Walking_milestone_18months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162063   else "" end)as Walking_milestone_18months,
-    (case fup.Talking_milestone_36months
-     when "Regressed"  then 6025
-     when "Delayed"  then 6022
-     when "Normal"  then 162060   else "" end)as Talking_milestone_36months,
-    fup.First_DNA_PCRSampleDate,
-    fup.First_DNA_PCRResult,
-    fup.First_DNA_PCRResultDate,
-    fup.Second_DNA_PCRSampleDate,
-    fup.Second_DNA_PCRResult,
-    fup.Second_DNA_PCRResultDate,
-    fup.Third_DNA_PCRSampleDate,
-    fup.Third_DNA_PCRResult,
-    fup.Third_DNA_PCRResultDate,
-    fup.ConfimatoryPCR_SampleDate,
-    fup.ConfirmatoryPCR_Result,
-    fup.ConfimatoryPCR_ResultDate,
-    fup.RepeatConfirmatoryPCR_SampleDate,
-    fup.RepeatConfirmatoryPCR_Result,
-    fup.RepeatConfirmatoryPCR_ResultDate,
-    fup.BaselineViralLoadSampleDate,
-    fup.BaselineViralLoadResult,
-    fup.BaselineViralLoadResultDate,
-    fup.Final_AntibodySampleDate,
-    fup.Final_AntibodyResult,
-    fup.Final_AntibodyResultDate,
-    -- Review_of_systems_developmental VARCHAR(100),
-    fup.Dna_pcr_sample_date,
-    fup.Dna_pcr_contextual_status,
-    fup.Dna_pcr_results,
-    fup.Dna_pcr_dbs_sample_code,
-    fup.Dna_pcr_results_date,
-    (case fup.Azt_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Azt_given,
-    (case fup.Nvp_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Nvp_given,
-    (case fup.Ctx_given
-     when "Yes" then 1065
-     when "No" then 1066  else "" end)as Ctx_given,
-    (case fup.ARV_prophylaxis_received
-     when "AZT liquid BID for 12 weeks" then 160123
-     when "NVP liquid OD for 12 weeks" then 80586
-     when "AZT liquid BID + NVP liquid OD for 6 weeks then NVP liquid OD for 6 weeks" then 1652
-     when "Other" then 5622
-     when "None" then 1107  else "" end)as  ARV_prophylaxis_received,
-    fup.ARV_prophylaxis_Other_received,
-    fup.First_antibody_sample_date,
-    fup.First_antibody_result,
-    fup.First_antibody_dbs_sample_code,
-    fup.First_antibody_result_date,
-    fup.Final_antibody_sample_date,
-    fup.Final_antibody_result,
-    fup.Final_antibody_dbs_sample_code,
-    fup.Final_antibody_result_date,
-    fup.Tetracycline_Eye_Ointment,
-    fup.Pupil,
-    fup.Sight,
-    fup.Squint,
-    fup.Deworming_Drug,
-    fup.Deworming_Dosage_Units,
-    fup.Date_of_next_appointment,
-    fup.Comments,
-    fup.CreatedBy as Created_by,
-    fup.CreateDate as Create_date,
-    fup.Voided
-  FROM migration_st.st_hei_followup fup
-   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = fup.Person_Id  
-   WHERE (fup.Encounter_Date != "" OR fup.Encounter_Date IS NOT NULL)
-   GROUP BY fup.Person_Id, fup.Encounter_Date;
+    pn.Person_Id,
+    pn.Encounter_Date,
+    pn.Encounter_ID,   
+    pn.Clinical_notes,
+    pn.Created_by,
+    pn.Create_date   
+  FROM migration_st.st_progress_notes pn
+   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pn.Person_Id  
+   WHERE (pn.Encounter_Date != "" OR pn.Encounter_Date IS NOT NULL) AND  (pn.Clinical_notes != "" OR pn.Clinical_notes  IS NOT NULL)
+   GROUP BY pn.Person_Id, pn.Encounter_Date;
 </sql>
     <set_params>N</set_params>
     <insert_field/>
@@ -651,8 +540,8 @@ CREATE TABLE migration_tr.tr_hei_followup as
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
-      <yloc>128</yloc>
+      <xloc>268</xloc>
+      <yloc>98</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
