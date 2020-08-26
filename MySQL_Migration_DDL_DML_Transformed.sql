@@ -3598,4 +3598,21 @@ CREATE TABLE migration_tr.tr_differentaited_care as
     FROM migration_st.st_differentaited_care WHERE
        (Encounter_Date != "" OR Encounter_Date IS NOT NULL)
   GROUP BY Person_Id, Encounter_Date;	
+  
+      	     -- 46. Progress notes table
+
+DROP TABLE IF EXISTS migration_tr.tr_progress_notes;
+CREATE TABLE migration_tr.tr_progress_notes as
+  select
+    pn.Person_Id,
+    pn.Encounter_Date,
+    pn.Encounter_ID,   
+    pn.Clinical_notes,
+    pn.Created_by,
+    pn.Create_date   
+  FROM migration_st.st_progress_notes pn
+   INNER JOIN migration_tr.tr_demographics dm ON dm.Person_Id = pn.Person_Id  
+   WHERE (pn.Encounter_Date != "" OR pn.Encounter_Date IS NOT NULL)
+   GROUP BY pn.Person_Id, pn.Encounter_Date;
+
 	

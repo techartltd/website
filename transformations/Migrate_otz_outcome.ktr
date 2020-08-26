@@ -634,7 +634,7 @@ SELECT p.PersonId AS Person_Id
 		WHERE li.Id = pce.ExitReason
 		) AS Discontinuation_Reason
 	,pce.ExitDate AS ExitDate
-	,pce.DateOfDeath
+	,pce.DateOfDeath AS Death_Date 
 	,pce.TransferOutfacility AS Transfer_Facility
 	,NULL AS Transfer_Date
 	,pce.DeleteFlag AS Voided
